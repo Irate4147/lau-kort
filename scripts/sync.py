@@ -133,8 +133,19 @@ def side_key(url):
 
 
 def sider(f):
-    """Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider (facebook_ekstra)."""
-    return [u for u in [f.get("facebook")] + (f.get("facebook_ekstra") or []) if u]
+    """Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider (facebook_ekstra).
+
+    En ekstra side kan være en URL eller {"url": ..., "begivenheder": [...]}; med "begivenheder" henter
+    historikken kun de begivenheder i stedet for hele sidens tidligere begivenheder (sparer Apify-forbrug).
+    """
+    ekstra = [e["url"] if isinstance(e, dict) else e for e in f.get("facebook_ekstra") or []]
+    return [u for u in [f.get("facebook")] + ekstra if u]
+
+
+def udvalgte(f, url):
+    """De udvalgte begivenheder, historikken skal hente for en ekstra side (tom liste: hele siden)."""
+    return next((e.get("begivenheder") or [] for e in f.get("facebook_ekstra") or []
+                 if isinstance(e, dict) and e.get("url") == url), [])
 
 
 def load_foreninger():
@@ -207,13 +218,19 @@ def record(item, hosts, kommune, seen):
     }
 
 
-def merge(item, events, foreninger, kommuner, seen, historisk=False):
-    """Flet én scrapet begivenhed ind i events. Returnerer id, eller None hvis den blev sprunget over."""
+def merge(item, events, foreninger, kommuner, seen, historisk=False, vaert=None):
+    """Flet én scrapet begivenhed ind i events. Returnerer id, eller None hvis den blev sprunget over.
+
+    vaert: foreningen, begivenheden er hentet for (når den er hentet direkte, og siden ikke kan ses af input-URL'en).
+    """
     if not item.get("id"):
         return None
     loc = item.get("location") or {}
     kommune, kom_forening = kommune_for(loc.get("latitude"), loc.get("longitude"), kommuner)
-    hosts = vaerter(item, foreninger) or [kom_forening or "?"]
+    hosts = vaerter(item, foreninger)
+    if vaert:
+        hosts = [vaert] + [h for h in hosts if h != vaert]
+    hosts = hosts or [kom_forening or "?"]
     old = events.get(str(item["id"]))
     if old:  # behold den oprindelige hovedarrangør, tilføj nye medarrangører
         hosts = list(dict.fromkeys(old.get("foreninger", [old["forening"]]) + hosts))
@@ -305,19 +322,20 @@ def log_tail(run_id, n=15):
 STOP = []  # sat, når Apify afviser nye kørsler (fx fordi månedens forbrug er brugt op)
 
 
-def run_actor(url):
-    """Start én Apify-kørsel på en sides tidligere begivenheder og vent på den."""
+def run_actor(job):
+    """Start én Apify-kørsel (en sides tidligere begivenheder eller udvalgte begivenheder) og vent på den."""
+    url = job["side"]
     if STOP:
-        return url, None, []
+        return job, None, []
     try:
-        run = api(f"/acts/{ACTOR}/runs", {"startUrls": [url], "maxEvents": HISTORIK_MAX_PR_SIDE})["data"]
+        run = api(f"/acts/{ACTOR}/runs", {"startUrls": job["start"], "maxEvents": job["max"]})["data"]
         while run["status"] in ("READY", "RUNNING"):
             time.sleep(10)
             run = api(f"/actor-runs/{run['id']}")["data"]
         if run["status"] != "SUCCEEDED":
             print(f"{url}: {run['status']} – {run.get('statusMessage') or ''}\n{log_tail(run['id'])}", file=sys.stderr)
         items = api(f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json") or []
-        return url, run, items
+        return job, run, items
     except urllib.error.HTTPError as e:
         if e.code in (402, 403):
             STOP.append(e.code)
@@ -325,10 +343,10 @@ def run_actor(url):
                   "Stopper; kør workflowet igen senere for at hente resten.", file=sys.stderr)
         else:
             print(f"{url}: fejlede ({e})", file=sys.stderr)
-        return url, None, []
+        return job, None, []
     except (urllib.error.URLError, KeyError, TypeError) as e:
         print(f"{url}: fejlede ({e})", file=sys.stderr)
-        return url, None, []
+        return job, None, []
 
 
 def historik_fra(arg):
@@ -356,31 +374,34 @@ def historik(fra):
             if f.get("historik_fra") or side_key(u) in hentet or (i == 0 and ("hoved", f["navn"]) in hentet):
                 sprunget.append(u)
             else:
-                mangler.append((f["navn"], u))
+                valgt = udvalgte(f, u)
+                mangler.append({"forening": f["navn"], "side": u, "start": valgt or [past_url(u)],
+                                "max": len(valgt) or HISTORIK_MAX_PR_SIDE, "udvalgte": bool(valgt)})
     if sprunget:
         print(f"Springer over ({len(sprunget)} sider allerede hentet eller tjekket manuelt)")
-    print(f"Henter: {', '.join(f'{n} ({u})' for n, u in mangler) or '(ingen)'}")
-    urls = [past_url(u) for _, u in mangler]
-    side_for = {past_url(u): u for _, u in mangler}
+    print("Henter: " + (", ".join(f"{j['forening']} ({j['side']}" + (f", kun {j['max']} udvalgte begivenheder" if j["udvalgte"] else "")
+                                  + ")" for j in mangler) or "(ingen)"))
 
     with ThreadPoolExecutor(HISTORIK_SAMTIDIGE) as pool:
-        results = list(pool.map(run_actor, urls))
+        results = list(pool.map(run_actor, mangler))
 
     koersler = []
-    for url, run, items in sorted((r for r in results if r[1]), key=lambda r: r[1]["startedAt"]):
+    for job, run, items in sorted((r for r in results if r[1]), key=lambda r: r[1]["startedAt"]):
         seen = iso(parse(run["startedAt"]))
         tilfoejet = 0
         starter = [s for item in items if (s := parse(item.get("utcStartDate")))]
         for item in items:
             start = parse(item.get("utcStartDate"))
-            if start and start >= fra and merge(item, events, foreninger, kommuner, seen, historisk=True):
+            if start and start >= fra and merge(item, events, foreninger, kommuner, seen, historisk=True,
+                                                vaert=job["forening"] if job["udvalgte"] else None):
                 tilfoejet += 1
-        forening = forening_for_url(url, foreninger)
+        forening = job["forening"]
         meta["behandlet"] = sorted(set(meta["behandlet"]) | {run["id"]})
         # aeldste: den ældste hentede begivenhed – historikken dækker kun derfra, hvis kørslen ramte loftet.
-        koersler.append({"id": run["id"], "tid": seen, "forening": forening, "side": side_for[url], "status": run["status"],
+        # udvalgte: kun de angivne begivenheder er hentet – de er hele sidens historik, så intet loft.
+        koersler.append({"id": run["id"], "tid": seen, "forening": forening, "side": job["side"], "status": run["status"],
                          "hentet": len(items), "begivenheder": tilfoejet,
-                         "aeldste": iso(min(starter)) if starter else None})
+                         "aeldste": iso(min(starter)) if starter else None, **({"udvalgte": True} if job["udvalgte"] else {})})
         print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} siden {fra.date()}")
 
     # "fra" sættes kun, når mindst én kørsel lykkedes – ellers ville siden påstå at have data, den ikke har.

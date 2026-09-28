@@ -100,7 +100,8 @@ def daekning(meta, events, foreninger):
     fra_for = {}
     for f in foreninger:
         s = [pr_side.get((f["navn"], u)) or (pr_side.get((f["navn"], None)) if i == 0 else None)
-             for i, u in enumerate(u for u in [f.get("facebook")] + (f.get("facebook_ekstra") or []) if u)]
+             for i, u in enumerate(u for u in [f.get("facebook")] + [e["url"] if isinstance(e, dict) else e
+                                                                    for e in f.get("facebook_ekstra") or []] if u)]
         if s and all(s):
             fra_for[f["navn"]] = max(s)
     for f in foreninger:  # historik tjekket manuelt fra historik_fra (fx ingen arrangementer)

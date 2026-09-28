@@ -14,7 +14,7 @@ Facebook viser kun kommende begivenheder i de ugentlige kørsler. Afholdte aktiv
 Actions → "Hent historik" → *Run workflow* (standard fra 1. januar i år; højst 20 begivenheder pr. side, så Apify-forbruget er begrænset).
 Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik [ÅÅÅÅ-MM-DD]`. Begivenheder hentet på den måde får `"historisk": true` og tæller ikke med i "varsel".
 
-En forening kan have flere Facebook-sider: `"facebook_ekstra": ["…"]` i `data/foreninger.json` (fx Fyns tidligere Odense-side). Begivenheder derfra hører til foreningen, og "Hent historik" holder styr på hver side for sig – en ny side hentes, selvom foreningens hovedside allerede er hentet, og foreningen regnes først som dækket, når alle dens sider er hentet. Skal en ekstra side også med i de ugentlige kørsler, skal den tilføjes i regnearket.
+En forening kan have flere Facebook-sider: `"facebook_ekstra": ["…"]` i `data/foreninger.json` (fx Fyns tidligere Odense-side). Begivenheder derfra hører til foreningen, og "Hent historik" holder styr på hver side for sig – en ny side hentes, selvom foreningens hovedside allerede er hentet, og foreningen regnes først som dækket, når alle dens sider er hentet. Skal en ekstra side også med i de ugentlige kørsler, skal den tilføjes i regnearket. En ekstra side kan også angives som `{"url": "…", "begivenheder": ["https://www.facebook.com/events/…/", …]}` – så henter historikken kun de begivenheder (én kørsel med `maxEvents` = antallet) i stedet for sidens tidligere begivenheder, hvilket sparer Apify-forbrug.
 
 Har en forening ikke brug for historikken (fx ingen arrangementer i år), kan `"historik_fra": "ÅÅÅÅ-MM-DD"` sættes i `data/foreninger.json`: så regnes dens data som komplette fra den dato, og "Hent historik" springer den over.
 

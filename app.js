@@ -151,7 +151,7 @@ function hbPrognose(f) {
 }
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 /** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
-const fbSider = f => [f.facebook, ...(f.facebook_ekstra || [])].filter(Boolean);
+const fbSider = f => [f.facebook, ...(f.facebook_ekstra || []).map(e => (typeof e === 'string' ? e : e.url))].filter(Boolean);
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
 
@@ -1161,7 +1161,7 @@ function renderForening(f) {
     ${f.facebook || KVARTALER.some(k => f.kv[k.id]) ? `<div class="kvartaler" title="Afholdte aktiviteter pr. kvartal">${KVARTALER.map(k =>
       `<span class="status"><span class="dot" style="background:${KVARTAL_FILL[kvStatus(f, k)]}"></span>${esc(k.kort)}: ${f.kv[k.id]} afholdt</span>`).join('')}</div>` : ''}
     <div class="kommuner">${f.national ? 'Arrangementer i hele landet' : `Dækker ${esc(f.kommuner.join(', '))}`}</div>
-    ${f.facebook ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>${(f.facebook_ekstra || []).map(u =>
+    ${f.facebook ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>${fbSider(f).slice(1).map(u =>
       ` · <a class="fb" href="${esc(u)}" target="_blank" rel="noopener">Tidligere side ↗</a>`).join('')}`
       : '<p class="empty">Ingen Facebook-side tilknyttet endnu, så aktiviteter kan ikke hentes automatisk.</p>'}
     <button class="linkbtn arr-link" data-arr-forening="${esc(f.navn)}">Arrangementer og rettelser →</button>`;
