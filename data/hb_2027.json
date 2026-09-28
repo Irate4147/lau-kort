@@ -1,7 +1,7 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T14:36:18Z",
+ "beregnet": "2026-09-28T14:43:37Z",
  "idag": "2026-09-28",
  "data_fra": {
   "Aalborg": "2026-01-01",
@@ -14,12 +14,12 @@
   "Horsens": "2026-01-01",
   "Kolding": "2026-09-28",
   "Kronjylland": "2026-01-01",
-  "København": "2026-01-01",
+  "København": "2026-03-14",
   "Køge Bugt": "2026-01-01",
   "Nordkøbenhavn": "2026-01-01",
   "Nordsjælland": "2026-01-01",
   "Næstved": "2026-01-01",
-  "Roskilde": "2026-01-01",
+  "Roskilde": "2026-04-08",
   "Silkeborg": "2026-01-01",
   "Sydvestjylland": "2026-01-01",
   "Sønderjylland": "2026-01-01",
@@ -1191,13 +1191,13 @@
    }
   },
   "Roskilde": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026"
+    "1. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },

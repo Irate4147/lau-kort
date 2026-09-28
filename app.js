@@ -83,15 +83,23 @@ const kvartalStatus = k => ({
   ingenfb: {label: 'Ingen Facebook-side tilknyttet'},
 });
 // Foreninger, hvis tidligere begivenheder er hentet, og datoen, hvor de ugentlige kørsler startede (sættes i load()).
-const HISTORIK = {hentet: new Set(), ugentligFra: '', fra: ''};
+// fraFor: pr. forening den første dag, historikken dækker helt (senere end historik.fra, hvis hentningen ramte loftet).
+const HISTORIK = {hentet: new Set(), ugentligFra: '', fra: '', fraFor: new Map()};
+// Historikken henter højst så mange begivenheder pr. side (HISTORIK_MAX_PR_SIDE i scripts/sync.py).
+const HISTORIK_LOFT = 20;
+/** Første dag (YYYY-MM-DD), hvor foreningens afholdte aktiviteter kendes fuldt ud. */
+function daekketFra(navn) {
+  const h = HISTORIK.fraFor.get(navn);
+  return h && h < HISTORIK.ugentligFra ? h : HISTORIK.ugentligFra;
+}
 /**
- * 'ja' / 'nej' / 'ukendt' / 'ingenfb' for en forening i et kvartal. 'ukendt', når kvartalet ligger før de
- * ugentlige kørsler, og foreningens historik ikke er hentet – så ser den ikke inaktiv ud uden grund.
+ * 'ja' / 'nej' / 'ukendt' / 'ingenfb' for en forening i et kvartal. 'ukendt', når kvartalet ligger før den dag,
+ * foreningens data dækker fra – så ser den ikke inaktiv ud uden grund.
  */
 function kvStatus(f, k) {
   if (f.kv[k.id]) return 'ja';
   if (!f.facebook) return 'ingenfb';
-  return k.fra < HISTORIK.ugentligFra && !HISTORIK.hentet.has(f.navn) ? 'ukendt' : 'nej';
+  return k.fra < daekketFra(f.navn) ? 'ukendt' : 'nej';
 }
 // HB-godkendelse næste år kræver mindst ét afholdt arrangement i hvert af årets fire kvartaler (Organisationshåndbogen 8.2).
 // Egne farver (lilla/magenta), så farvningen ikke forveksles med aktivitetsfarvningerne (blå og grøn/rød).
@@ -119,8 +127,7 @@ function hbKvartal(f, k) {
   const i = e => { const d = dayKey(e.startD); return d >= k.fra && d < k.til; };
   if (f.afholdt.some(i)) return 'ja';
   if (f.planlagt.some(i)) return 'planlagt';
-  const daekket = k.fra >= HISTORIK.ugentligFra || (HISTORIK.hentet.has(f.navn) && k.fra >= HISTORIK.fra);
-  if (!f.facebook || !daekket) return 'ukendt';
+  if (!f.facebook || k.fra < daekketFra(f.navn)) return 'ukendt';
   return dayKey(NOW) < k.til ? 'mangler' : 'nej';
 }
 function hbPrognose(f) {
@@ -198,6 +205,15 @@ async function load() {
     e.foreninger = e.foreninger || [e.forening];
     e.national = e.forening === NATIONAL;
     e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H14;
+  }
+  // Seneste vellykkede historik-kørsel pr. forening. Ramte den loftet, og lå alle hentede i perioden, kan der mangle
+  // ældre begivenheder – så dækker historikken kun fra den ældste hentede.
+  const sidsteKoersel = new Map();
+  for (const k of (meta.historik && meta.historik.koersler) || []) if (k.status === 'SUCCEEDED') sidsteKoersel.set(k.forening, k);
+  for (const [navn, k] of sidsteKoersel) {
+    const aeldste = events.filter(e => e.historisk && e.foreninger.includes(navn)).map(e => dayKey(e.startD)).sort()[0];
+    const loft = k.hentet >= HISTORIK_LOFT && k.begivenheder >= k.hentet;
+    HISTORIK.fraFor.set(navn, loft && aeldste ? aeldste : HISTORIK.fra);
   }
   const byName = new Map();
   for (const f of foreninger) {
@@ -610,7 +626,7 @@ function renderLayerToggles() {
       <option value="hb"${farvning === 'hb' ? ' selected' : ''}>HB-godkendelse ${HB_AAR}</option></select></label>`
     + toggles.map(l => `<label><input type="checkbox" data-layer="${esc(l.id)}"${layerState[l.id] ? ' checked' : ''}> ${esc(l.label)}</label>`).join('');
   el.querySelector('[data-farvning]').addEventListener('change', ev => setFarvning(ev.target.value));
-  el.querySelectorAll('[data-layer]').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); }));
+  el.querySelectorAll('[data-layer]').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); renderLegend(); }));
 }
 
 const pointsFC = list => ({type: 'FeatureCollection', features: list.filter(e => e.lat != null && e.lng != null)
@@ -636,6 +652,33 @@ registerLayer({
       'circle-radius': 4.5, 'circle-color': '#ffffff', 'circle-stroke-color': '#111827', 'circle-stroke-width': 1.8}});
   },
 });
+registerLayer({
+  // Oven på den valgte farvning: skraverer de foreninger magenta, der ikke kan blive HB-godkendt næste år.
+  id: 'hb', label: `Kan ikke HB-godkendes ${HB_AAR}`, toggle: true, standard: false,
+  tegn(api, ctx) {
+    if (!ctx.map.hasImage('hb-skravering')) ctx.map.addImage('hb-skravering', skravering(HB_FILL.ikke));
+    const feats = DATA.geo.outlines.features
+      .filter(o => !ctx.zoomed || o.properties.forening === ctx.selected)
+      .map(o => ({...o, properties: {...o.properties, hb: DATA.byName.get(o.properties.forening).hb}}));
+    const src = api.source('omr', {type: 'FeatureCollection', features: feats});
+    api.layer({id: 'skrav', type: 'fill', source: src, filter: ['==', ['get', 'hb'], 'ikke'],
+      paint: {'fill-pattern': 'hb-skravering', 'fill-opacity': 0.9}});
+    api.layer({id: 'kant', type: 'line', source: src, filter: ['==', ['get', 'hb'], 'ikke'],
+      paint: {'line-color': HB_FILL.ikke, 'line-width': 2.5}});
+  },
+});
+/** Diagonal skravering til fill-pattern. */
+function skravering(farve, size = 10) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.strokeStyle = farve;
+  g.lineWidth = 2.2;
+  g.beginPath();
+  for (const o of [-size, 0, size]) { g.moveTo(o, size); g.lineTo(o + size, 0); }
+  g.stroke();
+  return g.getImageData(0, 0, size, size);
+}
 registerLayer({
   // Eksempel på et privat lag: vises kun, hvis adminversionen leverer medlemstal pr. by.
   id: 'medlemmer', label: 'Medlemmer pr. by', toggle: true, standard: false,
@@ -1048,7 +1091,9 @@ function closeForening() {
 }
 
 function renderLegend() {
-  const tegnforklaring = '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
+  const hbLag = !layerState.hb ? '' : `<span><svg width="14" height="12" aria-hidden="true"><rect x="1" y="1" width="12" height="10" fill="none" stroke="${HB_FILL.ikke}" stroke-width="2"/><path d="M1 9L7 3M5 11L13 3" stroke="${HB_FILL.ikke}" stroke-width="1.6"/></svg>${esc(HB_STATUS.ikke.label)}</span>`;
+  const tegnforklaring = hbLag
+    + '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
     + '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>';
   if (farvning === 'hb') {
     const brugt = new Set(DATA.lokale.map(f => f.hb));
@@ -1067,8 +1112,7 @@ function renderLegend() {
   $('legend').innerHTML = Object.entries(labels)
     .map(([k, s]) => `<span><span class="swatch" style="background:${fills[k]};opacity:.75"></span>${esc(s.label)}</span>`).join('')
     + (mangler ? `<span class="warn">⚠ ${esc(mangler)}</span>` : '')
-    + '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
-    + '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>';
+    + tegnforklaring;
 }
 
 // ------------------------------------------------------------------ start
