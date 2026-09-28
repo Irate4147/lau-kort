@@ -190,9 +190,11 @@ const VISNINGER = [
   {id: 'kommunegraenser', gruppe: 'kort', label: 'Kommunegrænser'},
   {id: 'stednavne', gruppe: 'kort', label: 'Stednavne på grundkortet'},
   {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
-  {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender', standard: false},
+  {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender'},
 ];
-for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
+// Kalenderen er åben som standard, men kun på computer – på mobil fylder den det meste af skærmen.
+const erMobil = matchMedia('(max-width: 760px)').matches;
+for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.id === 'kalender' ? !erMobil : v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, synlig?(f), render(f) -> html, efter?(el, f)}. */
 function registerSection(sec, {efter} = {}) {
   const i = efter ? PANEL_SECTIONS.findIndex(s => s.id === efter) : -1;
@@ -1801,7 +1803,10 @@ function renderKalender() {
   q('[data-kal-idag]').forEach(b => b.addEventListener('click', () => { KAL.maaned = monthKey(NOW); KAL.dag = null; igen(); }));
   q('[data-kal-dag]').forEach(b => b.addEventListener('click', () => { hideTip(); KAL.dag = KAL.dag === b.dataset.kalDag ? null : b.dataset.kalDag; igen(); }));
   q('[data-kal-ryd]').forEach(b => b.addEventListener('click', () => { KAL.dag = null; igen(); }));
-  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => { KAL.abonner = !KAL.abonner; igen(); }));
+  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => {
+    KAL.abonner = !KAL.abonner; igen();
+    if (KAL.abonner) el.querySelector('.kal-abonner')?.scrollIntoView({block: 'nearest'});
+  }));
   q('[data-kal-kopier]').forEach(b => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(b.dataset.kalKopier); b.lastChild.textContent = ' Kopieret'; }
     catch (_) { prompt('Kopiér linket:', b.dataset.kalKopier); }
