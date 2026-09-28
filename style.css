@@ -368,27 +368,15 @@ h3.mom-h { font-size: 13px; margin: 10px 0 4px; }
   border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); font-size: 13px; overflow: hidden;
 }
 .analyser[hidden] { display: none; }
-.ana-bar { display: flex; align-items: flex-end; gap: 2px; padding: 6px 6px 0; background: var(--page); border-bottom: 1px solid var(--border); flex: none; overflow-x: auto; scrollbar-width: thin; }
-.ana-fane {
-  display: flex; align-items: center; min-width: 0; max-width: 220px; flex: 0 1 auto;
-  border: 1px solid transparent; border-bottom: 0; border-radius: 8px 8px 0 0; margin-bottom: -1px;
+.ana-head { display: flex; align-items: center; gap: 12px; padding: 12px 10px 10px 18px; border-bottom: 1px solid var(--border); flex: none; }
+.ana-head h2 { font-size: 18px; margin: 0; flex: 1; min-width: 0; }
+.ana-luk {
+  border: 0; background: none; cursor: pointer; color: var(--text-secondary); font-size: 22px; line-height: 1;
+  width: 30px; height: 30px; border-radius: 50%; flex: none; padding: 0;
 }
-.ana-fane:hover { background: var(--grid); }
-.ana-fane.aktiv { background: var(--surface-1); border-color: var(--border); }
-.ana-fane-titel {
-  all: unset; cursor: pointer; padding: 7px 4px 7px 12px; font-size: 12.5px; font-weight: 500; color: var(--text-secondary);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
-}
-.ana-fane.aktiv .ana-fane-titel { color: var(--text-primary); }
-.ana-fane-titel:focus-visible, .ana-fane-luk:focus-visible, .ana-luk-alle:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
-.ana-fane-luk, .ana-luk-alle {
-  border: 0; background: none; cursor: pointer; color: var(--text-secondary); font-size: 16px; line-height: 1;
-  width: 22px; height: 22px; border-radius: 50%; margin-right: 6px; flex: none; padding: 0;
-}
-.ana-fane-luk:hover, .ana-luk-alle:hover { background: var(--axis); color: var(--text-primary); }
-.ana-luk-alle { margin: 0 2px 5px auto; font-size: 20px; width: 28px; height: 28px; }
+.ana-luk:hover { background: var(--grid); color: var(--text-primary); }
+.ana-luk:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
 .ana-body { overflow-y: auto; padding: 14px 18px 24px; flex: 1; min-height: 0; }
-.ana-body > h2 { font-size: 18px; margin: 0 0 4px; }
 .ana-body h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin: 20px 0 8px; }
 .ana-body .tiles { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 ul.ana-liste { list-style: none; margin: 0; padding: 0; }
@@ -397,7 +385,6 @@ ul.ana-liste { list-style: none; margin: 0; padding: 0; }
   border: 1px solid transparent; margin-bottom: 4px;
 }
 .ana-liste button:hover, .ana-liste button:focus-visible { background: var(--page); border-color: var(--grid); }
-.ana-liste button.aaben { border-color: var(--grid); }
 .ana-liste button.aktiv { border-color: var(--text-primary); background: var(--page); }
 .ana-liste b { display: block; font-size: 13.5px; }
 .ana-liste span { display: block; font-size: 12px; color: var(--muted); line-height: 1.35; }
@@ -419,9 +406,18 @@ ul.advarsler { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
 .advarsler .linkbtn { font-size: 12px; margin-top: 2px; }
 .adv-sec { border: 1px solid #e8b4ae; background: #fdf1ef; border-radius: 10px; padding: 0 12px 6px; }
 .adv-sec h3 { color: #9e2a1f; }
+/* "Godt gået": samme sted som advarslerne, men grøn og positiv */
+.adv-boks.positiv, .adv-sec.positiv-sec { border-color: #a9d8b4; background: #eef8f0; }
+.adv-boks.positiv h2, .adv-sec.positiv-sec h3 { color: #1b6e34; }
+.adv-antal.positiv { background: #1f9d55; color: #fff; }
+.advarsler li.adv-positiv { border-top-color: rgba(31, 157, 85, 0.18); }
+.advarsler li.adv-positiv .adv-ikon { background: #1f9d55; color: #fff; }
+.adv-boks + .adv-boks { margin-top: 8px; }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) .viz-root :is(.adv-boks, .adv-sec) { background: #2a1614; border-color: #5c2a24; }
   :root:where(:not([data-theme="light"])) .viz-root :is(.adv-boks h2, .adv-sec h3, .advarsler li.adv-kritisk .adv-frist) { color: #f0a59c; }
+  :root:where(:not([data-theme="light"])) .viz-root :is(.adv-boks.positiv, .adv-sec.positiv-sec) { background: #12261a; border-color: #2b5a3a; }
+  :root:where(:not([data-theme="light"])) .viz-root :is(.adv-boks.positiv h2, .adv-sec.positiv-sec h3) { color: #8fd6a4; }
 }
 @media (max-width: 760px) {
   .analyser { top: 10px; right: 6px; bottom: 6px; width: calc(100% - 12px); }
@@ -467,25 +463,6 @@ ul.hv-forbehold { color: var(--text-secondary); font-size: 12.5px; }
 .hbr-tabel td.hbr-naeste { white-space: normal; text-align: left; font-size: 12px; max-width: 150px; color: var(--text-secondary); }
 .hbr-tabel td.hbr-tekst { white-space: normal; text-align: left; font-size: 12px; line-height: 1.35; color: var(--text-secondary); min-width: 200px; }
 
-/* ---- udvidelse: fremmøde ---- */
-.panel-sec h4.fm-h { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 14px 0 4px; }
-ul.fm-liste { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
-.fm-liste li { display: grid; grid-template-columns: 90px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 5px 0; border-top: 1px solid var(--grid); }
-.fm-liste li:first-child { border-top: 0; }
-.fm-liste .fm-dato { font-weight: 600; font-variant-numeric: tabular-nums; font-size: 12px; }
-.fm-liste .fm-navn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fm-liste .fm-grundlag { display: block; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
-.fm-liste .fm-tal { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.fm-liste .fm-svar { color: var(--text-secondary); font-size: 12px; }
-.fm-skub { font-size: 12.5px; color: var(--text-secondary); background: var(--page); border: 1px dashed var(--axis); border-radius: 8px; padding: 7px 10px; margin: 10px 0 4px; }
-.fm-skub .linkbtn { font-size: 12.5px; }
-.fm-tabel th, .fm-tabel td { text-align: left; padding-right: 10px; }
-.fm-tabel th.tal, .fm-tabel td.tal { text-align: right; }
-.fm-tabel td.fm-laant { color: var(--muted); }
-.fm-tabel td.fm-titel { white-space: normal; text-align: left; max-width: 260px; }
-.fm-tabel tbody tr.fm-stille { cursor: default; }
-.fm-tabel tbody tr.fm-stille:hover { background: none; }
-.fm-tabel tr.fm-total td { font-weight: 600; border-top: 2px solid var(--axis); }
 /* ---- udvidelse: månedsrapport ---- */
 .mr-top { display: flex; align-items: center; gap: 12px; margin: 6px 0 2px; }
 .mr-top .sort { margin: 0; font-size: 13px; }
