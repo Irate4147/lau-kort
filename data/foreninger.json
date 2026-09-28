@@ -1,0 +1,244 @@
+[
+ {
+  "navn": "Landsforeningen",
+  "national": true,
+  "facebook": "https://www.facebook.com/LiberalUngdom",
+  "kommuner": []
+ },
+ {
+  "navn": "Aalborg",
+  "facebook": "https://www.facebook.com/LiberalAlliancesUngdomAalborg",
+  "kommuner": [
+   "Aalborg",
+   "Brønderslev",
+   "Frederikshavn",
+   "Hjørring",
+   "Jammerbugt",
+   "Læsø",
+   "Morsø",
+   "Rebild",
+   "Thisted",
+   "Vesthimmerlands"
+  ]
+ },
+ {
+  "navn": "Aarhus",
+  "facebook": "https://www.facebook.com/LAUAARHUS",
+  "kommuner": [
+   "Odder",
+   "Skanderborg",
+   "Syddjurs",
+   "Aarhus"
+  ]
+ },
+ {
+  "navn": "Bornholm",
+  "facebook": "https://www.facebook.com/LAUBornholm",
+  "kommuner": [
+   "Bornholm"
+  ]
+ },
+ {
+  "navn": "Egedal-Furesø",
+  "facebook": "https://www.facebook.com/lauegedalfuresoe",
+  "kommuner": [
+   "Ballerup",
+   "Egedal",
+   "Frederikssund",
+   "Furesø"
+  ]
+ },
+ {
+  "navn": "Frederiksberg",
+  "facebook": "https://www.facebook.com/LAUFRB",
+  "kommuner": [
+   "Frederiksberg"
+  ]
+ },
+ {
+  "navn": "Fyn",
+  "facebook": "https://www.facebook.com/profile.php?id=61575380947985",
+  "kommuner": [
+   "Assens",
+   "Faaborg-Midtfyn",
+   "Kerteminde",
+   "Langeland",
+   "Middelfart",
+   "Nordfyns",
+   "Nyborg",
+   "Odense",
+   "Svendborg",
+   "Ærø"
+  ]
+ },
+ {
+  "navn": "Herning",
+  "facebook": "https://www.facebook.com/lauherning",
+  "kommuner": [
+   "Herning",
+   "Holstebro",
+   "Ikast-Brande",
+   "Lemvig",
+   "Ringkøbing-Skjern",
+   "Struer"
+  ]
+ },
+ {
+  "navn": "Horsens",
+  "facebook": "https://www.facebook.com/LAUHorsens",
+  "kommuner": [
+   "Hedensted",
+   "Horsens",
+   "Samsø"
+  ]
+ },
+ {
+  "navn": "Kolding",
+  "facebook": null,
+  "kommuner": [
+   "Kolding",
+   "Vejen"
+  ]
+ },
+ {
+  "navn": "Kronjylland",
+  "facebook": "https://www.facebook.com/laukronjylland",
+  "kommuner": [
+   "Favrskov",
+   "Mariagerfjord",
+   "Norddjurs",
+   "Randers"
+  ]
+ },
+ {
+  "navn": "København",
+  "facebook": "https://www.facebook.com/laungdomkbh",
+  "kommuner": [
+   "Dragør",
+   "København",
+   "Tårnby"
+  ]
+ },
+ {
+  "navn": "Køge Bugt",
+  "facebook": "https://www.facebook.com/laukoegebugt",
+  "kommuner": [
+   "Faxe",
+   "Greve",
+   "Køge",
+   "Ringsted",
+   "Solrød",
+   "Stevns"
+  ]
+ },
+ {
+  "navn": "Nordkøbenhavn",
+  "facebook": "https://www.facebook.com/LAUnordkoebenhavn",
+  "kommuner": [
+   "Gentofte",
+   "Gladsaxe",
+   "Herlev",
+   "Lyngby-Taarbæk",
+   "Rudersdal"
+  ]
+ },
+ {
+  "navn": "Nordsjælland",
+  "facebook": "https://www.facebook.com/LAUNORDSJEALLAND",
+  "kommuner": [
+   "Allerød",
+   "Fredensborg",
+   "Gribskov",
+   "Halsnæs",
+   "Helsingør",
+   "Hillerød",
+   "Hørsholm"
+  ]
+ },
+ {
+  "navn": "Næstved",
+  "facebook": "https://www.facebook.com/laungdomnaestved",
+  "kommuner": [
+   "Guldborgsund",
+   "Lolland",
+   "Næstved",
+   "Vordingborg"
+  ]
+ },
+ {
+  "navn": "Roskilde",
+  "facebook": "https://www.facebook.com/LAURoskilde",
+  "kommuner": [
+   "Holbæk",
+   "Lejre",
+   "Odsherred",
+   "Roskilde"
+  ]
+ },
+ {
+  "navn": "Silkeborg",
+  "facebook": "https://www.facebook.com/profile.php?id=100064324166661",
+  "kommuner": [
+   "Silkeborg"
+  ]
+ },
+ {
+  "navn": "Sydvestjylland",
+  "facebook": "https://www.facebook.com/LAUSydvestjylland",
+  "kommuner": [
+   "Billund",
+   "Esbjerg",
+   "Fanø",
+   "Tønder",
+   "Varde"
+  ]
+ },
+ {
+  "navn": "Sønderjylland",
+  "facebook": "https://www.facebook.com/laumojn",
+  "kommuner": [
+   "Aabenraa",
+   "Haderslev",
+   "Sønderborg"
+  ]
+ },
+ {
+  "navn": "Vejle",
+  "facebook": "https://www.facebook.com/LAUVejleFredericia",
+  "kommuner": [
+   "Fredericia",
+   "Vejle"
+  ]
+ },
+ {
+  "navn": "Vestegnen",
+  "facebook": "https://www.facebook.com/LAUVestegnen",
+  "kommuner": [
+   "Albertslund",
+   "Brøndby",
+   "Glostrup",
+   "Hvidovre",
+   "Høje-Taastrup",
+   "Ishøj",
+   "Rødovre",
+   "Vallensbæk"
+  ]
+ },
+ {
+  "navn": "Vestsjælland",
+  "facebook": "https://www.facebook.com/lauvestsj",
+  "kommuner": [
+   "Kalundborg",
+   "Slagelse",
+   "Sorø"
+  ]
+ },
+ {
+  "navn": "Viborg",
+  "facebook": "https://www.facebook.com/LiberalUngdomViborg",
+  "kommuner": [
+   "Skive",
+   "Viborg"
+  ]
+ }
+]
