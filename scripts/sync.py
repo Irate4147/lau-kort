@@ -301,7 +301,7 @@ def log_tail(run_id, n=15):
 def run_actor(url):
     """Start én Apify-kørsel på en sides tidligere begivenheder og vent på den."""
     try:
-        run = api(f"/acts/{ACTOR}/runs", {"startUrls": [{"url": url}], "maxEvents": HISTORIK_MAX_PR_SIDE})["data"]
+        run = api(f"/acts/{ACTOR}/runs", {"startUrls": [url], "maxEvents": HISTORIK_MAX_PR_SIDE})["data"]
         while run["status"] in ("READY", "RUNNING"):
             time.sleep(10)
             run = api(f"/actor-runs/{run['id']}")["data"]
