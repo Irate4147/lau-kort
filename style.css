@@ -450,6 +450,15 @@ ul.hv-forbehold { color: var(--text-secondary); font-size: 12.5px; }
 .hv-top td.hv-navn { white-space: normal; text-align: left; max-width: 320px; }
 .hv-top th:first-child { text-align: left; }
 .hv-top .hv-kat { display: block; color: var(--muted); font-size: 11px; }
+.hv-valg { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 8px; }
+.hv-valg .note { margin: 0 0 0 6px; }
+.ana-body h2.hv-sek { font-size: 16px; margin: 26px 0 4px; padding-top: 14px; border-top: 1px solid var(--grid); }
+.hv-gode { border: 1px solid #a9d8b4; background: #eef8f0; border-radius: 10px; padding: 0 12px 6px; margin: 10px 0; }
+.hv-gode h3 { color: #1b6e34; }
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root .hv-gode { background: #12261a; border-color: #2b5a3a; }
+  :root:where(:not([data-theme="light"])) .viz-root .hv-gode h3 { color: #8fd6a4; }
+}
 /* ---- udvidelse: hb-risiko ---- */
 .hbr-oversigt { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; margin: 10px 0 8px; color: var(--text-secondary); }
 .hbr-oversigt b { color: var(--text-primary); margin-left: 2px; }
