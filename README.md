@@ -10,7 +10,11 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 2. GitHub Action (`.github/workflows/sync.yml`) kører mandag formiddag (én gang om ugen): `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
 3. Siden (`index.html`, `app.js`) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
-Facebook viser kun kommende begivenheder, så afholdte aktiviteter registreres fra 28. sep. 2026 og frem.
+Facebook viser kun kommende begivenheder i de ugentlige kørsler. Afholdte aktiviteter før 28. sep. 2026 hentes med en engangskørsel på foreningernes `past_hosted_events`:
+Actions → "Hent historik" → *Run workflow* (standard 92 dage, dvs. ca. et kvartal; højst 25 begivenheder pr. side, så Apify-forbruget er begrænset).
+Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik 92`. Begivenheder hentet på den måde får `"historisk": true` og tæller ikke med i "varsel".
+
+På kortet kan "Afholdt i Q…" slås til over kortet: lokalforeningerne farves grønne, hvis de har afholdt mindst én aktivitet i indeværende kvartal, og røde, hvis ikke.
 
 ## Ændringer
 

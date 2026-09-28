@@ -77,24 +77,28 @@ h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .chip:hover, .chip:focus-visible { border-color: var(--text-secondary); outline: none; }
 .chip[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
 
-/* ---- aktiviteter på kortet: kun dato og titel ---- */
+/* ---- aktiviteter på kortet: små, let gennemsigtige mærker ved siden af stedet ---- */
 .callouts { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
 .callouts svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.leader { fill: none; stroke: #3b3b38; stroke-width: 1; stroke-opacity: 0.55; }
-.leader.hover { stroke-opacity: 1; stroke-width: 1.5; }
+.leader { fill: none; stroke: #111827; stroke-width: 1; stroke-opacity: 0.45; }
+.leader.hover { stroke-opacity: 0.9; stroke-width: 1.5; }
 .callout {
-  position: absolute; pointer-events: auto; cursor: pointer;
-  background: rgba(252, 252, 251, 0.96); color: #0b0b0b;
-  border: 1px solid rgba(11, 11, 11, 0.12); border-left: 3px solid #2a78d6; border-radius: 6px;
-  padding: 4px 8px; font-size: 12px; line-height: 1.3;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: absolute; pointer-events: auto; cursor: pointer; width: max-content; max-width: 168px;
+  background: rgba(255, 255, 255, 0.8); color: #0b0b0b;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  border-left: 3px solid #2a78d6; border-radius: 4px;
+  padding: 2px 6px 3px; font-size: 11px; line-height: 1.25;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
 }
-.callout:hover, .callout:focus-visible, .callout.active { border-color: #52514e; border-left-color: #2a78d6; outline: none; }
-.callout.national, .callout.national:hover { border-left-color: #0b0b0b; }
-.callout .when { font-weight: 600; font-size: 11px; color: #52514e; }
-.callout .what { font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.callout:hover, .callout:focus-visible, .callout.active {
+  background: #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22); outline: none; z-index: 1;
+}
+.callout.national { border-left-color: #111827; }
+.callout .when { font-weight: 600; font-size: 10px; color: #52514e; white-space: nowrap; }
+.callout .what { font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.callout.cancelled { opacity: 0.75; }
 .callout.cancelled .what { text-decoration: line-through; }
-.more-note { position: absolute; right: 12px; bottom: 30px; font-size: 12px; color: #52514e; background: rgba(252,252,251,.9); padding: 2px 6px; border-radius: 4px; }
+.more-note { position: absolute; left: 10px; bottom: 10px; font-size: 12px; color: #52514e; background: rgba(252,252,251,.9); padding: 2px 6px; border-radius: 4px; }
 
 .popover {
   position: absolute; z-index: 5; width: 280px; background: var(--surface-1); color: var(--text-primary);
@@ -116,6 +120,7 @@ h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .tile .label { color: var(--text-secondary); font-size: 12px; line-height: 1.3; }
 .tile .value { font-size: 22px; font-weight: 600; line-height: 1.25; }
 .tile .hero { font-size: 32px; }
+#tiles .tile:first-child { grid-column: 1 / -1; }
 .tile .delta { color: var(--muted); font-size: 11px; line-height: 1.3; }
 
 .evlist { list-style: none; margin: 0; padding: 0; }

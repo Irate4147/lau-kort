@@ -47,8 +47,8 @@ const KATEGORIER = [
 ];
 const KAT_NAVNE = [...KATEGORIER.map(k => k[0]), 'Andet'];
 const UGEDAGE = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
-// Aktivitetsbokse på kortet.
-const CW = 184, CH = 56, CGAP = 6, CMARGIN = 10;
+// Aktivitetsmærker på kortet: afstand til punktet, mellemrum og kant.
+const CGAP = 7, CPAD = 3, CMARGIN = 8;
 
 // ------------------------------------------------------------------ hjælpere
 
@@ -68,12 +68,25 @@ const median = a => {
 };
 const dayKey = d => new Intl.DateTimeFormat('en-CA', {timeZone: TZ}).format(d); // YYYY-MM-DD i dansk tid
 const monthKey = d => dayKey(d).slice(0, 7);
+// Indeværende kvartal (fx 3. kvartal 2026 fra '2026-07-01').
+const KVARTAL = (() => {
+  const [y, m] = monthKey(NOW).split('-').map(Number), q = Math.floor((m - 1) / 3);
+  return {fra: `${y}-${String(q * 3 + 1).padStart(2, '0')}-01`, navn: `${q + 1}. kvartal ${y}`, kort: `Q${q + 1}`};
+})();
+const KVARTAL_FILL = {ja: '#1f9d55', nej: '#e4572e', ingenfb: '#d9d7d0'};
+const KVARTAL_OPACITY = ['match', ['get', 'kvartal'], 'ja', 0.55, 'nej', 0.45, 0.25];
+const KVARTAL_STATUS = {
+  ja:      {label: `Afholdt aktivitet i ${KVARTAL.kort}`},
+  nej:     {label: `Ingen afholdt aktivitet i ${KVARTAL.kort}`},
+  ingenfb: {label: 'Ingen Facebook-side tilknyttet'},
+};
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
 
 let DATA = null;
 let selected = null;
+let farvning = (() => { try { return localStorage.getItem('lau-farvning') || 'status'; } catch (_) { return 'status'; } })();
 const MAP = {map: null, ready: false, items: [], cards: new Map()};
 
 // ------------------------------------------------------------------ udvidelsespunkter
@@ -114,13 +127,15 @@ async function load() {
     getData('data/foreninger.json'), getData('data/events.json'), getData('data/meta.json'),
     get(CONFIG.assetBase, 'geo/kommuner.topo.json')]);
   const firstRun = meta.koersler.length ? new Date(meta.koersler[0].tid) : NOW;
+  // Afholdte aktiviteter kendes fra den første ugentlige kørsel, eller længere tilbage, hvis historikken er hentet.
+  const dataFra = meta.historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
 
   for (const e of events) {
     e.startD = new Date(e.start);
     e.slutD = new Date(e.slut || e.start);
     e.firstD = new Date(e.foerst_set);
     e.kat = kategori(e);
-    e.ny = NOW - e.firstD < NEW_DAYS * DAY;
+    e.ny = !e.historisk && NOW - e.firstD < NEW_DAYS * DAY;
     e.foreninger = e.foreninger || [e.forening];
     e.national = e.forening === NATIONAL;
     e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H14;
@@ -137,20 +152,26 @@ async function load() {
     f.planlagt = gyldige.filter(e => e.slutD >= NOW);
     f.afholdt = gyldige.filter(e => e.slutD < NOW);
     f.afholdt90 = f.afholdt.filter(e => NOW - e.startD <= 90 * DAY);
+    f.afholdtKvartal = f.afholdt.filter(e => dayKey(e.startD) >= KVARTAL.fra);
+    f.kvartal = f.afholdtKvartal.length ? 'ja' : f.facebook ? 'nej' : 'ingenfb';
     f.sidste = f.afholdt.length ? f.afholdt[f.afholdt.length - 1].startD : null;
     f.naeste = f.planlagt[0] || null;
     f.status = !f.facebook ? 'ingenfb'
       : f.within14.some(e => !e.aflyst) ? 'snart' : f.planlagt.length ? 'planlagt' : 'ingen';
     f.gnsSvar = mean(gyldige.filter(e => e.svar != null).map(e => e.svar));
     // Varsel kan kun måles for aktiviteter opdaget efter dataindsamlingen startede.
-    f.varsel = median(gyldige.filter(e => e.firstD - firstRun > DAY).map(e => (e.startD - e.firstD) / DAY));
+    f.varsel = median(gyldige.filter(e => !e.historisk && e.firstD - firstRun > DAY).map(e => (e.startD - e.firstD) / DAY));
     if (!f.national) {
       f.merged = topojson.merge(topo, topo.objects.kom.geometries.filter(g => g.properties.forening === f.navn));
       f.bounds = d3.geoBounds(f.merged);
     }
   }
   const features = topojson.feature(topo, topo.objects.kom).features;
-  for (const feat of features) feat.properties.status = byName.get(feat.properties.forening).status;
+  for (const feat of features) {
+    const f = byName.get(feat.properties.forening);
+    feat.properties.status = f.status;
+    feat.properties.kvartal = f.kvartal;
+  }
   const lokale = foreninger.filter(f => !f.national);
   const obj = topo.objects.kom;
   const geo = {
@@ -166,7 +187,7 @@ async function load() {
     events: {type: 'FeatureCollection', features: events.filter(e => e.lat != null && e.lng != null).map(e => ({
       type: 'Feature', properties: {id: e.id, national: e.national}, geometry: {type: 'Point', coordinates: [e.lng, e.lat]}}))},
   };
-  DATA = {foreninger, lokale, events, meta, topo, features, byName, firstRun, geo, byId: new Map(events.map(e => [e.id, e]))};
+  DATA = {foreninger, lokale, events, meta, topo, features, byName, firstRun, dataFra, geo, byId: new Map(events.map(e => [e.id, e]))};
 }
 
 function kategori(e) {
@@ -188,10 +209,32 @@ function largestPolygon(geom) {
 
 // ------------------------------------------------------------------ kort (MapLibre)
 
-const calloutsEnabled = () => { const el = $('map'); return el.clientWidth >= 820 && el.clientHeight >= 380; };
-function mapPadding() {
-  const side = calloutsEnabled() ? CW + CMARGIN + 26 : 20;
-  return {top: 20, bottom: 20, left: side, right: side};
+const calloutsEnabled = () => { const el = $('map'); return el.clientWidth >= 420 && el.clientHeight >= 280; };
+const mapPadding = () => (calloutsEnabled() ? 48 : 20);
+
+const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
+const KVARTAL_COLOR = ['match', ['get', 'kvartal'], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, KVARTAL_FILL.ingenfb];
+/** Foreningens farve og forklaring i den valgte farvning ('status' eller 'kvartal'). */
+const farveFor = f => farvning === 'kvartal'
+  ? {farve: KVARTAL_FILL[f.kvartal], label: KVARTAL_STATUS[f.kvartal].label}
+  : {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
+
+function applyFill() {
+  if (!MAP.ready) return;
+  const f = selected && DATA.byName.get(selected);
+  const local = f && !f.national ? f.navn : '';
+  const kv = farvning === 'kvartal';
+  MAP.map.setPaintProperty('kom-fill', 'fill-color', kv ? KVARTAL_COLOR : STATUS_COLOR);
+  MAP.map.setPaintProperty('kom-fill', 'fill-opacity',
+    local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : kv ? KVARTAL_OPACITY : FILL_OPACITY);
+}
+
+function setFarvning(mode) {
+  farvning = mode;
+  try { localStorage.setItem('lau-farvning', mode); } catch (_) { /* fx privat vindue */ }
+  applyFill();
+  renderLegend();
+  renderRank();
 }
 
 function initMap() {
@@ -221,6 +264,8 @@ function initMap() {
   const schedule = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; layoutCallouts(); }); };
   map.on('move', schedule);
   map.on('resize', schedule);
+  // Mærkernes størrelse måles én gang; mål igen, når webfonten er indlæst.
+  if (document.fonts) document.fonts.ready.then(() => { for (const c of MAP.cards.values()) c._w = 0; schedule(); });
   map.on('movestart', ev => { if (ev.originalEvent) closePopover(); });
 }
 
@@ -259,10 +304,7 @@ function addBaseLayers() {
   map.addSource('events', {type: 'geojson', data: g.events});
   map.addImage('diamond', diamondImage(), {pixelRatio: 2});
 
-  map.addLayer({id: 'kom-fill', type: 'fill', source: 'kom', paint: {
-    'fill-color': ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb],
-    'fill-opacity': FILL_OPACITY,
-  }}, firstRoad);
+  map.addLayer({id: 'kom-fill', type: 'fill', source: 'kom', paint: {'fill-color': STATUS_COLOR, 'fill-opacity': FILL_OPACITY}}, firstRoad);
   map.addLayer({id: 'kom-inner', type: 'line', source: 'inner', paint: {
     'line-color': '#ffffff', 'line-opacity': 0.7, 'line-width': ['interpolate', ['linear'], ['zoom'], 6, 0.6, 10, 1.4]}}, firstSymbol);
   map.addLayer({id: 'f-border', type: 'line', source: 'border', paint: {
@@ -315,7 +357,7 @@ function setMode(navn, {animate = true} = {}) {
   const local = f && !f.national ? f.navn : '';
   map.setFilter('f-selected', ['==', ['get', 'forening'], local]);
   map.setFilter('f-labels', ['!=', ['get', 'forening'], local]);
-  map.setPaintProperty('kom-fill', 'fill-opacity', local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : FILL_OPACITY);
+  applyFill();
 
   const list = eventsFor(navn);
   const ids = list.map(e => e.id);
@@ -329,7 +371,7 @@ function setMode(navn, {animate = true} = {}) {
   drawLayers();
 }
 
-// ---- aktivitetsbokse (dato + titel) med streger til stedet
+// ---- små aktivitetsmærker (dato + titel) placeret ved siden af stedet på kortet
 
 function setCalloutItems(list) {
   MAP.items = [...list].sort((a, b) => a.startD - b.startD);
@@ -339,8 +381,8 @@ function setCalloutItems(list) {
     const card = document.createElement('div');
     card.className = 'callout' + (e.national ? ' national' : '') + (e.aflyst ? ' cancelled' : '');
     card.tabIndex = 0;
+    card.hidden = true;
     card.setAttribute('role', 'button');
-    card.style.width = `${CW}px`;
     card.innerHTML = `<div class="when">${e.national ? '◆ ' : ''}${esc(fmtDay.format(e.startD))}${e.aflyst ? ' · AFLYST' : ''}</div><div class="what">${esc(e.navn)}</div>`;
     const open = () => openPopover(e, {card});
     card.addEventListener('click', open);
@@ -363,59 +405,57 @@ function layoutCallouts() {
     note.hidden = true;
     return;
   }
-  const items = [];
+  const pts = [];
+  let skjult = 0;
   for (const e of MAP.items) {
-    let p = null;
-    if (e.lat != null && e.lng != null) {
-      p = MAP.map.project([e.lng, e.lat]);
-      if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) continue; // uden for udsnittet
-    }
-    items.push({e, p});
+    if (e.lat == null || e.lng == null) { skjult++; continue; } // online/uden adresse: kun i listen
+    const p = MAP.map.project([e.lng, e.lat]);
+    if (p.x >= 0 && p.x <= W && p.y >= 0 && p.y <= H) pts.push({e, p}); // ellers uden for udsnittet
   }
-  const cap = Math.max(1, Math.floor((H - 2 * CMARGIN + CGAP) / (CH + CGAP)));
-  const shown = items.slice(0, cap * 2);
-  let left = shown.filter(i => i.p && i.p.x < W / 2), right = shown.filter(i => i.p && i.p.x >= W / 2);
-  for (const it of shown.filter(i => !i.p)) (left.length <= right.length ? left : right).push(it);
-  const move = (from, to, pick) => { from.sort(pick); to.push(from.pop()); };
-  while (left.length > cap) move(left, right, (a, b) => (a.p ? a.p.x : 0) - (b.p ? b.p.x : 0));
-  while (right.length > cap) move(right, left, (a, b) => (b.p ? b.p.x : W) - (a.p ? a.p.x : W));
-
-  const place = col => {
-    col.forEach(i => { i.sy = i.p ? i.p.y : H * Math.min(1, (i.e.startD - NOW) / (14 * DAY)); });
-    col.sort((a, b) => a.sy - b.sy);
-    let y = CMARGIN;
-    for (const it of col) { it.y = Math.max(it.sy - CH / 2, y); y = it.y + CH + CGAP; }
-    let bottom = H - CMARGIN;
-    for (let k = col.length - 1; k >= 0; k--) {
-      if (col[k].y + CH > bottom) col[k].y = bottom - CH;
-      bottom = col[k].y - CGAP;
-    }
-  };
-  place(left);
-  place(right);
+  // Forhindringer: aktivitetspunkterne selv, zoomknapperne og de mærker, der allerede er placeret.
+  const taken = pts.map(({p}) => ({x: p.x - 6, y: p.y - 6, w: 12, h: 12, pt: p}));
+  taken.push({x: W - 46, y: H - 96, w: 46, h: 96});
+  const free = (r, p) => r.x >= CMARGIN && r.y >= CMARGIN && r.x + r.w <= W - CMARGIN && r.y + r.h <= H - CMARGIN
+    && !taken.some(t => !(t.pt && Math.abs(t.pt.x - p.x) < 3 && Math.abs(t.pt.y - p.y) < 3) // eget (eller samme) sted
+      && r.x < t.x + t.w + CPAD && t.x < r.x + r.w + CPAD && r.y < t.y + t.h + CPAD && t.y < r.y + r.h + CPAD);
 
   const visible = new Set();
   let paths = '';
-  for (const [col, side] of [[left, 'l'], [right, 'r']]) {
-    for (const it of col) {
-      const x = side === 'l' ? CMARGIN : W - CMARGIN - CW;
-      const card = MAP.cards.get(it.e.id);
-      card.hidden = false;
-      card.style.left = `${x}px`;
-      card.style.top = `${it.y}px`;
-      card.style.height = `${CH}px`;
-      visible.add(it.e.id);
-      if (it.p) {
-        const edge = side === 'l' ? x + CW : x, elbow = side === 'l' ? edge + 10 : edge - 10, my = it.y + CH / 2;
-        paths += `<path class="leader${MAP.hoverId === it.e.id ? ' hover' : ''}" d="M${edge},${my}H${elbow}L${it.p.x.toFixed(1)},${it.p.y.toFixed(1)}"/>`;
-      }
+  for (const {e, p} of pts) {
+    const card = MAP.cards.get(e.id);
+    if (!card._w) { card.hidden = false; card._w = card.offsetWidth; card._h = card.offsetHeight; }
+    const w = card._w, h = card._h;
+    let spot = null;
+    for (const [dx, dy] of calloutSpots(w, h)) {
+      const r = {x: p.x + dx, y: p.y + dy, w, h};
+      if (free(r, p)) { spot = r; break; }
+    }
+    if (!spot) { skjult++; continue; }
+    taken.push(spot);
+    visible.add(e.id);
+    card.hidden = false;
+    card.style.left = `${spot.x}px`;
+    card.style.top = `${spot.y}px`;
+    // Kort streg til stedet, når mærket ikke sidder lige op ad punktet.
+    const cx = Math.max(spot.x, Math.min(p.x, spot.x + w)), cy = Math.max(spot.y, Math.min(p.y, spot.y + h));
+    if (Math.hypot(cx - p.x, cy - p.y) > CGAP + 3) {
+      paths += `<path class="leader${MAP.hoverId === e.id ? ' hover' : ''}" d="M${p.x.toFixed(1)},${p.y.toFixed(1)}L${cx.toFixed(1)},${cy.toFixed(1)}"/>`;
     }
   }
   for (const [id, card] of MAP.cards) if (!visible.has(id)) card.hidden = true;
   MAP.leaders.innerHTML = paths;
-  const skjult = items.length - shown.length;
   note.hidden = !skjult;
-  note.textContent = skjult ? `+ ${skjult} flere – se listen til venstre` : '';
+  note.textContent = skjult ? `+ ${skjult} ${skjult === 1 ? 'aktivitet' : 'aktiviteter'} uden plads på kortet – se listen` : '';
+}
+
+/** Kandidatpladser for et mærke (forskydning fra punktet), bedste først: højre, venstre, over, under, derefter stablet. */
+function calloutSpots(w, h) {
+  const g = CGAP, s = h + CPAD + 1, out = [[g, -h / 2], [-g - w, -h / 2], [-w / 2, -g - h], [-w / 2, g]];
+  for (let k = 1; k <= 6; k++) {
+    for (const sgn of [1, -1]) out.push([g, -h / 2 + sgn * k * s], [-g - w, -h / 2 + sgn * k * s]);
+  }
+  for (let k = 1; k <= 3; k++) out.push([-w / 2, -g - h - k * s], [-w / 2, g + k * s]);
+  return out;
 }
 
 // ---- popover med detaljer for én aktivitet
@@ -494,8 +534,11 @@ function renderLayerToggles() {
   const f = selected && DATA.byName.get(selected);
   const ctx = {selected, zoomed: !!(f && !f.national)};
   const toggles = MAP_LAYERS.filter(l => l.toggle && (!l.synlig || l.synlig(ctx)));
-  el.innerHTML = toggles.map(l => `<label><input type="checkbox" data-layer="${esc(l.id)}"${layerState[l.id] ? ' checked' : ''}> ${esc(l.label)}</label>`).join('');
-  el.querySelectorAll('input').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); }));
+  el.innerHTML = `<label title="Farv lokalforeningerne efter, om de har afholdt en aktivitet i ${esc(KVARTAL.navn)}"><input type="checkbox" data-farvning${
+    farvning === 'kvartal' ? ' checked' : ''}> Afholdt i ${esc(KVARTAL.kort)}</label>`
+    + toggles.map(l => `<label><input type="checkbox" data-layer="${esc(l.id)}"${layerState[l.id] ? ' checked' : ''}> ${esc(l.label)}</label>`).join('');
+  el.querySelector('[data-farvning]').addEventListener('change', ev => setFarvning(ev.target.checked ? 'kvartal' : 'status'));
+  el.querySelectorAll('[data-layer]').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); }));
 }
 
 const pointsFC = list => ({type: 'FeatureCollection', features: list.filter(e => e.lat != null && e.lng != null)
@@ -542,7 +585,8 @@ function hoverForening(navn, ev) {
   if (!navn || !ev) return hideTip();
   const f = DATA.byName.get(navn);
   const next = f.naeste ? `Næste: ${fmtDay.format(f.naeste.startD)} – ${f.naeste.navn}` : 'Ingen planlagte aktiviteter';
-  showTip(ev, [visningsnavn(f), STATUS[f.status].label, next]);
+  const kv = f.afholdtKvartal.length ? `Afholdt i ${KVARTAL.kort}: ${f.afholdtKvartal.length}` : KVARTAL_STATUS[f.kvartal].label;
+  showTip(ev, farvning === 'kvartal' ? [visningsnavn(f), kv, next] : [visningsnavn(f), STATUS[f.status].label, next]);
 }
 
 // ------------------------------------------------------------------ tooltip
@@ -674,17 +718,21 @@ function legend2(a, b, extra = '') {
 // ------------------------------------------------------------------ sidepanel: overblik
 
 function renderOverview() {
-  const {lokale, events, meta, firstRun, foreninger} = DATA;
+  const {lokale, events, meta, dataFra, foreninger} = DATA;
   const soon = events.filter(e => e.soon && DATA.byName.has(e.forening)).sort((a, b) => a.startD - b.startD);
   const planlagt = events.filter(e => !e.forsvundet && !e.aflyst && e.slutD >= NOW).length;
   const medPlan = lokale.filter(f => f.planlagt.length).length;
   const afholdt = events.filter(e => !e.forsvundet && !e.aflyst && e.slutD < NOW).length;
+  const aktiveKv = lokale.filter(f => f.afholdtKvartal.length).length;
+  const kvFra = new Date(KVARTAL.fra + 'T12:00:00Z');
 
   $('tiles').innerHTML =
     tile('Aktiviteter de næste 14 dage', String(soon.filter(e => !e.aflyst).length), null, true)
     + tile('Planlagte aktiviteter', String(planlagt), 'Inkl. landsforeningens')
     + tile('Lokalforeninger med planer', `${medPlan} af ${lokale.length}`, `${lokale.filter(f => !f.facebook).length} uden Facebook-side`)
-    + tile('Afholdte registreret', String(afholdt), `Siden ${fmtDate.format(firstRun)}`);
+    + tile(`Aktive i ${KVARTAL.kort}`, `${aktiveKv} af ${lokale.length}`,
+      dataFra > kvFra ? `Data kun fra ${fmtDate.format(dataFra)}` : 'Lokalforeninger med afholdt aktivitet')
+    + tile('Afholdte registreret', String(afholdt), `Siden ${fmtDate.format(dataFra)}`);
 
   const l14 = $('list-14');
   l14.innerHTML = evList(soon, true, 'Ingen aktiviteter de næste 14 dage.');
@@ -704,7 +752,9 @@ function renderOverview() {
   $('updated').textContent = last ? `Sidst hentet fra Facebook: ${fmtStamp.format(new Date(last.tid))}` : '';
   $('method').textContent =
     `Data hentes automatisk fra foreningernes offentlige Facebook-begivenheder én gang om ugen (${meta.koersler.length} kørsler indtil nu). `
-    + `Facebook viser kun kommende begivenheder, så afholdte aktiviteter tælles fra ${fmtDate.format(firstRun)}, og historikken vokser uge for uge. `
+    + (meta.historik
+      ? `Afholdte aktiviteter fra ${fmtDate.format(dataFra)} er hentet bagudrettet fra foreningernes tidligere begivenheder; derefter vokser historikken uge for uge. `
+      : `Facebook viser kun kommende begivenheder, så afholdte aktiviteter tælles fra ${fmtDate.format(dataFra)}, og historikken vokser uge for uge. `)
     + '"Tilkendegivelser" er "deltager" + "interesseret" på Facebook ved seneste måling. Aktivitetstyper inddeles automatisk ud fra titel og beskrivelse. '
     + 'Kort: © OpenStreetMap-bidragydere, OpenFreeMap.';
 }
@@ -714,6 +764,7 @@ const RANK = {
   navn: {val: f => (f.national ? '0' : '1') + f.navn, dir: 1, vis: f => f.planlagt.length},
   planlagt: {val: f => f.planlagt.length, dir: -1, vis: f => f.planlagt.length},
   afholdt90: {val: f => f.afholdt90.length, dir: -1, vis: f => f.afholdt90.length},
+  kvartal: {val: f => f.afholdtKvartal.length, dir: -1, vis: f => f.afholdtKvartal.length},
   svar: {val: f => f.gnsSvar ?? -1, dir: -1, vis: f => num1(f.gnsSvar)},
 };
 
@@ -726,7 +777,7 @@ function renderRank() {
   });
   const el = $('rank');
   el.innerHTML = list.map(f => `<li tabindex="0" data-f="${esc(f.navn)}">
-    <span class="dot" style="background:${MAP_FILL[f.status]}" title="${esc(STATUS[f.status].label)}"></span>
+    <span class="dot" style="background:${farveFor(f).farve}" title="${esc(farveFor(f).label)}"></span>
     <span class="name">${esc(f.national ? '◆ Landsforeningen' : f.navn)}</span>
     <span class="val">${esc(r.vis(f))}</span>
     <span class="sub">${f.naeste ? `${esc(fmtDay.format(f.naeste.startD))} – ${esc(f.naeste.navn)}` : esc(STATUS[f.status].label)}</span></li>`).join('');
@@ -752,7 +803,7 @@ registerSection({
 registerSection({
   id: 'aar', titel: 'Aktiviteter det seneste år',
   render(f) {
-    const startKey = monthKey(DATA.firstRun);
+    const startKey = monthKey(DATA.dataFra);
     const cols = monthsLastYear().map(d => {
       const k = d.toISOString().slice(0, 7);
       const a = f.afholdt.filter(e => monthKey(e.startD) === k).length;
@@ -777,7 +828,7 @@ registerSection({
     return `<div class="tiles">
       ${tile('Afholdt, seneste 90 dage', String(f.afholdt90.length), cmp ? cmp + num1(gns90) : null)}
       ${tile('Dage siden sidste aktivitet', dageSiden == null ? '–' : String(dageSiden),
-        f.sidste ? `Senest ${fmtDate.format(f.sidste)}` : `Ingen afholdt siden ${fmtDate.format(DATA.firstRun)}`)}
+        f.sidste ? `Senest ${fmtDate.format(f.sidste)}` : `Ingen afholdt siden ${fmtDate.format(DATA.dataFra)}`)}
       ${tile('Tilkendegivelser pr. aktivitet', num1(f.gnsSvar), cmp ? cmp + num1(gnsSvar) : null)}
       ${tile('Varsel (median)', f.varsel == null ? '–' : `${Math.round(f.varsel)} dage`,
         f.varsel == null ? 'Måles for aktiviteter, der dukker op efter indsamlingens start' : 'Fra aktiviteten dukker op, til den afholdes')}
@@ -868,6 +919,8 @@ function openForening(navn, {animate = true} = {}) {
   body.innerHTML = `
     <h2 class="fname">${esc(visningsnavn(f))}</h2>
     ${statusPill(f.status)}
+    ${f.facebook || f.afholdtKvartal.length ? `<span class="status"><span class="dot" style="background:${KVARTAL_FILL[f.kvartal]}"></span>${
+      esc(f.afholdtKvartal.length ? `${f.afholdtKvartal.length} afholdt i ${KVARTAL.kort}` : KVARTAL_STATUS[f.kvartal].label)}</span>` : ''}
     <div class="kommuner">${f.national ? 'Arrangementer i hele landet' : `Dækker ${esc(f.kommuner.join(', '))}`}</div>
     ${f.facebook ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>`
       : '<p class="empty">Ingen Facebook-side tilknyttet endnu, så aktiviteter kan ikke hentes automatisk.</p>'}`;
@@ -902,8 +955,9 @@ function closeForening() {
 }
 
 function renderLegend() {
-  $('legend').innerHTML = Object.entries(STATUS)
-    .map(([k, s]) => `<span><span class="swatch" style="background:${MAP_FILL[k]};opacity:.75"></span>${esc(s.label)}</span>`).join('')
+  const [labels, fills] = farvning === 'kvartal' ? [KVARTAL_STATUS, KVARTAL_FILL] : [STATUS, MAP_FILL];
+  $('legend').innerHTML = Object.entries(labels)
+    .map(([k, s]) => `<span><span class="swatch" style="background:${fills[k]};opacity:.75"></span>${esc(s.label)}</span>`).join('')
     + '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
     + '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>';
 }

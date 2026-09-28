@@ -8,15 +8,22 @@ ind i en voksende database, så afholdte begivenheder bevares til analyserne.
 
     APIFY_TOKEN=... python3 scripts/sync.py
 
-Kører i GitHub Actions (.github/workflows/sync.yml); lokalt læses token også fra
-../.apify_token, hvis miljøvariablen mangler.
+Historik (engangskørsel): scraper foreningernes "past_hosted_events" og tilføjer de
+afholdte begivenheder fra de seneste DAGE (standard 92, dvs. ca. et kvartal):
+
+    APIFY_TOKEN=... python3 scripts/sync.py --historik [DAGE]
+
+Kører i GitHub Actions (.github/workflows/sync.yml og historik.yml); lokalt læses token
+også fra ../.apify_token, hvis miljøvariablen mangler.
 """
 import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -31,6 +38,9 @@ API = "https://api.apify.com/v2"
 ACTOR = "apify~facebook-events-scraper"
 DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
+HISTORIK_DAGE = 92
+HISTORIK_MAX_PR_SIDE = 25   # loft pr. side, så en kørsel ikke henter hele sidens historik
+HISTORIK_SAMTIDIGE = 4
 
 
 # ---------------------------------------------------------------- apify
@@ -45,8 +55,12 @@ def token():
     return tok
 
 
-def api(path):
-    req = urllib.request.Request(API + path, headers={"authorization": f"Bearer {token()}"})
+def api(path, body=None):
+    headers = {"authorization": f"Bearer {token()}"}
+    if body is not None:
+        headers["content-type"] = "application/json"
+        body = json.dumps(body).encode()
+    req = urllib.request.Request(API + path, data=body, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=120) as r:
             return json.loads(r.read() or b"null")
@@ -190,11 +204,48 @@ def record(item, hosts, kommune, seen):
     }
 
 
+def merge(item, events, foreninger, kommuner, seen, historisk=False):
+    """Flet én scrapet begivenhed ind i events. Returnerer id, eller None hvis den blev sprunget over."""
+    if not item.get("id"):
+        return None
+    loc = item.get("location") or {}
+    kommune, kom_forening = kommune_for(loc.get("latitude"), loc.get("longitude"), kommuner)
+    hosts = vaerter(item, foreninger) or [kom_forening or "?"]
+    old = events.get(str(item["id"]))
+    if old:  # behold den oprindelige hovedarrangør, tilføj nye medarrangører
+        hosts = list(dict.fromkeys(old.get("foreninger", [old["forening"]]) + hosts))
+    rec = record(item, hosts, kommune, seen)
+    if old:
+        rec["foerst_set"] = min(old["foerst_set"], seen)
+        if old["sidst_set"] > seen:  # ældre kørsel end det, vi allerede har
+            return None
+        if old.get("historisk"):
+            rec["historisk"] = True
+    elif historisk:
+        rec["historisk"] = True  # fundet bagudrettet: foerst_set siger intet om varsel/nyhed
+    events[rec["id"]] = rec
+    return rec["id"]
+
+
+def load_state():
+    events = {e["id"]: e for e in json.loads(EVENTS.read_text(encoding="utf-8"))} if EVENTS.exists() else {}
+    meta = json.loads(META.read_text(encoding="utf-8")) if META.exists() else {"koersler": [], "behandlet": []}
+    return events, meta
+
+
+def save_state(events, meta):
+    DATA.mkdir(exist_ok=True)
+    EVENTS.write_text(json.dumps(sorted(events.values(), key=lambda e: e["start"] or ""),
+                                 ensure_ascii=False, indent=1), encoding="utf-8")
+    META.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    ukendte = sum(1 for e in events.values() if e["forening"] == "?")
+    print(f"I alt {len(events)} begivenheder" + (f" ({ukendte} uden forening)" if ukendte else ""))
+
+
 def main():
     foreninger = load_foreninger()
     kommuner = load_kommuner()
-    events = {e["id"]: e for e in json.loads(EVENTS.read_text(encoding="utf-8"))} if EVENTS.exists() else {}
-    meta = json.loads(META.read_text(encoding="utf-8")) if META.exists() else {"koersler": [], "behandlet": []}
+    events, meta = load_state()
     behandlet = set(meta["behandlet"])
 
     runs = (api(f"/acts/{ACTOR}/runs?desc=1&limit=100&status=SUCCEEDED") or {}).get("data", {}).get("items", [])
@@ -205,30 +256,14 @@ def main():
         inp = api(f"/key-value-stores/{run['defaultKeyValueStoreId']}/records/INPUT") or {}
         urls = [u if isinstance(u, str) else (u or {}).get("url", "") for u in inp.get("startUrls") or []]
         if not any("upcoming_hosted_events" in u for u in urls):
-            continue  # kun de løbende kørsler på kommende begivenheder
+            continue  # kun de løbende kørsler på kommende begivenheder (historik hentes med --historik)
         items = api(f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json")
         if items is None:
             print(f"{run['id']}: datasættet er slettet (Apify gemmer det kun i en periode)", file=sys.stderr)
             continue
         seen = iso(parse(run["startedAt"]))
         daekket = {f for u in urls if (f := forening_for_url(u, foreninger))}
-        set_ids = set()
-        for item in items:
-            if not item.get("id"):
-                continue
-            kommune, kom_forening = kommune_for((item.get("location") or {}).get("latitude"),
-                                                (item.get("location") or {}).get("longitude"), kommuner)
-            hosts = vaerter(item, foreninger) or [kom_forening or "?"]
-            old = events.get(str(item["id"]))
-            if old:  # behold den oprindelige hovedarrangør, tilføj nye medarrangører
-                hosts = list(dict.fromkeys(old.get("foreninger", [old["forening"]]) + hosts))
-            rec = record(item, hosts, kommune, seen)
-            if old:
-                rec["foerst_set"] = min(old["foerst_set"], seen)
-                if old["sidst_set"] > seen:  # ældre kørsel end det, vi allerede har
-                    continue
-            events[rec["id"]] = rec
-            set_ids.add(rec["id"])
+        set_ids = {i for item in items if (i := merge(item, events, foreninger, kommuner, seen))}
         # Kommende begivenheder fra dækkede foreninger, som ikke længere vises, er slettet/skjult.
         for e in events.values():
             if (e["forening"] in daekket and e["id"] not in set_ids and e["start"]
@@ -242,13 +277,64 @@ def main():
     meta["koersler"].sort(key=lambda k: k["tid"])
     if nye_runs or not META.exists():
         meta["opdateret"] = iso(datetime.now(timezone.utc))
-    DATA.mkdir(exist_ok=True)
-    EVENTS.write_text(json.dumps(sorted(events.values(), key=lambda e: e["start"] or ""),
-                                 ensure_ascii=False, indent=1), encoding="utf-8")
-    META.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
-    ukendte = sum(1 for e in events.values() if e["forening"] == "?")
-    print(f"I alt {len(events)} begivenheder" + (f" ({ukendte} uden forening)" if ukendte else ""))
+    save_state(events, meta)
+
+
+# ---------------------------------------------------------------- historik
+
+def past_url(fb):
+    if "profile.php" in fb:
+        return fb.split("&")[0] + "&sk=past_hosted_events"
+    return fb.split("?")[0].rstrip("/") + "/past_hosted_events"
+
+
+def run_actor(url):
+    """Start én Apify-kørsel på en sides tidligere begivenheder og vent på den."""
+    try:
+        run = api(f"/acts/{ACTOR}/runs", {"startUrls": [{"url": url}], "maxEvents": HISTORIK_MAX_PR_SIDE})["data"]
+        while run["status"] in ("READY", "RUNNING"):
+            time.sleep(10)
+            run = api(f"/actor-runs/{run['id']}")["data"]
+        items = api(f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json") or []
+        return url, run, items
+    except (urllib.error.URLError, KeyError, TypeError) as e:
+        print(f"{url}: fejlede ({e})", file=sys.stderr)
+        return url, None, []
+
+
+def historik(dage):
+    foreninger = load_foreninger()
+    kommuner = load_kommuner()
+    events, meta = load_state()
+    fra = datetime.now(timezone.utc) - timedelta(days=dage)
+    urls = [past_url(f["facebook"]) for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook")]
+
+    with ThreadPoolExecutor(HISTORIK_SAMTIDIGE) as pool:
+        results = list(pool.map(run_actor, urls))
+
+    koersler = []
+    for url, run, items in sorted((r for r in results if r[1]), key=lambda r: r[1]["startedAt"]):
+        seen = iso(parse(run["startedAt"]))
+        tilfoejet = 0
+        for item in items:
+            start = parse(item.get("utcStartDate"))
+            if start and start >= fra and merge(item, events, foreninger, kommuner, seen, historisk=True):
+                tilfoejet += 1
+        forening = forening_for_url(url, foreninger)
+        meta["behandlet"] = sorted(set(meta["behandlet"]) | {run["id"]})
+        koersler.append({"id": run["id"], "tid": seen, "forening": forening, "status": run["status"],
+                         "hentet": len(items), "begivenheder": tilfoejet})
+        print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} inden for {dage} dage")
+
+    gammel = meta.get("historik") or {}
+    meta["historik"] = {"fra": min(filter(None, [gammel.get("fra"), iso(fra)])),
+                        "koersler": gammel.get("koersler", []) + koersler}
+    meta["opdateret"] = iso(datetime.now(timezone.utc))
+    save_state(events, meta)
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "--historik":
+        historik(int(sys.argv[2]) if len(sys.argv) > 2 else HISTORIK_DAGE)
+    else:
+        main()
