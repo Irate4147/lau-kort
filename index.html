@@ -9,11 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=2026-09-28m">
+<link rel="stylesheet" href="style.css?v=2026-09-28n">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
-<script src="app.js?v=2026-09-28m" defer></script>
+<script src="app.js?v=2026-09-28n" defer></script>
+<!-- Udvidelser (se README: Udvidelser) – indlæses efter app.js og registrerer analyser, advarsler, sektioner og lag. -->
+<script src="udvidelser/maanedsrapport.js?v=2026-09-28n" defer></script>
+<script src="udvidelser/hb-risiko.js?v=2026-09-28n" defer></script>
+<script src="udvidelser/fremmoede.js?v=2026-09-28n" defer></script>
+<script src="udvidelser/hvide-pletter.js?v=2026-09-28n" defer></script>
+<script src="udvidelser/hvad-virker.js?v=2026-09-28n" defer></script>
 </head>
 <body>
 <div class="app viz-root">
@@ -23,6 +29,7 @@
       <button type="button" data-fane="visninger" aria-selected="false">Visninger</button>
       <button type="button" data-fane="hb" aria-selected="false" data-admin hidden title="HB-godkendelse">HB</button>
       <button type="button" data-fane="arrangementer" aria-selected="false" data-admin hidden>Arrangementer</button>
+      <button type="button" data-fane="analyser" aria-selected="false" data-admin hidden>Analyser</button>
       <button type="button" data-fane="admin" aria-selected="false" id="fane-admin">🔒 Log ind</button>
     </nav>
     <section class="side-view" id="side-overview">
@@ -31,6 +38,7 @@
         <p class="updated" id="updated"></p>
       </header>
       <div id="overview-admin" hidden>
+        <div class="adv-boks" id="advarsler" hidden></div>
         <h2>Momentum</h2>
         <div id="momentum-overblik"></div>
         <h2>Aktivitet pr. forening</h2>
@@ -52,6 +60,7 @@
     <section class="side-view" id="side-visninger" hidden></section>
     <section class="side-view" id="side-hb" hidden></section>
     <section class="side-view" id="side-arrangementer" hidden></section>
+    <section class="side-view" id="side-analyser" hidden></section>
     <section class="side-view" id="side-admin" hidden></section>
   </aside>
 
@@ -62,6 +71,7 @@
     <div id="map" class="map"></div>
     <div class="legend" id="legend"></div>
     <aside class="kal" id="kalender" aria-label="Kalender" hidden></aside>
+    <section class="analyser" id="analyser" aria-label="Analyser" hidden></section>
     <div class="popover" id="popover" role="dialog" hidden></div>
   </main>
 </div>
