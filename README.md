@@ -35,7 +35,7 @@ Man får altid **én** kalender: ingen valgt → `alle.ics`, én forening → `<
 Pages kan kun levere faste filer, og 23 foreninger giver millioner af kombinationer. Derfor:
 
 - **Uden server** (standard): knappen *Hent som én kalenderfil (.ics)* fletter filerne i browseren og gemmer én fil. Den importeres i kalenderen, men opdateres ikke af sig selv.
-- **Med server** (anbefalet): `kalender-server/worker.js` er en lille Cloudflare Worker (gratis), der fletter filerne ved hvert opslag, fx `https://<worker>/aalborg+fyn.ics`. Så kan man abonnere på den ene kalender, og den opdateres automatisk.
+- **Med server** (anbefalet): `kalender-server/worker.js` er en lille Cloudflare Worker (gratis), der fletter filerne ved hvert opslag, fx `https://<worker>/aalborg+fyn.ics`. Så kan man abonnere på den ene kalender, og den opdateres automatisk. Samme worker bruges til "Gem for alle" (se "Rettelser").
   1. Opret en gratis konto på [cloudflare.com](https://dash.cloudflare.com) → *Workers & Pages* → *Create* → *Create Worker* → *Deploy*.
   2. *Edit code*: erstat koden med indholdet af `kalender-server/worker.js` → *Deploy*. Adressen er fx `https://lau-kalender.<konto>.workers.dev`.
   3. Sæt `kalenderServer: 'https://lau-kalender.<konto>.workers.dev'` i `CONFIG` øverst i `app.js`.
@@ -73,7 +73,14 @@ Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næ
 Under fanen **Arrangementer** kan man rette det, Facebook ikke ved: bekræfte at et arrangement blev afholdt (✓ Afholdt), markere det som ikke afholdt, skjule dubletter/ikke-LAU-arrangementer, rette titel, dato, sted og forening, notere faktisk fremmøde – og tilføje arrangementer, der aldrig lå på Facebook.
 
 - Kun admins kan rette. Alle rettelser (`{"<id>": {status, navn, forening, start, slut, sted, deltagere, note, manuel, rettet}}`) ligger krypteret i `data/admin/rettelser.krypt.json` og går forud for de hentede data. `data/rettelser.json` er den offentlige del **uden `note` og `deltagere`** (skrives af `scripts/admin.py`), så det offentlige kort og kalenderne viser aflyste, skjulte, flyttede og manuelle arrangementer rigtigt. `scripts/sync.py` rører aldrig filerne; siden og `scripts/hb.py` anvender dem med samme regler.
-- **Gem for alle:** forbind GitHub (fanen Admin eller Arrangementer) med et fine-grained token (kun dette repo, *Contents: Read and write*). Tokenet gemmes kun i browseren; hver rettelse krypteres og committes direkte til `main`, og en push af filen starter "Beregn HB-prognose" (`.github/workflows/hb.yml`, ingen Apify), der skriver den offentlige del og beregner HB-prognosen igen. Uden token gemmes rettelserne kun i browseren, indtil man forbinder.
+- **Gem for alle:** går gennem LAU-serveren (`kalender-server/worker.js`, samme Cloudflare Worker som kalenderen), så admins hverken skal have en GitHub-konto eller et token – adminlogin'et er nok. Hver rettelse krypteres i browseren og committes af serveren direkte til `main`, og en push af filen starter "Beregn HB-prognose" (`.github/workflows/hb.yml`, ingen Apify), der skriver den offentlige del og beregner HB-prognosen igen. Er serveren ikke sat op, gemmes rettelserne kun i browseren.
+- **Sådan virker adgangen:** af adminkoden udledes en skrivenøgle (HMAC af nøglen); `data/admin/noegle.json` indeholder kun dens SHA-256 (`skriv`, skrevet af `scripts/admin.py klargoer`). Serveren committer kun for den, der kender skrivenøglen, og kun krypterede filer i `data/admin/` – GitHub-tokenet ligger alene som secret i Cloudflare. Skiftes adminkoden, virker den gamle skrivenøgle ikke længere.
+- **Opsætning (én gang):**
+  1. GitHub → Settings → Developer settings → [Fine-grained tokens](https://github.com/settings/personal-access-tokens/new): *Repository access* → *Only select repositories* → `lau-kort`; *Repository permissions* → **Contents: Read and write** (Metadata: Read-only følger automatisk). Vælg en udløbsdato, og husk at forny tokenet.
+  2. Cloudflare → *Workers & Pages* → kalender-workeren → *Edit code*: erstat koden med `kalender-server/worker.js` → *Deploy*.
+  3. Workeren → *Settings* → *Variables and Secrets* → *Add* → type **Secret**, navn `GITHUB_TOKEN`, værdi: tokenet fra trin 1.
+  4. Actions → "Admin" → *Run workflow* (`klargoer`), så `skriv` kommer i `data/admin/noegle.json` (ellers sker det ved næste sync).
+  5. `adminServer` i `CONFIG` øverst i `app.js` er workerens adresse (som `kalenderServer`).
 - Titel, dato, sted, forening og status bliver offentlige; noter og fremmøde kan kun admins se.
 
 ## HB-godkendelse
@@ -107,7 +114,7 @@ Alt om HB er fortroligt og kun for admins.
 - **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, gruppe, hint, tilgaengelig(), synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
   Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin).
 - **Analyser** (fanen Admin, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening).
-- **Fortrolige data** – `LAU.admin.erAdmin()`, `await LAU.admin.hent('navn')` (dekrypterer `data/admin/navn.krypt.json`) og `await LAU.admin.gem('navn', gammel => ny, 'commit-besked')` (krypterer og committer; kræver GitHub-forbindelse). I Python: `admin.laes('navn')` / `admin.skriv('navn', data)` fra `scripts/admin.py`.
+- **Fortrolige data** – `LAU.admin.erAdmin()`, `await LAU.admin.hent('navn')` (dekrypterer `data/admin/navn.krypt.json`) og `await LAU.admin.gem('navn', gammel => ny, 'commit-besked')` (krypterer og committer via LAU-serveren). I Python: `admin.laes('navn')` / `admin.skriv('navn', data)` fra `scripts/admin.py`.
 
 **Stamdata** (formand, telefon osv.) er offentlige og kan lægges i `data/foreninger.json` som `"stamdata": {"Formand": "…", "Telefon": "…"}`.
 Fortrolige stamdata (kun for admins) lægges i `data/admin/stamdata.krypt.json` som `{"Næstved": {"Telefon": "…"}}`, og medlemstal pr. by (kortlaget "Medlemmer pr. by") i `data/admin/medlemmer.krypt.json` som `[{"forening": "Fyn", "by": "Odense", "lat": 55.40, "lng": 10.39, "antal": 42}]`.
@@ -132,7 +139,7 @@ Alt i repoet er offentligt (også via GitHub Pages), så fortrolige data ligger 
 1. Vælg en lang adminkode (fx 5–6 tilfældige ord). Styrken af koden er hele beskyttelsen.
 2. Settings → Secrets and variables → Actions → *New repository secret*: `ADMIN_KODE`.
 3. Actions → "Admin" → *Run workflow* (`klargoer`). Den opretter nøglen, krypterer `data/hb.json`, fjerner klartekstfilerne (`data/hb.json`, `data/hb_<år>.json`), opretter de krypterede rettelser og beregner HB-prognosen.
-4. Del koden med de andre admins. De logger ind under **🔒 Log ind** ("Husk mig" gemmer login'et i browseren; ellers glemmes det, når fanen lukkes). For at gemme rettelser og noter for alle skal de også forbinde GitHub (se "Rettelser").
+4. Del koden med de andre admins. De logger ind under **🔒 Log ind** ("Husk mig" gemmer login'et i browseren; ellers glemmes det, når fanen lukkes). Rettelser og noter gemmes for alle via LAU-serveren (se "Rettelser") – der skal ikke forbindes noget.
 
 **Skift kode** (fx når en admin stopper): opret secret `ADMIN_KODE_NY`, kør "Admin" med `skift-kode`, sæt `ADMIN_KODE` til den nye kode og slet `ADMIN_KODE_NY`. Alt krypteres igen, og alle logges ud.
 

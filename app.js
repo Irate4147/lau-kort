@@ -20,6 +20,8 @@ const CONFIG = Object.assign({
   basemap: 'https://tiles.openfreemap.org/styles/liberty',
   // Én abonnerbar kalender for flere foreninger: adressen på kalender-server/worker.js (se README.md). Tom = hent som fil.
   kalenderServer: 'https://steep-fog-8fcd.emilskov.workers.dev',
+  // "Gem for alle" for admins: samme worker (secret GITHUB_TOKEN, se README: Rettelser). Tom = kun i browseren.
+  adminServer: 'https://steep-fog-8fcd.emilskov.workers.dev',
 }, window.LAU_CONFIG || {});
 
 const TZ = 'Europe/Copenhagen';
@@ -310,11 +312,13 @@ const tilladt = x => !x.admin || erAdmin();
  * har en krypteret kontrolværdi ("tjek"). Samme format som scripts/admin.py, der krypterer i GitHub Actions.
  * Den udledte nøgle (ikke koden) gemmes i browseren, så man forbliver logget ind (sessionStorage, eller
  * localStorage med "Husk mig"). Skiftes koden (ny salt), logges alle ud.
+ * Gem for alle går gennem CONFIG.adminServer (kalender-server/worker.js), der committer med sit eget GitHub-token og
+ * kun tager imod skrivenøglen HMAC(nøgle, "lau-skriv"), hvis SHA-256 står som "skriv" i noegle.json.
  * Filerne: hb (årets HB-status), rettelser (alle rettelser inkl. noter og fremmøde), noter (noter pr. forening)
  * og valgfrit stamdata ({forening: {felt: værdi}}) og medlemmer ([{forening, by, lat, lng, antal}]).
  * Nye fortrolige data: læg dem i data/admin/<navn>.krypt.json (scripts/admin.py) og hent dem med LAU.admin.hent().
  */
-const ADMIN = {noegle: null, info: null, data: {}};
+const ADMIN = {noegle: null, skriv: null, info: null, data: {}};
 const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer'];
 const ADMIN_TJEK = 'LAU-admin', ADMIN_LAGER = 'lau-admin';
 const erAdmin = () => !!ADMIN.noegle;
@@ -336,6 +340,11 @@ async function krypter(noegle, navn, data) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const ct = await crypto.subtle.encrypt({name: 'AES-GCM', iv, additionalData: tekstBytes(navn)}, noegle, tekstBytes(JSON.stringify(data)));
   return {v: 1, iv: bytesB64(iv), data: bytesB64(ct)};
+}
+/** Skrivenøglen til adminserveren (hex). Samme udledning som _skriv_hash() i scripts/admin.py. */
+async function skriveNoegle(noegle) {
+  const hk = await crypto.subtle.importKey('raw', await crypto.subtle.exportKey('raw', noegle), {name: 'HMAC', hash: 'SHA-256'}, false, ['sign']);
+  return [...new Uint8Array(await crypto.subtle.sign('HMAC', hk, tekstBytes('lau-skriv')))].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 async function tjekNoegle(noegle, info) {
   try { return (await dekrypter(noegle, 'tjek', info.tjek)) === ADMIN_TJEK; } catch (_) { return false; }
@@ -366,47 +375,65 @@ async function gendanLogin(info) {
   if (gemt.salt !== info.salt) return glemLogin(); // koden er skiftet
   try {
     const noegle = await importerNoegle(b64Bytes(gemt.noegle));
-    if (await tjekNoegle(noegle, info)) ADMIN.noegle = noegle; else glemLogin();
+    if (await tjekNoegle(noegle, info)) Object.assign(ADMIN, {noegle, skriv: await skriveNoegle(noegle)}); else glemLogin();
   } catch (_) { glemLogin(); }
 }
 const adminSti = navn => `data/admin/${navn}.krypt.json`;
-/** Henter og dekrypterer data/admin/<navn>.krypt.json (null, hvis filen ikke findes). Frisk fra GitHub, hvis forbundet. */
+/** Kan der gemmes for alle? Kræver adminserveren og skrivenøglens hash i noegle.json (scripts/admin.py klargoer). */
+const kanGemme = () => !!(CONFIG.adminServer && ADMIN.skriv && ADMIN.info && ADMIN.info.skriv);
+const mitNavn = () => { try { return localStorage.getItem('lau-navn') || ''; } catch (_) { return ''; } };
+function adminServer(navn, init = {}) {
+  return fetch(`${CONFIG.adminServer.replace(/\/+$/, '')}/admin/${navn}`, {...init, cache: 'no-store', headers: {
+    Authorization: `Bearer ${ADMIN.skriv}`, ...(init.body ? {'Content-Type': 'application/json'} : {})}});
+}
+async function serverFejl(r) {
+  const fejl = await r.json().then(j => j.fejl).catch(() => '');
+  return new Error(r.status === 401 ? 'Serveren afviste adminkoden – log ud og ind igen' : fejl || `Serveren svarede ${r.status}`);
+}
+/** {blob, sha} frisk fra repoet via adminserveren (blob null, hvis filen ikke findes). */
+async function serverFil(navn) {
+  const r = await adminServer(navn);
+  if (!r.ok) throw await serverFejl(r);
+  const j = await r.json();
+  return {blob: j.indhold, sha: j.sha};
+}
+/** Henter og dekrypterer data/admin/<navn>.krypt.json (null, hvis filen ikke findes). Frisk via serveren, hvis muligt. */
 async function hentAdmin(navn) {
   if (!erAdmin()) return null;
-  const conf = ghConf();
   let blob;
-  if (conf) { try { const {tekst} = await ghFil(conf, adminSti(navn)); blob = tekst ? JSON.parse(tekst) : null; } catch (_) { /* prøv data/ */ } }
+  if (kanGemme()) { try { ({blob} = await serverFil(navn)); } catch (_) { /* prøv data/ */ } }
   if (blob === undefined) blob = await getData(adminSti(navn)).catch(() => null);
   return blob ? dekrypter(ADMIN.noegle, navn, blob) : null;
 }
 /**
- * Gemmer fortrolige data for alle: aendr(nuværende) -> nye data krypteres og committes til repoet (kræver, at
- * GitHub er forbundet). Hentes altid frisk, så samtidige ændringer ikke overskrives.
+ * Gemmer fortrolige data for alle: aendr(nuværende) -> nye data krypteres og committes til repoet via adminserveren.
+ * Hentes altid frisk, så samtidige ændringer ikke overskrives.
  */
 async function gemAdmin(navn, aendr, besked) {
-  const conf = ghConf();
   if (!erAdmin()) throw new Error('Kræver adminlogin');
-  if (!conf) throw new Error('Forbind GitHub for at gemme for alle');
+  if (!kanGemme()) throw new Error('Gem for alle er ikke sat op (se README: Rettelser)');
+  const af = mitNavn();
   for (let forsoeg = 0; forsoeg < 3; forsoeg++) {
-    const {tekst, sha} = await ghFil(conf, adminSti(navn));
-    const ny = aendr(tekst ? await dekrypter(ADMIN.noegle, navn, JSON.parse(tekst)) : null);
-    const r = await ghSkriv(conf, adminSti(navn), JSON.stringify(await krypter(ADMIN.noegle, navn, ny)) + '\n', sha, besked);
+    const {blob, sha} = await serverFil(navn);
+    const ny = aendr(blob ? await dekrypter(ADMIN.noegle, navn, blob) : null);
+    const r = await adminServer(navn, {method: 'PUT', body: JSON.stringify({
+      indhold: await krypter(ADMIN.noegle, navn, ny), sha, besked: af ? `${besked} (${af})` : besked})});
     if (r.ok) { ADMIN.data[navn] = ny; return ny; }
-    if (r.status !== 409 && r.status !== 422) throw new Error(r.status === 403 || r.status === 401 ? 'Tokenet har ikke skriveadgang' : `GitHub svarede ${r.status}`);
+    if (r.status !== 409) throw await serverFejl(r);
   }
   throw new Error('Filen blev ændret samtidig – prøv igen');
 }
 
-// Noter pr. forening (kun admins): krypteret i data/admin/noter.krypt.json. At gemme kræver, at GitHub er forbundet.
+// Noter pr. forening (kun admins): krypteret i data/admin/noter.krypt.json og gemt for alle via adminserveren.
 // Ældre noter, der kun ligger i denne browser (lau-note:<forening>), vises, indtil de gemmes for alle.
 const noteLager = () => ({
   titel: 'Fortrolige noter',
-  forklaring: 'Krypteret – kun admins kan læse dem.' + (ghConf() ? '' : ' Forbind GitHub under fanen Admin for at gemme.'),
+  forklaring: 'Krypteret – kun admins kan læse dem.' + (kanGemme() ? '' : ' Gem for alle er ikke sat op, så noter kan ikke gemmes.'),
   hent: async f => ((ADMIN.data.noter || {})[f.navn] || {}).tekst || localStorage.getItem('lau-note:' + f.navn) || '',
   gem: async (f, tekst) => {
     await gemAdmin('noter', n => {
       const ny = {...(n || {})};
-      if (tekst) ny[f.navn] = {tekst, rettet: isoZ(new Date()), af: ghConf().login || ''}; else delete ny[f.navn];
+      if (tekst) ny[f.navn] = {tekst, rettet: isoZ(new Date()), af: mitNavn()}; else delete ny[f.navn];
       return sorter(ny);
     }, `Note: ${f.navn}`);
     try { localStorage.removeItem('lau-note:' + f.navn); } catch (_) { /* ignorer */ }
@@ -1679,13 +1706,12 @@ function renderLegend() {
  *   'ikke_afholdt'  blev ikke til noget (tælles som aflyst)
  *   'skjult'        ikke et LAU-arrangement / dublet – fjernes helt
  * manuel: true er et arrangement, der ikke ligger på Facebook (id 'm-…'). scripts/hb.py anvender samme regler.
- * Lagring: GitHub (med et token, så rettelsen krypteres og committes til repoet og ses af alle admins), ellers kun
- * i denne browser.
+ * Lagring: krypteret i repoet via adminserveren (ses af alle admins), ellers kun i denne browser.
  */
 const RET = {repo: {}, lokal: {}, data: {}};
 try { RET.lokal = JSON.parse(localStorage.getItem('lau-rettelser')) || {}; } catch (_) { /* fx privat vindue */ }
-const GH_REPO = 'Irate4147/lau-kort', GH_BRANCH = 'main', GH_STI = adminSti('rettelser');
-const ghConf = () => { try { return JSON.parse(localStorage.getItem('lau-github')); } catch (_) { return null; } };
+// Et GitHub-token fra den tidligere "Forbind GitHub" bruges ikke længere og skal ikke blive liggende i browseren.
+try { localStorage.removeItem('lau-github'); } catch (_) { /* ignorer */ }
 /** Fletter rettelser; null i b fjerner en rettelse fra a. */
 function flet(a, b) {
   const out = {...a};
@@ -1715,28 +1741,6 @@ function anvendRettelser(events, rettelser) {
   return events;
 }
 
-// ---- GitHub-lagring (Contents API)
-
-const b64 = tekst => { let s = ''; for (const b of new TextEncoder().encode(tekst)) s += String.fromCharCode(b); return btoa(s); };
-const fraB64 = data => new TextDecoder().decode(Uint8Array.from(atob(data.replace(/\s/g, '')), c => c.charCodeAt(0)));
-async function gh(conf, sti, init = {}) {
-  const r = await fetch('https://api.github.com' + sti, {...init, cache: 'no-store', headers: {
-    Accept: 'application/vnd.github+json', Authorization: `Bearer ${conf.token}`, ...(init.headers || {})}});
-  return r;
-}
-/** En fil i repoet: {tekst, sha} (tekst null, hvis den ikke findes). */
-async function ghFil(conf, sti) {
-  const r = await gh(conf, `/repos/${GH_REPO}/contents/${sti}?ref=${GH_BRANCH}`);
-  if (r.status === 404) return {tekst: null, sha: null};
-  if (!r.ok) throw new Error(`GitHub svarede ${r.status}`);
-  const j = await r.json();
-  return {tekst: fraB64(j.content), sha: j.sha};
-}
-/** Committer en fil til repoet (sha: den version, ændringen bygger på; null for en ny fil). */
-function ghSkriv(conf, sti, tekst, sha, besked) {
-  return gh(conf, `/repos/${GH_REPO}/contents/${sti}`, {method: 'PUT', body: JSON.stringify({
-    message: besked, branch: GH_BRANCH, ...(sha ? {sha} : {}), content: b64(tekst)})});
-}
 const sorter = o => Object.fromEntries(Object.keys(o).sort().map(k => [k, o[k]]));
 
 /** Henter de fælles rettelser: alle (krypteret) for admins, ellers den offentlige del i data/rettelser.json. */
@@ -1747,7 +1751,7 @@ async function hentRettelser() {
   }
   return ((await getData('data/rettelser.json')) || {}).rettelser || {};
 }
-const lagerType = () => (ghConf() ? 'github' : 'lokal');
+const lagerType = () => (kanGemme() ? 'server' : 'lokal');
 
 /** Gemmer rettelser ({id: rettelse | null}) og tegner alt igen. */
 async function gemRettelser(aendringer, besked) {
@@ -1853,49 +1857,28 @@ function renderArrangementer() {
   renderArrListe();
 }
 
-/** GitHub-forbindelsen, der bruges til at gemme for alle (i fanerne Arrangementer og Admin). */
+/** Hvor rettelser og noter gemmes (i fanerne Arrangementer og Admin). */
 function renderLager(el = $('lager')) {
   if (!el) return;
-  const type = lagerType(), conf = ghConf(), nLokal = Object.keys(RET.lokal).length;
+  const type = lagerType(), nLokal = Object.keys(RET.lokal).length;
   const lokalTekst = nLokal ? `<p class="warn">${nLokal} ${nLokal === 1 ? 'rettelse' : 'rettelser'} ligger kun i denne browser.${
     type !== 'lokal' ? ' <button class="linkbtn" data-upload>Gem for alle nu</button>' : ''}</p>` : '';
-  if (type === 'github') {
-    el.innerHTML = `<p class="note">Gemmes for alle – krypteret – i repoet (<code>${GH_STI}</code>) som <b>${esc(conf.login || '?')}</b>.
-      Titel, dato, sted, forening og status bliver offentlige på kortet inden for få minutter; noter og fremmøde kan kun admins se.
-      <button class="linkbtn" data-afbryd>Afbryd GitHub</button></p>` + lokalTekst;
+  if (type === 'server') {
+    el.innerHTML = `<p class="note">Gemmes for alle – krypteret – i repoet (<code>${adminSti('rettelser')}</code>).
+      Titel, dato, sted, forening og status bliver offentlige på kortet inden for få minutter; noter og fremmøde kan kun admins se.</p>
+      <label class="note">Dit navn (står ved dine noter og ændringer):
+        <input type="text" data-navn value="${esc(mitNavn())}" placeholder="fx Emil" maxlength="40" autocomplete="name"></label>` + lokalTekst;
   } else {
-    el.innerHTML = `<p class="note">Rettelser og noter gemmes <b>kun i denne browser</b>, indtil du forbinder GitHub.</p>${lokalTekst}
-      <details class="gh-forbind"><summary>Gem for alle (forbind GitHub)</summary>
-        <p class="note">Opret et <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>
-          med adgang til <code>${GH_REPO}</code> og tilladelsen <i>Contents: Read and write</i>. Tokenet gemmes kun i denne browser.
-          Noter og fremmøde krypteres; titel, dato, sted, forening og status bliver offentlige, så kortet viser arrangementerne rigtigt.</p>
-        <form data-forbind><input type="password" name="token" placeholder="github_pat_…" autocomplete="off" required>
-          <button class="chip" type="submit">Forbind</button></form>
-        <div class="form-status" aria-live="polite"></div></details>`;
+    el.innerHTML = `<p class="note">Rettelser og noter gemmes <b>kun i denne browser</b>: gem for alle er ikke sat op endnu
+      (se README: Rettelser).</p>${lokalTekst}`;
   }
   const up = el.querySelector('[data-upload]');
   if (up) up.addEventListener('click', async () => {
     up.disabled = true;
     try { await gemRettelser({}, 'Rettelser af arrangementer'); } catch (err) { up.disabled = false; alert(err.message); }
   });
-  const af = el.querySelector('[data-afbryd]');
-  if (af) af.addEventListener('click', () => { localStorage.removeItem('lau-github'); renderLager(el); });
-  const form = el.querySelector('[data-forbind]');
-  if (form) form.addEventListener('submit', async ev => {
-    ev.preventDefault();
-    const status = el.querySelector('.form-status'), conf = {token: form.token.value.trim()};
-    status.textContent = 'Tjekker tokenet …';
-    try {
-      const r = await gh(conf, `/repos/${GH_REPO}`);
-      if (!r.ok) throw new Error(r.status === 404 || r.status === 401 ? 'Tokenet har ikke adgang til repoet' : `GitHub svarede ${r.status}`);
-      const repo = await r.json();
-      if (!repo.permissions || !repo.permissions.push) throw new Error('Tokenet har ikke skriveadgang til repoet');
-      const u = await gh(conf, '/user');
-      conf.login = u.ok ? (await u.json()).login : '';
-      localStorage.setItem('lau-github', JSON.stringify(conf));
-      location.reload(); // henter alt frisk fra GitHub
-    } catch (err) { status.textContent = err.message; }
-  });
+  const navn = el.querySelector('[data-navn]');
+  if (navn) navn.addEventListener('change', () => { try { localStorage.setItem('lau-navn', navn.value.trim()); } catch (_) { /* ignorer */ } });
 }
 
 function renderArrListe() {
