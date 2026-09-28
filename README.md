@@ -7,8 +7,8 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 ## Sådan hænger det sammen
 
 1. Google Apps Scriptet i regnearket "LAU – begivenheder" kører Apifys Facebook Events Scraper hver mandag på foreningernes `upcoming_hosted_events`.
-2. GitHub Action (`.github/workflows/sync.yml`) kører mandag formiddag (én gang om ugen): `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
-3. Siden (`index.html`, `app.js`) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
+2. GitHub Action (`.github/workflows/sync.yml`) kører mandag formiddag (én gang om ugen, ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
+3. Siden (`index.html`, `app.js`; ret `?v=` i `index.html`, når `app.js`/`style.css` ændres, så browsere ikke blander gammel og ny kode) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
 Facebook viser kun kommende begivenheder i de ugentlige kørsler. Afholdte aktiviteter før 28. sep. 2026 hentes med en engangskørsel på foreningernes `past_hosted_events`:
 Actions → "Hent historik" → *Run workflow* (standard fra 1. januar i år; højst 20 begivenheder pr. side, så Apify-forbruget er begrænset).
@@ -30,7 +30,7 @@ Sidepanelet har fire faner:
 Under fanen **Arrangementer** kan man rette det, Facebook ikke ved: bekræfte at et arrangement blev afholdt (✓ Afholdt), markere det som ikke afholdt, skjule dubletter/ikke-LAU-arrangementer, rette titel, dato, sted og forening, notere faktisk fremmøde – og tilføje arrangementer, der aldrig lå på Facebook.
 
 - Rettelserne ligger i `data/rettelser.json` (`{"rettelser": {"<id>": {status, navn, forening, start, slut, sted, deltagere, note, manuel, rettet}}}`) og går forud for de hentede data. `scripts/sync.py` rører aldrig filen; siden og `scripts/hb.py` anvender dem med samme regler, så de tæller med i kort, nøgletal og HB-prognosen.
-- **Gem for alle:** forbind GitHub i fanen med et fine-grained token (kun dette repo, *Contents: Read and write*). Tokenet gemmes kun i browseren; hver rettelse committes direkte til `main`, og en push af filen starter "Hent begivenheder", så `hb_<år>.json` beregnes igen. Uden token gemmes rettelserne kun i browseren, indtil man forbinder.
+- **Gem for alle:** forbind GitHub i fanen med et fine-grained token (kun dette repo, *Contents: Read and write*). Tokenet gemmes kun i browseren; hver rettelse committes direkte til `main`, og en push af filen starter "Beregn HB-prognose" (`.github/workflows/hb.yml`, kun `hb.py`, ingen Apify), så `hb_<år>.json` beregnes igen. Uden token gemmes rettelserne kun i browseren, indtil man forbinder.
 - Alt i repoet er offentligt – skriv ikke persondata i noter. Adminversionen kan i stedet levere `privat.rettelser = {hent: async () => ({…}), gem: async aendringer => {}}`.
 
 ## HB-godkendelse
