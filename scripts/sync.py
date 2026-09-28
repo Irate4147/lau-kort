@@ -132,9 +132,13 @@ def side_key(url):
     return f"/{m.group(1)}/" if m else None
 
 
+def sider(f):
+    """Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider (facebook_ekstra)."""
+    return [u for u in [f.get("facebook")] + (f.get("facebook_ekstra") or []) if u]
+
+
 def load_foreninger():
-    return [(f["navn"], side_key(f["facebook"])) for f in json.loads(FORENINGER.read_text(encoding="utf-8"))
-            if f.get("facebook")]
+    return [(f["navn"], side_key(u)) for f in json.loads(FORENINGER.read_text(encoding="utf-8")) for u in sider(f)]
 
 
 def forening_for_url(url, foreninger):
@@ -341,13 +345,23 @@ def historik(fra):
     foreninger = load_foreninger()
     kommuner = load_kommuner()
     events, meta = load_state()
-    # Foreninger, hvis historik allerede er hentet, springes over, så en afbrudt kørsel kan genoptages billigt.
-    hentet = {k["forening"] for k in (meta.get("historik") or {}).get("koersler", []) if k.get("status") == "SUCCEEDED"}
-    mangler = [f for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook") and f["navn"] not in hentet]
-    if hentet:
-        print(f"Springer over (allerede hentet): {', '.join(sorted(hentet))}")
-    print(f"Henter: {', '.join(f['navn'] for f in mangler) or '(ingen)'}")
-    urls = [past_url(f["facebook"]) for f in mangler]
+    # Sider, hvis historik allerede er hentet, springes over, så en afbrudt kørsel kan genoptages billigt.
+    # Ældre kørsler uden "side" gjaldt foreningens hovedside.
+    ok = [k for k in (meta.get("historik") or {}).get("koersler", []) if k.get("status") == "SUCCEEDED"]
+    hentet = {side_key(k["side"]) for k in ok if k.get("side")} | {("hoved", k["forening"]) for k in ok if not k.get("side")}
+    # historik_fra i foreninger.json: historikken er tjekket manuelt (fx ingen arrangementer), så den hentes ikke.
+    mangler, sprunget = [], []
+    for f in json.loads(FORENINGER.read_text(encoding="utf-8")):
+        for i, u in enumerate(sider(f)):
+            if f.get("historik_fra") or side_key(u) in hentet or (i == 0 and ("hoved", f["navn"]) in hentet):
+                sprunget.append(u)
+            else:
+                mangler.append((f["navn"], u))
+    if sprunget:
+        print(f"Springer over ({len(sprunget)} sider allerede hentet eller tjekket manuelt)")
+    print(f"Henter: {', '.join(f'{n} ({u})' for n, u in mangler) or '(ingen)'}")
+    urls = [past_url(u) for _, u in mangler]
+    side_for = {past_url(u): u for _, u in mangler}
 
     with ThreadPoolExecutor(HISTORIK_SAMTIDIGE) as pool:
         results = list(pool.map(run_actor, urls))
@@ -356,14 +370,17 @@ def historik(fra):
     for url, run, items in sorted((r for r in results if r[1]), key=lambda r: r[1]["startedAt"]):
         seen = iso(parse(run["startedAt"]))
         tilfoejet = 0
+        starter = [s for item in items if (s := parse(item.get("utcStartDate")))]
         for item in items:
             start = parse(item.get("utcStartDate"))
             if start and start >= fra and merge(item, events, foreninger, kommuner, seen, historisk=True):
                 tilfoejet += 1
         forening = forening_for_url(url, foreninger)
         meta["behandlet"] = sorted(set(meta["behandlet"]) | {run["id"]})
-        koersler.append({"id": run["id"], "tid": seen, "forening": forening, "status": run["status"],
-                         "hentet": len(items), "begivenheder": tilfoejet})
+        # aeldste: den ældste hentede begivenhed – historikken dækker kun derfra, hvis kørslen ramte loftet.
+        koersler.append({"id": run["id"], "tid": seen, "forening": forening, "side": side_for[url], "status": run["status"],
+                         "hentet": len(items), "begivenheder": tilfoejet,
+                         "aeldste": iso(min(starter)) if starter else None})
         print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} siden {fra.date()}")
 
     # "fra" sættes kun, når mindst én kørsel lykkedes – ellers ville siden påstå at have data, den ikke har.
