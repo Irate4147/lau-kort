@@ -454,3 +454,35 @@ ul.hv-forbehold { color: var(--text-secondary); font-size: 12.5px; }
 .hv-top td.hv-navn { white-space: normal; text-align: left; max-width: 320px; }
 .hv-top th:first-child { text-align: left; }
 .hv-top .hv-kat { display: block; color: var(--muted); font-size: 11px; }
+/* ---- udvidelse: hb-risiko ---- */
+.hbr-oversigt { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; margin: 10px 0 8px; color: var(--text-secondary); }
+.hbr-oversigt b { color: var(--text-primary); margin-left: 2px; }
+.hbr-tabel td { vertical-align: top; }
+.hbr-tabel th, .hbr-tabel td.hbr-venstre { white-space: nowrap; }
+.hbr-tabel .hbr-venstre { text-align: left; padding-right: 8px; }
+.hbr-tabel .hbr-niveau { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; }
+.hbr-tabel td.tal { text-align: right; padding-right: 8px; }
+.hbr-tabel td.hbr-kv { white-space: nowrap; }
+.hbr-tabel td.hbr-kv .kv-dot { width: 11px; height: 11px; margin: 2px 1px 0; }
+.hbr-tabel td.hbr-naeste { white-space: normal; text-align: left; font-size: 12px; max-width: 150px; color: var(--text-secondary); }
+.hbr-tabel td.hbr-tekst { white-space: normal; text-align: left; font-size: 12px; line-height: 1.35; color: var(--text-secondary); min-width: 200px; }
+
+/* ---- udvidelse: fremmøde ---- */
+.panel-sec h4.fm-h { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 14px 0 4px; }
+ul.fm-liste { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
+.fm-liste li { display: grid; grid-template-columns: 90px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 5px 0; border-top: 1px solid var(--grid); }
+.fm-liste li:first-child { border-top: 0; }
+.fm-liste .fm-dato { font-weight: 600; font-variant-numeric: tabular-nums; font-size: 12px; }
+.fm-liste .fm-navn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fm-liste .fm-grundlag { display: block; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.fm-liste .fm-tal { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fm-liste .fm-svar { color: var(--text-secondary); font-size: 12px; }
+.fm-skub { font-size: 12.5px; color: var(--text-secondary); background: var(--page); border: 1px dashed var(--axis); border-radius: 8px; padding: 7px 10px; margin: 10px 0 4px; }
+.fm-skub .linkbtn { font-size: 12.5px; }
+.fm-tabel th, .fm-tabel td { text-align: left; padding-right: 10px; }
+.fm-tabel th.tal, .fm-tabel td.tal { text-align: right; }
+.fm-tabel td.fm-laant { color: var(--muted); }
+.fm-tabel td.fm-titel { white-space: normal; text-align: left; max-width: 260px; }
+.fm-tabel tbody tr.fm-stille { cursor: default; }
+.fm-tabel tbody tr.fm-stille:hover { background: none; }
+.fm-tabel tr.fm-total td { font-weight: 600; border-top: 2px solid var(--axis); }
