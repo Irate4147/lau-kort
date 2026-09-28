@@ -82,7 +82,11 @@
   "3QDKrMPtIVn40UIMH",
   "3TSEZgHXx04BJlRCn",
   "5ICk1UNQoI8Q2pbwx",
+  "5K5obq7CSPjMJjczL",
+  "68CFf0zgJ3WyUKhKN",
+  "6QkaYDHKwiyQezR6S",
   "8L5C4yyYakX9RTjtc",
+  "8goHgKpUg4F2EmgE9",
   "AMwpRXv3R5JvuLnLh",
   "Be9ozReW1Ieju6aCR",
   "D1vDLueDycTLzRXoI",
@@ -91,14 +95,21 @@
   "DyWP7OfRIlvtnY8uw",
   "EA4RI4Aa7cJE6E1VC",
   "EdsesWE0oIYWCRXW3",
+  "Fj7a4e59X0pf03tFr",
+  "G4UGzTVRaaX9VjLcU",
   "GLbhwQgYPhiJChb8v",
   "GpotLrLXcmMiu2L7n",
   "IlwnA2PIR6tbEk8OZ",
   "L3KatGGv1Jku96nWQ",
   "LXRjQ3bSZm1F3ecuA",
   "LkbH7cXxevPJaaIAh",
+  "MXHMUUvcFKv2aRmHV",
   "NLM763IegaTv81Tjw",
   "PV13mhkKH02KRxo6P",
+  "Q0dgfFfkGVfxK5uZY",
+  "Qm9bE2OsyfDKkvukG",
+  "R9G1xoW1Cr53XVtfg",
+  "RYqfSkuklcrpstyFG",
   "SqULYxXOcP75cGrhc",
   "TB21dOojuIhrr9HKl",
   "TYWn6ujv4FJKprZyx",
@@ -107,6 +118,7 @@
   "WXImOV5qhATaVe8qG",
   "XmAs65Lh3PFcQJI0S",
   "Yauxqs3OHJmHMDrTy",
+  "Yz3cCUaQ8aoQRJEqi",
   "Z7AO10mZj1OfPD4Rt",
   "ZCMbt7FoaNUnqx9kj",
   "ZkMg5hTedgx3xypqj",
@@ -115,6 +127,7 @@
   "cnOQZZRVpgGB1ygWv",
   "d3NhR8WQiOuhaWdV1",
   "eH0gwNkB4I8ZOeaLO",
+  "ef251Xatj4SIJaDYB",
   "exGUtf3lO0hKU8nw5",
   "gBs8Y06cTR4bl2BTY",
   "gfb9PuqpXPbmTlgAl",
@@ -132,13 +145,15 @@
   "oKpQblclpWPIyfRNN",
   "pD8XinWaEo2491rpz",
   "pHYzYlU5H0ffk1jd0",
+  "phJvZajzGzrQ9edaS",
   "rCgRYXBSmbju1XdoI",
   "sCqXpsUbKvIh6yT1j",
   "ubS51fNCUueEjSaMf",
   "yOAaJ05g8KXM0hCHZ",
-  "zV457MIVjJYnjCYU1"
+  "zV457MIVjJYnjCYU1",
+  "zz2FSQsbvQfUwolup"
  ],
- "opdateret": "2026-09-28T14:05:32Z",
+ "opdateret": "2026-09-28T14:25:21Z",
  "historik": {
   "koersler": [
    {
@@ -580,6 +595,126 @@
     "status": "ABORTED",
     "hentet": 58,
     "begivenheder": 13
+   },
+   {
+    "id": "68CFf0zgJ3WyUKhKN",
+    "tid": "2026-09-28T14:18:07Z",
+    "forening": "Kronjylland",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 14
+   },
+   {
+    "id": "RYqfSkuklcrpstyFG",
+    "tid": "2026-09-28T14:18:07Z",
+    "forening": "Horsens",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 13
+   },
+   {
+    "id": "G4UGzTVRaaX9VjLcU",
+    "tid": "2026-09-28T14:19:08Z",
+    "forening": "København",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 20
+   },
+   {
+    "id": "Qm9bE2OsyfDKkvukG",
+    "tid": "2026-09-28T14:19:08Z",
+    "forening": "Køge Bugt",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 1
+   },
+   {
+    "id": "Yz3cCUaQ8aoQRJEqi",
+    "tid": "2026-09-28T14:19:50Z",
+    "forening": "Nordkøbenhavn",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 17
+   },
+   {
+    "id": "phJvZajzGzrQ9edaS",
+    "tid": "2026-09-28T14:20:00Z",
+    "forening": "Nordsjælland",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 9
+   },
+   {
+    "id": "6QkaYDHKwiyQezR6S",
+    "tid": "2026-09-28T14:20:41Z",
+    "forening": "Næstved",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 12
+   },
+   {
+    "id": "zz2FSQsbvQfUwolup",
+    "tid": "2026-09-28T14:21:01Z",
+    "forening": "Roskilde",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 20
+   },
+   {
+    "id": "8goHgKpUg4F2EmgE9",
+    "tid": "2026-09-28T14:21:22Z",
+    "forening": "Silkeborg",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 0
+   },
+   {
+    "id": "ef251Xatj4SIJaDYB",
+    "tid": "2026-09-28T14:21:43Z",
+    "forening": "Sydvestjylland",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 9
+   },
+   {
+    "id": "5K5obq7CSPjMJjczL",
+    "tid": "2026-09-28T14:22:34Z",
+    "forening": "Sønderjylland",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 6
+   },
+   {
+    "id": "R9G1xoW1Cr53XVtfg",
+    "tid": "2026-09-28T14:22:45Z",
+    "forening": "Vejle",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 2
+   },
+   {
+    "id": "Fj7a4e59X0pf03tFr",
+    "tid": "2026-09-28T14:23:16Z",
+    "forening": "Vestegnen",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 3
+   },
+   {
+    "id": "Q0dgfFfkGVfxK5uZY",
+    "tid": "2026-09-28T14:23:58Z",
+    "forening": "Vestsjælland",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 0
+   },
+   {
+    "id": "MXHMUUvcFKv2aRmHV",
+    "tid": "2026-09-28T14:24:09Z",
+    "forening": "Viborg",
+    "status": "SUCCEEDED",
+    "hentet": 20,
+    "begivenheder": 6
    }
   ],
   "fra": "2026-01-01T00:00:00Z"
