@@ -44,11 +44,12 @@ Linket er fx `https://irate4147.github.io/lau-kort/kalender/naestved.ics` (Pages
 
 Sidepanelet har disse faner:
 
-- **Oversigt** – det næste kvartal og alle foreninger (klik for foreningspanelet). Admins ser også statistik (aktive i kvartalet, afholdte, [momentum](#momentum), aktivitet pr. forening).
+- **Oversigt** – det næste kvartal og alle foreninger (klik for foreningspanelet). Admins ser også boksen "Kræver handling nu" øverst (se [Analyser og advarsler](#analyser-og-advarsler)) og statistik (aktive i kvartalet, afholdte, [momentum](#momentum), aktivitet pr. forening).
 - **Visninger** – farvning (aktivitet nu, ingen farve; for admins også momentum og afholdt i et kvartal) og til/fra for næsten alt på kortet: begivenhedsbokse, aktivitetspunkter, landsforeningens og aflyste aktiviteter, afholdte aktiviteter, foreningsnavne, grænser, kommunenavne, grundkortets stednavne og tegnforklaringen. Valgene huskes i browseren.
 - **HB** (kun admins) – alle HB-visninger (se nedenfor).
 - **Arrangementer** (kun admins) – alle arrangementer med filtre og redigering (se "Rettelser").
-- **🔒 Log ind / Admin** – adminlogin; efter login: GitHub-forbindelse og analyser (se "Adminlogin").
+- **Analyser** (kun admins) – listen over analyser; hver åbnes som en fane i et vindue over højre del af kortet (se [Analyser og advarsler](#analyser-og-advarsler)).
+- **🔒 Log ind / Admin** – adminlogin; efter login: "Gem for alle" (se "Adminlogin").
 
 ## Momentum
 
@@ -99,6 +100,51 @@ Alt om HB er fortroligt og kun for admins.
   
   (plus "historik mangler", når data ikke dækker et kvartal). Siden beregner det selv med samme regel som `hb.py`, og foreningspanelet har en sektion med status pr. kvartal og årets HB-status.
 
+## Analyser og advarsler
+
+Alt her er kun for admins. Fanen **Analyser** viser listen over analyser; klik på en for at åbne den som en fane i vinduet til højre. Som i en browser kan flere være åbne, hver lukkes med sit ×, og × i hjørnet (eller Esc) lukker vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen, og den kommer igen, når vinduet lukkes.
+
+Tidskritiske ting, der skal reageres på, før det er for sent, står i boksen **Kræver handling nu** øverst i oversigten (over Momentum) og øverst i foreningspanelet. Boksen er skjult, når intet haster.
+
+Analyserne ligger i `udvidelser/` (se [Udvidelser](#udvidelser)):
+
+- **Aktivitet pr. forening** (indbygget) – sorterbar tabel med aktivitet, tilkendegivelser, fremmøde og faktor pr. forening.
+- **Månedsrapport** (`scripts/rapport.py`, `udvidelser/maanedsrapport.js`) – se nedenfor.
+- **HB-risiko** (`udvidelser/hb-risiko.js`) – advarer, før det indeværende kvartal slutter uden et afholdt arrangement, så HB-godkendelsen næste år ikke går tabt. Hver lokalforening måles på kvartalet (afholdt, planlagt eller intet), dagene til kvartalets sidste dag og sin [rytme](#momentum):
+
+  | Niveau | Regel (d = dage tilbage, R = rytmen) |
+  |---|---|
+  | ! Kritisk | intet afholdt eller planlagt, og d ≤ 14 eller d ≤ R/2 |
+  | ⏱ Advarsel | intet afholdt eller planlagt, og d ≤ max(45, R) – eller kvartalet afhænger af planlagte arrangementer, og d ≤ 21 |
+  | Hold øje | som ovenfor, men der er god tid |
+  | Tabt | et afsluttet kvartal er uden afholdt arrangement – kan ikke HB-godkendes (ingen advarsel) |
+
+  (plus "kan ikke vurderes", når data ikke dækker kvartalet, og "i hus".) Kritiske og advarsler står i "Kræver handling nu" (højst én pr. forening, med kvartalets sidste dag som frist; i 4. kvartal er det også HB-fristen). Analysen viser alle lokalforeninger sorteret efter risiko med status pr. kvartal, næste planlagte arrangement og en forklaring. Grænserne ligger i `GRAENSE` i filen; beregningen kan genbruges som `LAU.hbRisiko(f)`.
+- **Fremmøde vs. tilkendegivelser** (`udvidelser/fremmoede.js`) – fra tilkendegivelser ("deltager" + "interesseret") til forventet fremmøde. Omregningsfaktoren er fremmøde ÷ tilkendegivelser for afholdte arrangementer, hvor fremmødet er noteret under Arrangementer: medianen af foreningens egne (mindst 2), ellers arrangementer i samme kategori på tværs af foreningerne (mindst 2), ellers alle. Forventet fremmøde = tilkendegivelser × faktor, som interval ud fra kvartilerne fra 4 målinger, ellers "ca."; grundlaget og antallet vises altid. Foreningspanelet har sektionen *Fremmøde* (efter Nøgletal) med registreret fremmøde, faktor, forventet fremmøde for de kommende arrangementer og et link til de afholdte arrangementer, der mangler fremmøde (filteret *Afholdte uden fremmøde* under Arrangementer). Analysen har tal pr. forening og kategori og de næste 30 dages arrangementer med forventet fremmøde. Tilkendegivelserne stiger typisk frem mod arrangementet, så forventningen for arrangementer langt ude er i underkanten.
+- **Kommuner uden aktivitet** (`udvidelser/hvide-pletter.js`) – kortlaget "Kommuner uden aktivitet (12 mdr.)" (Visninger → Kortet) skraverer okker de kommuner i en lokalforenings område, hvor foreningen hverken har afholdt arrangementer det seneste år eller har noget planlagt (via arrangementets kommune; aflyste og fjernede tæller ikke, landsforeningens heller ikke). Kendes medlemstallene (`medlemmer.krypt.json`), placeres hver by i sin kommune (punkt-i-polygon), og kommuner med medlemmer skraveres tættere med antallet. Analysen viser pr. forening kommunerne med og uden aktivitet og medlemmerne i dem uden, sorteret efter mest at hente; "Vis på kortet" slår laget til og zoomer ind på foreningen. Kun foreninger med Facebook-side er med. Arrangementer uden kendt sted (fx online) tæller ikke, men vises som "+ N uden kendt sted".
+- **Hvad virker?** (`udvidelser/hvad-virker.js`) – sammenligner tilkendegivelser for afholdte arrangementer i lokalforeningerne pr. type, ugedag, starttidspunkt (dansk tid) og varsel. For at store foreninger ikke dominerer, måles hvert arrangement mod sin forenings median (indeks = svar ÷ median; kun foreninger med mindst 3 arrangementer), og hver gruppe vises med sit medianindeks og n. Grupper med under 5 arrangementer nedtones og indgår ikke i konklusionerne. Varsel måles kun for arrangementer, der er opdaget efter indsamlingens start (som "Varsel" i nøgletallene). Tilkendegivelser er ikke fremmøde, og datagrundlaget er lille – brug det som pejlemærke, ikke facit.
+
+### Månedsrapport
+
+Hvad skete der i foreningerne i en måned – og hvem er faldet eller kommet op?
+
+- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, rytme, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum og HB-prognose beregnes med samme regler og konstanter som siden (`MOM_BAGUD`, `MOM_FREMAD`, `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, dækning og rettelser).
+- **Rapporten** for en måned sammenligner månedens snapshot med den næste måneds og lister pr. forening: afholdte arrangementer (dato og navn), aflyste/ikke afholdte, nye på Facebook, forsvundne fra Facebook, registreret fremmøde (fra rettelserne) samt momentum og HB-prognose fra start til slut. Øverst er totaler og højdepunkterne: faldet i momentum eller HB, uden afholdt aktivitet, nye aflysninger og forbedringer. Ved et nyt kvartal starter HB-prognosen forfra, så der tæller kun et skift til "kan ikke godkendes" som et fald.
+- Alt ligger krypteret i `data/admin/rapporter.krypt.json` (`{"snapshots": {"ÅÅÅÅ-MM": …}, "rapporter": {"ÅÅÅÅ-MM": …}}`). Filen skrives kun, når indholdet er ændret.
+- **Automatisk:** "Månedsrapport" (`.github/workflows/rapport.yml`) kører den 1. i måneden tidligt om morgenen; `sync.yml` og `hb.yml` kører også `rapport.py`, så rapporten for sidste måned kommer med nye rettelser og fremmøde. Manuelt: Actions → "Månedsrapport" → *Run workflow* med en måned (`ÅÅÅÅ-MM`) eller `alle`.
+- Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), **rekonstrueres** det ud fra data pr. den 1. og markeres `"rekonstrueret": true`: kun begivenheder, der var set på Facebook den dag (`foerst_set`), tæller som planlagte, og senere aflysninger og forsvundne begivenheder regnes som ikke sket endnu.
+- Analysen **Månedsrapport**: vælg måned (nyeste først) eller "Denne måned indtil nu", der beregnes i browseren og sammenlignes med månedens snapshot. Klik på en forening for at åbne den.
+
+Lokalt:
+
+```sh
+export ADMIN_KODE='…'
+python3 scripts/rapport.py            # snapshot af denne måned + rapport for sidste måned
+python3 scripts/rapport.py 2026-08    # genberegn en bestemt måned (indeværende måned: foreløbig)
+python3 scripts/rapport.py alle       # genberegn alle måneder, data dækker
+python3 scripts/admin.py vis rapporter
+```
+
 ## Ændringer
 
 - **Foreninger, Facebook-sider og kommuner:** `data/foreninger.json`. Nye Facebook-sider skal også tilføjes i fanen "Foreninger" i regnearket, ellers bliver de ikke scrapet.
@@ -112,8 +158,10 @@ Alt om HB er fortroligt og kun for admins.
 - **Panelsektioner** – `LAU.registerSection({id, titel, synlig(f), render(f), efter(el, f)}, {efter: 'kommende'})`.
   Indbyggede: `kommende` og `stamdata` (offentlige) samt `momentum`, `hb`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage` og `noter` (admin).
 - **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, gruppe, hint, tilgaengelig(), synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
-  Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin).
-- **Analyser** (fanen Admin, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening).
+  Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin); `hvide-pletter` (admin) kommer fra `udvidelser/`.
+- **Analyser** (fanen **Analyser**, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Fanen viser listen over analyser i sidepanelet; hver analyse åbnes som en fane i et stort vindue over højre del af kortet – som faner i en browser: flere kan være åbne, hver lukkes med sit ×, og krydset i hjørnet (eller Esc) lukker hele vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen (og kommer igen, når vinduet lukkes). Tegn igen med `renderAnalyser()`; åbn en analyse med `LAU.aabnAnalyse(id)`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening); resten kommer fra `udvidelser/` (se [Analyser og advarsler](#analyser-og-advarsler)).
+- **Advarsler** (kun admins) – `LAU.registerAdvarsel({id, hent() → [{niveau: 'kritisk' | 'advarsel', titel, tekst?, forening?, frist?: Date, analyse?: id}]})`. Tidskritiske ting, der skal reageres på, før det er for sent: de vises øverst i oversigten i boksen "Kræver handling nu" (over Momentum; skjult, når intet haster) og øverst i foreningspanelet for den forening, de gælder.
+- **Udvidelsesfiler** – `udvidelser/*.js` indlæses efter `app.js` (se `index.html`, husk `?v=`) og bruger registrene ovenfor. `app.js` starter først ved `DOMContentLoaded`, så alt er registreret, før der tegnes. Filerne kan bruge `app.js`' hjælpere (`esc`, `tile`, `hbars`, `DATA` …) direkte.
 - **Fortrolige data** – `LAU.admin.erAdmin()`, `await LAU.admin.hent('navn')` (dekrypterer `data/admin/navn.krypt.json`) og `await LAU.admin.gem('navn', gammel => ny, 'commit-besked')` (krypterer og committer via LAU-serveren). I Python: `admin.laes('navn')` / `admin.skriv('navn', data)` fra `scripts/admin.py`.
 
 **Stamdata** (formand, telefon osv.) er offentlige og kan lægges i `data/foreninger.json` som `"stamdata": {"Formand": "…", "Telefon": "…"}`.
@@ -133,6 +181,7 @@ Alt i repoet er offentligt (også via GitHub Pages), så fortrolige data ligger 
 | `hb_<år>.krypt.json` | HB-prognosen fra `scripts/hb.py` |
 | `rettelser.krypt.json` | alle rettelser inkl. noter og fremmøde |
 | `noter.krypt.json` | noter pr. forening |
+| `rapporter.krypt.json` | månedsrapporter og snapshots fra `scripts/rapport.py` |
 | `stamdata.krypt.json`, `medlemmer.krypt.json` | valgfrie (se ovenfor) |
 
 **Opsætning (én gang):**

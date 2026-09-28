@@ -2,7 +2,8 @@ name: Beregn HB-prognose
 
 # Når en rettelse af arrangementer gemmes (data/admin/rettelser.krypt.json), skrives den offentlige del
 # (data/rettelser.json), og HB-prognosen (data/admin/hb_<år>.krypt.json) og kalenderne (kalender/*.ics) beregnes
-# igen – også når foreningerne eller HB-status ændres. Kører kun admin.py, hb.py og kalender.py – ingen Apify-kald.
+# igen – også når foreningerne eller HB-status ændres – og månedsrapporten opdateres (rapport.py). Kører kun admin.py,
+# hb.py, rapport.py og kalender.py – ingen Apify-kald.
 on:
   push:
     branches: [main]
@@ -38,6 +39,11 @@ jobs:
         env:
           ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
         run: python3 scripts/hb.py
+
+      - name: Månedsrapport (snapshot og sidste måned)
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+        run: python3 scripts/rapport.py
 
       - name: Skriv kalendere (.ics)
         run: python3 scripts/kalender.py

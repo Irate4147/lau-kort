@@ -4,7 +4,10 @@
  *  - CONFIG:          kan overskrives med window.LAU_CONFIG.
  *  - PANEL_SECTIONS:  sektionerne i foreningspanelet. Nye sektioner tilføjes med LAU.registerSection().
  *  - MAP_LAYERS:      lag på kortet (med eller uden til/fra-knap). Nye lag tilføjes med LAU.registerLayer().
- *  - ANALYSER:        analyser under fanen Admin. Nye tilføjes med LAU.registerAnalyse().
+ *  - ANALYSER:        analyser i vinduet Analyser (fanen Analyser, kun admins). Nye tilføjes med LAU.registerAnalyse().
+ *  - ADVARSLER:       tidskritiske advarsler øverst i sidepanelet (kun admins). Nye tilføjes med LAU.registerAdvarsel().
+ *  - udvidelser/*.js: udvidelser, der bruger registrene ovenfor. Indlæses efter app.js (se index.html); main() venter
+ *                     på DOMContentLoaded, så alt er registreret, før der tegnes.
  *  - ADMIN:           adminlogin og de fortrolige data (krypteret i data/admin/). Sektioner, lag og analyser med
  *                     admin: true vises kun for admins. Se "Adminlogin" nedenfor og i README.md.
  * Kortet er MapLibre GL med OpenFreeMap-grundkort (OpenStreetMap-data). Se README.md.
@@ -299,9 +302,21 @@ function registerLayer(layer) {
   MAP_LAYERS.push(layer);
   if (!(layer.id in layerState)) layerState[layer.id] = layer.standard !== false;
 }
-/** Analyse under fanen Admin: {id, titel, beskrivelse?, render() -> html, efter?(el)}. Vises kun for admins. */
+/**
+ * Analyse i vinduet Analyser: {id, titel, beskrivelse?, render() -> html, efter?(el)}. Vises kun for admins.
+ * Vinduet er bredt (op til ca. 820 px): diagrammer kan tegnes bredere end i sidepanelet. Tegn igen med renderAnalyser().
+ */
 const ANALYSER = [];
-function registerAnalyse(a) { ANALYSER.push(a); }
+function registerAnalyse(a) { ANALYSER.push({admin: true, ...a}); }
+/**
+ * Tidskritiske advarsler øverst i sidepanelet (over Momentum) og i foreningspanelet – ting, der skal reageres på,
+ * før det er for sent. {id, hent() -> [{niveau, titel, tekst?, forening?, frist?, analyse?}]}. Kun for admins.
+ *   niveau:  'kritisk' (skal handles på nu) eller 'advarsel' (snart)
+ *   frist:   Date – sorterer og vises som "om N dage"
+ *   analyse: id på en analyse, der åbnes med "Se analyse →"
+ */
+const ADVARSLER = [];
+function registerAdvarsel(a) { ADVARSLER.push({admin: true, ...a}); }
 // Må elementet (sektion, lag, analyse) vises? Admin-elementer kun efter login.
 const tilladt = x => !x.admin || erAdmin();
 
@@ -315,11 +330,12 @@ const tilladt = x => !x.admin || erAdmin();
  * Gem for alle går gennem CONFIG.adminServer (kalender-server/worker.js), der committer med sit eget GitHub-token og
  * kun tager imod skrivenøglen HMAC(nøgle, "lau-skriv"), hvis SHA-256 står som "skriv" i noegle.json.
  * Filerne: hb (årets HB-status), rettelser (alle rettelser inkl. noter og fremmøde), noter (noter pr. forening)
- * og valgfrit stamdata ({forening: {felt: værdi}}) og medlemmer ([{forening, by, lat, lng, antal}]).
+ * og valgfrit stamdata ({forening: {felt: værdi}}) og medlemmer ([{forening, by, lat, lng, antal}]). rapporter er
+ * månedsrapporterne fra scripts/rapport.py.
  * Nye fortrolige data: læg dem i data/admin/<navn>.krypt.json (scripts/admin.py) og hent dem med LAU.admin.hent().
  */
 const ADMIN = {noegle: null, skriv: null, info: null, data: {}};
-const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer'];
+const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer', 'rapporter'];
 const ADMIN_TJEK = 'LAU-admin', ADMIN_LAGER = 'lau-admin';
 const erAdmin = () => !!ADMIN.noegle;
 const tekstBytes = t => new TextEncoder().encode(t);
@@ -633,6 +649,7 @@ function setFarvning(mode) {
 
 /** Slår et element under "Visninger" til eller fra. */
 function setVisning(id, on) {
+  if (id === 'kalender' && on && ANA.aaben) lukAnalyser({kalender: false}); // de deler pladsen til højre
   layerState[id] = on;
   gemVisning();
   applyVisning();
@@ -1218,7 +1235,7 @@ function renderOverview() {
   renderRank();
 
   $('overview-admin').hidden = !erAdmin();
-  if (erAdmin()) { renderMomentum(); renderAktivitetPrForening(foreninger); }
+  if (erAdmin()) { renderAdvarsler(); renderMomentum(); renderAktivitetPrForening(foreninger); }
 
   const last = meta.koersler[meta.koersler.length - 1];
   $('updated').textContent = last ? `Sidst hentet fra Facebook: ${fmtStamp.format(new Date(last.tid))}` : '';
@@ -1545,6 +1562,15 @@ function renderForening(f) {
     body.appendChild(el);
     if (sec.efter) sec.efter(el, f);
   }
+  // Tidskritiske advarsler for foreningen står øverst, før alle sektionerne.
+  const adv = advarsler(f.navn);
+  if (adv.length) {
+    const el = document.createElement('section');
+    el.className = 'panel-sec adv-sec';
+    el.innerHTML = `<h3>Kræver handling nu</h3>${advarselHtml(adv, {visForening: false})}`;
+    body.querySelector('.panel-sec') ? body.insertBefore(el, body.querySelector('.panel-sec')) : body.appendChild(el);
+    bindAdvarsler(el);
+  }
   bindTips(body);
 }
 
@@ -1563,7 +1589,7 @@ function closeForening() {
 
 let FANE = 'oversigt';
 // Faner, der kun er for admins (knapperne har data-admin i index.html). Fanen Admin er login'et for andre.
-const ADMIN_FANER = ['hb', 'arrangementer'];
+const ADMIN_FANER = ['hb', 'arrangementer', 'analyser'];
 function visFane(fane) {
   if (ADMIN_FANER.includes(fane) && !erAdmin()) fane = 'admin';
   FANE = fane;
@@ -1574,7 +1600,9 @@ function visFane(fane) {
   $('side-hb').hidden = fane !== 'hb';
   $('side-arrangementer').hidden = fane !== 'arrangementer';
   $('side-admin').hidden = fane !== 'admin';
+  $('side-analyser').hidden = fane !== 'analyser';
   if (fane === 'arrangementer') renderArrangementer();
+  if (fane === 'analyser') { renderAnalyseListe(); if (!ANA.aaben) aabnAnalyse(ANA.aktiv || (ANALYSER.find(tilladt) || {}).id); }
   if (fane === 'admin') renderAdmin();
   $('sidebar').scrollTop = 0;
 }
@@ -1784,6 +1812,8 @@ function opdater() {
   renderKalender();
   if (FANE === 'arrangementer') renderArrangementer();
   if (FANE === 'admin') renderAdmin();
+  if (FANE === 'analyser') renderAnalyseListe();
+  if (ANA.aaben) renderAnalyser();
 }
 
 // ------------------------------------------------------------------ fane: arrangementer
@@ -2051,15 +2081,143 @@ function renderAdmin() {
       <p class="updated">Du er logget ind som admin. Fortrolige data er krypteret i repoet og kan kun læses med adminkoden.
         <button class="linkbtn" data-logud>Log ud</button></p></header>
     <h2>Gem for alle</h2><div class="lager" data-admin-lager></div>
-    ${ANALYSER.filter(tilladt).map(a => `<section class="panel-sec" data-analyse="${esc(a.id)}"><h2>${esc(a.titel)}</h2>${
-      a.beskrivelse ? `<p class="note">${esc(a.beskrivelse)}</p>` : ''}${a.render()}</section>`).join('')}`;
+    <p class="note">Analyser og månedsrapporter ligger under fanen <button class="linkbtn" data-til-analyser>Analyser</button>.</p>`;
   el.querySelector('[data-logud]').addEventListener('click', logUd);
+  el.querySelector('[data-til-analyser]').addEventListener('click', () => visFane('analyser'));
   renderLager(el.querySelector('[data-admin-lager]'));
-  for (const a of ANALYSER.filter(tilladt)) if (a.efter) a.efter(el.querySelector(`[data-analyse="${CSS.escape(a.id)}"]`));
-  bindTips(el);
 }
 
-// Indbyggede analyser. Flere tilføjes med LAU.registerAnalyse({id, titel, beskrivelse, render, efter}).
+// ------------------------------------------------------------------ analyser (vindue til højre på kortet)
+/*
+ * Fanen Analyser (kun admins) viser listen over analyser i sidepanelet; hver analyse åbnes som en fane i et stort
+ * vindue over højre del af kortet – som faner i en browser: flere kan være åbne, og hver lukkes med sit ×.
+ * Krydset i hjørnet lukker hele vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen
+ * (og åbnes igen, når vinduet lukkes); åbnes kalenderen, lukkes vinduet.
+ */
+const ANA = {aaben: false, faner: [], aktiv: null, kalender: false};
+const analyseFor = id => ANALYSER.find(a => a.id === id && tilladt(a));
+
+/** Åbner analysen som fane i vinduet (eller skifter til den, hvis den allerede er åben). */
+function aabnAnalyse(id) {
+  if (!analyseFor(id)) return;
+  if (!ANA.faner.includes(id)) ANA.faner.push(id);
+  ANA.aktiv = id;
+  if (!ANA.aaben) {
+    ANA.aaben = true;
+    ANA.kalender = !!layerState.kalender;
+    if (ANA.kalender) setVisning('kalender', false);
+  }
+  closePopover();
+  renderAnalyser();
+  renderAnalyseListe();
+}
+/** Lukker én fane; lukkes den sidste, lukkes vinduet. */
+function lukAnalyseFane(id) {
+  const i = ANA.faner.indexOf(id);
+  if (i < 0) return;
+  ANA.faner.splice(i, 1);
+  if (!ANA.faner.length) return lukAnalyser();
+  if (ANA.aktiv === id) ANA.aktiv = ANA.faner[Math.min(i, ANA.faner.length - 1)];
+  renderAnalyser();
+  renderAnalyseListe();
+}
+/** Lukker vinduet (fanerne huskes, til det åbnes igen). Kalenderen åbnes igen, hvis den var åben. */
+function lukAnalyser({kalender = true} = {}) {
+  if (!ANA.aaben) return;
+  ANA.aaben = false;
+  $('analyser').hidden = true;
+  $('analyser').innerHTML = '';
+  if (kalender && ANA.kalender) setVisning('kalender', true);
+  ANA.kalender = false;
+  renderAnalyseListe();
+}
+function placerAnalyser() {
+  const el = $('analyser'), top = $('map').offsetTop + 10;
+  el.style.top = `${top}px`;
+}
+
+/** Tegner vinduet med fanerne og den aktive analyse. */
+function renderAnalyser() {
+  const el = $('analyser');
+  if (!el || !DATA) return;
+  ANA.faner = ANA.faner.filter(analyseFor);
+  if (!ANA.aaben || !ANA.faner.length || !erAdmin()) { el.hidden = true; ANA.aaben = false; return; }
+  if (!ANA.faner.includes(ANA.aktiv)) ANA.aktiv = ANA.faner[0];
+  const a = analyseFor(ANA.aktiv);
+  el.hidden = false;
+  placerAnalyser();
+  el.innerHTML = `<div class="ana-bar" role="tablist" aria-label="Åbne analyser">
+      ${ANA.faner.map(id => { const x = analyseFor(id); return `<div class="ana-fane${id === ANA.aktiv ? ' aktiv' : ''}">
+        <button type="button" role="tab" class="ana-fane-titel" data-ana-vis="${esc(id)}" aria-selected="${id === ANA.aktiv}" title="${esc(x.titel)}">${esc(x.titel)}</button>
+        <button type="button" class="ana-fane-luk" data-ana-luk="${esc(id)}" aria-label="Luk ${esc(x.titel)}">×</button></div>`; }).join('')}
+      <button type="button" class="ana-luk-alle" data-ana-luk-alle aria-label="Luk analyser" title="Luk analyser (Esc)">×</button></div>
+    <div class="ana-body" role="tabpanel" data-analyse="${esc(a.id)}">
+      <h2>${esc(a.titel)}</h2>${a.beskrivelse ? `<p class="note">${esc(a.beskrivelse)}</p>` : ''}${a.render()}</div>`;
+  el.querySelectorAll('[data-ana-vis]').forEach(b => b.addEventListener('click', () => aabnAnalyse(b.dataset.anaVis)));
+  el.querySelectorAll('[data-ana-luk]').forEach(b => b.addEventListener('click', ev => { ev.stopPropagation(); lukAnalyseFane(b.dataset.anaLuk); }));
+  // Midterklik lukker en fane, som i en browser.
+  el.querySelectorAll('.ana-fane').forEach(f => f.addEventListener('auxclick', ev => {
+    if (ev.button === 1) lukAnalyseFane(f.querySelector('[data-ana-luk]').dataset.anaLuk);
+  }));
+  el.querySelector('[data-ana-luk-alle]').addEventListener('click', () => lukAnalyser());
+  if (a.efter) a.efter(el.querySelector('.ana-body'));
+  bindTips(el);
+  bindForeningLinks(el);
+}
+
+/** Listen over analyser i sidepanelet (fanen Analyser). */
+function renderAnalyseListe() {
+  const el = $('side-analyser');
+  if (!el || !DATA || !erAdmin()) return;
+  el.innerHTML = `<header class="side-head"><h1>Analyser</h1>
+      <p class="updated">Klik på en analyse for at åbne den som en fane i vinduet til højre. Luk en fane med × – eller hele vinduet med × i hjørnet (Esc).</p></header>
+    <ul class="ana-liste">${ANALYSER.filter(tilladt).map(a => `<li><button type="button" data-ana="${esc(a.id)}"
+      class="${ANA.aaben && a.id === ANA.aktiv ? 'aktiv' : ''}${ANA.faner.includes(a.id) ? ' aaben' : ''}">
+      <b>${esc(a.titel)}</b>${a.beskrivelse ? `<span>${esc(a.beskrivelse)}</span>` : ''}</button></li>`).join('')}</ul>`;
+  el.querySelectorAll('[data-ana]').forEach(b => b.addEventListener('click', () => aabnAnalyse(b.dataset.ana)));
+}
+
+// ------------------------------------------------------------------ advarsler (øverst i sidepanelet)
+
+const ADV_ORDEN = {kritisk: 0, advarsel: 1};
+/** Alle aktuelle advarsler (evt. kun for én forening), de mest presserende først. */
+function advarsler(forening) {
+  if (!erAdmin() || !DATA) return [];
+  const alle = [];
+  for (const a of ADVARSLER.filter(tilladt)) {
+    try { for (const x of a.hent() || []) alle.push({kilde: a.id, niveau: 'advarsel', ...x}); }
+    catch (err) { console.error(`Advarsel ${a.id}:`, err); }
+  }
+  return alle.filter(x => !forening || x.forening === forening).sort((a, b) =>
+    (ADV_ORDEN[a.niveau] ?? 2) - (ADV_ORDEN[b.niveau] ?? 2) || (a.frist || Infinity) - (b.frist || Infinity)
+    || String(a.forening || '').localeCompare(String(b.forening || ''), 'da'));
+}
+function advarselHtml(list, {visForening = true} = {}) {
+  const frist = d => { const n = Math.ceil((d - NOW) / DAY); return n <= 0 ? 'i dag' : n === 1 ? 'i morgen' : `om ${n} dage`; };
+  return `<ul class="advarsler">${list.map(x => `<li class="adv-${esc(x.niveau)}">
+    <span class="adv-ikon" aria-hidden="true">${x.niveau === 'kritisk' ? '!' : '⏱'}</span>
+    <div><b>${visForening && x.forening ? `<button class="forening-link" data-f="${esc(x.forening)}">${esc(x.forening)}</button>: ` : ''}${esc(x.titel)}</b>
+      ${x.frist ? `<span class="adv-frist">Frist ${esc(fmtDate.format(x.frist))} (${esc(frist(x.frist))})</span>` : ''}
+      ${x.tekst ? `<span class="adv-tekst">${esc(x.tekst)}</span>` : ''}
+      ${x.analyse && analyseFor(x.analyse) ? `<button type="button" class="linkbtn" data-adv-analyse="${esc(x.analyse)}">Se analyse →</button>` : ''}</div></li>`).join('')}</ul>`;
+}
+function bindAdvarsler(el) {
+  bindForeningLinks(el);
+  el.querySelectorAll('[data-adv-analyse]').forEach(b => b.addEventListener('click', () => { visFane('analyser'); aabnAnalyse(b.dataset.advAnalyse); }));
+}
+/** Boksen "Kræver handling nu" øverst i oversigten (over Momentum). Skjult, når intet haster. */
+function renderAdvarsler() {
+  const el = $('advarsler');
+  if (!el) return;
+  const list = advarsler();
+  el.hidden = !list.length;
+  if (!list.length) { el.innerHTML = ''; return; }
+  const kritiske = list.filter(x => x.niveau === 'kritisk').length;
+  el.innerHTML = `<h2>Kræver handling nu <span class="adv-antal${kritiske ? ' kritisk' : ''}">${list.length}</span></h2>${advarselHtml(list)}`;
+  bindAdvarsler(el);
+}
+
+// Indbyggede analyser. Flere tilføjes med LAU.registerAnalyse({id, titel, beskrivelse, render, efter}) (se udvidelser/).
 registerAnalyse({
   id: 'foreninger', titel: 'Aktivitet pr. forening',
   beskrivelse: 'Klik på en kolonne for at sortere, på en forening for at åbne den. Fremmøde er summen af det registrerede under Arrangementer.',
@@ -2090,7 +2248,7 @@ registerAnalyse({
     el.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => {
       const i = +b.dataset.sort;
       this.sort = i === this.sort.i ? {i, dir: -this.sort.dir} : {i, dir: i ? -1 : 1};
-      renderAdmin();
+      renderAnalyser();
     }));
     el.querySelectorAll('tr[data-f]').forEach(tr => {
       tr.addEventListener('click', () => openForening(tr.dataset.f));
@@ -2277,7 +2435,7 @@ function renderKalender() {
 
 // ------------------------------------------------------------------ start
 
-window.LAU = {registerSection, registerLayer, registerAnalyse, openForening, closeForening, visFane, CONFIG,
+window.LAU = {registerSection, registerLayer, registerAnalyse, registerAdvarsel, aabnAnalyse, openForening, closeForening, visFane, CONFIG,
   admin: {erAdmin, hent: hentAdmin, gem: gemAdmin, get data() { return ADMIN.data; }},
   get data() { return DATA; }, get map() { return MAP.map; }};
 
@@ -2301,7 +2459,7 @@ async function main() {
     + '<button class="chip" id="kal-knap" aria-pressed="false" aria-controls="kalender">📅 Kalender</button>';
   bindForeningLinks($('map-actions'));
   $('kal-knap').addEventListener('click', () => setVisning('kalender', !layerState.kalender));
-  addEventListener('resize', () => { if (layerState.kalender) placerKalender(); });
+  addEventListener('resize', () => { if (layerState.kalender) placerKalender(); if (ANA.aaben) placerAnalyser(); });
   renderKalender();
   $('zoom-reset').addEventListener('click', closeForening);
   $('back').addEventListener('click', closeForening);
@@ -2309,7 +2467,7 @@ async function main() {
   renderOverview();
   addEventListener('keydown', ev => {
     if (ev.key !== 'Escape') return;
-    if (!$('popover').hidden) closePopover(); else if (selected) closeForening();
+    if (!$('popover').hidden) closePopover(); else if (ANA.aaben) lukAnalyser(); else if (selected) closeForening();
   });
   renderVisninger();
   renderHB();
@@ -2317,4 +2475,5 @@ async function main() {
   initMap();
 }
 
-main();
+// Udvidelserne i udvidelser/ indlæses efter app.js (defer) og registrerer sig, før DOMContentLoaded.
+document.addEventListener('DOMContentLoaded', main, {once: true});

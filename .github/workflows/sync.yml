@@ -44,6 +44,11 @@ jobs:
           ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
         run: python3 scripts/hb.py
 
+      - name: Månedsrapport (snapshot og sidste måned)
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+        run: python3 scripts/rapport.py
+
       - name: Skriv kalendere (.ics)
         run: python3 scripts/kalender.py
 
