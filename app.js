@@ -83,7 +83,7 @@ const kvartalStatus = k => ({
   ingenfb: {label: 'Ingen Facebook-side tilknyttet'},
 });
 // Foreninger, hvis tidligere begivenheder er hentet, og datoen, hvor de ugentlige kørsler startede (sættes i load()).
-const HISTORIK = {hentet: new Set(), ugentligFra: ''};
+const HISTORIK = {hentet: new Set(), ugentligFra: '', fra: ''};
 /**
  * 'ja' / 'nej' / 'ukendt' / 'ingenfb' for en forening i et kvartal. 'ukendt', når kvartalet ligger før de
  * ugentlige kørsler, og foreningens historik ikke er hentet – så ser den ikke inaktiv ud uden grund.
@@ -93,18 +93,52 @@ function kvStatus(f, k) {
   if (!f.facebook) return 'ingenfb';
   return k.fra < HISTORIK.ugentligFra && !HISTORIK.hentet.has(f.navn) ? 'ukendt' : 'nej';
 }
+// HB-godkendelse næste år kræver mindst ét afholdt arrangement i hvert af årets fire kvartaler (Organisationshåndbogen 8.2).
+// Egne farver (lilla/magenta), så farvningen ikke forveksles med aktivitetsfarvningerne (blå og grøn/rød).
+const HB_AAR = +monthKey(NOW).slice(0, 4) + 1;
+const HB_KVARTALER = Array.from({length: 4}, (_, q) => {
+  const y = HB_AAR - 1, start = i => (i < 4 ? `${y}-${String(i * 3 + 1).padStart(2, '0')}-01` : `${y + 1}-01-01`);
+  return {id: `Q${q + 1}`, kort: `Q${q + 1}`, fra: start(q), til: start(q + 1)};
+});
+const HB_FILL = {paa_vej: '#7b3fbf', i_fare: '#d58bdb', ikke: '#8c1452', ukendt: '#d3cde0'};
+const HB_STATUS = {
+  paa_vej: {label: 'Aktivitet i alle kvartaler indtil videre'},
+  i_fare:  {label: 'Mangler aktivitet i indeværende eller kommende kvartal'},
+  ikke:    {label: `Kan ikke blive HB-godkendt i ${HB_AAR}`},
+  ukendt:  {label: 'Historik mangler'},
+};
+const HB_KV = {
+  ja:       {label: 'afholdt', farve: HB_FILL.paa_vej},
+  planlagt: {label: 'planlagt', farve: '#b894e3'},
+  mangler:  {label: 'intet endnu', farve: HB_FILL.i_fare},
+  nej:      {label: 'intet afholdt', farve: HB_FILL.ikke},
+  ukendt:   {label: 'ingen data', farve: HB_FILL.ukendt},
+};
+/** Kvartalets status for HB-kravet: 'ja' / 'planlagt' / 'mangler' (kvartalet er ikke slut) / 'nej' / 'ukendt' (ingen data). */
+function hbKvartal(f, k) {
+  const i = e => { const d = dayKey(e.startD); return d >= k.fra && d < k.til; };
+  if (f.afholdt.some(i)) return 'ja';
+  if (f.planlagt.some(i)) return 'planlagt';
+  const daekket = k.fra >= HISTORIK.ugentligFra || (HISTORIK.hentet.has(f.navn) && k.fra >= HISTORIK.fra);
+  if (!f.facebook || !daekket) return 'ukendt';
+  return dayKey(NOW) < k.til ? 'mangler' : 'nej';
+}
+function hbPrognose(f) {
+  const s = HB_KVARTALER.map(k => hbKvartal(f, k));
+  return s.includes('nej') ? 'ikke' : s.includes('ukendt') ? 'ukendt' : s.includes('mangler') ? 'i_fare' : 'paa_vej';
+}
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
 
 let DATA = null;
 let selected = null;
-// Kortets farvning: 'status' (aktivitet nu) eller et kvartals id ('Q1', 'Q2', …).
+// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …) eller 'hb' (HB-godkendelse næste år).
 let farvning = (() => {
   let v = 'status';
   try { v = localStorage.getItem('lau-farvning') || v; } catch (_) { /* fx privat vindue */ }
   if (v === 'kvartal') v = KVARTAL.id; // ældre gemt værdi
-  return KVARTALER.some(k => k.id === v) ? v : 'status';
+  return v === 'hb' || KVARTALER.some(k => k.id === v) ? v : 'status';
 })();
 const valgtKvartal = () => KVARTALER.find(k => k.id === farvning) || null;
 const MAP = {map: null, ready: false, items: [], cards: new Map()};
@@ -143,13 +177,15 @@ const noteLager = () => (CONFIG.privat && CONFIG.privat.noter) || lokaleNoter;
 async function load() {
   const get = (base, p) => fetch(base + p, {cache: 'no-cache'}).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
   const getData = p => get(CONFIG.dataBase, p).catch(() => get(CONFIG.assetBase, p));
-  const [foreninger, events, meta, topo] = await Promise.all([
+  const [foreninger, events, meta, topo, hb] = await Promise.all([
     getData('data/foreninger.json'), getData('data/events.json'), getData('data/meta.json'),
-    get(CONFIG.assetBase, 'geo/kommuner.topo.json')]);
+    get(CONFIG.assetBase, 'geo/kommuner.topo.json'), getData('data/hb.json').catch(() => null)]);
   const firstRun = meta.koersler.length ? new Date(meta.koersler[0].tid) : NOW;
   // Afholdte aktiviteter kendes fra den første ugentlige kørsel, eller længere tilbage, hvis historikken er hentet.
   HISTORIK.hentet = new Set(((meta.historik && meta.historik.koersler) || []).filter(k => k.status === 'SUCCEEDED').map(k => k.forening));
   HISTORIK.ugentligFra = dayKey(firstRun);
+  HISTORIK.fra = meta.historik && meta.historik.fra ? dayKey(new Date(meta.historik.fra)) : HISTORIK.ugentligFra;
+  const hbNu = (hb && hb[`hb${HB_AAR - 1}`] && hb[`hb${HB_AAR - 1}`].foreninger) || {};
   const historik = !!(meta.historik && meta.historik.fra && HISTORIK.hentet.size);
   const dataFra = historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
 
@@ -185,6 +221,9 @@ async function load() {
     // Varsel kan kun måles for aktiviteter opdaget efter dataindsamlingen startede.
     f.varsel = median(gyldige.filter(e => !e.historisk && e.firstD - firstRun > DAY).map(e => (e.startD - e.firstD) / DAY));
     if (!f.national) {
+      f.hbKv = Object.fromEntries(HB_KVARTALER.map(k => [k.id, hbKvartal(f, k)]));
+      f.hb = hbPrognose(f);
+      f.hbNu = hbNu[f.navn] || null; // årets HB-status og mangler fra data/hb.json
       f.merged = topojson.merge(topo, topo.objects.kom.geometries.filter(g => g.properties.forening === f.navn));
       f.bounds = d3.geoBounds(f.merged);
     }
@@ -193,6 +232,7 @@ async function load() {
   for (const feat of features) {
     const f = byName.get(feat.properties.forening);
     feat.properties.status = f.status;
+    feat.properties.hb = f.hb;
     for (const k of KVARTALER) feat.properties['kv_' + k.id] = kvStatus(f, k);
   }
   const lokale = foreninger.filter(f => !f.national);
@@ -238,8 +278,11 @@ const mapPadding = () => (calloutsEnabled() ? 48 : 20);
 const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
 const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
 const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 'ukendt', 0.35, 0.25];
+const HB_COLOR = ['match', ['get', 'hb'], 'paa_vej', HB_FILL.paa_vej, 'i_fare', HB_FILL.i_fare, 'ikke', HB_FILL.ikke, HB_FILL.ukendt];
+const HB_OPACITY = ['match', ['get', 'hb'], 'ukendt', 0.35, 0.6];
 /** Foreningens farve og forklaring i den valgte farvning. */
 function farveFor(f) {
+  if (farvning === 'hb') return f.hb ? {farve: HB_FILL[f.hb], label: HB_STATUS[f.hb].label} : {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'};
   const k = valgtKvartal();
   if (!k) return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
   const s = kvStatus(f, k);
@@ -250,10 +293,10 @@ function applyFill() {
   if (!MAP.ready) return;
   const f = selected && DATA.byName.get(selected);
   const local = f && !f.national ? f.navn : '';
-  const k = valgtKvartal();
-  MAP.map.setPaintProperty('kom-fill', 'fill-color', k ? kvColor(k) : STATUS_COLOR);
+  const k = valgtKvartal(), hb = farvning === 'hb';
+  MAP.map.setPaintProperty('kom-fill', 'fill-color', hb ? HB_COLOR : k ? kvColor(k) : STATUS_COLOR);
   MAP.map.setPaintProperty('kom-fill', 'fill-opacity',
-    local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : k ? kvOpacity(k) : FILL_OPACITY);
+    local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
 }
 
 function setFarvning(mode) {
@@ -563,7 +606,8 @@ function renderLayerToggles() {
   const toggles = MAP_LAYERS.filter(l => l.toggle && (!l.synlig || l.synlig(ctx)));
   el.innerHTML = `<label title="Farv lokalforeningerne efter nuværende aktivitet eller efter, om de har afholdt noget i et kvartal">Farv efter
     <select data-farvning><option value="status">Aktivitet nu</option>${KVARTALER.map(k =>
-      `<option value="${k.id}"${farvning === k.id ? ' selected' : ''}>Afholdt i ${esc(k.kort)}</option>`).join('')}</select></label>`
+      `<option value="${k.id}"${farvning === k.id ? ' selected' : ''}>Afholdt i ${esc(k.kort)}</option>`).join('')}
+      <option value="hb"${farvning === 'hb' ? ' selected' : ''}>HB-godkendelse ${HB_AAR}</option></select></label>`
     + toggles.map(l => `<label><input type="checkbox" data-layer="${esc(l.id)}"${layerState[l.id] ? ' checked' : ''}> ${esc(l.label)}</label>`).join('');
   el.querySelector('[data-farvning]').addEventListener('change', ev => setFarvning(ev.target.value));
   el.querySelectorAll('[data-layer]').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); }));
@@ -613,6 +657,10 @@ function hoverForening(navn, ev) {
   if (!navn || !ev) return hideTip();
   const f = DATA.byName.get(navn);
   const next = f.naeste ? `Næste: ${fmtDay.format(f.naeste.startD)} – ${f.naeste.navn}` : 'Ingen planlagte aktiviteter';
+  if (farvning === 'hb' && f.hb) {
+    const kv = HB_KVARTALER.map(q => `${q.kort}: ${HB_KV[f.hbKv[q.id]].label}`).join(' · ');
+    return showTip(ev, [visningsnavn(f), HB_STATUS[f.hb].label, kv]);
+  }
   const k = valgtKvartal();
   const linje = !k ? STATUS[f.status].label : f.kv[k.id] ? `Afholdt i ${k.kort}: ${f.kv[k.id]}` : kvartalStatus(k)[kvStatus(f, k)].label;
   showTip(ev, [visningsnavn(f), linje, next]);
@@ -831,6 +879,21 @@ registerSection({
   render: f => evList(f.upcoming, false),
 });
 registerSection({
+  id: 'hb', titel: `HB-godkendelse ${HB_AAR}`, synlig: f => !f.national,
+  render(f) {
+    const kv = HB_KVARTALER.map(k => {
+      const s = HB_KV[f.hbKv[k.id]];
+      return `<span class="status"><span class="dot" style="background:${s.farve}"></span>${esc(k.kort)}: ${esc(s.label)}</span>`;
+    }).join('');
+    const nu = f.hbNu;
+    const nuTekst = !nu ? '' : `<p class="note"><b>HB ${HB_AAR - 1}:</b> ${esc({godkendt: 'Godkendt', ikke_godkendt: 'Ikke godkendt', uafklaret: 'Uafklaret'}[nu.status] || nu.status)}${
+      nu.mangler && nu.mangler.length ? ` – mangler: ${esc(nu.mangler.join('; '))}` : ''}${nu.note ? `. ${esc(nu.note)}` : ''}</p>`;
+    return `<div class="hb-prognose"><span class="dot" style="background:${HB_FILL[f.hb]}"></span>${esc(HB_STATUS[f.hb].label)}</div>
+      <div class="kvartaler">${kv}</div>
+      <p class="note">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}.</p>${nuTekst}`;
+  },
+}, {efter: 'kommende'});
+registerSection({
   id: 'aar', titel: 'Aktiviteter det seneste år',
   render(f) {
     const startKey = monthKey(DATA.dataFra);
@@ -985,6 +1048,15 @@ function closeForening() {
 }
 
 function renderLegend() {
+  const tegnforklaring = '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
+    + '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>';
+  if (farvning === 'hb') {
+    const brugt = new Set(DATA.lokale.map(f => f.hb));
+    $('legend').innerHTML = Object.entries(HB_STATUS).filter(([k]) => brugt.has(k))
+      .map(([k, s]) => `<span><span class="swatch" style="background:${HB_FILL[k]};opacity:.8"></span>${esc(s.label)}</span>`).join('')
+      + `<span class="muted">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}</span>` + tegnforklaring;
+    return;
+  }
   const kv = valgtKvartal();
   let [labels, fills] = kv ? [kvartalStatus(kv), KVARTAL_FILL] : [STATUS, MAP_FILL];
   if (kv && !DATA.foreninger.some(f => kvStatus(f, kv) === 'ukendt')) { labels = {...labels}; delete labels.ukendt; }

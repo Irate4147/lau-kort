@@ -1,9 +1,33 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T14:17:17Z",
+ "beregnet": "2026-09-28T14:21:21Z",
  "idag": "2026-09-28",
- "data_fra": "2026-01-01",
+ "data_fra": {
+  "Aalborg": "2026-01-01",
+  "Aarhus": "2026-01-01",
+  "Bornholm": "2026-01-01",
+  "Egedal-Furesø": "2026-01-01",
+  "Frederiksberg": "2026-01-01",
+  "Fyn": "2026-01-01",
+  "Herning": "2026-01-01",
+  "Horsens": "2026-09-28",
+  "Kolding": "2026-09-28",
+  "Kronjylland": "2026-09-28",
+  "København": "2026-09-28",
+  "Køge Bugt": "2026-09-28",
+  "Nordkøbenhavn": "2026-09-28",
+  "Nordsjælland": "2026-09-28",
+  "Næstved": "2026-09-28",
+  "Roskilde": "2026-09-28",
+  "Silkeborg": "2026-09-28",
+  "Sydvestjylland": "2026-09-28",
+  "Sønderjylland": "2026-09-28",
+  "Vejle": "2026-09-28",
+  "Vestegnen": "2026-09-28",
+  "Vestsjælland": "2026-09-28",
+  "Viborg": "2026-09-28"
+ },
  "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
  "foreninger": {
   "Aalborg": {
@@ -638,26 +662,26 @@
    }
   },
   "Kronjylland": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -672,9 +696,9 @@
    }
   },
   "København": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 2. kvartal 2026"
+    "2. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
@@ -688,7 +712,7 @@
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -722,26 +746,26 @@
    }
   },
   "Køge Bugt": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -756,25 +780,25 @@
    }
   },
   "Nordkøbenhavn": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -794,25 +818,25 @@
    }
   },
   "Nordsjælland": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -832,25 +856,25 @@
    }
   },
   "Næstved": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -882,25 +906,25 @@
    }
   },
   "Roskilde": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -928,26 +952,26 @@
    }
   },
   "Silkeborg": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -965,26 +989,26 @@
    }
   },
   "Sydvestjylland": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -999,26 +1023,26 @@
    }
   },
   "Sønderjylland": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -1035,26 +1059,26 @@
    }
   },
   "Vejle": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -1073,26 +1097,26 @@
    }
   },
   "Vestegnen": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -1107,26 +1131,26 @@
    }
   },
   "Vestsjælland": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
-    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "mangler",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -1144,20 +1168,20 @@
    }
   },
   "Viborg": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026",
-    "Intet arrangement i 2. kvartal 2026",
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
