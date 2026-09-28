@@ -66,6 +66,8 @@ h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 }
 .map-actions, .layer-toggles { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; }
 .layer-toggles:empty { display: none; }
+.layer-toggles select { font: inherit; font-size: 13px; padding: 1px 4px; border-radius: 6px; border: 1px solid var(--axis); background: var(--surface-1); color: var(--text-primary); }
+.legend .warn { color: #b3261e; font-weight: 500; }
 .layer-toggles label { font-size: 13px; color: var(--text-secondary); display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--text-secondary); margin-left: auto; }
 .legend span { display: inline-flex; align-items: center; gap: 5px; }
@@ -153,6 +155,7 @@ ul.rank .sub { grid-column: 2 / 4; color: var(--muted); font-size: 12px; overflo
 
 .back { border: 0; background: none; color: var(--link); cursor: pointer; padding: 0; font-size: 13px; margin-bottom: 10px; }
 .sidebar h2.fname { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; text-transform: none; color: var(--text-primary); }
+.kvartaler { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .kommuner { color: var(--text-secondary); font-size: 12px; margin-top: 4px; }
 .fb { display: inline-block; margin-top: 6px; font-size: 13px; }
 
