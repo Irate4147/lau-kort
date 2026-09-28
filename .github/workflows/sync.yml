@@ -34,6 +34,9 @@ jobs:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: python3 scripts/sync.py
 
+      - name: Beregn HB-prognose (kvartalskrav)
+        run: python3 scripts/hb.py
+
       - name: Gem data
         run: |
           git config user.name "github-actions[bot]"

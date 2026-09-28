@@ -16,6 +16,12 @@ Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik [ÅÅÅÅ-MM-DD]`. B
 
 Over kortet kan "Farv efter" sættes til et af årets kvartaler (Q1, Q2, …): lokalforeningerne farves grønne, hvis de har afholdt mindst én aktivitet i kvartalet, og røde, hvis ikke.
 
+## HB-godkendelse
+
+- `data/hb.json`: kriterierne fra Organisationshåndbogen (8.2) og årets HB-status pr. forening (fra overblikket på Drive, og for de røde foreninger efter gennemgang af deres mappe). Indeholder kun status og mangler, ingen persondata.
+- `scripts/hb.py [ÅR]` sammenholder `data/events.json` med kvartalskravet (mindst ét afholdt arrangement pr. kvartal; om det er fagligt, vurderes ikke) og skriver `data/hb_<ÅR+1>.json` med status pr. kvartal (`ja`, `nej`, `ukendt`, `planlagt`, `mangler`), en prognose og begrundelser. Kører automatisk efter den ugentlige sync.
+  Et kvartal bliver kun `nej`, når data dækker hele kvartalet (se `data_fra`), så manglende historik giver `ukendt` i stedet for et forkert nej.
+
 ## Ændringer
 
 - **Foreninger, Facebook-sider og kommuner:** `data/foreninger.json`. Nye Facebook-sider skal også tilføjes i fanen "Foreninger" i regnearket, ellers bliver de ikke scrapet.

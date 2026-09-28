@@ -1,0 +1,891 @@
+{
+ "aar": 2026,
+ "hb_aar": 2027,
+ "beregnet": "2026-09-28T13:56:44Z",
+ "idag": "2026-09-28",
+ "data_fra": "2026-09-28",
+ "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
+ "foreninger": {
+  "Aalborg": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-02",
+       "navn": "Fredagscafé med Debat"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Aarhus": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Bornholm": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-19",
+       "navn": "Oplæg med Anton Leopold Krogh"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Generalforsamlingsreferat 2025 (kan ifølge foreningen ikke fremvises)",
+     "Dokumentation for bankkonto",
+     "Regnskab 2025 (foreningen oplyser, at der ikke var regnskab eller udgifter)"
+    ],
+    "note": "Begivenhedsreferater og GF-referat 2026 er kun linket til en ekstern SharePoint og ligger ikke i mappen."
+   }
+  },
+  "Egedal-Furesø": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Frederiksberg": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Fyn": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-02",
+       "navn": "Indvielse af vores nye lokaler"
+      },
+      {
+       "dato": "2026-10-28",
+       "navn": "LAU Fyn tager til Alex Vanopslaghs bogturné!"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Fagligt arrangement i 4. kvartal 2025 (sidste arrangement i referatet er 25/9-2025)"
+    ],
+    "note": "1. kvartal 2025 er kun en fredagsbar med kandidater, hvilket er på grænsen til fagligt. Regnskab, GF-referater, vedtægter og bank ligger i mappen."
+   }
+  },
+  "Herning": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Begivenhedsreferater for 2025 (foreningen skriver selv, at de ikke er udarbejdet og ikke møder HB-kravet)"
+    ],
+    "note": "Regnskab 2025 er kun underskrevet af kassereren."
+   }
+  },
+  "Horsens": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-18",
+       "navn": "Brætspils hygge på tværs af ungdomspartier i Horsens"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Kolding": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data (ingen Facebook-side)",
+    "2. kvartal 2026: ingen data (ingen Facebook-side)",
+    "3. kvartal 2026: ingen data (ingen Facebook-side)",
+    "4. kvartal 2026: ingen data (ingen Facebook-side)"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt",
+    "note": "Repræsentantark: kan først deltage, når bestyrelsen er sat."
+   }
+  },
+  "Kronjylland": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "København": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-09-29",
+       "navn": "Keynote om social- og sundhedspolitik med David Klausen"
+      }
+     ]
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-13",
+       "navn": "Keynote/oplæg om økonomi og erhverv med Victor Galland"
+      },
+      {
+       "dato": "2026-12-03",
+       "navn": "LAU København besøger Carlsberg 🍻💙"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Køge Bugt": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Nordkøbenhavn": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-15",
+       "navn": "Oplæg med Nicolai Melholt"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Nordsjælland": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-08",
+       "navn": "Ekstraordinær generalforsamling"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Næstved": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-05",
+       "navn": "oplæg med Økonomi & Erhvervsordøre Victor galland"
+      },
+      {
+       "dato": "2026-10-19",
+       "navn": "oplæg med Social- og Sundhedsordfører David Klausen"
+      },
+      {
+       "dato": "2026-11-05",
+       "navn": "Oplæg med Fhv. Folketingsmedlem Sandra Skalvig"
+      },
+      {
+       "dato": "2026-11-10",
+       "navn": "Tag med til \" der er et myndigt land \""
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Roskilde": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "planlagt",
+     "afholdt": [],
+     "planlagt": [
+      {
+       "dato": "2026-10-06",
+       "navn": "Bestyrelsesmøde Oktober"
+      },
+      {
+       "dato": "2026-11-03",
+       "navn": "Bestyrelsesmøde November"
+      },
+      {
+       "dato": "2026-12-01",
+       "navn": "Bestyrelsesmøde December"
+      }
+     ]
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Silkeborg": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Ingen dokumenter uploadet (kun den tomme bekræftelsesskabelon)"
+    ]
+   }
+  },
+  "Sydvestjylland": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Sønderjylland": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "uafklaret",
+    "mangler": [],
+    "note": "Mappen er komplet: begivenhedsreferater med arrangementer i alle fire kvartaler af 2025, GF 2025, GF 2026 med godkendt regnskab, bank og vedtægter. Den er formentlig markeret rød, fordi referatet kom sent. Skal vurderes manuelt: 4. kvartal er plakatnedtagning med oplæg om konstituering (på grænsen til fagligt), og selve regnskabstallene i 'Regnskab og bank.pdf' kan ikke læses som tekst."
+   }
+  },
+  "Vejle": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Begivenhedsreferater for 2025"
+    ],
+    "note": "GF-referat, regnskab 2025, vedtægter og bank-screenshot ligger i mappen."
+   }
+  },
+  "Vestegnen": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "godkendt"
+   }
+  },
+  "Vestsjælland": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Ingen dokumenter uploadet (kun den tomme bekræftelsesskabelon)"
+    ]
+   }
+  },
+  "Viborg": {
+   "prognose": "ukendt",
+   "grunde": [
+    "1. kvartal 2026: ingen data",
+    "2. kvartal 2026: ingen data",
+    "3. kvartal 2026: ingen data",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
+   ],
+   "kvartaler": {
+    "Q1": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q2": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q3": {
+     "status": "ukendt",
+     "afholdt": [],
+     "planlagt": []
+    },
+    "Q4": {
+     "status": "mangler",
+     "afholdt": [],
+     "planlagt": []
+    }
+   },
+   "hb2026": {
+    "status": "ikke_godkendt",
+    "mangler": [
+     "Fagligt arrangement i 3. og 4. kvartal 2025 (referatet har kun 13/3 og 14/5-2025)"
+    ],
+    "note": "GF 2026, ekstraordinære GF'er, regnskab, bank og vedtægter ligger i mappen."
+   }
+  }
+ }
+}
