@@ -190,7 +190,7 @@ const VISNINGER = [
   {id: 'kommunegraenser', gruppe: 'kort', label: 'Kommunegrænser'},
   {id: 'stednavne', gruppe: 'kort', label: 'Stednavne på grundkortet'},
   {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
-  {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender'},
+  {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender', standard: false},
 ];
 for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, synlig?(f), render(f) -> html, efter?(el, f)}. */
