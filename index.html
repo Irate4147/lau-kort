@@ -13,7 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
-<script src="app.js?v=2026-09-28l" defer></script>
+<script src="app.js?v=2026-09-28m" defer></script>
 </head>
 <body>
 <div class="app viz-root">
@@ -30,14 +30,6 @@
         <h1>LAU's foreninger</h1>
         <p class="updated" id="updated"></p>
       </header>
-      <div class="tiles" id="tiles"></div>
-      <h2>Det næste kvartal</h2>
-      <div id="list-14"></div>
-      <h2>Alle foreninger</h2>
-      <label class="sort">Sortér efter
-        <select id="rank-sort"></select>
-      </label>
-      <ul class="rank" id="rank"></ul>
       <div id="overview-admin" hidden>
         <h2>Momentum</h2>
         <div id="momentum-overblik"></div>
@@ -45,6 +37,12 @@
         <p class="note">Afholdt de seneste 90 dage og planlagt.</p>
         <div id="chart-activity"></div>
       </div>
+      <div class="tiles" id="tiles"></div>
+      <h2>Alle foreninger</h2>
+      <label class="sort">Sortér efter
+        <select id="rank-sort"></select>
+      </label>
+      <ul class="rank" id="rank"></ul>
       <p class="method" id="method"></p>
     </section>
     <section class="side-view" id="side-forening" hidden>

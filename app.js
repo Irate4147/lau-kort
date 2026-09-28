@@ -1188,10 +1188,6 @@ function renderOverview() {
       [tidligere, dataKort].filter(Boolean).join(' · ') || 'Lokalforeninger med afholdt aktivitet')
     + tile('Afholdte registreret', String(afholdt), `Siden ${fmtDate.format(dataFra)}`));
 
-  const l14 = $('list-14');
-  l14.innerHTML = evList(soon, true, 'Ingen aktiviteter det næste kvartal.');
-  bindForeningLinks(l14);
-
   renderRank();
 
   $('overview-admin').hidden = !erAdmin();
