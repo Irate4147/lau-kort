@@ -52,22 +52,21 @@ Sidepanelet har disse faner:
 
 ## Momentum
 
-Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på vej med at afholde arrangementer – og et tidligt varsel om, at den har brug for hjælp. Den bygger på to tal:
+Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på vej med at afholde arrangementer – og et tidligt varsel om, at den har brug for hjælp.
 
-- **Bagud:** afholdte arrangementer de seneste 60 dage.
-- **Frem:** arrangementer i kalenderen de næste 60 dage.
+Hver forening måles mod **sin egen rytme**: hvor mange dage der normalt går mellem dens arrangementer. Rytmen er den gennemsnitlige afstand mellem afholdte arrangementer det seneste år (så langt data dækker), men mindst 31 dage (en stor forening skal holde mindst ét om måneden) og højst 61 dage (en lille kan nøjes med hver anden måned). Med under 120 dages historik bruges 61 dage. Rytmen kan sættes fast med `"momentum_rytme": 31` i `data/foreninger.json`.
 
-| Niveau | Regel |
+| Niveau | Regel (d = dage siden sidste arrangement, R = rytmen) |
 |---|---|
-| ↗ Godt i gang | begge > 0 og mindst 4 i alt (≈ én om måneden) |
-| → Stabil | begge > 0 |
-| ⤴ Går fremad | intet afholdt, men noget i kalenderen |
-| ↘ Mister fart | afholdt, men intet i kalenderen |
-| ⚠ Brug for hjælp | hverken afholdt eller planlagt |
+| ↗ Godt i gang | d ≤ R og noget i kalenderen de næste 60 dage |
+| → Stabil | d ≤ R, intet i kalenderen endnu (begivenheder oprettes ofte sent) |
+| ⤴ Går fremad | d > R, men noget i kalenderen |
+| ↘ Mister fart | R < d ≤ 2R og intet i kalenderen |
+| ⚠ Brug for hjælp | d > 2R og intet i kalenderen |
 
-(plus "historik mangler", når intet er afholdt, og data ikke dækker de seneste 60 dage.) Derudover vises advarsler: mange dage siden sidste arrangement (> 45), intet i kalenderen / næste først om > 30 dage, færre afholdt end de 60 dage før (når data dækker det) og aflyste arrangementer.
+(plus "historik mangler", når intet er afholdt, og data højst dækker R dage.) Advarslerne forklarer niveauet: dage siden sidste mod rytmen, intet i kalenderen, færre afholdt end de 60 dage før og aflyste arrangementer.
 
-Oversigten har antal pr. niveau, et punktdiagram (afholdt × planlagt) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_BAGUD`, `MOM_FREMAD` og `MOM_GODT` i `app.js`.
+Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næste arrangement, med rytmen i baggrunden) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, `MOM_BAGUD` og `MOM_FREMAD` i `app.js`.
 
 ## Rettelser af arrangementer
 
