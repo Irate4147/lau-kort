@@ -197,7 +197,9 @@ const VISNINGER = [
   {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
   {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender'},
 ];
-for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
+// Kalenderen er åben som standard, men kun på computer – på mobil fylder den det meste af skærmen.
+const erMobil = matchMedia('(max-width: 760px)').matches;
+for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.id === 'kalender' ? !erMobil : v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, admin?, synlig?(f), render(f) -> html, efter?(el, f)}. admin: true = kun for admins. */
 function registerSection(sec, {efter} = {}) {
   const i = efter ? PANEL_SECTIONS.findIndex(s => s.id === efter) : -1;
@@ -1925,8 +1927,9 @@ const KAL = {
 };
 const gemKalValg = () => { try { localStorage.setItem('lau-kalender', JSON.stringify(KAL.valg)); } catch (_) { /* fx privat vindue */ } };
 const fmtMaaned = new Intl.DateTimeFormat('da-DK', {month: 'long', year: 'numeric', timeZone: 'UTC'});
-// .ics-filerne læses fra repoet (som data/), så de er friske, selv før Pages er genudgivet.
-const kalUrl = fil => new URL(`kalender/${fil}`, CONFIG.dataBase || new URL(CONFIG.assetBase || '.', location.href)).href;
+// Skal hentes fra Pages (ikke raw.githubusercontent.com som data/): rå GitHub-URL'er sender
+// Content-Type: text/plain, som Google Kalender afviser ("kunne ikke indlæses") – Pages sender text/calendar.
+const kalUrl = fil => new URL(`kalender/${fil}`, new URL(CONFIG.assetBase || '.', location.href)).href;
 
 const kalValgte = () => KAL.valg.filter(n => DATA.byName.has(n) && n !== NATIONAL);
 function kalEvents() {
@@ -1996,9 +1999,9 @@ function renderKalender() {
     <div class="kal-abonner">
       <button type="button" class="linkbtn" data-kal-abonner aria-expanded="${KAL.abonner}">＋ Tilføj til din kalender</button>
       ${KAL.abonner ? `<p class="note">Abonnér – kalenderen opdateres automatisk${valg.length > 1 ? '. Ved flere foreninger: tilføj hver kalender (landsforeningen kun én gang)' : ''}.</p>
-        ${kalFiler().map(k => { const url = kalUrl(k.fil); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
-          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(url)}" target="_blank" rel="noopener">Google</a>
-          <a href="${esc(url.replace(/^https?:/, 'webcal:'))}">Apple/Outlook</a>
+        ${kalFiler().map(k => { const url = kalUrl(k.fil), webcal = url.replace(/^https?:/, 'webcal:'); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">Google</a>
+          <a href="${esc(webcal)}">Apple/Outlook</a>
           <button type="button" class="linkbtn" data-kal-kopier="${esc(url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>`; }).join('')}
         <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>` : ''}
     </div>`;
@@ -2019,7 +2022,10 @@ function renderKalender() {
   q('[data-kal-idag]').forEach(b => b.addEventListener('click', () => { KAL.maaned = monthKey(NOW); KAL.dag = null; igen(); }));
   q('[data-kal-dag]').forEach(b => b.addEventListener('click', () => { hideTip(); KAL.dag = KAL.dag === b.dataset.kalDag ? null : b.dataset.kalDag; igen(); }));
   q('[data-kal-ryd]').forEach(b => b.addEventListener('click', () => { KAL.dag = null; igen(); }));
-  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => { KAL.abonner = !KAL.abonner; igen(); }));
+  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => {
+    KAL.abonner = !KAL.abonner; igen();
+    if (KAL.abonner) el.querySelector('.kal-abonner')?.scrollIntoView({block: 'nearest'});
+  }));
   q('[data-kal-kopier]').forEach(b => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(b.dataset.kalKopier); b.lastChild.textContent = ' Kopieret'; }
     catch (_) { prompt('Kopiér linket:', b.dataset.kalKopier); }

@@ -28,7 +28,7 @@ Knappen **📅 Kalender** over kortet (eller *Kalender* under Visninger) viser/s
 - `<forening>-kun.ics` + `landsforeningen.ics` – til flere foreninger, så landsforeningen ikke kommer med flere gange
 - `alle.ics` – alle arrangementer
 
-Linket er fx `https://raw.githubusercontent.com/Irate4147/lau-kort/main/kalender/naestved.ics`. Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
+Linket er fx `https://irate4147.github.io/lau-kort/kalender/naestved.ics` (Pages, ikke raw.githubusercontent.com – den sender `Content-Type: text/plain`, som bl.a. Google Kalender afviser). Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
 
 Sidepanelet har disse faner:
 
