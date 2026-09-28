@@ -23,7 +23,8 @@ const CONFIG = Object.assign({
 const TZ = 'Europe/Copenhagen';
 const DAY = 864e5;
 const NOW = new Date();
-const H14 = new Date(NOW.getTime() + 14 * DAY);
+// Standardvisningen "Aktivitet nu" viser alt inden for det næste kvartal regnet fra i dag.
+const H_KVARTAL = (() => { const d = new Date(NOW); d.setUTCMonth(d.getUTCMonth() + 3); return d; })();
 // Tidligere aktiviteter vises offentligt højst et år tilbage (admins ser alle).
 const ET_AAR_SIDEN = new Date(NOW.getTime() - 365 * DAY);
 const NEW_DAYS = 7;
@@ -34,7 +35,7 @@ const LABEL_AT = {'København': [12.578, 55.643], 'Frederiksberg': [12.515, 55.6
 const MAP_FILL = {snart: '#2a78d6', planlagt: '#86b6ef', ingen: '#b8b6ae', ingenfb: '#d9d7d0'};
 const FILL_OPACITY = ['match', ['get', 'status'], 'snart', 0.55, 'planlagt', 0.55, 'ingen', 0.3, 0.25];
 const STATUS = {
-  snart:    {label: 'Aktivitet inden for 14 dage'},
+  snart:    {label: 'Aktivitet inden for det næste kvartal'},
   planlagt: {label: 'Aktiviteter planlagt senere'},
   ingen:    {label: 'Intet planlagt'},
   ingenfb:  {label: 'Ingen Facebook-side tilknyttet'},
@@ -249,7 +250,9 @@ const VISNINGER = [
   {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
   {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender'},
 ];
-for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
+// Kalenderen er åben som standard, men kun på computer – på mobil fylder den det meste af skærmen.
+const erMobil = matchMedia('(max-width: 760px)').matches;
+for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.id === 'kalender' ? !erMobil : v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, admin?, synlig?(f), render(f) -> html, efter?(el, f)}. admin: true = kun for admins. */
 function registerSection(sec, {efter} = {}) {
   const i = efter ? PANEL_SECTIONS.findIndex(s => s.id === efter) : -1;
@@ -443,7 +446,7 @@ function beregn() {
     e.ny = !e.historisk && !e.manuel && NOW - e.firstD < NEW_DAYS * DAY;
     e.foreninger = e.foreninger || [e.forening];
     e.national = e.forening === NATIONAL;
-    e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H14;
+    e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H_KVARTAL;
   }
   const events = alle.filter(e => !e.skjult);
   const byName = new Map();
@@ -454,7 +457,7 @@ function beregn() {
     f.events = ev;
     f.gyldige = gyldige;
     f.upcoming = ev.filter(e => !e.forsvundet && e.slutD >= NOW);
-    f.within14 = f.upcoming.filter(e => e.startD <= H14);
+    f.within14 = f.upcoming.filter(e => e.startD <= H_KVARTAL);
     f.planlagt = gyldige.filter(e => e.slutD >= NOW);
     f.afholdt = gyldige.filter(e => e.slutD < NOW);
     f.afholdt90 = f.afholdt.filter(e => NOW - e.startD <= 90 * DAY);
@@ -526,6 +529,11 @@ function largestPolygon(geom) {
 
 const calloutsEnabled = () => { const el = $('map'); return el.clientWidth >= 420 && el.clientHeight >= 280; };
 const mapPadding = () => (calloutsEnabled() ? 48 : 20);
+// Ved oversigten (ingen forening valgt) er der en boks pr. lokalforening – ligesom stednavne på Google Maps skal de
+// først dukke op, når man er zoomet tæt nok på til, at det ikke bliver overvældende. Med en forening valgt er
+// mængden allerede afgrænset af fitBounds, så der zoomes ikke ekstra ind der.
+const CALLOUT_MIN_ZOOM = 8;
+const calloutsTooFarUde = () => !selected && MAP.map.getZoom() < CALLOUT_MIN_ZOOM;
 
 const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
 const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
@@ -700,7 +708,7 @@ function addBaseLayers() {
   }
 }
 
-/** Hvilke aktiviteter vises (overblik: næste 14 dage; forening: dens kommende + landsforeningens i området). */
+/** Hvilke aktiviteter vises (overblik: det næste kvartal fra i dag; forening: dens kommende + landsforeningens i området). */
 function eventsFor(navn) {
   const f = navn && DATA.byName.get(navn);
   let list;
@@ -712,6 +720,25 @@ function eventsFor(navn) {
     list = [...f.upcoming, ...lands];
   }
   return list.filter(e => (layerState.aflyste || !e.aflyst) && (layerState.landsforeningen || !e.national || (f && f.national)));
+}
+
+/**
+ * Begivenhedsboksene ved oversigten (ingen forening valgt): højst én boks pr. lokalforening (dens næste), så kortet
+ * ikke bliver overfyldt med alle landets kommende aktiviteter på én gang. De øvrige ses stadig som prikker (eventsFor).
+ * Med en forening valgt er mængden allerede afgrænset, så alle dens bokse vises som hidtil.
+ */
+function calloutEventsFor(navn, list) {
+  if (navn) return list;
+  const naeste = new Map();
+  for (const e of list) {
+    if (e.national) continue;
+    for (const nav of e.foreninger) {
+      if (nav === NATIONAL) continue;
+      const cur = naeste.get(nav);
+      if (!cur || e.startD < cur.startD) naeste.set(nav, e);
+    }
+  }
+  return [...naeste.values()];
 }
 
 function setMode(navn, {animate = true, fit = true} = {}) {
@@ -726,7 +753,7 @@ function setMode(navn, {animate = true, fit = true} = {}) {
   const ids = list.map(e => e.id);
   map.setFilter('ev-local', ['all', ['in', ['get', 'id'], ['literal', ids]], ['!', ['get', 'national']]]);
   map.setFilter('ev-national', ['all', ['in', ['get', 'id'], ['literal', ids]], ['get', 'national']]);
-  setCalloutItems(list);
+  setCalloutItems(calloutEventsFor(navn, list));
 
   const bounds = local ? f.bounds : DK_BOUNDS;
   if (fit) map.fitBounds(bounds, {padding: mapPadding(), duration: animate ? 900 : 0, maxZoom: 11});
@@ -762,7 +789,7 @@ function layoutCallouts() {
   if (!MAP.map || !MAP.overlay) return;
   const W = MAP.overlay.clientWidth, H = MAP.overlay.clientHeight;
   const note = MAP.overlay.querySelector('.more-note');
-  if (!calloutsEnabled() || !layerState.bokse) {
+  if (!calloutsEnabled() || !layerState.bokse || calloutsTooFarUde()) {
     for (const c of MAP.cards.values()) c.hidden = true;
     MAP.leaders.innerHTML = '';
     note.hidden = true;
@@ -1124,7 +1151,7 @@ function renderOverview() {
   const dataKort = dataFra > new Date(KVARTALER[0].fra + 'T12:00:00Z') ? `Data kun fra ${fmtDate.format(dataFra)}` : '';
 
   $('tiles').innerHTML =
-    tile('Aktiviteter de næste 14 dage', String(soon.filter(e => !e.aflyst).length), null, true)
+    tile('Aktiviteter det næste kvartal', String(soon.filter(e => !e.aflyst).length), null, true)
     + tile('Planlagte aktiviteter', String(planlagt), 'Inkl. landsforeningens')
     + tile('Lokalforeninger med planer', `${medPlan} af ${lokale.length}`, `${lokale.filter(f => !f.facebook).length} uden Facebook-side`)
     // Statistik over afholdte aktiviteter er kun for admins.
@@ -1133,7 +1160,7 @@ function renderOverview() {
     + tile('Afholdte registreret', String(afholdt), `Siden ${fmtDate.format(dataFra)}`));
 
   const l14 = $('list-14');
-  l14.innerHTML = evList(soon, true, 'Ingen aktiviteter de næste 14 dage.');
+  l14.innerHTML = evList(soon, true, 'Ingen aktiviteter det næste kvartal.');
   bindForeningLinks(l14);
 
   renderRank();
@@ -1496,7 +1523,7 @@ function visFane(fane) {
 // ------------------------------------------------------------------ fane: visninger
 
 const FARVNINGER = () => [
-  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for 14 dage / planlagt senere / intet'},
+  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
   {id: 'momentum', admin: true, label: 'Momentum', hint: `Afholdt de seneste ${MOM_BAGUD} dage og planlagt de næste ${MOM_FREMAD} – tidlig advarsel`},
   ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
   {id: 'ingen', label: 'Ingen farve'},
@@ -2070,8 +2097,9 @@ const KAL = {
 };
 const gemKalValg = () => { try { localStorage.setItem('lau-kalender', JSON.stringify(KAL.valg)); } catch (_) { /* fx privat vindue */ } };
 const fmtMaaned = new Intl.DateTimeFormat('da-DK', {month: 'long', year: 'numeric', timeZone: 'UTC'});
-// .ics-filerne læses fra repoet (som data/), så de er friske, selv før Pages er genudgivet.
-const kalUrl = fil => new URL(`kalender/${fil}`, CONFIG.dataBase || new URL(CONFIG.assetBase || '.', location.href)).href;
+// Skal hentes fra Pages (ikke raw.githubusercontent.com som data/): rå GitHub-URL'er sender
+// Content-Type: text/plain, som Google Kalender afviser ("kunne ikke indlæses") – Pages sender text/calendar.
+const kalUrl = fil => new URL(`kalender/${fil}`, new URL(CONFIG.assetBase || '.', location.href)).href;
 
 const kalValgte = () => KAL.valg.filter(n => DATA.byName.has(n) && n !== NATIONAL);
 function kalEvents() {
@@ -2141,9 +2169,9 @@ function renderKalender() {
     <div class="kal-abonner">
       <button type="button" class="linkbtn" data-kal-abonner aria-expanded="${KAL.abonner}">＋ Tilføj til din kalender</button>
       ${KAL.abonner ? `<p class="note">Abonnér – kalenderen opdateres automatisk${valg.length > 1 ? '. Ved flere foreninger: tilføj hver kalender (landsforeningen kun én gang)' : ''}.</p>
-        ${kalFiler().map(k => { const url = kalUrl(k.fil); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
-          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(url)}" target="_blank" rel="noopener">Google</a>
-          <a href="${esc(url.replace(/^https?:/, 'webcal:'))}">Apple/Outlook</a>
+        ${kalFiler().map(k => { const url = kalUrl(k.fil), webcal = url.replace(/^https?:/, 'webcal:'); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">Google</a>
+          <a href="${esc(webcal)}">Apple/Outlook</a>
           <button type="button" class="linkbtn" data-kal-kopier="${esc(url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>`; }).join('')}
         <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>` : ''}
     </div>`;
@@ -2164,7 +2192,10 @@ function renderKalender() {
   q('[data-kal-idag]').forEach(b => b.addEventListener('click', () => { KAL.maaned = monthKey(NOW); KAL.dag = null; igen(); }));
   q('[data-kal-dag]').forEach(b => b.addEventListener('click', () => { hideTip(); KAL.dag = KAL.dag === b.dataset.kalDag ? null : b.dataset.kalDag; igen(); }));
   q('[data-kal-ryd]').forEach(b => b.addEventListener('click', () => { KAL.dag = null; igen(); }));
-  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => { KAL.abonner = !KAL.abonner; igen(); }));
+  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => {
+    KAL.abonner = !KAL.abonner; igen();
+    if (KAL.abonner) el.querySelector('.kal-abonner')?.scrollIntoView({block: 'nearest'});
+  }));
   q('[data-kal-kopier]').forEach(b => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(b.dataset.kalKopier); b.lastChild.textContent = ' Kopieret'; }
     catch (_) { prompt('Kopiér linket:', b.dataset.kalKopier); }

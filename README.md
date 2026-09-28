@@ -1,6 +1,6 @@
 # LAU – lokalforeningernes aktiviteter
 
-Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (de næste 14 dage vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens kommende og tidligere arrangementer. Tidligere arrangementer vises offentligt (panel, kortlaget "Afholdte aktiviteter", kalenderen og .ics-filerne) højst et år tilbage; admins ser alle. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
+Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (det næste kvartal, regnet fra i dag, vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens kommende og tidligere arrangementer. Tidligere arrangementer vises offentligt (panel, kortlaget "Afholdte aktiviteter", kalenderen og .ics-filerne) højst et år tilbage; admins ser alle. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
 
 **Side:** https://irate4147.github.io/lau-kort/ – link direkte til en forening med `#Navn`, fx `#Næstved`.
 
@@ -28,11 +28,11 @@ Knappen **📅 Kalender** over kortet (eller *Kalender* under Visninger) viser/s
 - `<forening>-kun.ics` + `landsforeningen.ics` – til flere foreninger, så landsforeningen ikke kommer med flere gange
 - `alle.ics` – alle arrangementer
 
-Linket er fx `https://raw.githubusercontent.com/Irate4147/lau-kort/main/kalender/naestved.ics`. Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
+Linket er fx `https://irate4147.github.io/lau-kort/kalender/naestved.ics` (Pages, ikke raw.githubusercontent.com – den sender `Content-Type: text/plain`, som bl.a. Google Kalender afviser). Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
 
 Sidepanelet har disse faner:
 
-- **Oversigt** – de næste 14 dage og alle foreninger (klik for foreningspanelet). Admins ser også statistik (aktive i kvartalet, afholdte, [momentum](#momentum), aktivitet pr. forening).
+- **Oversigt** – det næste kvartal og alle foreninger (klik for foreningspanelet). Admins ser også statistik (aktive i kvartalet, afholdte, [momentum](#momentum), aktivitet pr. forening).
 - **Visninger** – farvning (aktivitet nu, ingen farve; for admins også momentum og afholdt i et kvartal) og til/fra for næsten alt på kortet: begivenhedsbokse, aktivitetspunkter, landsforeningens og aflyste aktiviteter, afholdte aktiviteter, foreningsnavne, grænser, kommunenavne, grundkortets stednavne og tegnforklaringen. Valgene huskes i browseren.
 - **HB** (kun admins) – alle HB-visninger (se nedenfor).
 - **Arrangementer** (kun admins) – alle arrangementer med filtre og redigering (se "Rettelser").
