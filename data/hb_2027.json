@@ -1,32 +1,103 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T13:56:44Z",
+ "beregnet": "2026-09-28T14:06:49Z",
  "idag": "2026-09-28",
- "data_fra": "2026-09-28",
+ "data_fra": "2026-01-01",
  "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
  "foreninger": {
   "Aalborg": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-10",
+       "navn": "🎅🏻🌲LAU AALBORGS LEGENDARISKE JULEFROKOST🎅🏻🌲"
+      },
+      {
+       "dato": "2026-01-16",
+       "navn": "💙 Introarrangement – Liberal Alliances Ungdom 💙"
+      },
+      {
+       "dato": "2026-02-16",
+       "navn": "🔷️Introduktion til liberalisme og LAU med Ezekild Rohde🔷️"
+      },
+      {
+       "dato": "2026-03-09",
+       "navn": "🩵Generalforsamling – LAU Aalborg🩵"
+      },
+      {
+       "dato": "2026-03-14",
+       "navn": "Valg-hyggeaften i LAU Aalborg 🇩🇰💙"
+      },
+      {
+       "dato": "2026-03-21",
+       "navn": "SIDSTE UGE. SIDSTE SPURT. 🔥🇩🇰"
+      },
+      {
+       "dato": "2026-03-28",
+       "navn": "Tour de Chambre"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-08",
+       "navn": "💙 Introarrangement – Lær LAU at kende💙"
+      },
+      {
+       "dato": "2026-04-21",
+       "navn": "Ekstraordinær generalforsamling i Liberal Alliances Ungdom"
+      },
+      {
+       "dato": "2026-04-23",
+       "navn": "💙 Debattræning & Turnering – Vind en SIGNERET Alex plakat 🔥"
+      },
+      {
+       "dato": "2026-05-12",
+       "navn": "💙 Brætspilsaften i LAU Aalborg 🎲"
+      },
+      {
+       "dato": "2026-05-26",
+       "navn": "💙 Grillaften i LAU Aalborg 🔥"
+      },
+      {
+       "dato": "2026-06-17",
+       "navn": "💙🎳 Ølbowlingturnering i LAU Aalborg 🍻"
+      },
+      {
+       "dato": "2026-06-23",
+       "navn": "💙 Sankt Hans-hygge i LAU Aalborg 🔥"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-18",
+       "navn": "Oplæg Udlændinge- og Integrationsordfører med Asta Georgsen"
+      },
+      {
+       "dato": "2026-08-26",
+       "navn": "kultur og ligestilling oplæg med Ella Nellemann"
+      },
+      {
+       "dato": "2026-09-15",
+       "navn": "🎲Brætspilsaften med LAU Aalborg🎲"
+      },
+      {
+       "dato": "2026-09-22",
+       "navn": "Oplæg med Dansk Zionistisk Forbund V. Max Meyer."
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -45,27 +116,83 @@
    }
   },
   "Aarhus": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-07",
+       "navn": "Oplæg “Barn af et tvangsægteskab”"
+      },
+      {
+       "dato": "2026-01-15",
+       "navn": "Oplæg om politisk kommunikation og kampagner"
+      },
+      {
+       "dato": "2026-01-21",
+       "navn": "Oplæg v. Allan Smith"
+      },
+      {
+       "dato": "2026-01-29",
+       "navn": "Tværpolitisk Skolevalgsfest"
+      },
+      {
+       "dato": "2026-02-01",
+       "navn": "Ordinær generalforsamling"
+      },
+      {
+       "dato": "2026-03-06",
+       "navn": "FT kickoff og kandidatpræsentation"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-17",
+       "navn": "Intro Arrangement"
+      },
+      {
+       "dato": "2026-04-30",
+       "navn": "**AFLYST/UDSKUDT**Oplæg v/ Mads Stange og Anton Leopold Krogh"
+      },
+      {
+       "dato": "2026-06-26",
+       "navn": "Det Liberale slag ⚽️🏆"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-05",
+       "navn": "AGF vs. Sabah FK med LAU Århus"
+      },
+      {
+       "dato": "2026-08-11",
+       "navn": "AGF vs. Sabah FK"
+      },
+      {
+       "dato": "2026-08-22",
+       "navn": "LAU Århus tager til landsmøde!"
+      },
+      {
+       "dato": "2026-08-28",
+       "navn": "Oplæg v/ medlem af Folketinget Carsten Bach"
+      },
+      {
+       "dato": "2026-09-19",
+       "navn": "LAU Århus flytter ud!"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -79,26 +206,34 @@
    }
   },
   "Bornholm": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-06-04",
+       "navn": "Bowling og pizza"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-11",
+       "navn": "🩵Oplæg med Landsformand Ezekiel Rohde🩵"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -123,27 +258,51 @@
    }
   },
   "Egedal-Furesø": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-26",
+       "navn": "Hvad er liberalisme? + Skriveri af ændringsforslag til landsmødet! Ved Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-02-26",
+       "navn": "Ordinær generalforsamling i LAU Egedal-Furesø"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-13",
+       "navn": "Introaften med Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-05-26",
+       "navn": "Åbent bestyrelsesmøde."
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-24",
+       "navn": "Oplæg med Retsordføre Nicolai Melholt"
+      },
+      {
+       "dato": "2026-09-08",
+       "navn": "Oplæg med Økonomi og Erhvervsordfører Victor Galland"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -157,27 +316,59 @@
    }
   },
   "Frederiksberg": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-15",
+       "navn": "Åbent bestyrelsesmøde"
+      },
+      {
+       "dato": "2026-02-12",
+       "navn": "Erfaringer som løsgænger i Folketinget v. Jon Stephensen"
+      },
+      {
+       "dato": "2026-02-25",
+       "navn": "LAU FREDERIKSBERG SKRIVER FORSLAG TIL LANDSMØDET"
+      },
+      {
+       "dato": "2026-03-20",
+       "navn": "STATUS PÅ FOLKETINGSVALGKAMPEN"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-29",
+       "navn": "GENERALFORSAMLING I LAU FREDERIKSBERG"
+      },
+      {
+       "dato": "2026-06-05",
+       "navn": "Borgerligt grundlovsmøde med LAU Frederiksberg"
+      },
+      {
+       "dato": "2026-06-27",
+       "navn": "LAU Frederiksbergs notoriske sommerafslutning"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-09-23",
+       "navn": "En liberal sundhedspolitik m. Social- og Sundhedsordfører David Klausen"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -191,26 +382,46 @@
    }
   },
   "Fyn": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-15",
+       "navn": "Introarrangement med Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-05-11",
+       "navn": "Regnbuens Danmarkshistorie"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-07",
+       "navn": "Sommerhygge"
+      },
+      {
+       "dato": "2026-08-22",
+       "navn": "LAU Fyn tager til landsmødet"
+      },
+      {
+       "dato": "2026-08-31",
+       "navn": "🏛️ Behind the Scenes: Odense Byråd"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -237,27 +448,55 @@
    }
   },
   "Herning": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-15",
+       "navn": "Åbent bestyrelsemøde"
+      },
+      {
+       "dato": "2026-03-05",
+       "navn": "Ordinær generalforsamling i Liberal Alliances Ungdom Herning."
+      },
+      {
+       "dato": "2026-03-12",
+       "navn": "LAU Herning Folketingsvalg – Valgkampstour i Vestjylland"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-05-22",
+       "navn": "Liberal fredagsbar v. Carsten Bach og Jens Paaske"
+      },
+      {
+       "dato": "2026-06-18",
+       "navn": "Åbent bestyrelsesmøde og fælles arbejds­aften"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-29",
+       "navn": "LAU Vestjylland Sommerfest"
+      },
+      {
+       "dato": "2026-09-03",
+       "navn": "Tour del byråd"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -275,26 +514,77 @@
    }
   },
   "Horsens": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-20",
+       "navn": "LAU - Tirsdag: Debattræning, Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-02-02",
+       "navn": "Nytårskur - 2026"
+      },
+      {
+       "dato": "2026-02-13",
+       "navn": "Horsens: Generalforsamling - 2026"
+      },
+      {
+       "dato": "2026-02-17",
+       "navn": "lau’s politiske struktur og landsmøde workshop, Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-03-03",
+       "navn": "Kampagner, valgkamp og korte videoer, med Katrine Hviid"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-17",
+       "navn": "Velkomst til nye LAU Medlemmer - LAU - Horsens"
+      },
+      {
+       "dato": "2026-04-28",
+       "navn": "[aflyst] LAU Tirsdag: Intro Oplæg med Ezekiel Rohde."
+      },
+      {
+       "dato": "2026-05-27",
+       "navn": "Lau - Horsens: Åbent Bestyrelsesmøde(Online Møde)"
+      },
+      {
+       "dato": "2026-06-16",
+       "navn": "(Rykket til 18)LAU Tirsdag: Introoplæg med Ezekiel & Simone"
+      },
+      {
+       "dato": "2026-06-22",
+       "navn": "Ekstraordinær Generalforsamling 2026"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-14",
+       "navn": "LAU Tirsdag: Oplæg med LAU Æresmedlem Mikki Klokkedal"
+      },
+      {
+       "dato": "2026-08-25",
+       "navn": "LAU Tirsdag: Oplæg med retsordfører Nicolai Melholt"
+      },
+      {
+       "dato": "2026-09-24",
+       "navn": "LAU Horsens oplæg med Ella Nellemann"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -348,26 +638,26 @@
    }
   },
   "Kronjylland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -382,19 +672,23 @@
    }
   },
   "København": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data"
+    "Intet arrangement i 2. kvartal 2026"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-03-20",
+       "navn": "STATUS PÅ FOLKETINGSVALGKAMPEN"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
@@ -428,26 +722,26 @@
    }
   },
   "Køge Bugt": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -462,25 +756,25 @@
    }
   },
   "Nordkøbenhavn": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -500,25 +794,25 @@
    }
   },
   "Nordsjælland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -538,25 +832,25 @@
    }
   },
   "Næstved": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -588,25 +882,25 @@
    }
   },
   "Roskilde": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -634,26 +928,26 @@
    }
   },
   "Silkeborg": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -671,26 +965,26 @@
    }
   },
   "Sydvestjylland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -705,26 +999,26 @@
    }
   },
   "Sønderjylland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -741,26 +1035,26 @@
    }
   },
   "Vejle": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -779,26 +1073,26 @@
    }
   },
   "Vestegnen": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -813,26 +1107,26 @@
    }
   },
   "Vestsjælland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -850,27 +1144,31 @@
    }
   },
   "Viborg": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-29",
+       "navn": "LAU Vestjylland Sommerfest"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
