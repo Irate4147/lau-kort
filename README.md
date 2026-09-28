@@ -134,11 +134,24 @@ Analyserne ligger i `udvidelser/` (se [Udvidelser](#udvidelser)):
 
 ### Månedsrapport
 
-Hvad skete der i foreningerne i en måned – og hvem er faldet eller kommet op?
+Hvad skal vi handle på nu – og hvad skete der i måneden? Rapporten for en måned har to sektioner, **Fremad** øverst (det, man skal handle på) og **Bagud** under.
 
-- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, rytme, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum og HB-prognose beregnes med samme regler og konstanter som siden (`MOM_BAGUD`, `MOM_FREMAD`, `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, dækning og rettelser).
-- **Rapporten** for en måned sammenligner månedens snapshot med den næste måneds og lister pr. forening: afholdte arrangementer (dato og navn), aflyste/ikke afholdte, nye på Facebook, forsvundne fra Facebook, registreret fremmøde (fra rettelserne) samt momentum og HB-prognose fra start til slut. Øverst er totaler og højdepunkterne: faldet i momentum eller HB, uden afholdt aktivitet, nye aflysninger og forbedringer. Ved et nyt kvartal starter HB-prognosen forfra, så der tæller kun et skift til "kan ikke godkendes" som et fald.
-- Alt ligger krypteret i `data/admin/rapporter.krypt.json` (`{"snapshots": {"ÅÅÅÅ-MM": …}, "rapporter": {"ÅÅÅÅ-MM": …}}`). Filen skrives kun, når indholdet er ændret.
+**Fremad** – set fra rapportens tidspunkt: for en afsluttet måned den 1. i måneden efter, for "Denne måned indtil nu" i dag. Den ser 35 dage frem (`FREMAD_DAGE`):
+
+- **Risici – det skal der handles på**, sorteret efter alvor (kritisk, advarsel, hold øje) og samlet pr. forening, hver med en konkret handling:
+  - HB-kvartalet uden afholdt eller planlagt arrangement med dage tilbage – kritisk eller advarsel efter samme regler og grænser som [HB-risiko](#analyser-og-advarsler) (`GRAENSE` i `udvidelser/hb-risiko.js`);
+  - kvartaler, der kun hænger på planlagte arrangementer, når kvartalet slutter inden for perioden (advarsel de sidste 21 dage, ellers hold øje);
+  - [momentum](#momentum) "Brug for hjælp" (advarsel) og "Mister fart" (hold øje);
+  - årsskiftet, når perioden rammer 31. december: hvor mange lokalforeninger der stadig mangler et afholdt arrangement i Q4 før HB-fristen.
+- **Kommende arrangementer** pr. forening (inkl. landsforeningen) med dato og navn, og **Intet planlagt**: lokalforeningerne uden noget i perioden med momentum, sidste afholdte og evt. næste arrangement efter perioden.
+
+For afsluttede måneder gemmes "Fremad" i rapporten (`"fremad"`) og **rekonstrueres** som snapshots (se nedenfor): kun begivenheder, der var set på Facebook på tidspunktet, tæller som planlagte – så en gammel rapport viser, hvad man vidste dengang. Ligger tidspunktet før de ugentlige kørsler startede, kendes ingen planlagte arrangementer, og det står i rapporten. "Denne måned indtil nu" beregner "Fremad" i browseren fra i dag; HB-risikoen kommer da fra `LAU.hbRisiko(f)` (mangler udvidelsen, vises en note, og kun kvartaler, der hænger på planlagte, er med).
+
+**Bagud** – hvad der skete i måneden: afholdte, aflyste/ikke afholdte, nye og fra Facebook forsvundne arrangementer, registreret fremmøde (fra rettelserne), højdepunkterne (faldet i momentum eller HB, uden afholdt aktivitet og nye aflysninger til venstre; forbedret til højre), fordelingen af momentum og HB-prognose ved start og slut og en tabel pr. forening med månedens arrangementer. Ved et nyt kvartal starter HB-prognosen forfra, så der tæller kun et skift til "kan ikke godkendes" som et fald.
+
+- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, rytme, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum, HB-prognose og HB-risiko beregnes med samme regler og konstanter som siden (`MOM_BAGUD`, `MOM_FREMAD`, `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, `GRAENSE`, dækning og rettelser).
+- **Rapporten** for en måned sammenligner månedens snapshot med den næste måneds (Bagud) og beregner Fremad pr. den 1. i måneden efter.
+- Alt ligger krypteret i `data/admin/rapporter.krypt.json` (`{"snapshots": {"ÅÅÅÅ-MM": …}, "rapporter": {"ÅÅÅÅ-MM": {"fremad": …, …}}}`). Filen skrives kun, når indholdet er ændret. Rapporter fra før "Fremad" fandtes, vises med en note; `python3 scripts/rapport.py alle` genberegner dem.
 - **Automatisk:** "Månedsrapport" (`.github/workflows/rapport.yml`) kører den 1. i måneden tidligt om morgenen; `sync.yml` og `hb.yml` kører også `rapport.py`, så rapporten for sidste måned kommer med nye rettelser og fremmøde. Manuelt: Actions → "Månedsrapport" → *Run workflow* med en måned (`ÅÅÅÅ-MM`) eller `alle`.
 - Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), **rekonstrueres** det ud fra data pr. den 1. og markeres `"rekonstrueret": true`: kun begivenheder, der var set på Facebook den dag (`foerst_set`), tæller som planlagte, og senere aflysninger og forsvundne begivenheder regnes som ikke sket endnu.
 - Analysen **Månedsrapport**: vælg måned (nyeste først) eller "Denne måned indtil nu", der beregnes i browseren og sammenlignes med månedens snapshot. Klik på en forening for at åbne den.
