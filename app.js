@@ -19,7 +19,7 @@ const CONFIG = Object.assign({
   assetBase: '',
   basemap: 'https://tiles.openfreemap.org/styles/liberty',
   // Én abonnerbar kalender for flere foreninger: adressen på kalender-server/worker.js (se README.md). Tom = hent som fil.
-  kalenderServer: '',
+  kalenderServer: 'https://steep-fog-8fcd.emilskov.workers.dev',
 }, window.LAU_CONFIG || {});
 
 const TZ = 'Europe/Copenhagen';
