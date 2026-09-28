@@ -475,6 +475,11 @@ function largestPolygon(geom) {
 
 const calloutsEnabled = () => { const el = $('map'); return el.clientWidth >= 420 && el.clientHeight >= 280; };
 const mapPadding = () => (calloutsEnabled() ? 48 : 20);
+// Ved oversigten (ingen forening valgt) er der en boks pr. lokalforening – ligesom stednavne på Google Maps skal de
+// først dukke op, når man er zoomet tæt nok på til, at det ikke bliver overvældende. Med en forening valgt er
+// mængden allerede afgrænset af fitBounds, så der zoomes ikke ekstra ind der.
+const CALLOUT_MIN_ZOOM = 8;
+const calloutsTooFarUde = () => !selected && MAP.map.getZoom() < CALLOUT_MIN_ZOOM;
 
 const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
 const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
@@ -659,6 +664,25 @@ function eventsFor(navn) {
   return list.filter(e => (layerState.aflyste || !e.aflyst) && (layerState.landsforeningen || !e.national || (f && f.national)));
 }
 
+/**
+ * Begivenhedsboksene ved oversigten (ingen forening valgt): højst én boks pr. lokalforening (dens næste), så kortet
+ * ikke bliver overfyldt med alle landets kommende aktiviteter på én gang. De øvrige ses stadig som prikker (eventsFor).
+ * Med en forening valgt er mængden allerede afgrænset, så alle dens bokse vises som hidtil.
+ */
+function calloutEventsFor(navn, list) {
+  if (navn) return list;
+  const naeste = new Map();
+  for (const e of list) {
+    if (e.national) continue;
+    for (const nav of e.foreninger) {
+      if (nav === NATIONAL) continue;
+      const cur = naeste.get(nav);
+      if (!cur || e.startD < cur.startD) naeste.set(nav, e);
+    }
+  }
+  return [...naeste.values()];
+}
+
 function setMode(navn, {animate = true, fit = true} = {}) {
   const map = MAP.map;
   const f = navn && DATA.byName.get(navn);
@@ -671,7 +695,7 @@ function setMode(navn, {animate = true, fit = true} = {}) {
   const ids = list.map(e => e.id);
   map.setFilter('ev-local', ['all', ['in', ['get', 'id'], ['literal', ids]], ['!', ['get', 'national']]]);
   map.setFilter('ev-national', ['all', ['in', ['get', 'id'], ['literal', ids]], ['get', 'national']]);
-  setCalloutItems(list);
+  setCalloutItems(calloutEventsFor(navn, list));
 
   const bounds = local ? f.bounds : DK_BOUNDS;
   if (fit) map.fitBounds(bounds, {padding: mapPadding(), duration: animate ? 900 : 0, maxZoom: 11});
@@ -707,7 +731,7 @@ function layoutCallouts() {
   if (!MAP.map || !MAP.overlay) return;
   const W = MAP.overlay.clientWidth, H = MAP.overlay.clientHeight;
   const note = MAP.overlay.querySelector('.more-note');
-  if (!calloutsEnabled() || !layerState.bokse) {
+  if (!calloutsEnabled() || !layerState.bokse || calloutsTooFarUde()) {
     for (const c of MAP.cards.values()) c.hidden = true;
     MAP.leaders.innerHTML = '';
     note.hidden = true;
