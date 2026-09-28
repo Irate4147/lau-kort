@@ -310,8 +310,10 @@ const ANALYSER = [];
 function registerAnalyse(a) { ANALYSER.push({admin: true, ...a}); }
 /**
  * Tidskritiske advarsler øverst i sidepanelet (over Momentum) og i foreningspanelet – ting, der skal reageres på,
- * før det er for sent. {id, hent() -> [{niveau, titel, tekst?, forening?, frist?, analyse?}]}. Kun for admins.
- *   niveau:  'kritisk' (skal handles på nu) eller 'advarsel' (snart)
+ * før det er for sent – og det, der er gået godt. {id, hent() -> [{niveau, titel, tekst?, forening?, frist?, analyse?}]}.
+ * Kun for admins.
+ *   niveau:  'kritisk' (skal handles på nu), 'advarsel' (snart) – rød boks "Kræver handling nu" – eller 'positiv'
+ *            (fx markant flere deltagere end normalt) – grøn boks "Godt gået"
  *   frist:   Date – sorterer og vises som "om N dage"
  *   analyse: id på en analyse, der åbnes med "Se analyse →"
  */
@@ -1563,12 +1565,15 @@ function renderForening(f) {
     if (sec.efter) sec.efter(el, f);
   }
   // Tidskritiske advarsler for foreningen står øverst, før alle sektionerne.
-  const adv = advarsler(f.navn);
-  if (adv.length) {
+  // Tidskritiske advarsler (rød) og det, der er gået godt (grøn), står øverst, før alle sektionerne.
+  const adv = advarsler(f.navn), foerste = body.querySelector('.panel-sec');
+  for (const [cls, titel, list] of [['adv-sec', 'Kræver handling nu', adv.filter(x => x.niveau !== 'positiv')],
+    ['adv-sec positiv-sec', 'Godt gået', adv.filter(x => x.niveau === 'positiv')]]) {
+    if (!list.length) continue;
     const el = document.createElement('section');
-    el.className = 'panel-sec adv-sec';
-    el.innerHTML = `<h3>Kræver handling nu</h3>${advarselHtml(adv, {visForening: false})}`;
-    body.querySelector('.panel-sec') ? body.insertBefore(el, body.querySelector('.panel-sec')) : body.appendChild(el);
+    el.className = `panel-sec ${cls}`;
+    el.innerHTML = `<h3>${titel}</h3>${advarselHtml(list, {visForening: false})}`;
+    foerste ? body.insertBefore(el, foerste) : body.appendChild(el);
     bindAdvarsler(el);
   }
   bindTips(body);
@@ -2089,18 +2094,18 @@ function renderAdmin() {
 
 // ------------------------------------------------------------------ analyser (vindue til højre på kortet)
 /*
- * Fanen Analyser (kun admins) viser listen over analyser i sidepanelet; hver analyse åbnes som en fane i et stort
- * vindue over højre del af kortet – som faner i en browser: flere kan være åbne, og hver lukkes med sit ×.
- * Krydset i hjørnet lukker hele vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen
- * (og åbnes igen, når vinduet lukkes); åbnes kalenderen, lukkes vinduet.
+ * Fanen Analyser (kun admins) viser listen over analyser i sidepanelet; den valgte analyse vises i et stort vindue
+ * over højre del af kortet. Klik på en anden analyse i listen skifter indholdet. Krydset i hjørnet (eller Esc) lukker
+ * vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen (og åbnes igen, når vinduet lukkes);
+ * åbnes kalenderen, lukkes vinduet.
  */
-const ANA = {aaben: false, faner: [], aktiv: null, kalender: false};
+const ANA = {aaben: false, aktiv: null, kalender: false};
 const analyseFor = id => ANALYSER.find(a => a.id === id && tilladt(a));
 
-/** Åbner analysen som fane i vinduet (eller skifter til den, hvis den allerede er åben). */
+/** Viser analysen i vinduet (åbner vinduet, hvis det er lukket). */
 function aabnAnalyse(id) {
   if (!analyseFor(id)) return;
-  if (!ANA.faner.includes(id)) ANA.faner.push(id);
+  const skift = ANA.aktiv !== id;
   ANA.aktiv = id;
   if (!ANA.aaben) {
     ANA.aaben = true;
@@ -2109,19 +2114,10 @@ function aabnAnalyse(id) {
   }
   closePopover();
   renderAnalyser();
+  if (skift) $('analyser').querySelector('.ana-body').scrollTop = 0;
   renderAnalyseListe();
 }
-/** Lukker én fane; lukkes den sidste, lukkes vinduet. */
-function lukAnalyseFane(id) {
-  const i = ANA.faner.indexOf(id);
-  if (i < 0) return;
-  ANA.faner.splice(i, 1);
-  if (!ANA.faner.length) return lukAnalyser();
-  if (ANA.aktiv === id) ANA.aktiv = ANA.faner[Math.min(i, ANA.faner.length - 1)];
-  renderAnalyser();
-  renderAnalyseListe();
-}
-/** Lukker vinduet (fanerne huskes, til det åbnes igen). Kalenderen åbnes igen, hvis den var åben. */
+/** Lukker vinduet (den valgte analyse huskes). Kalenderen åbnes igen, hvis den var åben. */
 function lukAnalyser({kalender = true} = {}) {
   if (!ANA.aaben) return;
   ANA.aaben = false;
@@ -2136,31 +2132,23 @@ function placerAnalyser() {
   el.style.top = `${top}px`;
 }
 
-/** Tegner vinduet med fanerne og den aktive analyse. */
+/** Tegner vinduet med den valgte analyse (bevarer scrollpositionen, når den samme analyse tegnes igen). */
 function renderAnalyser() {
   const el = $('analyser');
   if (!el || !DATA) return;
-  ANA.faner = ANA.faner.filter(analyseFor);
-  if (!ANA.aaben || !ANA.faner.length || !erAdmin()) { el.hidden = true; ANA.aaben = false; return; }
-  if (!ANA.faner.includes(ANA.aktiv)) ANA.aktiv = ANA.faner[0];
   const a = analyseFor(ANA.aktiv);
+  if (!ANA.aaben || !a || !erAdmin()) { el.hidden = true; ANA.aaben = false; return; }
+  const gammel = el.querySelector(`.ana-body[data-analyse="${CSS.escape(a.id)}"]`), scroll = gammel ? gammel.scrollTop : 0;
   el.hidden = false;
   placerAnalyser();
-  el.innerHTML = `<div class="ana-bar" role="tablist" aria-label="Åbne analyser">
-      ${ANA.faner.map(id => { const x = analyseFor(id); return `<div class="ana-fane${id === ANA.aktiv ? ' aktiv' : ''}">
-        <button type="button" role="tab" class="ana-fane-titel" data-ana-vis="${esc(id)}" aria-selected="${id === ANA.aktiv}" title="${esc(x.titel)}">${esc(x.titel)}</button>
-        <button type="button" class="ana-fane-luk" data-ana-luk="${esc(id)}" aria-label="Luk ${esc(x.titel)}">×</button></div>`; }).join('')}
-      <button type="button" class="ana-luk-alle" data-ana-luk-alle aria-label="Luk analyser" title="Luk analyser (Esc)">×</button></div>
-    <div class="ana-body" role="tabpanel" data-analyse="${esc(a.id)}">
-      <h2>${esc(a.titel)}</h2>${a.beskrivelse ? `<p class="note">${esc(a.beskrivelse)}</p>` : ''}${a.render()}</div>`;
-  el.querySelectorAll('[data-ana-vis]').forEach(b => b.addEventListener('click', () => aabnAnalyse(b.dataset.anaVis)));
-  el.querySelectorAll('[data-ana-luk]').forEach(b => b.addEventListener('click', ev => { ev.stopPropagation(); lukAnalyseFane(b.dataset.anaLuk); }));
-  // Midterklik lukker en fane, som i en browser.
-  el.querySelectorAll('.ana-fane').forEach(f => f.addEventListener('auxclick', ev => {
-    if (ev.button === 1) lukAnalyseFane(f.querySelector('[data-ana-luk]').dataset.anaLuk);
-  }));
-  el.querySelector('[data-ana-luk-alle]').addEventListener('click', () => lukAnalyser());
-  if (a.efter) a.efter(el.querySelector('.ana-body'));
+  el.innerHTML = `<div class="ana-head"><h2>${esc(a.titel)}</h2>
+      <button type="button" class="ana-luk" data-ana-luk aria-label="Luk analyser" title="Luk (Esc)">×</button></div>
+    <div class="ana-body" data-analyse="${esc(a.id)}">
+      ${a.beskrivelse ? `<p class="note">${esc(a.beskrivelse)}</p>` : ''}${a.render()}</div>`;
+  el.querySelector('[data-ana-luk]').addEventListener('click', () => lukAnalyser());
+  const body = el.querySelector('.ana-body');
+  if (a.efter) a.efter(body);
+  body.scrollTop = scroll;
   bindTips(el);
   bindForeningLinks(el);
 }
@@ -2170,16 +2158,19 @@ function renderAnalyseListe() {
   const el = $('side-analyser');
   if (!el || !DATA || !erAdmin()) return;
   el.innerHTML = `<header class="side-head"><h1>Analyser</h1>
-      <p class="updated">Klik på en analyse for at åbne den som en fane i vinduet til højre. Luk en fane med × – eller hele vinduet med × i hjørnet (Esc).</p></header>
+      <p class="updated">Klik på en analyse for at vise den i vinduet til højre. Luk vinduet med × i hjørnet (Esc).</p></header>
     <ul class="ana-liste">${ANALYSER.filter(tilladt).map(a => `<li><button type="button" data-ana="${esc(a.id)}"
-      class="${ANA.aaben && a.id === ANA.aktiv ? 'aktiv' : ''}${ANA.faner.includes(a.id) ? ' aaben' : ''}">
+      class="${ANA.aaben && a.id === ANA.aktiv ? 'aktiv' : ''}"${ANA.aaben && a.id === ANA.aktiv ? ' aria-current="true"' : ''}>
       <b>${esc(a.titel)}</b>${a.beskrivelse ? `<span>${esc(a.beskrivelse)}</span>` : ''}</button></li>`).join('')}</ul>`;
   el.querySelectorAll('[data-ana]').forEach(b => b.addEventListener('click', () => aabnAnalyse(b.dataset.ana)));
 }
 
 // ------------------------------------------------------------------ advarsler (øverst i sidepanelet)
-
-const ADV_ORDEN = {kritisk: 0, advarsel: 1};
+/*
+ * Advarsler med niveau 'kritisk' eller 'advarsel' står i den røde boks "Kræver handling nu"; niveau 'positiv'
+ * (fx et arrangement med markant flere deltagere end normalt) står i den grønne boks "Godt gået" lige under.
+ */
+const ADV_ORDEN = {kritisk: 0, advarsel: 1, positiv: 2};
 /** Alle aktuelle advarsler (evt. kun for én forening), de mest presserende først. */
 function advarsler(forening) {
   if (!erAdmin() || !DATA) return [];
@@ -2189,13 +2180,14 @@ function advarsler(forening) {
     catch (err) { console.error(`Advarsel ${a.id}:`, err); }
   }
   return alle.filter(x => !forening || x.forening === forening).sort((a, b) =>
-    (ADV_ORDEN[a.niveau] ?? 2) - (ADV_ORDEN[b.niveau] ?? 2) || (a.frist || Infinity) - (b.frist || Infinity)
+    (ADV_ORDEN[a.niveau] ?? 3) - (ADV_ORDEN[b.niveau] ?? 3) || (a.frist || Infinity) - (b.frist || Infinity)
     || String(a.forening || '').localeCompare(String(b.forening || ''), 'da'));
 }
+const ADV_IKON = {kritisk: '!', advarsel: '⏱', positiv: '★'};
 function advarselHtml(list, {visForening = true} = {}) {
   const frist = d => { const n = Math.ceil((d - NOW) / DAY); return n <= 0 ? 'i dag' : n === 1 ? 'i morgen' : `om ${n} dage`; };
   return `<ul class="advarsler">${list.map(x => `<li class="adv-${esc(x.niveau)}">
-    <span class="adv-ikon" aria-hidden="true">${x.niveau === 'kritisk' ? '!' : '⏱'}</span>
+    <span class="adv-ikon" aria-hidden="true">${ADV_IKON[x.niveau] || '⏱'}</span>
     <div><b>${visForening && x.forening ? `<button class="forening-link" data-f="${esc(x.forening)}">${esc(x.forening)}</button>: ` : ''}${esc(x.titel)}</b>
       ${x.frist ? `<span class="adv-frist">Frist ${esc(fmtDate.format(x.frist))} (${esc(frist(x.frist))})</span>` : ''}
       ${x.tekst ? `<span class="adv-tekst">${esc(x.tekst)}</span>` : ''}
@@ -2205,16 +2197,21 @@ function bindAdvarsler(el) {
   bindForeningLinks(el);
   el.querySelectorAll('[data-adv-analyse]').forEach(b => b.addEventListener('click', () => { visFane('analyser'); aabnAnalyse(b.dataset.advAnalyse); }));
 }
-/** Boksen "Kræver handling nu" øverst i oversigten (over Momentum). Skjult, når intet haster. */
+/** Boksen "Kræver handling nu" og den grønne "Godt gået" øverst i oversigten (over Momentum). Skjult, når de er tomme. */
 function renderAdvarsler() {
-  const el = $('advarsler');
-  if (!el) return;
-  const list = advarsler();
-  el.hidden = !list.length;
-  if (!list.length) { el.innerHTML = ''; return; }
-  const kritiske = list.filter(x => x.niveau === 'kritisk').length;
-  el.innerHTML = `<h2>Kræver handling nu <span class="adv-antal${kritiske ? ' kritisk' : ''}">${list.length}</span></h2>${advarselHtml(list)}`;
-  bindAdvarsler(el);
+  const alle = advarsler(), list = alle.filter(x => x.niveau !== 'positiv'), gode = alle.filter(x => x.niveau === 'positiv');
+  const el = $('advarsler'), godt = $('fremhaevet');
+  if (el) {
+    el.hidden = !list.length;
+    const kritiske = list.filter(x => x.niveau === 'kritisk').length;
+    el.innerHTML = !list.length ? '' : `<h2>Kræver handling nu <span class="adv-antal${kritiske ? ' kritisk' : ''}">${list.length}</span></h2>${advarselHtml(list)}`;
+    bindAdvarsler(el);
+  }
+  if (godt) {
+    godt.hidden = !gode.length;
+    godt.innerHTML = !gode.length ? '' : `<h2>Godt gået <span class="adv-antal positiv">${gode.length}</span></h2>${advarselHtml(gode)}`;
+    bindAdvarsler(godt);
+  }
 }
 
 // Indbyggede analyser. Flere tilføjes med LAU.registerAnalyse({id, titel, beskrivelse, render, efter}) (se udvidelser/).
