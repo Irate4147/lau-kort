@@ -1562,6 +1562,7 @@ const FARVNINGER = () => [
   {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
   {id: 'momentum', admin: true, label: 'Momentum', hint: 'Dage siden sidste arrangement målt mod foreningens egen rytme, og hvad der er i kalenderen – tidlig advarsel'},
   ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
+  {id: 'hb', admin: true, label: `HB-godkendelse ${HB_AAR}`, hint: `Mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1} (Organisationshåndbogen 8.2)`},
   {id: 'ingen', label: 'Ingen farve'},
 ].filter(tilladt);
 const GRUPPER = {aktiviteter: 'Aktiviteter på kortet', kort: 'Kortet'};
