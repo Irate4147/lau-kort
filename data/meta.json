@@ -101,13 +101,18 @@
   "PV13mhkKH02KRxo6P",
   "SqULYxXOcP75cGrhc",
   "TB21dOojuIhrr9HKl",
+  "TYWn6ujv4FJKprZyx",
   "UFIDP0ItsbgENkkqr",
+  "WQ8WP1q5oSm3O33YN",
   "WXImOV5qhATaVe8qG",
   "XmAs65Lh3PFcQJI0S",
   "Yauxqs3OHJmHMDrTy",
   "Z7AO10mZj1OfPD4Rt",
+  "ZCMbt7FoaNUnqx9kj",
   "ZkMg5hTedgx3xypqj",
+  "arsiD95ZwSQVtU3ab",
   "cfxfRHu5KrBbpUsET",
+  "cnOQZZRVpgGB1ygWv",
   "d3NhR8WQiOuhaWdV1",
   "eH0gwNkB4I8ZOeaLO",
   "exGUtf3lO0hKU8nw5",
@@ -121,15 +126,19 @@
   "lLmsXmmkJBscYWQT0",
   "mt0kJsD53PraUYUAe",
   "nCbk5Tnoh5pvhpeti",
+  "neyekeHdAtyJJPTld",
   "oFI1bS8X815AzioQZ",
   "oHgQ7Urp2k7BocggL",
+  "oKpQblclpWPIyfRNN",
   "pD8XinWaEo2491rpz",
   "pHYzYlU5H0ffk1jd0",
   "rCgRYXBSmbju1XdoI",
+  "sCqXpsUbKvIh6yT1j",
   "ubS51fNCUueEjSaMf",
-  "yOAaJ05g8KXM0hCHZ"
+  "yOAaJ05g8KXM0hCHZ",
+  "zV457MIVjJYnjCYU1"
  ],
- "opdateret": "2026-09-28T13:50:01Z",
+ "opdateret": "2026-09-28T14:05:32Z",
  "historik": {
   "koersler": [
    {
@@ -499,7 +508,80 @@
     "status": "FAILED",
     "hentet": 0,
     "begivenheder": 0
+   },
+   {
+    "id": "zV457MIVjJYnjCYU1",
+    "tid": "2026-09-28T13:58:57Z",
+    "forening": "Landsforeningen",
+    "status": "SUCCEEDED",
+    "hentet": 60,
+    "begivenheder": 12
+   },
+   {
+    "id": "TYWn6ujv4FJKprZyx",
+    "tid": "2026-09-28T13:58:57Z",
+    "forening": "Aalborg",
+    "status": "SUCCEEDED",
+    "hentet": 60,
+    "begivenheder": 18
+   },
+   {
+    "id": "ZCMbt7FoaNUnqx9kj",
+    "tid": "2026-09-28T14:00:41Z",
+    "forening": "Aarhus",
+    "status": "SUCCEEDED",
+    "hentet": 60,
+    "begivenheder": 14
+   },
+   {
+    "id": "sCqXpsUbKvIh6yT1j",
+    "tid": "2026-09-28T14:00:51Z",
+    "forening": "Bornholm",
+    "status": "SUCCEEDED",
+    "hentet": 52,
+    "begivenheder": 2
+   },
+   {
+    "id": "oKpQblclpWPIyfRNN",
+    "tid": "2026-09-28T14:02:14Z",
+    "forening": "Frederiksberg",
+    "status": "SUCCEEDED",
+    "hentet": 54,
+    "begivenheder": 8
+   },
+   {
+    "id": "cnOQZZRVpgGB1ygWv",
+    "tid": "2026-09-28T14:02:14Z",
+    "forening": "Egedal-Furesø",
+    "status": "SUCCEEDED",
+    "hentet": 60,
+    "begivenheder": 6
+   },
+   {
+    "id": "neyekeHdAtyJJPTld",
+    "tid": "2026-09-28T14:03:37Z",
+    "forening": "Fyn",
+    "status": "SUCCEEDED",
+    "hentet": 6,
+    "begivenheder": 5
+   },
+   {
+    "id": "arsiD95ZwSQVtU3ab",
+    "tid": "2026-09-28T14:03:48Z",
+    "forening": "Herning",
+    "status": "SUCCEEDED",
+    "hentet": 60,
+    "begivenheder": 7
+   },
+   {
+    "id": "WQ8WP1q5oSm3O33YN",
+    "tid": "2026-09-28T14:04:19Z",
+    "forening": "Horsens",
+    "status": "ABORTED",
+    "hentet": 58,
+    "begivenheder": 13
    }
-  ]
+  ],
+  "fra": "2026-01-01T00:00:00Z"
  }
 }
