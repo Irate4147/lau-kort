@@ -49,7 +49,8 @@ Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på
 |---|---|
 | ↗ Godt i gang | begge > 0 og mindst 4 i alt (≈ én om måneden) |
 | → Stabil | begge > 0 |
-| ↘ Mister fart | enten intet afholdt eller intet i kalenderen |
+| ⤴ Går fremad | intet afholdt, men noget i kalenderen |
+| ↘ Mister fart | afholdt, men intet i kalenderen |
 | ⚠ Brug for hjælp | hverken afholdt eller planlagt |
 
 (plus "historik mangler", når intet er afholdt, og data ikke dækker de seneste 90 dage.) Derudover vises advarsler: mange dage siden sidste arrangement (> 45), intet i kalenderen / næste først om > 30 dage, færre afholdt end de 90 dage før (når data dækker det) og aflyste arrangementer.

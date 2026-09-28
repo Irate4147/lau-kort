@@ -156,21 +156,23 @@ function hbPrognose(f) {
  * Momentum: en tidlig sundhedsindikator for, om foreningen er godt på vej med at afholde arrangementer.
  * Bagud: afholdt de seneste MOM_BAGUD dage. Fremad: planlagt (i kalenderen) de næste MOM_FREMAD dage.
  * Niveauer (bedst først): godt (begge > 0 og mindst MOM_GODT i alt ≈ én om måneden), stabil (begge > 0),
- * faldende (kun den ene side), hjaelp (hverken afholdt eller planlagt). 'ukendt', når intet er afholdt, og
+ * fremad (intet afholdt, men noget planlagt – er ved at komme i gang), faldende (afholdt, men intet planlagt),
+ * hjaelp (hverken afholdt eller planlagt). 'ukendt', når intet er afholdt, og
  * data ikke dækker hele perioden bagud; 'ingenfb' uden Facebook-side og uden arrangementer.
  * Trend: seneste MOM_BAGUD dage mod de MOM_BAGUD dage før, når data dækker begge.
  */
 const MOM_BAGUD = 90, MOM_FREMAD = 60, MOM_GODT = 4;
-const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
+const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
 const MOM_STATUS = {
   godt:     {ikon: '↗', label: 'Godt i gang', hint: `Afholder og planlægger – mindst ${MOM_GODT} i alt (≈ én om måneden)`},
   stabil:   {ikon: '→', label: 'Stabil', hint: 'Både afholdt og planlagt, men få arrangementer'},
-  faldende: {ikon: '↘', label: 'Mister fart', hint: `Enten intet afholdt de seneste ${MOM_BAGUD} dage eller intet i kalenderen de næste ${MOM_FREMAD}`},
+  fremad:   {ikon: '⤴', label: 'Går fremad', hint: `Intet afholdt de seneste ${MOM_BAGUD} dage, men noget i kalenderen de næste ${MOM_FREMAD}`},
+  faldende: {ikon: '↘', label: 'Mister fart', hint: `Har afholdt de seneste ${MOM_BAGUD} dage, men intet i kalenderen de næste ${MOM_FREMAD}`},
   hjaelp:   {ikon: '⚠', label: 'Brug for hjælp', hint: `Intet afholdt de seneste ${MOM_BAGUD} dage og intet planlagt de næste ${MOM_FREMAD}`},
   ukendt:   {ikon: '?', label: 'Historik mangler', hint: `Data dækker ikke de seneste ${MOM_BAGUD} dage`},
   ingenfb:  {ikon: '–', label: 'Ingen Facebook-side', hint: 'Aktiviteter kan ikke hentes automatisk'},
 };
-const MOM_ORDEN = {hjaelp: 0, faldende: 1, ukendt: 2, stabil: 3, godt: 4, ingenfb: 5}; // dem, der kræver handling, først
+const MOM_ORDEN = {hjaelp: 0, faldende: 1, fremad: 2, ukendt: 3, stabil: 4, godt: 5, ingenfb: 6}; // dem, der kræver handling, først
 /** Foreningens momentum: {niveau, bagud, fremad, forrige, sidsteDage, naesteDage, aflyst, signaler}. */
 function momentum(f) {
   const fra = new Date(NOW.getTime() - MOM_BAGUD * DAY), fra2 = new Date(NOW.getTime() - 2 * MOM_BAGUD * DAY);
@@ -183,9 +185,10 @@ function momentum(f) {
   const sidsteDage = f.sidste ? Math.floor((NOW - f.sidste) / DAY) : null;
   const naesteDage = f.naeste ? Math.max(0, Math.floor((f.naeste.startD - NOW) / DAY)) : null;
   const niveau = !f.facebook && !f.gyldige.length ? 'ingenfb'
+    : !bagud && fremad ? 'fremad'
     : !bagud && daekket > dayKey(fra) ? 'ukendt'
     : !bagud && !fremad ? 'hjaelp'
-    : !bagud || !fremad ? 'faldende'
+    : !fremad ? 'faldende'
     : bagud + fremad >= MOM_GODT ? 'godt' : 'stabil';
   // Tidlige advarsler (−) og gode tegn (+), der forklarer niveauet.
   const signaler = [];
@@ -1187,7 +1190,7 @@ function renderMomentum() {
   const handling = DATA.lokale.filter(f => f.mom && (f.mom.niveau === 'hjaelp' || f.mom.niveau === 'faldende'))
     .sort((a, b) => MOM_ORDEN[a.mom.niveau] - MOM_ORDEN[b.mom.niveau] || (b.mom.sidsteDage ?? 1e9) - (a.mom.sidsteDage ?? 1e9) || a.navn.localeCompare(b.navn, 'da'));
   el.innerHTML = `<p class="note">Afholdt de seneste ${MOM_BAGUD} dage og planlagt de næste ${MOM_FREMAD} dage – en tidlig indikator for, om en forening har brug for hjælp.</p>
-    <ol class="hb-kat mom-kat">${['godt', 'stabil', 'faldende', 'hjaelp', 'ukendt', 'ingenfb'].filter(k => tael(k) || !['ukendt', 'ingenfb'].includes(k)).map(k =>
+    <ol class="hb-kat mom-kat">${['godt', 'stabil', 'fremad', 'faldende', 'hjaelp', 'ukendt', 'ingenfb'].filter(k => tael(k) || !['ukendt', 'ingenfb'].includes(k)).map(k =>
       `<li class="uden-nr" title="${esc(MOM_STATUS[k].hint)}"><span class="dot-inline" style="background:${MOM_FILL[k]}"></span><span>${esc(MOM_STATUS[k].ikon)} ${esc(MOM_STATUS[k].label)}</span><b>${tael(k)}</b></li>`).join('')}</ol>
     ${s}
     ${handling.length ? `<h3 class="mom-h">Kræver opmærksomhed</h3><ul class="rank mom-liste">${handling.map(f => `<li tabindex="0" data-f="${esc(f.navn)}">
