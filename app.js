@@ -23,7 +23,8 @@ const CONFIG = Object.assign({
 const TZ = 'Europe/Copenhagen';
 const DAY = 864e5;
 const NOW = new Date();
-const H14 = new Date(NOW.getTime() + 14 * DAY);
+// Standardvisningen "Aktivitet nu" viser alt inden for det næste kvartal regnet fra i dag.
+const H_KVARTAL = (() => { const d = new Date(NOW); d.setUTCMonth(d.getUTCMonth() + 3); return d; })();
 // Tidligere aktiviteter vises offentligt højst et år tilbage (admins ser alle).
 const ET_AAR_SIDEN = new Date(NOW.getTime() - 365 * DAY);
 const NEW_DAYS = 7;
@@ -34,7 +35,7 @@ const LABEL_AT = {'København': [12.578, 55.643], 'Frederiksberg': [12.515, 55.6
 const MAP_FILL = {snart: '#2a78d6', planlagt: '#86b6ef', ingen: '#b8b6ae', ingenfb: '#d9d7d0'};
 const FILL_OPACITY = ['match', ['get', 'status'], 'snart', 0.55, 'planlagt', 0.55, 'ingen', 0.3, 0.25];
 const STATUS = {
-  snart:    {label: 'Aktivitet inden for 14 dage'},
+  snart:    {label: 'Aktivitet inden for det næste kvartal'},
   planlagt: {label: 'Aktiviteter planlagt senere'},
   ingen:    {label: 'Intet planlagt'},
   ingenfb:  {label: 'Ingen Facebook-side tilknyttet'},
@@ -391,7 +392,7 @@ function beregn() {
     e.ny = !e.historisk && !e.manuel && NOW - e.firstD < NEW_DAYS * DAY;
     e.foreninger = e.foreninger || [e.forening];
     e.national = e.forening === NATIONAL;
-    e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H14;
+    e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H_KVARTAL;
   }
   const events = alle.filter(e => !e.skjult);
   const byName = new Map();
@@ -402,7 +403,7 @@ function beregn() {
     f.events = ev;
     f.gyldige = gyldige;
     f.upcoming = ev.filter(e => !e.forsvundet && e.slutD >= NOW);
-    f.within14 = f.upcoming.filter(e => e.startD <= H14);
+    f.within14 = f.upcoming.filter(e => e.startD <= H_KVARTAL);
     f.planlagt = gyldige.filter(e => e.slutD >= NOW);
     f.afholdt = gyldige.filter(e => e.slutD < NOW);
     f.afholdt90 = f.afholdt.filter(e => NOW - e.startD <= 90 * DAY);
@@ -642,7 +643,7 @@ function addBaseLayers() {
   }
 }
 
-/** Hvilke aktiviteter vises (overblik: næste 14 dage; forening: dens kommende + landsforeningens i området). */
+/** Hvilke aktiviteter vises (overblik: det næste kvartal fra i dag; forening: dens kommende + landsforeningens i området). */
 function eventsFor(navn) {
   const f = navn && DATA.byName.get(navn);
   let list;
@@ -1061,7 +1062,7 @@ function renderOverview() {
   const dataKort = dataFra > new Date(KVARTALER[0].fra + 'T12:00:00Z') ? `Data kun fra ${fmtDate.format(dataFra)}` : '';
 
   $('tiles').innerHTML =
-    tile('Aktiviteter de næste 14 dage', String(soon.filter(e => !e.aflyst).length), null, true)
+    tile('Aktiviteter det næste kvartal', String(soon.filter(e => !e.aflyst).length), null, true)
     + tile('Planlagte aktiviteter', String(planlagt), 'Inkl. landsforeningens')
     + tile('Lokalforeninger med planer', `${medPlan} af ${lokale.length}`, `${lokale.filter(f => !f.facebook).length} uden Facebook-side`)
     // Statistik over afholdte aktiviteter er kun for admins.
@@ -1070,7 +1071,7 @@ function renderOverview() {
     + tile('Afholdte registreret', String(afholdt), `Siden ${fmtDate.format(dataFra)}`));
 
   const l14 = $('list-14');
-  l14.innerHTML = evList(soon, true, 'Ingen aktiviteter de næste 14 dage.');
+  l14.innerHTML = evList(soon, true, 'Ingen aktiviteter det næste kvartal.');
   bindForeningLinks(l14);
 
   renderRank();
@@ -1359,7 +1360,7 @@ function visFane(fane) {
 // ------------------------------------------------------------------ fane: visninger
 
 const FARVNINGER = () => [
-  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for 14 dage / planlagt senere / intet'},
+  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
   ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
   {id: 'ingen', label: 'Ingen farve'},
 ].filter(tilladt);
