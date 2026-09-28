@@ -1,0 +1,139 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Sønderjylland (kun lokalt)
+X-WR-CALDESC:Kun LAU Sønderjyllands egne arrangementer. https://irate4147.
+ github.io/lau-kort/#Sønderjylland
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1613881423075348@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260318T170000Z
+DTEND:20260318T190000Z
+SUMMARY:TOUR DE FT
+DESCRIPTION:LAU Sønderjylland\n\n\n\nVi fører fuld valgkamp med besøg af
+  Folketingsmedlem Helena Artmann Andresen\, LAU formand Tobias Pagh\, kand
+ idat Frederik Klakk mm.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
+ n\nKære medlemmer af Liberal Alliances Ungdom Sønderjylland\,\n\nI indka
+ ldes hermed til ordinær generalforsamling for Liberal Alliances Ungdom S
+ ønderjylland den 18. marts kl. 18.00 i Nygadehuset lokalet ”2.th”. Ad
+ ressen er Nygade 23a\, 6200 Aabenraa. \n\nDer indledes med et oplæg fra k
+ ommunalbestyrelsesmedlem Helle Have\, som blev valgt for første gang til 
+ kommunalbestyrelse sen i Haderslev Kommune for Liberal Alliance. Hun er Fo
+ rmand for Vækst- o\n\nhttps://www.facebook.com/events/1613881423075348/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/1613881423075348/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2036882546895299@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260409T170000Z
+DTEND:20260409T190000Z
+SUMMARY:Introarrangement og Oplæg m. Ezekiel Rohde
+DESCRIPTION:LAU Sønderjylland\n\nDato: 9. april 2026\nTid: Kl. 19:00\nSted
+ : Nygadehuset\, 23A 1. th\, 6200 Aabenraa\n\nKom til introoplæg i LAU Sø
+ nderjylland!\nAlle er velkomne – både medlemmer og nysgerrige sjæle!\n
+ Hvis du er ny medlem af Liberal Alliances Ungdom eller kommende medlem\, k
+ an du få et indblik\, på hvordan vores fællesskab er i LAU\, men også 
+ hvordan vi er opbygget som organisation.\n\nOplægget vil blive afholdt af
+  Ezekiel Rohde\, som er Politisk formand for LAU.\n\nDer bliver også muli
+ ghed for spørgsmål og debat.\nDu er mere end velkommen til at kontakte f
+ ormand Marcus Andersen på 50274011\n\n\nhttps://www.facebook.com/events/2
+ 036882546895299/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset Aabenraa\, Nygade 23\, 6200 Aabenraa\, Denmark
+GEO:55.045484154887;9.4165327032514
+URL:https://www.facebook.com/events/2036882546895299/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2178324706345327@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260615T160000Z
+DTEND:20260615T190000Z
+SUMMARY:Oplæg om DSU\, og lokalforeningspuljerne m/ landsnæstformand Simo
+ ne Nielsem
+DESCRIPTION:LAU Sønderjylland\n\nDato: 15. juni 2026\nTid: Kl. 18:00\nSted
+ : Nygadehuset\, 23A 1. th\, 6200 Aabenraa\nKom til oplæg i LAU Sønderjyl
+ land!\nAlle er velkomne – både medlemmer og nysgerrige sjæle!\n\nDenne
+  gang vil vi  diskuttere DSU og lokalforeningspuljerne i LAU. Oplægget bl
+ iver holdt af Simone Nielsen\, som er Næstformand for LAU.\n\nDer bliver 
+ også mulighed for spørgsmål og evt debat.\nDu er mere end velkommen til
+  at kontakte formand Marcus Andersen på +4550274011\n\nhttps://www.facebo
+ ok.com/events/2178324706345327/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/2178324706345327/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:895280679600845@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260723T170000Z
+DTEND:20260726T170000Z
+SUMMARY:LAU Sønderjylland tager til Sommerlejr
+DESCRIPTION:LAU Sønderjylland\n\nLiberal Alliances Ungdom afholder naturli
+ gvis igen i år sommerlejr. Denne gang skrues hyggen op på maks! \n\nOg s
+ elvfølgelig skal LAU Sønderjylland repræsenteres det sønderjyske 🏹\
+ n\nDer vil være en lille brugerbetaling\, hvilket inkluderer noget at spi
+ se og sovested. Til dette arrangement kan du søge Rejserefusion.\n\nhttps
+ ://www.facebook.com/events/895280679600845/
+CATEGORIES:LAU Sønderjylland
+LOCATION:Mandehoved 10\, A\, 4660 Mandehoved
+GEO:55.32834;12.44918
+URL:https://www.facebook.com/events/895280679600845/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1533040451369108@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260804T133000Z
+DTEND:20260804T153000Z
+SUMMARY:Oplæg\, Minigolf og Pandekage Hygge med LAU Sønderjylland
+DESCRIPTION:LAU Sønderjylland\n\n☀️ LAU Sønderjylland inviterer til e
+ t fagligt og hyggeligt sommerarrangement!\n\nVi inviterer til en sommerdag
+  med politik\, fællesskab og sociale aktiviteter.\n\nDagen byder på opl
+ æg og debat med vores udlændinge- og integrationsordfører\, Asta\, hvor
+  vi sætter fokus på aktuelle politiske emner og giver deltagerne mulighe
+ d for at stille spørgsmål og deltage i debatten.\n\nEfter det faglige pr
+ ogram fortsætter vi med minigolf og fælles spisning. For medlemmer af LA
+ U er både mad og adgang til minigolf gratis. 🤩\n\nSpørgsmål til arra
+ ngement? Kontakt lokalformand Marcus Andersen\n+45 50 27 40 11 eller marcu
+ s.\n\nhttps://www.facebook.com/events/1533040451369108/
+CATEGORIES:LAU Sønderjylland
+LOCATION:Genner Hoel Pandekagehus og Camping\, Haderslevvej 464\, 6200 Genn
+ er\, Denmark
+GEO:55.110193556271;9.4441223144531
+URL:https://www.facebook.com/events/1533040451369108/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2139656093648694@lau-kort
+DTSTAMP:20260928T142234Z
+DTSTART:20260901T160000Z
+DTEND:20260901T180000Z
+SUMMARY:Oplæg ved Retsordfører Nicolai Melholdt
+DESCRIPTION:LAU Sønderjylland\n\nLAU Sønderjylland skal nu lege Better Ca
+ ll Saul!\n\nDenne gang invitere vi Retsordfører Nicolai Melholdt\, for at
+  høre om LAU's retspolitik\, og relevante emner inden for området på de
+ t seneste.\n\nDato: 1. september 2026\nTid: Kl. 18:00\nSted: Nygadehuset\,
+  23A 1. th\, 6200 Aabenraa\nKom til oplæg i LAU Sønderjylland!\nAlle er 
+ velkomne – både medlemmer og nysgerrige sjæle!\n\nDer bliver også mul
+ ighed for spørgsmål og evt debat.\nDu er mere end velkommen til at konta
+ kte formand Marcus Andersen på +4550274011\n\nhttps://www.facebook.com/ev
+ ents/2139656093648694/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/2139656093648694/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

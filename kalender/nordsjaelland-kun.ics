@@ -1,0 +1,228 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Nordsjælland (kun lokalt)
+X-WR-CALDESC:Kun LAU Nordsjællands egne arrangementer. https://irate4147.g
+ ithub.io/lau-kort/#Nordsjælland
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:896502876136844@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260108T174500Z
+DTEND:20260108T194500Z
+SUMMARY:Kom ind og oplev Debatten!
+DESCRIPTION:LAU Nordsjælland\n\nKom med LAU Nordsjælland ind og se Debatt
+ en!😱\n\nEr du også en af dem\, der elsker\, når Clement Kjærsgaard s
+ tyrer debatten med et hævet øjnbryn? Og syntes du\, det var virkelig sp
+ ændende\, da Loui og Anna selv stod i studiet og tog ordet?\n\nNu har du 
+ chancen for selv at opleve det helt tæt på \, og mærke den særlige ene
+ rgi\, man kun mærker i studiet.💙\n\nVi har fået 15 billetter til Deba
+ tten den 8. januar 2026\, og de ryger hurtigt. \nDet er først til mølle\
+ , og du er kun sikret en plads ved at skrive direkte til formanden\, Anna 
+ Lorentzen. Pladserne er begrænsede\, så tilmeld dig kun\, hvis du er sik
+ ker på\, \n\nhttps://www.facebook.com/events/896502876136844/
+CATEGORIES:LAU Nordsjælland
+LOCATION:København
+GEO:55.6667;12.5833
+URL:https://www.facebook.com/events/896502876136844/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2999228800262265@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260219T170000Z
+DTEND:20260219T190000Z
+SUMMARY:SÆT DIT PRÆG PÅ LANDSMØDET💙📚
+DESCRIPTION:LAU Nordkøbenhavn · LAU Nordsjælland\n\n🚆 LIGE VED S-TOGE
+ T🚆\n\nLAU Nordsjælland og LAU Nordkøbenhavn inviterer til en hyggelig
+  og uformel aften\, hvor du kan sætte dit præg på landsmødet eller bar
+ e komme for pizzaen og hyggens skyld 🍕\n\nVi får besøg af vores polit
+ iske formand\, som giver en intro til liberalismen\, forklarer hvordan pol
+ itikken i LAU er skruet sammen\, og hvordan man skriver forslag til landsm
+ ødet. Bagefter laver vi workshop\, hvor vi selv prøver kræfter med idé
+ er og forslag.\n\n📍 Holte Bibliotek\, Holte Midtpunkt 23\, 2840 Holte.\
+ nlokale hvide A\n (lige ved S-toget\, Holte station)\n🕕 19/2 kl. 18.00\
+ n🍽️ Mega lækker fællesspisning. \n\n\nhttps://www.facebook.com/even
+ ts/2999228800262265/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Holte Midtpunkt 23\, 2840 Holte\, Danmark
+GEO:55.81146;12.47149
+URL:https://www.facebook.com/events/2999228800262265/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1774314436532498@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260303T170000Z
+DTEND:20260303T190000Z
+SUMMARY:Ordinær generalforsamling 2026 Nordsjælland
+DESCRIPTION:LAU Nordsjælland\n\n\nGeneralforsamlingen er foreningens høje
+ ste myndighed og afholdes årligt. Her fastlægges den politiske og organi
+ satoriske retning for det kommende år\, og der vælges ny bestyrelse for 
+ perioden 2026/2027.\n\nDagsorden:\n\n1. Valg af dirigent.\n2. Valg af refe
+ rent.\n3. Valg af stemmetællere. \n4. Bestyrelsens beretning.\n5. Forelæ
+ ggelse af regnskab til godkendelse.\n6. Behandling af indkomne forslag.\n7
+ . Valg af:\na. Formand.\nb. Næstformand.\nc. Kasserer.\nd. 2-6 bestyrelse
+ smedlemmer.\ne. Op til 3 suppleanter til bestyrelsen.\nf. Revisor.\ng. Op 
+ til 2 revisorsuppleanter.\n8. Eventuelt.\n\nÆndringsforslag skal sende\n\
+ nhttps://www.facebook.com/events/1774314436532498/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Hørsholm Bibliotek
+GEO:55.880762563166;12.496766131869
+URL:https://www.facebook.com/events/1774314436532498/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1427856518661875@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260414T163000Z
+DTEND:20260414T183000Z
+SUMMARY:Introarrangement med Ezekiel Rohde
+DESCRIPTION:LAU Nordsjælland\n\nEr du nysgerrig på vores politik – elle
+ r bare på hvad Lau er for et fællesskab?\n\nSå kom med til intro-arrang
+ ement hos LAU Nordsjælland d. 14. april kl. 18 på Hørsholm Bibliotek 
+ 📍\n\nDet er for alle – både nye og gamle medlemmer. Vi fortæller li
+ dt om\, hvad Liberal Alliances Ungdom er\, og hvad vi laver\, men vigtigst
+  af alt: det bliver uformelt\, hyggeligt og helt nede på jorden.\n\nDer v
+ il være drikkevarer og god stemning så kig forbi\, også selvom du bare 
+ er lidt nysgerrig.\n\nVi glæder os til at se jer 💙\n\nhttps://www.face
+ book.com/events/1427856518661875/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Hørsholm Bibliotek
+GEO:55.880762563166;12.496766131869
+URL:https://www.facebook.com/events/1427856518661875/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1195004552616390@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260416T181500Z
+DTEND:20260416T201500Z
+SUMMARY:Kom ind og oplev debatten 🎤
+DESCRIPTION:LAU Nordsjælland\n\nKom med LAU Nordsjælland ind og se Debatt
+ en!😱 Vi gentager succesen fra sidste gang vi var derinde! \n\nEr du ogs
+ å en af dem\, der elsker\, når Clement Kjærsgaard styrer debatten med e
+ t hævet øjnbryn? Og syntes du\, det var virkelig spændende\, da Loui og
+  Anna selv stod i studiet og tog ordet?\n\nNu har du chancen for selv at o
+ pleve det helt tæt på \, og mærke den særlige energi\, man kun mærker
+  i studiet.💙\n\nVi har fået 20 billetter til Debatten den 16. April 20
+ 26😉\nDet er først til mølle\, og du er kun sikret en plads ved at skr
+ ive direkte til formanden\, Anna Lorentzen. Pladserne er begrænsede\, så
+  tilmeld\n\nhttps://www.facebook.com/events/1195004552616390/
+CATEGORIES:LAU Nordsjælland
+LOCATION:DR Byen
+GEO:55.657555914742;12.589657098718
+URL:https://www.facebook.com/events/1195004552616390/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1496899128452076@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260516T100000Z
+DTEND:20260516T120000Z
+SUMMARY:Tag med Lau Nordsjælland på Klampenborg Galopbane!🏇🏇🍾
+DESCRIPTION:LAU Nordsjælland\n\nTag med Lau Nordsjælland på Klampenborg 
+ Galopbane!🏇🏇\nForåret er godt i gang og vi gentager selvfølgelig s
+ uccesen fra tidligere år!\n\nVi inviterer jer alle til en fantastisk dag 
+ på Klampenborg Galopbane\, hvor vi skal opleve stemningen\, spændingen o
+ g selvfølgelig hygge os.🥂🍾\nDet er Spring Racing \, så der er gara
+ nti for god stemning.\nVi har 15 billetter\, så det gælder om at være h
+ urtig. Vil du sikre dig en billet\, så skriv til Anna Lorentzen - !Det er
+  ikke nok at trykke deltag!\n\nDato: Lørdag d.16 maj\, ca kl 12\nAdresse:
+  Klampenborg galopbane\, Klampenborgvej 52\, 2930 Klampenborg\nGlæd dig t
+ il en dag \n\nhttps://www.facebook.com/events/1496899128452076/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Klampenborg Galopbane\, 52 Klampenborg Vej\, 2930 Gentofte\, Denma
+ rk
+GEO:55.77075;12.56722
+URL:https://www.facebook.com/events/1496899128452076/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1907194426633588@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260618T170000Z
+DTEND:20260618T190000Z
+SUMMARY:Pagne og Policy
+DESCRIPTION:LAU Nordkøbenhavn · LAU Nordsjælland\n\nLAU Nordsjælland og
+  Nordkøbenhavn inviterer til endnu en omgang Pagne & Policy på Vedbæk S
+ trand.\n\nGlæd dig til en hyggelig sommeraften med gode samtaler\, politi
+ ske diskussioner og kolde forfriskninger i godt selskab. Arrangementet er 
+ en oplagt mulighed for at mødes med andre politisk interesserede\, udveks
+ le holdninger og nyde en afslappet aften ved vandet.\n\nVi mødes den 18. 
+ juni 2026 kl. 19.00 ved Vedbæk Strand\n\nMødested: Ved beachvolleybanen\
+ n\nVi ser frem til en hyggelig aften med gode samtaler og godt selskab\n\n
+ https://www.facebook.com/events/1907194426633588/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Vedbæk Strandvej\, 2950 Vedbæk\, Danmark
+GEO:55.85563;12.56581
+URL:https://www.facebook.com/events/1907194426633588/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1380228697326639@lau-kort
+DTSTAMP:20260928T141908Z
+DTSTART:20260814T143000Z
+DTEND:20260814T163000Z
+SUMMARY:Sommerfest i København
+DESCRIPTION:LAU København · LAU Nordkøbenhavn · LAU Nordsjælland\n\nSo
+ mmerfest i København\n\nKære alle - både i og uden for København!\n\nV
+ i inviterer til sommerfest på LAs terrasse på Christiansborg fredag den 
+ 14. august kl. 16.30\, hvor Mads Strange er vært.\n\nSammen med Nordsjæl
+ land\, Roskilde og Nordkøbenhavn holder vi en hyggelig sommerfest på Chr
+ istiansborg.\n\nAdressen: Christiansborg\, 1218 København\n\n"Vi mødes v
+ ed hovedtrappen i Rigsdagsgården"\n\nPlanen er\, at vi starter med at sid
+ de på LAs terrasse\, hygge os\, afholde nogle sjove aktiviteter og få be
+ søg af et par gæster. Bagefter går vi en tur til bibliotekshaven\, hvor
+  vi spiller kongespil og andre spil\, som vi\n\nhttps://www.facebook.com/e
+ vents/1380228697326639/
+CATEGORIES:LAU København
+LOCATION:Christiansborg Slot\, Rigsdagsgården 8\, 1218 København K\, Danm
+ ark
+GEO:55.675610629128;12.580481298896
+URL:https://www.facebook.com/events/1380228697326639/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1074649548438746@lau-kort
+DTSTAMP:20260928T142000Z
+DTSTART:20260915T163000Z
+DTEND:20260915T183000Z
+SUMMARY:Ezekiel kommer og snakker om puljer
+DESCRIPTION:LAU Nordsjælland\n\nEzekiel kommer ud og snakker om LAUs og DU
+ Fs lokalforeningspuljer med jer!\nVi ses\n\nhttps://www.facebook.com/event
+ s/1074649548438746/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Hørsholm Bibliotek\, Bibliotekstorvet 1\, 2970 Hørsholm\, Denmar
+ k
+GEO:55.880762563166;12.496766131869
+URL:https://www.facebook.com/events/1074649548438746/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1727045295021257@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261008T163000Z
+DTEND:20261008T183000Z
+SUMMARY:Ekstraordinær generalforsamling
+DESCRIPTION:LAU Nordsjælland\n\nKære medlemmer af LAU Nordsjælland.\nI b
+ liver hermed indkaldt til Ekstraordinær Generalforsamling i LAU Nordsjæl
+ land.\n\nDet bliver den 8/10 kl.18:30 på Hørsholm Bibliotek.\n\nDer vil 
+ blive sat pris på\, \nat man tilmelder sig på begivenheden på facebook 
+ iht. indkøb.\n\n\nDagsorden:\nDagsorden:\n1. Valg af dirigent. \n2. Valg 
+ af referent. \n3. Valg af stemmetællere.  \n4. Behandling af indkomne for
+ slag. \n5. . Valg af: \na. Formand. \nb. Næstformand. \nc. Kasserer.\nd. 
+ 2-6 bestyrelsesmedlemmer. \ne. Op til 3 suppleanter til bestyrelsen. \nf. 
+ Revisor. \ng. Op til 2 revisorsuppleanter. \n6. Eventuelt.  \n\nÆndringsf
+ orsla\n\nhttps://www.facebook.com/events/1727045295021257/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Bibliotekstorvet\, 2970 Hørsholm\, Danmark
+GEO:55.88029;12.49728
+URL:https://www.facebook.com/events/1727045295021257/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

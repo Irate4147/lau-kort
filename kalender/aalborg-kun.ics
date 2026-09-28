@@ -1,0 +1,413 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Aalborg (kun lokalt)
+X-WR-CALDESC:Kun LAU Aalborgs egne arrangementer. https://irate4147.github.
+ io/lau-kort/#Aalborg
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1345741673757334@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260110T170000Z
+DTEND:20260110T190000Z
+SUMMARY:🎅🏻🌲LAU AALBORGS LEGENDARISKE JULEFROKOST🎅🏻🌲
+DESCRIPTION:LAU Aalborg\n\nHusk gaver til pakkeleg🎁\n\nDet er endelig ti
+ d igen – den 10. Januar er årets mest berygtede og hyggelige tradition 
+ er tilbage!\nLAU Aalborg inviterer til den legendariske julefrokost\, hvor
+  vi samler hele landet til god mad\, kolde øl og masser af julestemning.\
+ n\nDu kan forvente:\n🍽️ Klassisk julemad\n🍻 Foreningens billigste 
+ bar\n🎶 Musik\, dans og rigeligt med julesnaps\n\n‼️Tilmeld dig nu 
+ – ved at trykke deltager på begivenheden\n\nhttps://www.facebook.com/ev
+ ents/1345741673757334/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1345741673757334/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:892231313232351@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260116T170000Z
+DTEND:20260116T190000Z
+SUMMARY:💙 Introarrangement – Liberal Alliances Ungdom 💙
+DESCRIPTION:LAU Aalborg\n\nEr du nysgerrig på\, hvad Liberal Alliances Ung
+ dom egentlig er – både politisk og som fællesskab? Så er det her intr
+ oarrangementet for dig!\n\nDenne aften får vi besøg af LAU’s landsform
+ and Tobias Jæger Pagh og landsnæstformand Jonas Winding Hansen\, som kom
+ mer og giver en introduktion til LAU som landsforening:\nhvad vi kæmper f
+ or politisk\, hvordan organisationen fungerer\, og hvorfor fællesskabet i
+  LAU er noget helt særligt – både lokalt og nationalt.\n\nDu kan forve
+ nte:\n✨ En introduktion til LAU\n🗣️ Indblik i vores politiske arbej
+ de og mærkesager\n🤝 Mulighed for at møde både nye og erfarne medlemm
+ er\n\n\nhttps://www.facebook.com/events/892231313232351/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/892231313232351/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:792301270548471@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260216T170000Z
+DTEND:20260216T190000Z
+SUMMARY:🔷️Introduktion til liberalisme og LAU med Ezekild Rohde🔷️
+DESCRIPTION:LAU Aalborg\n\nKære medlemmer\n\nLiberal Alliances Ungdoms pol
+ itiske formand\, Ezekiel Rohde\, gæster os til et spændende og lærerigt
+  oplæg om\, hvordan liberalismen fungerer i praksis – og hvordan du sel
+ v kan få reel politisk indflydelse i LAU.\n\nTil oplægget kommer vi omkr
+ ing: 💡 Grundlæggende liberalisme – værdierne bag vores politik\n
+ 🏛️ LAUs politiske struktur – hvordan organisationen er skruet samme
+ n\n📝 Hvordan du stiller forslag til Landsmødet og flytter politik i vi
+ rkeligheden\n\nOplægget er både for nye medlemmer\, der gerne vil forst
+ å LAU bedre\, og for erfarne\, der vil lære\, hvordan man får sine idé
+ er hele veje\n\nhttps://www.facebook.com/events/792301270548471/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/792301270548471/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:902991212439668@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260309T170000Z
+DTEND:20260309T190000Z
+SUMMARY:🩵Generalforsamling – LAU Aalborg🩵
+DESCRIPTION:LAU Aalborg\n\nKære medlemmer 💙\n\nDen 9. marts 2026 invite
+ rer vi til ordinær generalforsamling i Liberal Alliances Ungdom Aalborg.\
+ n\nDet seneste år har aktivitetsniveauet været lavere\, end vi ønsker 
+ – og det skal vi lave om på. Med et folketingsvalg i horisonten er det 
+ nu\, vi skal samle og mobilisere de unge liberale kræfter i Aalborg.\n\nV
+ il du have indflydelse på retningen?\nVil du være med til at styrke LAU 
+ lokalt i et valgår?\nSå er det her\, du skal møde op.\n\n\n🎤 Politis
+ ke oplæg\n\nVi får besøg af:\n\nTobias Pagh\, landsformand for Liberal 
+ Alliances Ungdom\n\nAnders Peter Hansen\, LAUs spidskandidat i Jylland\n\n
+ Solbjørk\n\nhttps://www.facebook.com/events/902991212439668/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/902991212439668/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:942669461473609@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260314T160000Z
+DTEND:20260314T180000Z
+SUMMARY:Valg-hyggeaften i LAU Aalborg 🇩🇰💙
+DESCRIPTION:LAU Aalborg\n\nValg-hyggeaften i LAU Aalborg 🇩🇰💙\n\nVa
+ lgkampen er i fuld gang\, og det betyder selvfølgelig\, at vi skal samles
+  og lade op til de kommende uger.\n\nDerfor holder vi valg-hyggeaften lør
+ dag den 14/3 kl. 17.00\, hvor vi mødes til en afslappet aften med god ste
+ mning\, politik og fællesskab.\n\nDet bliver en hyggelig aften\, hvor vi 
+ kan snakke valgkamp\, lære hinanden bedre at kende og planlægge nogle af
+  de ting\, vi skal ud og lave sammen i den kommende tid. Både nye og gaml
+ e medlemmer er meget velkomne.\n\nDer vil selvfølgelig være lidt mad 
+ 🍕🥤\n\nTag gerne en ven med – jo flere liberale\, jo bedre 💪\n\n
+ Vi glæder os\n\nhttps://www.facebook.com/events/942669461473609/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/942669461473609/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3958939817571085@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260321T163000Z
+DTEND:20260321T183000Z
+SUMMARY:SIDSTE UGE. SIDSTE SPURT. 🔥🇩🇰
+DESCRIPTION:LAU Aalborg\n\nSIDSTE UGE. SIDSTE SPURT. 🔥🇩🇰\n\nNu gæ
+ lder det.\n\nVi er i den absolut sidste uge af valgkampen\, og det er NU\,
+  vi skal give den alt\, hvad vi har. Hver flyer\, hver samtale og hver tim
+ e kan gøre forskellen 💪\nDerfor samler vi tropperne til valg-grill og 
+ hygge!\n\nVi tænder op i grillen\, lader kampgejsten boble og lader op ti
+ l de sidste\, afgørende dage.\n\n🔥 Grillen kører\n💙 Stemningen er 
+ høj\n\nKom og vær med til at sætte et stærkt punktum for valgkampen sa
+ mmen med resten af holdet.\n\nDet her er ikke tiden til at trække sig –
+  det er tiden til at trykke speederen i bund. 🚀\n\nhttps://www.facebook
+ .com/events/3958939817571085/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/3958939817571085/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1509629680785616@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260328T163000Z
+DTEND:20260328T183000Z
+SUMMARY:Tour de Chambre
+DESCRIPTION:LAU Aalborg\n\nObs: Denne begivenhed er kun for medlemmer af de
+  deltagende ungdomspolitiske foreninger i Nordjylland.\n\n\n🎉 Tour de C
+ hambre – Aalborg 2026 🎉\n\nVi inviterer til Tour de Chambre\, et soci
+ alt og tværpolitisk arrangement i Aalborg\, hvor 10 politiske ungdomsfore
+ ningerne mødes til en aften med fællesskab\, aktiviteter og gode samtale
+ r på tværs af politiske forskelle.\n\n🔁 Konceptet\nAftenen fungerer s
+ om en klassisk Tour de Chambre\, hvor vi besøger forskellige foreningers 
+ lokaler i løbet af aftenen. Hvert stop varer ca. 30 minutter\, hvor vært
+ erne kan lave en aktivitet\, et tema eller bare skabe en god stemni\n\nhtt
+ ps://www.facebook.com/events/1509629680785616/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Danmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1509629680785616/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1589131588813463@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260408T160000Z
+DTEND:20260408T180000Z
+SUMMARY:💙 Introarrangement – Lær LAU at kende💙
+DESCRIPTION:LAU Aalborg\n\n💙 Introarrangement – Lær LAU at kende\n\nV
+ i har fået en masse nye ansigter i LAU Aalborg – og det skal selvfølge
+ lig fejres 🙌\n\nDerfor inviterer vi til en hyggelig introaften\, hvor v
+ i får besøg af vores landsformand Tobias Pagh\, som vil fortælle lidt o
+ m\, hvem vi er som forening\, og hvad LAU egentlig går ud på.\n\nMen bar
+ e rolig\, det bliver ikke tørt og kedeligt 😉\nDer bliver også masser 
+ af hygge\, gode snakke og et par sjove røverhistorier fra livet i LAU 
+ 💙\n\nDet er en perfekt mulighed for at lære både foreningen og de and
+ re medlemmer bedre at kende\, uanset om du er helt ny eller har været med
+  lidt læn\n\nhttps://www.facebook.com/events/1589131588813463/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1589131588813463/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1438580604976952@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260421T160000Z
+DTEND:20260421T180000Z
+SUMMARY:Ekstraordinær generalforsamling i Liberal Alliances Ungdom
+DESCRIPTION:LAU Aalborg\n\nKære medlem af Liberal Alliances Ungdom i Aalbo
+ rg\n\nDer indkaldes hermed til ekstraordinær generalforsamling i Liberal 
+ Alliances Ungdom Aalborg.\n\nGeneralforsamlingen afholdes den 21. april 20
+ 26 kl. 18.00 i vores lokale på Skudehavnsvej 13\, 9000 Aalborg.\n\nBaggru
+ nden for indkaldelsen er et ønske om at styrke foreningen fremadrettet og
+  skabe en ny start med øget aktivitet\, stærkere fællesskab og en tydel
+ ig retning.\n\nVi står i en vigtig periode\, hvor vi har fået mange nye 
+ medlemmer og har et stort potentiale for at løfte LAU Aalborg til et endn
+ u højere niveau. Derfor ønsker vi at samle foreningen o\n\nhttps://www.f
+ acebook.com/events/1438580604976952/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1438580604976952/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:924362220465585@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260423T160000Z
+DTEND:20260423T180000Z
+SUMMARY:💙 Debattræning & Turnering – Vind en SIGNERET Alex plakat 
+ 🔥
+DESCRIPTION:LAU Aalborg\n\nHVAAA SÅÅ AAALBOOORG 😤💙\n\nEr du ung\, e
+ r du liberal – og vil du blive skarpere til at argumentere for dine hold
+ ninger og sætte nogle kommunister på plads?\n\nSå kom og vær med til d
+ ebattrænings-bootcamp med vores politiske formand Ezekiel Rohde 🙌\n\nD
+ et bliver en konge fed aften med masser af debat\, grin og god stemning sa
+ mmen med andre ligesindede 💙\n\n🔥 VI SLUTTER AF MED EN DEBATTURNERIN
+ G\n🏆 VINDEREN FÅR EN SIGNERET PLAKAT AF Alex Vanopslagh 🔥\n\nJa\, d
+ u læste rigtigt.\nDet her er din chance for både at blive skarpere – o
+ g tage en ret fed sejr med hjem 😏\n\n💬 Alle kan være med\nDu behøv
+ er ikke være en haj t\n\nhttps://www.facebook.com/events/924362220465585/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/924362220465585/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1442862600494917@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260512T160000Z
+DTEND:20260512T180000Z
+SUMMARY:💙 Brætspilsaften i LAU Aalborg 🎲
+DESCRIPTION:LAU Aalborg\n\nVi inviterer til en hyggelig aften med brætspil
+ \, gode snakke og afslappet stemning 🙌\n\nKig forbi\, spil med og hæng
+  ud – uanset om du er til spil eller bare gerne vil være med til hyggen
+  💙\n\nVi sørger for lidt mad\, så du skal bare møde op 😊\n\nVi gl
+ æder os til at se jer 💙\n\nhttps://www.facebook.com/events/14428626004
+ 94917/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1442862600494917/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2238905216937243@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260526T160000Z
+DTEND:20260526T180000Z
+SUMMARY:💙 Grillaften i LAU Aalborg 🔥
+DESCRIPTION:LAU Aalborg\n\n💙 Grillaften i LAU Aalborg 🔥\n\nSolen er f
+ remme\, vejret bliver godt – og det betyder selvfølgelig\, at vi skal h
+ ave gang i grillen 🙌\n\nDerfor inviterer vi til en hyggelig grillaften 
+ med god mad og masser af hyggeligt selskab 💙\n\nDet bliver en afslappet
+  aften\, hvor der er plads til både gode snakke\, grin og bare at nyde so
+ mmerstemningen sammen ☀️\n\nSå tag det gode humør med og kom forbi t
+ il en hyggelig aften med LAU Aalborg 🔥\n\nVi glæder os til at se jer 
+ 💙\n\nhttps://www.facebook.com/events/2238905216937243/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/2238905216937243/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1623879395350572@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260617T170000Z
+DTEND:20260617T190000Z
+SUMMARY:💙🎳 Ølbowlingturnering i LAU Aalborg 🍻
+DESCRIPTION:LAU Aalborg\n\n💙🎳 Ølbowlingturnering i LAU Aalborg 🍻\
+ n\nEr du klar til en aften med god stemning\, lidt konkurrence og masser a
+ f hygge? 🙌\n\nSå kom med til vores ølbowlingturnering\, hvor vi finde
+ r ud af\, hvem der kan ramme keglerne bedst😎\n\nDet handler ikke om at 
+ være professionel\, men om at have det sjovt og nyde en hyggelig aften sa
+ mmen med resten af LAU Aalborg 💙\n\n👉 Alle kan være med 👉 God st
+ emning er vigtigere end resultatet 👉 Perfekt mulighed for at lære de a
+ ndre medlemmer bedre at kende\n\nVi glæder os til en fed aften med jer 
+ 🍻💙🎳\n\nhttps://www.facebook.com/events/1623879395350572/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1623879395350572/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1690201188797290@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260623T160000Z
+DTEND:20260623T180000Z
+SUMMARY:💙 Sankt Hans-hygge i LAU Aalborg 🔥
+DESCRIPTION:LAU Aalborg\n\nKom og vær med til en hyggelig Sankt Hans-aften
+  sammen med LAU Aalborg 🙌\n\nVi mødes i lokalet\, hvor vi starter afte
+ nen med hygge\, gode snakke og masser af god stemning. Når tiden er inde\
+ , går vi samlet over for at se Sankt Hans-bålet og nyde aftenen sammen 
+ 🔥\n\nDet bliver en afslappet aften og en oplagt mulighed for at lære d
+ e andre medlemmer endnu bedre at kende – uanset om du er helt ny i LAU e
+ ller har været med længe 💙\n\nVi håber\, du har lyst til at kigge fo
+ rbi\, og vi glæder os til at se jer! 🔥💙\n\nhttps://www.facebook.com
+ /events/1690201188797290/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1690201188797290/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2470271603459631@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260818T150000Z
+DTEND:20260818T170000Z
+SUMMARY:Oplæg Udlændinge- og Integrationsordfører med Asta Georgsen
+DESCRIPTION:LAU Aalborg\n\nHVAAA SÅÅÅ LAU DOBBELT AA!!!\n\nDen 18/8 får
+  vi besøg af vores helt egen (trommehvirvel tak🥁🥁🥁) A to the S t
+ o the T to the A… \nAAAASSTAAAA vores elskede og super dygtige udlændin
+ ge og integrations ordfører som vil komme og fortælle os lidt om LAUs po
+ litik på området både nu men også før i tiden og hvad Danmarks genera
+ lle holdning har været og et mere personligt tvist💙\n\nSå kom ta din 
+ skabs liberale ven med under armen og nyd det gode selvskab og de kolde ø
+ l 🍻\n\nSpring over aftensmad\, den sørger vi for😉\n\nhttps://www.fa
+ cebook.com/events/2470271603459631/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/2470271603459631/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1049775024470870@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260826T150000Z
+DTEND:20260826T170000Z
+SUMMARY:kultur og ligestilling oplæg med Ella Nellemann
+DESCRIPTION:LAU Aalborg\n\nHVAAA SÅÅÅ LAU nordens paris!!!\n\nHvad sker 
+ der med ligestillingen når staten får for meget magt?\n\nDen 26/8 får v
+ i besøg af vores helt egen Ella vores elskede og super dygtige kultur og 
+ ligestillingsordfører som vil komme og fortælle os lidt om LAUs politik\
+ , det ovennævnte spørgmål og et personligt tvist💙\n\nSå kom ta din 
+ skabs liberale ven med under armen og nyd det gode selvskab og de kolde ø
+ l 🍻\n\nhttps://www.facebook.com/events/1049775024470870/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1049775024470870/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1792944751707483@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260915T160000Z
+DTEND:20260915T180000Z
+SUMMARY:🎲Brætspilsaften med LAU Aalborg🎲
+DESCRIPTION:LAU Aalborg\n\nVi inviterer til en hyggelig aften med brætspil
+ \, gode snakke og afslappet stemning 🙌\n\nKig forbi\, spil med og hæng
+  ud – uanset om du er til spil eller bare gerne vil være med til hyggen
+  💙\n\nVi sørger for lidt mad\, så du skal bare møde op 😊\n\nVi gl
+ æder os til at se jer 💙\n\nhttps://www.facebook.com/events/17929447517
+ 07483/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Denmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1792944751707483/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2499015893930764@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260922T160000Z
+DTEND:20260922T200000Z
+SUMMARY:Oplæg med Dansk Zionistisk Forbund V. Max Meyer.
+DESCRIPTION:LAU Aalborg\n\nKære alle politisk interesserede unge i vores s
+ mukke Aalborg!\n\nVi har fornøjelsen af at invitere til en spændende og 
+ lærerig aften\, hvor vi får besøg af formanden for Dansk Zionistisk For
+ bund\, Max Meyer.\n\n📅 22. september kl. 18.00\n📍 Medborgerhuset\n\n
+ Vi håber på en aften med interessante perspektiver\, gode spørgsmål og
+  en åben debat. Arrangementet er åbent for alle – uanset politisk bagg
+ rund eller holdning.\n\nSå tag gerne en ven med og kom forbi til en spæn
+ dende aften med plads til både debat og hyggeligt samvær 😊\n\nDer vil
+  være mulighed for at købe drikkevarer til arrangementet.\n\nVi glæder 
+ os til\n\nhttps://www.facebook.com/events/2499015893930764/
+CATEGORIES:LAU Aalborg
+LOCATION:Aalborg Bibliotekerne
+GEO:57.0473944622;9.9276399907138
+URL:https://www.facebook.com/events/2499015893930764/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2690512484701410@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261002T160000Z
+DTEND:20261002T180000Z
+SUMMARY:Fredagscafé med Debat
+DESCRIPTION:LAU Aalborg\n\nEt fællesarrangement mellem DF Ungdom Nordjylla
+ nd\, Europæisk Ungdom Aalborg\, Liberal Alliances Ungdom og Frit Forum Aa
+ lborg\n\nVi invitere alle medlemmer til en hyggelig og stemningsfuld aften
+ . Der vil snarligt forefindes en række emner der skal debatteres på dage
+ n. \n\nKom frisk og prøv kræfter med debat. Måske er du ny til det elle
+ r en garvet debattør? Alle er velkomne.\n\nArrangementet starter kl. 18:0
+ 0 med en kort velkomst\, hvorefter debat-aftenen vil starte. \n\nDet vil v
+ ære muligt at købe øl og spiritus i baren\, til studievenlige priser.\n
+ \nAftenens ordstyrer vil sikre den gode tone\, tiltrods for \n\nhttps://ww
+ w.facebook.com/events/2690512484701410/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, 9000 Aalborg\, Danmark
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/2690512484701410/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

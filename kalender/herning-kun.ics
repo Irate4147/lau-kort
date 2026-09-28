@@ -1,0 +1,160 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Herning (kun lokalt)
+X-WR-CALDESC:Kun LAU Hernings egne arrangementer. https://irate4147.github.
+ io/lau-kort/#Herning
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:4277584179158628@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260115T180000Z
+DTEND:20260115T200000Z
+SUMMARY:Åbent bestyrelsemøde
+DESCRIPTION:LAU Herning\n\n🎉 Åbent bestyrelsesmøde – kom og vær med
+ ! 🎉\n15. januar kl. 19.00\n\nHey! Vi holder åbent bestyrelsesmøde\, o
+ g du er inviteret. Jep – dig.\n\nHvis du er nysgerrig på\, hvad vi går
+  og roder med\, har lyst til at byde ind med idéer\, eller bare gerne vil
+  være en del af fællesskabet\, så kig forbi.\n\nDet bliver super uforme
+ lt\, hyggeligt og helt nede på jorden. Vi snakker planer\, projekter\, ny
+ e idéer og alt det\, der gør vores arbejde sjovt og meningsfuldt. Du beh
+ øver ikke vide noget på forhånd – bare kom som du er.\n\nHvor: Højsk
+ olevej 11\, 7400 Herning\, Denmark\nHvornår: 15. januar kl. 19.00\nHvem: 
+ Alle der har \n\nhttps://www.facebook.com/events/4277584179158628/
+CATEGORIES:LAU Herning
+LOCATION:Højskolevej 11\, 7400 Herning\, Denmark
+GEO:56.13346;9.01549
+URL:https://www.facebook.com/events/4277584179158628/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:778272651999230@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260305T180000Z
+DTEND:20260305T200000Z
+SUMMARY:Ordinær generalforsamling i Liberal Alliances Ungdom Herning.
+DESCRIPTION:LAU Herning\n\nKære alle LAU Herning medlemmer. \n\n\nDu er he
+ rmed indkaldt til generalforsamling i Liberal Alliances Ungdom Herning. \n
+ \n\nSted: Murphys Pub\, Østergade 20\, 7400 Herning\nTid: Torsdag d. 5. m
+ arts klokken 19\n\n\nVi håber du har lyst og mulighed for at deltage i en
+  spændende aften med oplæg\, et tilbageblik på den forgangne bestyrelse
+  år. Vi ser ind i et spændende år med et spændende valg\, hvor LA skal
+  have udnyttet den gode vind med et godt kampagnehold til at sikre en bedr
+ e og større indflydelse på Christiansborg. \n\n\n\nDagsorden i henhold t
+ il foreningens vedtægter:\n\n1. Valg af dirigent \n\n2. Valg af refe\n\nh
+ ttps://www.facebook.com/events/778272651999230/
+CATEGORIES:LAU Herning
+URL:https://www.facebook.com/events/778272651999230/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1603367104030392@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260312T163000Z
+DTEND:20260312T183000Z
+SUMMARY:LAU Herning Folketingsvalg – Valgkampstour i Vestjylland
+DESCRIPTION:LAU Herning\n\nFolketingsvalget er skudt i gang\, og Liberal Al
+ liances Ungdom Herning inviterer til valgkampstour. Det bliver et brag\, o
+ g du er inviteret!\n\nVi samler nogle af de stærkeste liberale stemmer fo
+ r at give os det bedste billede af den igangværende valgkamp\, hvor frihe
+ d\, ansvar og personlig handlekraft skal stå knivskarpt.\n\nTil valgkamps
+ touren får vi besøg af:\n	•	Carsten Bach\, medlem af Folketinget\n	•
+ 	Tobias Pagh\, landsformand for LAU\n	•	Loui Femhøj\, vores egen vestjy
+ ske landssekretær for LAU\n	•	Svend Stein Olsen\, Vestjyllands LAU-kand
+ idat\n\nDe vil hver især dele deres perspektiver\, erfaringer og str\n\nh
+ ttps://www.facebook.com/events/1603367104030392/
+CATEGORIES:LAU Herning
+LOCATION:Murphys Pub Herning
+GEO:56.13585;8.97815
+URL:https://www.facebook.com/events/1603367104030392/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3994594617499926@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260522T160000Z
+DTEND:20260522T180000Z
+SUMMARY:Liberal fredagsbar v. Carsten Bach og Jens Paaske
+DESCRIPTION:LAU Herning\n\nKom til liberal fredagsbar med Venstres Ungdom o
+ g Liberal Alliances Ungdom til en postpartum om SVM-regeringen – og den 
+ kommende regering! 🍻\n\nVi får nemlig besøg af Liberal Alliances Cars
+ ten Bach og VU's landsformand Jens Paaske\, der vil fortælle lidt om dere
+ s syn på den nu tidligere SVM-regering og en eventuel kommende regering!\
+ n\nhttps://www.facebook.com/events/3994594617499926/
+CATEGORIES:LAU Herning
+LOCATION:Højhuset - Kulturhotel\, Højskolevej 11\, 7400 Herning\, Denmark
+GEO:56.13346;9.01549
+URL:https://www.facebook.com/events/3994594617499926/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1267554948453079@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260618T160000Z
+DTEND:20260618T180000Z
+SUMMARY:Åbent bestyrelsesmøde og fælles arbejds­aften
+DESCRIPTION:LAU Herning\n\nÅbent bestyrelsesmøde og fælles arbejds­afte
+ n\n\nVi inviterer til en hyggelig aften\, hvor vi kombinerer et kort besty
+ relsesmøde med god mad og praktisk fælles indsats.\n\nVi starter med aft
+ ensmad og et kort møde\, hvorefter vi bruger lidt tid på at få ryddet o
+ p i både lokalet og depotet. Skulle der dukke noget ældre merchandise op
+ \, som vi ikke længere skal bruge\, kan man være heldig at få det med h
+ jem.\n\nVi håber\, at mange har lyst til at være med til en uformel\, pr
+ oduktiv og hyggelig aften i godt selskab.\n\nhttps://www.facebook.com/even
+ ts/1267554948453079/
+CATEGORIES:LAU Herning
+LOCATION:Højskolevej 11\, 7400 Herning\, Denmark
+GEO:56.13346;9.01549
+URL:https://www.facebook.com/events/1267554948453079/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1922503511754154@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260829T113000Z
+DTEND:20260829T133000Z
+SUMMARY:LAU Vestjylland Sommerfest
+DESCRIPTION:LAU Herning · LAU Viborg\n\nSommeren skal selvfølgelig fejres
+  med LAU Vestjylland – og du er inviteret! 💙💛\n\nTag dine LAU-venn
+ er med\, og kom til en dag fyldt med god stemning\, grin og masser af hygg
+ eligt samvær.\n\nVi sørger for maden\, så du slipper for at stå ved gr
+ illen. Til gengæld sørger vi også for\, at baren er fyldt med kolde øl
+ \, sodavand og andre drikkevarer 🍔🍻\n\nDer bliver rig mulighed for a
+ t snakke politik\, diskutere hvem der skylder næste omgang\, spille haves
+ pil eller bare nyde en sensommerdag med en masse andre unge liberale.\n\n
+ 🏕️ Overnatning\n\nHar du ikke lyst til at tage hjem\, når festen er 
+ på sit højeste? Intet p\n\nhttps://www.facebook.com/events/1922503511754
+ 154/
+CATEGORIES:LAU Herning
+LOCATION:Sølvhuset/ungdomshuset
+GEO:56.133436478276;9.0157447224063
+URL:https://www.facebook.com/events/1922503511754154/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:4136695753289874@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260903T160000Z
+DTEND:20260903T180000Z
+SUMMARY:Tour del byråd
+DESCRIPTION:LAU Herning\n\nLiberal Alliances Ungdom Herning tager på tur u
+ d til Liberal Alliances byrådsmedlemmer i vores område\, og vi har forn
+ øjelsen at starte med at besøge Lisa Castro Jensen der er valgt i Struer
+  Kommune.\nLisa stillede for første gang op til byrådet i 2025\, hvor hu
+ n bragede ind med det tredje højste stemmetal af alle kandidater.\nSiden 
+ valget er Lisa blevet medlem af: \n- Økonomiudvalget\n- Børne- og uddann
+ elsesudvalget \n- Næsteformand i kulturudvalget\n- Udpeget til medlem af 
+ LAG Holstebro-Struer\n- Medlem af KKR Midtjylland (Kommunernes kontaktåd)
+  \n\nVi mødes kl. 18:00 ved indgangen til Struers rådhus\, \n\nhttps://w
+ ww.facebook.com/events/4136695753289874/
+CATEGORIES:LAU Herning
+LOCATION:Struer Rådhus
+GEO:56.492053499423;8.5940712915872
+URL:https://www.facebook.com/events/4136695753289874/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

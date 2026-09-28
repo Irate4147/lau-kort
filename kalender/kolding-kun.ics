@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Kolding (kun lokalt)
+X-WR-CALDESC:Kun LAU Koldings egne arrangementer. https://irate4147.github.
+ io/lau-kort/#Kolding
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+END:VCALENDAR

@@ -1,0 +1,181 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Frederiksberg (kun lokalt)
+X-WR-CALDESC:Kun LAU Frederiksbergs egne arrangementer. https://irate4147.g
+ ithub.io/lau-kort/#Frederiksberg
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:862909126593989@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260115T163000Z
+DTEND:20260115T183000Z
+SUMMARY:Åbent bestyrelsesmøde
+DESCRIPTION:LAU Frederiksberg\n\nTorsdag den 15. januar holder vi åbent be
+ styrelsesmøde i LAU Frederiksberg.\n\nDu har mulighed for at komme med id
+ éer og input til kommende arrangementer og meget mere. Har du forslag til
+  aktiviteter eller noget\, du savner i foreningen\, så kig forbi og del d
+ ine tanker.\n\nBestyrelsesmødet giver et godt indblik i det organisatoris
+ ke arbejde\, som foreningen laver 💙\n\nEfterfølgende tager vi ud og f
+ år en øl eller sodavand\, hvis der er stemning for det 🤠\n\nhttps://w
+ ww.facebook.com/events/862909126593989/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Bülowsvej 34\, 1870 Frederiksberg C\, Danmark
+GEO:55.68212;12.54502
+URL:https://www.facebook.com/events/862909126593989/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2080295226090785@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260212T163000Z
+DTEND:20260212T183000Z
+SUMMARY:Erfaringer som løsgænger i Folketinget v. Jon Stephensen
+DESCRIPTION:LAU Frederiksberg\n\nDen 12. februar kl. 17.30 inviterer LAU Fr
+ ederiksberg til oplæg og debat med Jon Stephensen\, medlem af Folketinget
+  💙\n\nHvordan er det at stå uden for partierne på Christiansborg? Hvi
+ lke overvejelser gik forud for beslutningen om at stille op til Folketings
+ valget i 2022\, og hvordan ser Jon Stephensen i dag på dansk politik og d
+ et politiske landskab?\n\nArrangementet indledes med et kort oplæg fra Si
+ gne Bøgevald\, som I november blev valgt til Borgerrepræsentationen. Hun
+  vil fortælle om arbejdet på Københavns Rådhus 🏛️\n\nHerefter vil
+  Jon Stephensen dele sine erfaringer og refleksioner\, efterfulgt af \n\nh
+ ttps://www.facebook.com/events/2080295226090785/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Københavns Rådhus\, Rådhuspladsen 1\, 1599 Copenhagen\, Denmark
+GEO:55.67562;12.56958
+URL:https://www.facebook.com/events/2080295226090785/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:877023625083818@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260225T163000Z
+DTEND:20260225T183000Z
+SUMMARY:LAU FREDERIKSBERG SKRIVER FORSLAG TIL LANDSMØDET
+DESCRIPTION:LAU Frederiksberg\n\nLiberal Alliances Ungdoms politiske forman
+ d\, Ezekiel Rohde\, gæster os til en hyggelig aften\, hvor han vil give e
+ n introduktion til liberalismen\, til hvordan politikken i LAU er skruet s
+ ammen\, samt til hvordan man skriver forslag til landsmødet.\n\nBagefter 
+ skriver vi forslag til ændringer i foreningens vedtægter\, resolutioner 
+ og principprogram\, så vi er klar til at sætte vores præg på foreninge
+ n 💡\n\nForbered dig gerne inden arrangementet ved at læse vores politi
+ k på hjemmesiden 📝\n\nUanset om du er ny eller erfaren\, og uanset om 
+ du deltager i landsmødet eller ej\, danner arrangementet et godt fundam\n
+ \nhttps://www.facebook.com/events/877023625083818/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Bülowsvej 34\, 1870 Frederiksberg C\, Danmark
+GEO:55.68212;12.54502
+URL:https://www.facebook.com/events/877023625083818/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:926765086710618@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260320T173000Z
+DTEND:20260320T193000Z
+SUMMARY:STATUS PÅ FOLKETINGSVALGKAMPEN
+DESCRIPTION:LAU Frederiksberg · LAU København\n\nKom og hør en status p
+ å valgkampen på Københavns Rådhus!!\n\nLA's spidskandidat i København
+ \, Ole Birk Olesen\, giver sin analyse af valget\, LAU's kandidat\, Mads S
+ trange\, deler sine erfaringer som ung (og hot) kandidat\, og vores kære 
+ landsformand\, Tobias Pagh\, sætter nogle flere ord på LAU's rolle i et 
+ af LA's vigtigste valg til dato.\n\nDer vil være GRATIS øl og pizza!\n\n
+ Program:\n18.30-18.40: Intro v. Gustav Overby\n18.40-19: Analyse af valgka
+ mpen v. Ole Birk Olesen\n19-19.30: Folketingsvalgskickoff og LAU's rolle v
+ . Tobias Pagh\n19.30-19.50: Ung i valgkampen v. Mads Strange\n19.50-??: Hy
+ gge\n\nhttps://www.facebook.com/events/926765086710618/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Københavns Rådhus\, Copenhagen\, Denmark
+GEO:55.675778516899;12.569176454263
+URL:https://www.facebook.com/events/926765086710618/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1496390082084822@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260429T170000Z
+DTEND:20260429T190000Z
+SUMMARY:GENERALFORSAMLING I LAU FREDERIKSBERG
+DESCRIPTION:LAU Frederiksberg\n\nLiberal Alliances Ungdom Frederiksberg ind
+ kalder hermed til ordinær generalforsamling den 29. april kl. 19.00 på B
+ ülowsvej 34\, 1870 Frederiksberg. \n\nGrundet folketingsvalget valgte bes
+ tyrelsen at udsætte generalforsamlingen til april i stedet for marts\, hv
+ ilket er muligt i henhold til vedtægternes § 8\, stk. 2.\n\nDagsordenen 
+ er dermed som følger:\n1. Valg af dirigent. \n2. Valg af referent.\n3. Va
+ lg af stemmetællere. \n4. Bestyrelsens beretning.\n5. Forelæggelse af re
+ gnskab til godkendelse. \n6. Behandling af indkomne forslag.\n7. Valg af: 
+ \na. Formand.\nb. Næstformand.\nc. Kasserer. \nd. 2-6 bestyrelsesme\n\nht
+ tps://www.facebook.com/events/1496390082084822/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Bülowsvej 34\, 1870 Frederiksberg C\, Danmark
+GEO:55.68212;12.54502
+URL:https://www.facebook.com/events/1496390082084822/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2137742083453068@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260605T130000Z
+DTEND:20260605T150000Z
+SUMMARY:Borgerligt grundlovsmøde med LAU Frederiksberg
+DESCRIPTION:LAU Frederiksberg\n\n📣 Ungdommen indtager talerstolen på Gr
+ undlovsdag 📣\n\nI år bliver Grundlovsdag alt andet end som den plejer 
+ på Frederiksberg. De klassiske politiske taler får en ny lyd\, når det 
+ ikke er garvede toppolitikere – men unge stemmer – der sætter dagsord
+ enen 🔥\n\nUnge fra de borgerlige partier går på scenen og giver deres
+  bud på frihed\, ansvar og demokrati anno i dag. Det handler om nye persp
+ ektiver\, ny energi og en politisk samtale med blikket rettet mod fremtide
+ n.\n\nKort sagt: Færre vaner. Mere vision.\n\nDer er selvfølgelig også 
+ plads til hyggen – med fællessang\, kolde og varme drikke i baren og ba
+ lloner\n\nhttps://www.facebook.com/events/2137742083453068/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Rådhuspladsen Frederiksberg
+GEO:55.6783469;12.5176584
+URL:https://www.facebook.com/events/2137742083453068/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:943964362008248@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260627T150000Z
+DTEND:20260627T170000Z
+SUMMARY:LAU Frederiksbergs notoriske sommerafslutning
+DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til en legenda
+ risk sommerafslutning 💙\n\nDer kommer underholdning\, øl og tvivlsomt 
+ selskab. Så kom glad! \n\nTilmelding sker via vores MobilePay: 7746ZA og 
+ sker for den lette pris af en 50’er.\n\nArrangementet afholdes på CSS i
+  konservative studerendes lokale 📍\n\nhttps://www.facebook.com/events/9
+ 43964362008248/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Københavns Universitet - CSS
+GEO:55.687548666133;12.570032225983
+URL:https://www.facebook.com/events/943964362008248/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1106968722274658@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260923T160000Z
+DTEND:20260923T180000Z
+SUMMARY:En liberal sundhedspolitik m. Social- og Sundhedsordfører David Kl
+ ausen
+DESCRIPTION:LAU Frederiksberg\n\nTag med d. 23./9\, når David Klausen\, vo
+ res Social- og Sundhedsordfører\, kommer forbi LAU-Frederiksberg for at f
+ ortælle om liberal sundhedspolitik. \n\nI oplægget vil han blandt andet 
+ komme ind på historie\, teknologi og fremtid. \n\nRygtet går desuden på
+ \, at der vil være pizza til dem\, der har trykket ”deltager” på beg
+ ivenheden\, but who knows 🍕\nMåske er det bare et rygte. \n\nTag med f
+ or at finde ud af det. \n\nKom glad! 💙\n\nhttps://www.facebook.com/even
+ ts/1106968722274658/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Bülowshallen
+GEO:55.68212;12.54502
+URL:https://www.facebook.com/events/1106968722274658/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

@@ -1,11 +1,11 @@
 name: Beregn HB-prognose
 
-# Når en rettelse af arrangementer gemmes (data/rettelser.json), beregnes data/hb_<år>.json igen.
-# Kører kun scripts/hb.py – ingen Apify-kald.
+# Når en rettelse af arrangementer gemmes (data/rettelser.json), beregnes data/hb_<år>.json og kalenderne
+# (kalender/*.ics) igen – også når foreningerne ændres. Kører kun hb.py og kalender.py – ingen Apify-kald.
 on:
   push:
     branches: [main]
-    paths: ['data/rettelser.json']
+    paths: ['data/rettelser.json', 'data/foreninger.json']
   workflow_dispatch:
 
 permissions:
@@ -28,9 +28,12 @@ jobs:
       - name: Beregn HB-prognose (kvartalskrav)
         run: python3 scripts/hb.py
 
+      - name: Skriv kalendere (.ics)
+        run: python3 scripts/kalender.py
+
       - name: Gem data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data
+          git add data kalender
           git diff --cached --quiet || { git commit -m "Beregn HB-prognose" && git pull --rebase -q && git push; }

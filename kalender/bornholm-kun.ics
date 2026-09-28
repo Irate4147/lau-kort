@@ -1,0 +1,71 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Bornholm (kun lokalt)
+X-WR-CALDESC:Kun LAU Bornholms egne arrangementer. https://irate4147.github
+ .io/lau-kort/#Bornholm
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1825425695561672@lau-kort
+DTSTAMP:20260928T140051Z
+DTSTART:20260604T150000Z
+DTEND:20260604T170000Z
+SUMMARY:Bowling og pizza
+DESCRIPTION:LAU Bornholm\n\nLAU Bornholm inviterer til bowling og pizza d. 
+ 4. juni kl. 17:00 hos Bowlingcenter Rønne🎳\nArrangementet er gratis fo
+ r LAU'ere\, så hvis nogen befinder sig på Bornholm eller føler for en s
+ muttur\, så er I meget velkomne!\nVi håber på at se flere til en hyggel
+ ig aften! Meld gerne ind hurtigst muligt\, om I deltager. \nMvh. LAU Bornh
+ olm🩵\n\nhttps://www.facebook.com/events/1825425695561672/
+CATEGORIES:LAU Bornholm
+LOCATION:Bowlingcenter Rønne
+GEO:55.10998;14.71271
+URL:https://www.facebook.com/events/1825425695561672/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1833490480955736@lau-kort
+DTSTAMP:20260928T140051Z
+DTSTART:20260811T150000Z
+DTEND:20260811T170000Z
+SUMMARY:🩵Oplæg med Landsformand Ezekiel Rohde🩵
+DESCRIPTION:LAU Bornholm\n\nLAU’s Landsformand\, ✨Ezekiel Rohde✨\, l
+ ægger vejen forbi Bornholm for at tale med os om\, hvad LAU er som foreni
+ ng\, og hvordan vi udvikler os i fremtiden🩵\n\nVi byder på gratis pizz
+ a og drikkelse🍕🥤\, så kom med til en hyggelig aften\, og tag en sna
+ k om\, hvordan vi sammen kan arbejde for et friere Danmark🩵🤩\n\n📅
+  Dato: 11/08/2026\n📍 Sted: Rønne bibliotek - Lokale 3\n⏰ Tid: 17:00\
+ n\nArrangementet er åbent for medlemmer og alle andre\n\n\nhttps://www.fa
+ cebook.com/events/1833490480955736/
+CATEGORIES:LAU Bornholm
+LOCATION:Rønne Bibliotek - Pingels Alle 1\, 3700 Rønne\, Danmark
+GEO:55.10176;14.70731
+URL:https://www.facebook.com/events/1833490480955736/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1430974682480846@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261019T150000Z
+DTEND:20261019T170000Z
+SUMMARY:Oplæg med Anton Leopold Krogh
+DESCRIPTION:LAU Bornholm\n\nLAU Bornholm inviterer til et spændende oplæg
+  af Anton Leopold Krogh\, seniorrådgiver i Liberal Alliances værdikampsa
+ fdeling. \nHan vil give os et indblik i\, hvilken liberalisme LA står for
+  - og hvad vi står i modstrid til. \nDet bliver et lærerigt arrangement\
+ , der sætter rammen for\, hvilke inspirationskilder og liberale tænkere 
+ der lægger til grund for LA's ideologiske projekt under Alex Vanopslagh.\
+ nDet er gratis for medlemmer\, og det vil være mad og drikkelse til arran
+ gementet\, så kom og vær med!🩵\n\nhttps://www.facebook.com/events/143
+ 0974682480846/
+CATEGORIES:LAU Bornholm
+LOCATION:Juhls Minigolf\, Sandemandsvej 11\, 3700 Rønne\, Denmark
+GEO:55.09519;14.73279
+URL:https://www.facebook.com/events/1430974682480846/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,183 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Sydvestjylland (kun lokalt)
+X-WR-CALDESC:Kun LAU Sydvestjyllands egne arrangementer. https://irate4147.
+ github.io/lau-kort/#Sydvestjylland
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1224691036276762@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260119T173000Z
+DTEND:20260119T193000Z
+SUMMARY:Politisk Formand\, Ezekiel Rohde kommer til sydvest
+DESCRIPTION:LAU Sydvestjylland\n\nHvad får man\, når man blander liberal 
+ politik\, skarpe holdninger og en god portion humor? Svaret er: Ezekiel Ro
+ hde i Sydvestjylland!\nKom forbi til en aften med debat\, grin og masser a
+ f politisk stof til eftertanke – uanset om du er hardcore liberal eller 
+ bare nysgerrig.\nVi lover god stemning\, friske pointer og mulighed for at
+  stille alle de (kritiske) spørgsmål.\n\nhttps://www.facebook.com/events
+ /1224691036276762/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, 6700 Esbjerg\, Denmark
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/1224691036276762/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1377226514089760@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260213T180000Z
+DTEND:20260213T200000Z
+SUMMARY:Mads Engelund (DF)\, besøger LAU Sydvest
+DESCRIPTION:LAU Sydvestjylland\n\nJa\, det er ham fra tik tok…\n\nVi får
+  besøg af Mads Engelund fra DF 🤯\n\nHan vil fortælle om sig selv og s
+ in valgkamp. Hvordan han lykkedes at brage gennem lydmuren på tik tok\, s
+ amt stormede i byrådet. 😁\n\nVi glæder os til en hyggelig aften\, med
+  røverhistorier og godt humør 💙\n\nTag gerne en ven med\, hvis det ly
+ ster\n\n\n\nhttps://www.facebook.com/events/1377226514089760/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/1377226514089760/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1404303224827641@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260306T170000Z
+DTEND:20260306T200000Z
+SUMMARY:Libaral Alliance Ungdom Sydvestjyllands generalforsamling
+DESCRIPTION:LAU Sydvestjylland\n\nKom med til generalforsamling i Liberal A
+ lliance Ungdom Sydvestjylland!\nVi gør status på året\, vælger bestyre
+ lse og lægger planerne for de næste aktiviteter i området.\n\nhttps://w
+ ww.facebook.com/events/1404303224827641/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, 6700 Esbjerg\, Denmark
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/1404303224827641/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:911084275180095@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260311T180000Z
+DTEND:20260311T200000Z
+SUMMARY:TOUR DE FT'
+DESCRIPTION:LAU Sydvestjylland\n\nSå er der ikke længe til\, at vi skyder
+  folketingsvalget i gang\, med et brag! 💥\n\nNår Slette Mette trykker 
+ på valg knappen\, skal vi være maks klar 💪\n\nVi får blandt andet be
+ søg af:\n* Tobias Pagh\, Landsformand for LAU\n* Steffen Larsen\, Folketi
+ ngsmedlem og spidskandidat for LA\n* Carl Andersen\, Folketingsmedlem for 
+ LA\n* Kim Alexander Jensen\, Folketingskandidat for LA\n\nSå tag din libe
+ rale ven med under armen og kom med til en hyggeaften. Vi sørger for at d
+ er er lidt og drikke. \n\nhttps://www.facebook.com/events/911084275180095/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/911084275180095/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:944772677963184@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260414T170000Z
+DTEND:20260414T190000Z
+SUMMARY:Kom godt i gang i LAU – Intro med Tobias Pagh
+DESCRIPTION:LAU Sydvestjylland\n\nKom til introoplæg i Liberal Alliances U
+ ngdom Sydvestjylland! 💙\n\nAlle er velkomne – både medlemmer og nysg
+ errige.\n\nEr du ny i LAU eller overvejer du at blive medlem\, så er det 
+ her en oplagt mulighed for at få indblik i vores fællesskab og hvordan v
+ i arbejder som organisation.\n\nOplægget bliver holdt af vores landsforma
+ nd\, som vil fortælle om LAU og den politiske retning.\n\nDer vil selvfø
+ lgelig også være mulighed for spørgsmål og debat.\n\nDu er meget velko
+ mmen til at kontakte lokalformand Oliver Sørensen på 60477307\, hvis du 
+ har spørgsmål.\n\nVi glæder os til at se dig!\n\n\nhttps://www.facebook
+ .com/events/944772677963184/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/944772677963184/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2516830135439434@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260427T170000Z
+DTEND:20260427T190000Z
+SUMMARY:kandidat præsentation
+DESCRIPTION:LAU Sydvestjylland\n\nSå er der snart LAULM\, og vi har en lok
+ al kandidat fra sydvest! Vi vil derfor gerne invitere alle kandidater til 
+ formandsskabet og forretningsudvalget til at præsentere deres kandidatur 
+ for vores medlemmer! \n\nSetuppet:\n\n1.) formandskandidaterne får lov at
+  motivere for deres kandidatur (5 min) MAKS\n2.) spørgsmål fra medlemmer
+ ne \n3.) Formandskandidaterne debattere hvis uenigerhed skulle opstå ang
+ ående spørgsmålene.\n4.) pause\n5.) restende TB kandidater får lov at 
+ motivere for deres kandidatur \n6.) spørgsmål fra medlemmerne.\n7.) FU k
+ andidaterne får lov at motivere for deres kandidatur \n7.) spørgsm\n\nht
+ tps://www.facebook.com/events/2516830135439434/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/2516830135439434/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:945705011692099@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260513T170000Z
+DTEND:20260513T190000Z
+SUMMARY:Åbent bestyrelsesmøde + brætspil
+DESCRIPTION:LAU Sydvestjylland\n\nKom og vær med\, når LAU Sydvestjylland
+  inviterer til åbent bestyrelsesmøde – og bliv hængende bagefter til 
+ en hyggelig aften med brætspil og godt selskab! \n\nhttps://www.facebook.
+ com/events/945705011692099/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/945705011692099/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1539616161147199@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260717T090000Z
+DTEND:20260720T090000Z
+SUMMARY:Fanø Sommercup 2026
+DESCRIPTION:LAU Sydvestjylland\n\n\n⚽🚨 LAU SYDVEST TAGER TIL FANØ CUP
+ 🚨⚽\nVil du med ud og spille for landet måske bedste ungdomspolitiske
+  fodboldhold? Så har du chancen nu! 🎉 LAU Sydvest samler nemlig et fod
+ boldhold til Fanø Cup! ⚽ Det bliver pisse fedt! Arrangementet foregår 
+ fra 17. til 19. Juli. \nVi sørger for spillertrøjerne\, så du skal bare
+  have dine gode ben med og lidt koldt til ganen 😉\nSå kunne du også t
+ ænke dig at være en del af holdet? Så tøv ikke med at tilmelde dig!\nt
+ ilmelding koster 100kr\, og du tilmelder ved at skrive til Aksel Køser p
+ å messenger\, eller telefon 30745068.\n\n\nTilmeldingsfrist søndag 23/06
+ -2026!!!\nMere \n\nhttps://www.facebook.com/events/1539616161147199/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Fanø Skole
+GEO:55.445932186882;8.3940745461991
+URL:https://www.facebook.com/events/1539616161147199/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2314483069294148@lau-kort
+DTSTAMP:20260928T142143Z
+DTSTART:20260925T170000Z
+DTEND:20260925T190000Z
+SUMMARY:LAU Sydvest VS Resten i politik
+DESCRIPTION:LAU Sydvestjylland\n\nVi skal smadre de andre ungdomspartier re
+ torisk\, som LAU altid gør. \n\nDer vil også være lidt godt til ganen s
+ iger DSU - for en gang sin skyld nasser vi og DSU gir\, det er dem vel und
+ t 😉\n\nhttps://www.facebook.com/events/2314483069294148/
+CATEGORIES:LAU Sydvestjylland
+LOCATION:Kirkegade 51\, Esbjerg
+GEO:55.46908;8.45013
+URL:https://www.facebook.com/events/2314483069294148/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

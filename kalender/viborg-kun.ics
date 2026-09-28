@@ -1,0 +1,144 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Viborg (kun lokalt)
+X-WR-CALDESC:Kun LAU Viborgs egne arrangementer. https://irate4147.github.i
+ o/lau-kort/#Viborg
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2593166961083451@lau-kort
+DTSTAMP:20260928T142409Z
+DTSTART:20260306T170000Z
+DTEND:20260306T190000Z
+SUMMARY:Liberal Alliances Ungdom Viborg generalforsamling og foredrag om Ke
+ rnekraft
+DESCRIPTION:LAU Viborg\n\n📣 Generalforsamling & oplæg om kernekraft i D
+ anmark og Norden\n\nLiberal Alliances Ungdom Viborg indkalder til ordinær
+  generalforsamling torsdag den 6. marts på Viborg Hovedbibliotek.\n\nEfte
+ r generalforsamlingen byder vi på aftensmad og et fagligt oplæg\, som al
+ le interesserede er meget velkomne til at deltage i.\n\n🔌 Oplæg: Kerne
+ kraftens rolle i Danmark og Norden\nThorbjørn Jacobsen\, folketingskandid
+ at og ingeniør\, holder et spændende foredrag om kernekraftens rolle i D
+ anmark og Norden.\nI en tid med stadigt større geopolitisk pres bliver de
+ t mere og mere relevant at se mod stabile energikilder og et\n\nhttps://ww
+ w.facebook.com/events/2593166961083451/
+CATEGORIES:LAU Viborg
+LOCATION:Vesterbrogade 15\, 8800 Viborg\, Danmark
+GEO:56.44987;9.39828
+URL:https://www.facebook.com/events/2593166961083451/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:4435908186691645@lau-kort
+DTSTAMP:20260928T142409Z
+DTSTART:20260421T163000Z
+DTEND:20260421T183000Z
+SUMMARY:Introaften i LAU Viborg med politisk formand
+DESCRIPTION:LAU Viborg\n\nEfter en stærk valgkamp\, og med mange nye medle
+ mmer i fællesskabet\, inviterer vi til en introaften i LAU Viborg.\n\nVi 
+ får besøg af Ezekiel\, LAU’s politiske formand\, som vil give en intro
+ duktion til organisationen\, vores arbejde og hvordan du kan engagere dig.
+ \n\nDer vil også være god tid til spørgsmål og uformel snak bagefter.\
+ n\n📅 Dato: 21. april\n⏰ Tid: Kl. 18:30\n📍 Sted: Viborg Hovedbiblio
+ tek\n\nVi sørger for pizza og drikkevarer. Arrangementet er for alle medl
+ emmer af LAU.\n\nhttps://www.facebook.com/events/4435908186691645/
+CATEGORIES:LAU Viborg
+LOCATION:Vesterbrogade 15\, 8800 Viborg\, Danmark
+GEO:56.44987;9.39828
+URL:https://www.facebook.com/events/4435908186691645/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2114726176038734@lau-kort
+DTSTAMP:20260928T142409Z
+DTSTART:20260529T170000Z
+DTEND:20260529T190000Z
+SUMMARY:📢 Oplæg om overvågning + bowling med LAU Viborg 🎳
+DESCRIPTION:LAU Viborg\n\nHvordan ser fremtidens overvågningssamfund ud 
+ – og hvor går grænsen mellem sikkerhed og frihed?\n\nFredag den 29. ma
+ j kl. 19.00 inviterer LAU Viborg til en aften på Viborg Hovedbibliotek. V
+ i starter med et oplæg om overvågning i Danmark og EU\, og bagefter tage
+ r vi ud og bowler sammen.\n\nJeppe Sørensen\, datamatikerstuderende i Aal
+ borg med interesse for IT-sikkerhed og privatliv\, vil blandt andet komme 
+ ind på:\n\n• Politiske tiltag fra Peter Hummelgaard og udvidede beføje
+ lser til PET\n• EU-forslag som Chat Control\n• Teknologier som ANPG\, 
+ der registrerer dine bevægelser\n\nVi ser en tydelig udvikling mod\n\nhtt
+ ps://www.facebook.com/events/2114726176038734/
+CATEGORIES:LAU Viborg
+LOCATION:Viborg Bibliotekerne\, Vesterbrogade 15\, 8800 Viborg\, Denmark
+GEO:56.449764564983;9.3980271051221
+URL:https://www.facebook.com/events/2114726176038734/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1024198717239621@lau-kort
+DTSTAMP:20260928T142409Z
+DTSTART:20260820T170000Z
+DTEND:20260820T190000Z
+SUMMARY:Ekstra ordinær generalforsamling + oplæg
+DESCRIPTION:LAU Viborg\n\n🗳️ Ekstraordinær generalforsamling + oplæg
+  i LAU Viborg\n\nKære medlemmer af LAU Viborg 👋\n\nVi indkalder til ek
+ straordinær generalforsamling — og bagefter byder vi på et spændende 
+ oplæg og aftensmad!\n\n📅 Torsdag den 20. august\n🕖 Kl. 19.00\n📍 
+ Viborg Hovedbibliotek\, Vesterbrogade 15\, 8800 Viborg\n\n🎤 Aftenens op
+ læg\nEfter generalforsamlingen holder LAU's retsordfører\, Nicolai Melho
+ lt\, oplægget:\n"Har staten taget overhånd? – Når retspolitik bliver 
+ til kontrol"\n\nHar staten fået for meget kontrol over borgerne? Nicolai 
+ gennemgår konkrete eksempler på lovgivning\, hvor staten efter hans opfa
+ ttelse går for la\n\nhttps://www.facebook.com/events/1024198717239621/
+CATEGORIES:LAU Viborg
+LOCATION:Vesterbrogade 15\, 8800 Viborg\, Danmark
+GEO:56.44987;9.39828
+URL:https://www.facebook.com/events/1024198717239621/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1346902536952989@lau-kort
+DTSTAMP:20260928T142409Z
+DTSTART:20260820T170000Z
+DTEND:20260820T190000Z
+SUMMARY:Ekstra ordinær generalforsamling + oplæg
+DESCRIPTION:LAU Viborg\n\n🗳️ Ekstraordinær generalforsamling + oplæg
+  i LAU Viborg\n\nKære medlemmer af LAU Viborg 👋\n\nVi indkalder til ek
+ straordinær generalforsamling — og bagefter byder vi på et spændende 
+ oplæg og aftensmad!\n\n📅 Torsdag den 20. august\n🕖 Kl. 19.00\n📍 
+ Viborg Hovedbibliotek\, Vesterbrogade 15\, 8800 Viborg\n\n🎤 Aftenens op
+ læg\nEfter generalforsamlingen holder LAU's retsordfører\, Nicolai Melho
+ lt\, oplægget:\n"Har staten taget overhånd? – Når retspolitik bliver 
+ til kontrol"\n\nHar staten fået for meget kontrol over borgerne? Nicolai 
+ gennemgår konkrete eksempler på lovgivning\, hvor staten efter hans opfa
+ ttelse går for la\n\nhttps://www.facebook.com/events/1346902536952989/
+CATEGORIES:LAU Viborg
+LOCATION:Vesterbrogade 15\, 8800 Viborg\, Danmark
+GEO:56.44987;9.39828
+URL:https://www.facebook.com/events/1346902536952989/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1922503511754154@lau-kort
+DTSTAMP:20260928T140348Z
+DTSTART:20260829T113000Z
+DTEND:20260829T133000Z
+SUMMARY:LAU Vestjylland Sommerfest
+DESCRIPTION:LAU Herning · LAU Viborg\n\nSommeren skal selvfølgelig fejres
+  med LAU Vestjylland – og du er inviteret! 💙💛\n\nTag dine LAU-venn
+ er med\, og kom til en dag fyldt med god stemning\, grin og masser af hygg
+ eligt samvær.\n\nVi sørger for maden\, så du slipper for at stå ved gr
+ illen. Til gengæld sørger vi også for\, at baren er fyldt med kolde øl
+ \, sodavand og andre drikkevarer 🍔🍻\n\nDer bliver rig mulighed for a
+ t snakke politik\, diskutere hvem der skylder næste omgang\, spille haves
+ pil eller bare nyde en sensommerdag med en masse andre unge liberale.\n\n
+ 🏕️ Overnatning\n\nHar du ikke lyst til at tage hjem\, når festen er 
+ på sit højeste? Intet p\n\nhttps://www.facebook.com/events/1922503511754
+ 154/
+CATEGORIES:LAU Herning
+LOCATION:Sølvhuset/ungdomshuset
+GEO:56.133436478276;9.0157447224063
+URL:https://www.facebook.com/events/1922503511754154/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

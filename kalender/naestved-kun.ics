@@ -1,0 +1,307 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Næstved (kun lokalt)
+X-WR-CALDESC:Kun LAU Næstveds egne arrangementer. https://irate4147.github
+ .io/lau-kort/#Næstved
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1936240833919976@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260120T173000Z
+DTEND:20260120T193000Z
+SUMMARY:Velkommen tilbage i det nye år. Nu med blå borgmester efter 105 
+ år!
+DESCRIPTION:LAU Næstved\n\nLAU Næstved byder velkommen til 2026 og marker
+ er samtidig en vigtig milepæl for Næstved Kommune. Det er med stor glæd
+ e\, at vi nu kan konstatere\, at kommunen har fået en blå borgmester.\n\
+ nKom og vær med til at skyde året i gang sammen med ligesindede\, hvor v
+ i ser fremad\, drøfter mulighederne for Næstved og fejrer et politisk sk
+ ifte\, der giver nye perspektiver og ambitioner for kommunen.\n\nhttps://w
+ ww.facebook.com/events/1936240833919976/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4C\, 4700 Næstved\, Danmark
+GEO:55.23016;11.76209
+URL:https://www.facebook.com/events/1936240833919976/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1376065947012342@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260218T170000Z
+DTEND:20260218T190000Z
+SUMMARY:Liberalismen – hvad er det?
+DESCRIPTION:LAU Næstved\n\nLAU Næstved inviterer til en aften med fokus p
+ å liberalismens grundidéer og betydning i dag. Hvad vil det egentlig sig
+ e at være liberal\, og hvordan omsættes ideologi til konkret politik?\n\
+ nSom optakt til LAU’s årlige landsmøde får vi besøg af vores politis
+ ke ordfører\, der vil give en introduktion til\, hvordan man skriver poli
+ tiske indlæg\, resolutioner og vedtægtsændringer. Arrangementet klæder
+  dig på til aktiv deltagelse i de politiske drøftelser frem mod landsmø
+ det den 20.-22. marts 2026.\n\nUanset om du er ny i LAU eller allerede eng
+ ageret\, er arrangementet en god mulighed for både ideologisk f\n\nhttps:
+ //www.facebook.com/events/1376065947012342/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4C\, 4700 Næstved\, Danmark
+GEO:55.23016;11.76209
+URL:https://www.facebook.com/events/1376065947012342/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1406430227739183@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260316T173000Z
+DTEND:20260316T193000Z
+SUMMARY:GENERALFORSAMLING I LAU NÆSTVED
+DESCRIPTION:LAU Næstved\n\nGeneralforsamlingen er foreningens højeste myn
+ dighed og afholdes årligt. Her fastlægges den politiske og organisatoris
+ ke retning for det kommende år\, og der vælges ny bestyrelse for periode
+ n 2026/2027.\n\nPå generalforsamlingen gennemgås og behandles blandt and
+ et:\n\nBestyrelsens beretning for det forgangne år\n\nForelæggelse og go
+ dkendelse af regnskab\n\nIndkomne forslag og eventuelle vedtægtsændringe
+ r\n\nValg af formand\, næstformand\, kasserer\, bestyrelsesmedlemmer\, su
+ ppleanter og revisor\n\nAlle medlemmer af Liberal Alliances Ungdom har mø
+ de- og taleret. Medlemmer af LAU Næstved har desuden stemmeret. V\n\nhttp
+ s://www.facebook.com/events/1406430227739183/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4C\, 4700 Næstved\, Danmark
+GEO:55.23016;11.76209
+URL:https://www.facebook.com/events/1406430227739183/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2172590536480751@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260316T190000Z
+DTEND:20260316T210000Z
+SUMMARY:MØD FOLKETINGSPOLITIKERE\, OG MÆRK VALGSTEMNINGEN INDEN VALGET!
+DESCRIPTION:LAU Næstved\n\nDer er udskrevet valg! Kom og vær med! \n\nDen
+ ne aften skal vi opleve folketingspolitikere\, og blive klogere på hvad d
+ er sker\, nu vi nærmer os folketingsvalget!\n\nDet ligger efter vores gen
+ eralforsamling. Der vil være friske forsyninger under arrangementet.\n\nh
+ ttps://www.facebook.com/events/2172590536480751/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4C\, 4700 Næstved\, Danmark
+GEO:55.23016;11.76209
+URL:https://www.facebook.com/events/2172590536480751/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2050099212575054@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260423T170000Z
+DTEND:20260423T190000Z
+SUMMARY:Intro oplæg med Tobias Pagh
+DESCRIPTION:LAU Næstved\n\nLAU Næstved inviterer til et hyggeligt Introop
+ læg med vores formand i Liberal Alliance ungdom Tobias Pagh. Så om du er
+  nyt medlem der ønsker at høre om foreningen\, eller blot været medlem 
+ i længere tid\, men ønsker en hyggelig aften med nogle liberale venner\,
+  så kom endelig!\n\nDet forgår torsdag den 23/4 klokken 19:00\, i Sjöli
+ n Næstved\, Jernbanegade 4A\, 4700 Næstved.\n\nhttps://www.facebook.com/
+ events/2050099212575054/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved\, Danmark
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/2050099212575054/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2173860553449769@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260514T170000Z
+DTEND:20260514T190000Z
+SUMMARY:Brætspilsaften
+DESCRIPTION:LAU Næstved\n\nKom og vær med til en hyggelig aften med LAU N
+ æstved!\n\nDer vil være massere af brætspil\, grin og godt humør.\n\nD
+ er vil være mulighed for at købe drikkevarer i lokalet\, og vi anbefaler
+  selv at tage snacks med.\n\nVi ses den 14!\n\nhttps://www.facebook.com/ev
+ ents/2173860553449769/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved\, Danmark
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/2173860553449769/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1479178813917277@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260528T170000Z
+DTEND:20260528T190000Z
+SUMMARY:Tværfagligt med byrådsmedlemmer
+DESCRIPTION:LAU Næstved\n\nVi har inviteret Gustav Mortensen fra Socialdem
+ okratiet og Patrick Elm fra Dansk Folkeparti til et tværfagligt arrangeme
+ nt d. 28 Maj.\n\nSå kunne du tænke dig at høre politik fra flere perspe
+ ktiver? Så kom og vær med i Rådmandshaven 20 Mødelokale 3.\n\nhttps://
+ www.facebook.com/events/1479178813917277/
+CATEGORIES:LAU Næstved
+LOCATION:Rådmandshaven 20\, 4700 Næstved\, Danmark
+GEO:55.23308;11.75359
+URL:https://www.facebook.com/events/1479178813917277/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1665619117817240@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260619T130000Z
+DTEND:20260619T150000Z
+SUMMARY:Sommergrill med LAU Næstved
+DESCRIPTION:LAU Næstved\n\n🔥 Sommergrill med LAU Næstved 🔥\n\nKom m
+ ed til en hyggelig sommerdag og aften sammen med LAU Næstved!\n\nVi start
+ er kl. 15.00 og samles til gode samtaler\, hygge og fællesskab. Der vil v
+ ære mulighed for både sodavand\, øl og andre alkoholiske drikke\, mens 
+ vi nyder sommeren og hinandens selskab.\n\nSenere på aftenen tænder vi o
+ p i grillen og sørger for god mad i afslappede omgivelser. Arrangementet 
+ er en oplagt mulighed for at møde andre medlemmer og interesserede\, styr
+ ke fællesskabet og nyde en sommerdag i godt selskab.\n\n🏕️ Overnatni
+ ng\nDer er mulighed for overnatning for 6-8 personer. Hvis du ønsker a\n\
+ nhttps://www.facebook.com/events/1665619117817240/
+CATEGORIES:LAU Næstved
+LOCATION:Skafterupvej 10\, 4262 Sandved\, Danmark
+GEO:55.22355;11.51409
+URL:https://www.facebook.com/events/1665619117817240/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2204046543765710@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260719T183000Z
+DTEND:20260719T203000Z
+SUMMARY:VM bold med LAU Næstved
+DESCRIPTION:LAU Næstved\n\nSøndag d. 19 Juli står i fodboldens tegn! Lau
+  Næstved invitere nemlig til en hyggelig aften\, hvor vi ser VM finalen i
+  fodbold sammen. Lau Næstved står for snacks\, og som sædvanligt har vi
+  kolde øl og sodavand i køleskabet til en flad 10’er. vi glæder os ti
+ l at se dig.\n\nhttps://www.facebook.com/events/2204046543765710/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A
+GEO:55.2301304592;11.76190207361
+URL:https://www.facebook.com/events/2204046543765710/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1631426255017820@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260809T100000Z
+DTEND:20260809T120000Z
+SUMMARY:Tag på stadion med Lau Næstved
+DESCRIPTION:LAU Næstved\n\nSøndag d. 9 August tager de grønne fra Næstv
+ ed Boldklub imod HIK \ni sæsonåbneren og der er gratis entre. Vi håber 
+ derfor du vil nyde et \npar hyggelige timer med os på stadion !\n\nKampst
+ art er klokken 13:00 så vi mødes foran stadion ca 12:00\n\nRolighedsvej 
+ 20\, 4700 Næstved\n\nhttps://www.facebook.com/events/1631426255017820/
+CATEGORIES:LAU Næstved
+LOCATION:Rolighedsvej 20\, 4700 Næstved
+GEO:55.22211;11.76623
+URL:https://www.facebook.com/events/1631426255017820/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:853592617823475@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260828T141500Z
+DTEND:20260828T151500Z
+SUMMARY:Rundvisning på Christiansborg af Joachim Riis
+DESCRIPTION:LAU Næstved\n\nFredag den 28. August tager Lau Næstved turen 
+ til København\, hvor Joachim Riis viser os rundt inde på borgen. vi mød
+ es ved hovedtrappen i Rigsdagsgården Klokken 16.\n\nTryk meget gerne " de
+ ltager " vis du kommer 💙. \n\nhttps://www.facebook.com/events/853592617
+ 823475/
+CATEGORIES:LAU Næstved
+LOCATION:Christiansborg
+GEO:55.676155665487;12.581124655972
+URL:https://www.facebook.com/events/853592617823475/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1534512442024092@lau-kort
+DTSTAMP:20260928T142041Z
+DTSTART:20260830T100000Z
+DTEND:20260830T120000Z
+SUMMARY:kanotur med Lau Næstved
+DESCRIPTION:LAU Næstved\n\nmangler du noget at lave den 30. August ? så h
+ ar Lau Næstved arrangeret en hyggelig kanotur op og ned af susåen i smuk
+ ke omgivelser og med garanteret højt humør. Vi ser gerne at vis du ønsk
+ er at deltage at du trykker " deltager " senest den 28/8 så vi ved hvor m
+ ange kanoer vi skal sørger for.\n\nVi mødes ved Pumpehuset i rådmandhav
+ en klokken 12:00. \n\nhttps://www.facebook.com/events/1534512442024092/
+CATEGORIES:LAU Næstved
+LOCATION:Slusehuset
+GEO:55.233946535505;11.750670145266
+URL:https://www.facebook.com/events/1534512442024092/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1300424056492912@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261005T160000Z
+DTEND:20261005T180000Z
+SUMMARY:oplæg med Økonomi & Erhvervsordøre Victor galland
+DESCRIPTION:LAU Næstved\n\nmandag den 5. Oktober klokken 18:00 får vi i L
+ au Næstved besøg af vores Økonomi- og Erhvervsordfører Victor galland\
+ , som kommer og holder oplæg. Der vil som altid være sodavand & øl til 
+ billige penge og vi giver aftensmaden\n\ntryk derfor meget gerne " deltage
+ r " vis du kommer så vi ved hvor meget pizza vi skal købe💙\n\nhttps:/
+ /www.facebook.com/events/1300424056492912/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/1300424056492912/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1479019457397661@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261019T170000Z
+DTEND:20261019T190000Z
+SUMMARY:oplæg med Social- og Sundhedsordfører David Klausen
+DESCRIPTION:LAU Næstved\n\nSkal du med når Lau's Social- og Sundhedsordf
+ ører David Klausen\, lægger turen forbi Næstved for at holde oplæg omk
+ ring hans ordførerskab ? \n\nDet forgår mandag den 19. Oktober klokken 1
+ 9 i vores lokale i Jernbanegade 4A.\n\nhttps://www.facebook.com/events/147
+ 9019457397661/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/1479019457397661/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2152917622247723@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261105T180000Z
+DTEND:20261105T200000Z
+SUMMARY:Oplæg med Fhv. Folketingsmedlem Sandra Skalvig
+DESCRIPTION:LAU Næstved\n\nTorsdag den 5 november klokken 19:00 får vi be
+ søg af forhenværende folketingsmedlem Sandra Skalvig\, som kommer forbi 
+ og fortæller os om hendes tideligere ordføreskaber\, hvad de indebære o
+ g hvorfor hun brænder for lige netop dem. Vi glæder os til at se dig ! \
+ n\ntryg meget gerne "deltager" vis du kommer\, så vi ved hvor mange stole
+  Vi skal finde frem 🙂 \n\nhttps://www.facebook.com/events/2152917622247
+ 723/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/2152917622247723/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1408115147328233@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261110T173000Z
+DTEND:20261110T190000Z
+SUMMARY:Tag med til " der er et myndigt land "
+DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
+ er til Vordingborg den 10. november i forbindelse med hans bogturne. vi h
+ åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
+ via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
+CATEGORIES:LAU Næstved
+LOCATION:stars.dk
+GEO:55.00804;11.90929
+URL:https://www.facebook.com/events/1408115147328233/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,67 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Vestegnen (kun lokalt)
+X-WR-CALDESC:Kun LAU Vestegnens egne arrangementer. https://irate4147.githu
+ b.io/lau-kort/#Vestegnen
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:906284982088493@lau-kort
+DTSTAMP:20260928T142316Z
+DTSTART:20260122T180000Z
+DTEND:20260122T200000Z
+SUMMARY:Korte videoer og valgkamp - sådan kommunikerer du liberal politik 
+ på sociale medier
+DESCRIPTION:LAU Vestegnen\n\nLAUs kampagneformand\, Katrine Hviid\, kommer 
+ og lærer os om Canva\, og hvordan du kan bruge det til både valgkamp\, m
+ en også alt muligt andet. \n\nOplægget kommer til at fokusere på værkt
+ øjet Canva\, som kan bruges til ufatteligt mange ting\, og vi får den dy
+ bere indsigt i hvordan det fungerer 🩵\n\nhttps://www.facebook.com/event
+ s/906284982088493/
+CATEGORIES:LAU Vestegnen
+LOCATION:Ved Brandstationen 1\, 2600 Glostrup\, Danmark
+GEO:55.66473;12.39239
+URL:https://www.facebook.com/events/906284982088493/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1583445059639397@lau-kort
+DTSTAMP:20260928T142316Z
+DTSTART:20260316T170000Z
+DTEND:20260316T190000Z
+SUMMARY:Ordinær generalforsamling LAU Vestegnen
+DESCRIPTION:LAU Vestegnen\n\nSå er det blevet tid til LAU Vestegnens ordin
+ ære generalforsamling!\nDet kommer til at foregå kl. 18 i Medborgerhuset
+  i Glostrup.\n\nAlle medlemmer af Liberal Alliances Ungdom har møde- og t
+ aleret.\nMedlemmer af Liberal Alliances Ungdom Vestegnen har møde-\, tale
+  og stemmeret.\nDagsordenen på den ordinære generalforsamling er som fø
+ lger:\n1. Valg af dirigent.\n2. Valg af referent.\n3. Valg af stemmetælle
+ re.\n4. Bestyrelsens beretning.\n5. Forelæggelse af regnskab til godkende
+ lse.\n6. Behandling af indkomne forslag.\n7. Valg af:\na. Formand.\nb. Næ
+ stformand.\nc. Kasserer.\nd. 2-6 bestyrelsesmedlemmer.\ne. Op til\n\nhttps
+ ://www.facebook.com/events/1583445059639397/
+CATEGORIES:LAU Vestegnen
+URL:https://www.facebook.com/events/1583445059639397/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:963991646588598@lau-kort
+DTSTAMP:20260928T142316Z
+DTSTART:20260407T170000Z
+DTEND:20260407T190000Z
+SUMMARY:Intromøde v. Politisk formand Ezekiel Rohde
+DESCRIPTION:LAU Vestegnen\n\nKom og lær alt der er at lære om LAU. Her vi
+ l der også være mulighed for at lære en masse af de nye medlemmer at ke
+ nde. Vel mødt! (Første sodavand/øl er på huset)\n\nhttps://www.faceboo
+ k.com/events/963991646588598/
+CATEGORIES:LAU Vestegnen
+LOCATION:Glostrup Musikskole
+GEO:55.66473;12.39239
+URL:https://www.facebook.com/events/963991646588598/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

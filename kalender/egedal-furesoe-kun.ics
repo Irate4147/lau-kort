@@ -1,0 +1,126 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Egedal-Furesø (kun lokalt)
+X-WR-CALDESC:Kun LAU Egedal-Furesøs egne arrangementer. https://irate4147.
+ github.io/lau-kort/#Egedal-Furesø
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:892534526664400@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260126T173000Z
+DTEND:20260126T193000Z
+SUMMARY:Hvad er liberalisme? + Skriveri af ændringsforslag til landsmødet
+ ! Ved Ezekiel Rohde
+DESCRIPTION:LAU Egedal-Furesø\n\nLiberalisme? Det er jo sådan noget\, man
+  har hørt om i skolen. Det var noget med en ideologi? Argh\, hvad pokker 
+ var det nu? Ved du hvad! Alle de spørgsmål får du svar på til det her 
+ oplæg. Vores kære Politisk Formand\, Ezekiel Rohde\, kommer forbi og for
+ tæller os lidt om\, hvad der egentlig er op og ned med alle de der frihed
+ stanker\, som nogle mænd tilbage i 1700-tallet havde. Samtidig vil han fo
+ rtælle os lidt om LAUs struktur\, så vi alle er klædt godt nok på til 
+ at skrive en masse fede ændringsforslag til det kommende landsmøde i mar
+ ts. Det bliver som altid megahyggeligt.\n\nhttps://www.facebook.com/events
+ /892534526664400/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Kulturhuset I Ledøje-Smørum
+GEO:55.731636218391;12.308209403211
+URL:https://www.facebook.com/events/892534526664400/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1990889754805402@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260226T170000Z
+DTEND:20260226T190000Z
+SUMMARY:Ordinær generalforsamling i LAU Egedal-Furesø
+DESCRIPTION:LAU Egedal-Furesø\n\nKære medlem af Liberal Alliances Ungdom 
+ Egedal-Furesø.\n\nDet er tid til den årlige ordinære generalforsamling 
+ i vores lokalforening.\n\nDet er her\, hvor man som medlem af lokalforenin
+ gen får indflydelse på\, hvem der skal sidde i bestyrelsen\, og hvordan 
+ vores vedtægter skal se ud.\n\n\nDagsorden:\n\n1.  Valg af dirigent\n2.  
+ Valg af referent\n3.  Valg af stemmetællere\n4.  Bestyrelsens beretning\n
+ 5.  Forelæggelse af regnskab til godkendelse\n6.  Behandling af indkomne 
+ forslag\n7.  Valg af:\n  a.   Formand\n  b.   Næstformand\n  c.   Kassere
+ r\n  d.   2-5 bestyrelsesmedlemmer\n  e.   Op til 3 suppleanter til bestyr
+ \n\nhttps://www.facebook.com/events/1990889754805402/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Stiager 2\, 3500 Værløse\, Danmark
+GEO:55.7833;12.37683
+URL:https://www.facebook.com/events/1990889754805402/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1527879858914428@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260413T160000Z
+DTEND:20260413T180000Z
+SUMMARY:Introaften med Ezekiel Rohde
+DESCRIPTION:LAU Egedal-Furesø\n\nVi har fået en hel masse medlemmer ovenp
+ å folketingsvalget. Derfor har vi valgt at arrangere en introaften\, hvor
+  vi får besøg af vores politiske formand Ezekiel Rohde. Hvor han vil for
+ tælle om LAU og hvad vi er for en størrelse. Alle er velkomne\, både ny
+ e som gamle. \nVelkomst v. Maria Lykke Harder Olesen\nOplæg v. Ezekiel Ro
+ hde\nTak for i aften\n\nhttps://www.facebook.com/events/1527879858914428/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Flodvej 68\, 2765 Smørum\, Danmark
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1527879858914428/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1299229271769411@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260526T163000Z
+DTEND:20260526T183000Z
+SUMMARY:Åbent bestyrelsesmøde.
+DESCRIPTION:LAU Egedal-Furesø\n\nSå er det tid til et åbent bestyrelsesm
+ øde i LAU Egedal-Furesø\, alle er selvfølgelig velkommen. Vores landsfo
+ rmand Ezekiel Rhode vil også komme ud og fortælle om blandt andet DUF st
+ øtte\, det bliver super hyggeligt.\n\nhttps://www.facebook.com/events/129
+ 9229271769411/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Flodvej 68\, 2765 Smørum\, Danmark
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1299229271769411/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1415686617096266@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260824T163000Z
+DTEND:20260824T183000Z
+SUMMARY:Oplæg med Retsordføre Nicolai Melholt
+DESCRIPTION:LAU Egedal-Furesø\n\nNicolai kommer ud til Hyggeklubben for at
+  holde et spændende oplæg om Statsrevisorernes kritik af politiet\, hvor
+ for retsfølelsen er vigtig i et samfund\, samt politiets misbrug af ANPG-
+ scannere - og hvad ANPG-scannere egentlig er. \n\nhttps://www.facebook.com
+ /events/1415686617096266/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Smørum Bibliotek
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1415686617096266/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:28487868687475921@lau-kort
+DTSTAMP:20260928T140214Z
+DTSTART:20260908T163000Z
+DTEND:20260908T183000Z
+SUMMARY:Oplæg med Økonomi og Erhvervsordfører Victor Galland
+DESCRIPTION:LAU Egedal-Furesø\n\nKom med\, når LAU's økonomi- og erhverv
+ sordfører\, Victor Galland\, kommer til Hyggeklubben til en aften med fok
+ us på dansk økonomi\, erhvervspolitik og de liberale løsninger. Der bli
+ ver naturligvis mulighed for spørgsmål\, debat og gode politiske diskuss
+ ioner undervejs. \n\n\nhttps://www.facebook.com/events/28487868687475921/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Smørum Bibliotek
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/28487868687475921/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR
