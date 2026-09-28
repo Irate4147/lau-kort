@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=2026-09-28c">
+<link rel="stylesheet" href="style.css?v=2026-09-28e">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
-<script src="app.js?v=2026-09-28e" defer></script>
+<script src="app.js?v=2026-09-28f" defer></script>
 </head>
 <body>
 <div class="app viz-root">
@@ -21,8 +21,9 @@
     <nav class="side-tabs" aria-label="Faner">
       <button type="button" data-fane="oversigt" aria-selected="true">Oversigt</button>
       <button type="button" data-fane="visninger" aria-selected="false">Visninger</button>
-      <button type="button" data-fane="hb" aria-selected="false">HB-godkendelse</button>
-      <button type="button" data-fane="arrangementer" aria-selected="false">Arrangementer</button>
+      <button type="button" data-fane="hb" aria-selected="false" data-admin hidden title="HB-godkendelse">HB</button>
+      <button type="button" data-fane="arrangementer" aria-selected="false" data-admin hidden>Arrangementer</button>
+      <button type="button" data-fane="admin" aria-selected="false" id="fane-admin">🔒 Log ind</button>
     </nav>
     <section class="side-view" id="side-overview">
       <header class="side-head">
@@ -34,19 +35,14 @@
       <div id="list-14"></div>
       <h2>Alle foreninger</h2>
       <label class="sort">Sortér efter
-        <select id="rank-sort">
-          <option value="naeste">Næste aktivitet</option>
-          <option value="navn">Navn</option>
-          <option value="planlagt">Planlagte aktiviteter</option>
-          <option value="afholdt90">Afholdt seneste 90 dage</option>
-          <option value="kvartal">Afholdt i kvartalet (valgt under Visninger)</option>
-          <option value="svar">Tilkendegivelser</option>
-        </select>
+        <select id="rank-sort"></select>
       </label>
       <ul class="rank" id="rank"></ul>
-      <h2>Aktivitet pr. forening</h2>
-      <p class="note">Afholdt de seneste 90 dage og planlagt.</p>
-      <div id="chart-activity"></div>
+      <div id="overview-admin" hidden>
+        <h2>Aktivitet pr. forening</h2>
+        <p class="note">Afholdt de seneste 90 dage og planlagt.</p>
+        <div id="chart-activity"></div>
+      </div>
       <p class="method" id="method"></p>
     </section>
     <section class="side-view" id="side-forening" hidden>
@@ -56,6 +52,7 @@
     <section class="side-view" id="side-visninger" hidden></section>
     <section class="side-view" id="side-hb" hidden></section>
     <section class="side-view" id="side-arrangementer" hidden></section>
+    <section class="side-view" id="side-admin" hidden></section>
   </aside>
 
   <main class="map-wrap" aria-label="Kort over foreningerne">

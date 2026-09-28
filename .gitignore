@@ -1,1 +1,3 @@
 __pycache__/
+# Lokale klartekstkopier af de fortrolige data (scripts/admin.py dekrypter)
+privat/

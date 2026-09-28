@@ -9,8 +9,8 @@ Filer (kan abonneres på i fx Google Kalender, Apple Kalender og Outlook):
   kalender/landsforeningen.ics   kun landsforeningens arrangementer
   kalender/alle.ics              alle arrangementer
 
-Rettelser i data/rettelser.json anvendes (samme regler som siden og hb.py). Skjulte arrangementer og
-arrangementer fjernet fra Facebook udelades; aflyste står som aflyst. Filnavnene laves med slug() –
+Rettelser i data/rettelser.json (den offentlige del, se scripts/admin.py) anvendes (samme regler som siden og hb.py). Skjulte arrangementer,
+arrangementer fjernet fra Facebook og arrangementer mere end et år tilbage udelades; aflyste står som aflyst. Filnavnene laves med slug() –
 samme regel som kalenderSlug() i app.js.
 """
 import json
@@ -122,6 +122,9 @@ def main():
         events = anvend_rettelser(events, json.loads(rettelser_fil.read_text(encoding="utf-8")).get("rettelser"))
     # Fjernet fra Facebook: kun med, hvis det er bekræftet afholdt.
     events = [e for e in events if e.get("start") and (not e.get("forsvundet") or e.get("bekraeftet"))]
+    # Tidligere arrangementer højst et år tilbage (som på siden).
+    graense = datetime.now(timezone.utc) - timedelta(days=365)
+    events = [e for e in events if tid(e.get("slut") or e["start"]) >= graense]
     for e in events:
         e["foreninger"] = e.get("foreninger") or [e["forening"]]
     hos = lambda navn: [e for e in events if navn in e["foreninger"]]

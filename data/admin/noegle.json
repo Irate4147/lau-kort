@@ -1,0 +1,11 @@
+{
+ "v": 1,
+ "kdf": "PBKDF2-SHA256",
+ "iterationer": 600000,
+ "salt": "QGq6zDTgGglXFmkoREGmbw==",
+ "tjek": {
+  "v": 1,
+  "iv": "188zypdrYg2bFD6N",
+  "data": "gMtoIr8PFJGfdFIiAJftVS+8+nFVGSwP74pE"
+ }
+}

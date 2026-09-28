@@ -1,0 +1,58 @@
+name: Admin
+
+# Adminlogin'et (se README: Adminlogin). Kræver secret ADMIN_KODE.
+#  - klargoer:   opretter nøglen (data/admin/noegle.json), krypterer gamle klartekstfiler (data/hb.json) og fjerner
+#                dem, skriver den offentlige del af rettelserne og beregner HB-prognosen. Kør den første gang.
+#  - skift-kode: krypterer alt igen med secret ADMIN_KODE_NY (alle logges ud). Sæt bagefter ADMIN_KODE til den
+#                nye kode og slet ADMIN_KODE_NY.
+on:
+  workflow_dispatch:
+    inputs:
+      handling:
+        description: 'Hvad skal der gøres?'
+        type: choice
+        options: [klargoer, skift-kode]
+        default: klargoer
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  admin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installér kryptering
+        run: pip install cryptography
+
+      - name: ${{ inputs.handling }}
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+          ADMIN_KODE_NY: ${{ secrets.ADMIN_KODE_NY }}
+        run: |
+          test -n "$ADMIN_KODE" || { echo "::error::Secret ADMIN_KODE er ikke sat (Settings → Secrets and variables → Actions)"; exit 1; }
+          python3 scripts/admin.py ${{ inputs.handling }}
+
+      - name: Beregn HB-prognose og kalendere
+        if: inputs.handling == 'klargoer'
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+        run: |
+          python3 scripts/hb.py
+          python3 scripts/kalender.py
+
+      - name: Gem data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data kalender
+          git diff --cached --quiet || { git commit -m "Admin: ${{ inputs.handling }}" && git pull --rebase -q && git push; }
