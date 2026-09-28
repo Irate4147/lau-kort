@@ -1,0 +1,36 @@
+name: Beregn HB-prognose
+
+# Når en rettelse af arrangementer gemmes (data/rettelser.json), beregnes data/hb_<år>.json igen.
+# Kører kun scripts/hb.py – ingen Apify-kald.
+on:
+  push:
+    branches: [main]
+    paths: ['data/rettelser.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  hb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Beregn HB-prognose (kvartalskrav)
+        run: python3 scripts/hb.py
+
+      - name: Gem data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || { git commit -m "Beregn HB-prognose" && git pull --rebase -q && git push; }

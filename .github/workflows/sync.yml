@@ -8,9 +8,6 @@ on:
   schedule:
     - cron: '0 9 * * 1'   # mandag kl. 10/11 dansk tid, efter Apps Scriptets kørsel kl. 7
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['scripts/**', '.github/workflows/**', 'data/rettelser.json']  # rettelser: beregn HB-prognosen igen
 
 permissions:
   contents: write

@@ -1695,6 +1695,8 @@ function arrForm(e) {
 window.LAU = {registerSection, registerLayer, openForening, closeForening, visFane, CONFIG, get data() { return DATA; }, get map() { return MAP.map; }};
 
 async function main() {
+  // Fanerne bindes før data hentes, så de virker, selvom indlæsningen fejler.
+  document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.addEventListener('click', () => visFane(b.dataset.fane)));
   try {
     await load();
   } catch (err) {
@@ -1714,7 +1716,6 @@ async function main() {
     if (ev.key !== 'Escape') return;
     if (!$('popover').hidden) closePopover(); else if (selected) closeForening();
   });
-  document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.addEventListener('click', () => visFane(b.dataset.fane)));
   renderVisninger();
   renderHB();
   applyVisning();
