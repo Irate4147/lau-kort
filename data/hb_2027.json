@@ -1,10 +1,10 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T13:47:24Z",
+ "beregnet": "2026-09-28T13:56:44Z",
  "idag": "2026-09-28",
  "data_fra": "2026-09-28",
- "note": "Kun kvartalskravet vurderes her. Faglighed gættes ud fra titel/beskrivelse og bør efterses. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
+ "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
  "foreninger": {
   "Aalborg": {
    "prognose": "ukendt",
@@ -35,8 +35,7 @@
      "planlagt": [
       {
        "dato": "2026-10-02",
-       "navn": "Fredagscafé med Debat",
-       "faglig": true
+       "navn": "Fredagscafé med Debat"
       }
      ]
     }
@@ -51,7 +50,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -108,8 +107,7 @@
      "planlagt": [
       {
        "dato": "2026-10-19",
-       "navn": "Oplæg med Anton Leopold Krogh",
-       "faglig": true
+       "navn": "Oplæg med Anton Leopold Krogh"
       }
      ]
     }
@@ -130,7 +128,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -164,7 +162,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -221,13 +219,11 @@
      "planlagt": [
       {
        "dato": "2026-10-02",
-       "navn": "Indvielse af vores nye lokaler",
-       "faglig": false
+       "navn": "Indvielse af vores nye lokaler"
       },
       {
        "dato": "2026-10-28",
-       "navn": "LAU Fyn tager til Alex Vanopslaghs bogturné!",
-       "faglig": true
+       "navn": "LAU Fyn tager til Alex Vanopslaghs bogturné!"
       }
      ]
     }
@@ -246,7 +242,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -283,8 +279,7 @@
    "grunde": [
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
@@ -303,13 +298,12 @@
      "planlagt": []
     },
     "Q4": {
-     "status": "mangler",
+     "status": "planlagt",
      "afholdt": [],
      "planlagt": [
       {
        "dato": "2026-10-18",
-       "navn": "Brætspils hygge på tværs af ungdomspartier i Horsens",
-       "faglig": false
+       "navn": "Brætspils hygge på tværs af ungdomspartier i Horsens"
       }
      ]
     }
@@ -359,7 +353,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -410,8 +404,7 @@
      "planlagt": [
       {
        "dato": "2026-09-29",
-       "navn": "Keynote om social- og sundhedspolitik med David Klausen",
-       "faglig": true
+       "navn": "Keynote om social- og sundhedspolitik med David Klausen"
       }
      ]
     },
@@ -421,13 +414,11 @@
      "planlagt": [
       {
        "dato": "2026-10-13",
-       "navn": "Keynote/oplæg om økonomi og erhverv med Victor Galland",
-       "faglig": true
+       "navn": "Keynote/oplæg om økonomi og erhverv med Victor Galland"
       },
       {
        "dato": "2026-12-03",
-       "navn": "LAU København besøger Carlsberg 🍻💙",
-       "faglig": true
+       "navn": "LAU København besøger Carlsberg 🍻💙"
       }
      ]
     }
@@ -442,7 +433,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -499,8 +490,7 @@
      "planlagt": [
       {
        "dato": "2026-10-15",
-       "navn": "Oplæg med Nicolai Melholt",
-       "faglig": true
+       "navn": "Oplæg med Nicolai Melholt"
       }
      ]
     }
@@ -514,8 +504,7 @@
    "grunde": [
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
@@ -534,13 +523,12 @@
      "planlagt": []
     },
     "Q4": {
-     "status": "mangler",
+     "status": "planlagt",
      "afholdt": [],
      "planlagt": [
       {
        "dato": "2026-10-08",
-       "navn": "Ekstraordinær generalforsamling",
-       "faglig": false
+       "navn": "Ekstraordinær generalforsamling"
       }
      ]
     }
@@ -578,23 +566,19 @@
      "planlagt": [
       {
        "dato": "2026-10-05",
-       "navn": "oplæg med Økonomi & Erhvervsordøre Victor galland",
-       "faglig": true
+       "navn": "oplæg med Økonomi & Erhvervsordøre Victor galland"
       },
       {
        "dato": "2026-10-19",
-       "navn": "oplæg med Social- og Sundhedsordfører David Klausen",
-       "faglig": true
+       "navn": "oplæg med Social- og Sundhedsordfører David Klausen"
       },
       {
        "dato": "2026-11-05",
-       "navn": "Oplæg med Fhv. Folketingsmedlem Sandra Skalvig",
-       "faglig": true
+       "navn": "Oplæg med Fhv. Folketingsmedlem Sandra Skalvig"
       },
       {
        "dato": "2026-11-10",
-       "navn": "Tag med til \" der er et myndigt land \"",
-       "faglig": true
+       "navn": "Tag med til \" der er et myndigt land \""
       }
      ]
     }
@@ -608,8 +592,7 @@
    "grunde": [
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "3. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
@@ -628,23 +611,20 @@
      "planlagt": []
     },
     "Q4": {
-     "status": "mangler",
+     "status": "planlagt",
      "afholdt": [],
      "planlagt": [
       {
        "dato": "2026-10-06",
-       "navn": "Bestyrelsesmøde Oktober",
-       "faglig": false
+       "navn": "Bestyrelsesmøde Oktober"
       },
       {
        "dato": "2026-11-03",
-       "navn": "Bestyrelsesmøde November",
-       "faglig": false
+       "navn": "Bestyrelsesmøde November"
       },
       {
        "dato": "2026-12-01",
-       "navn": "Bestyrelsesmøde December",
-       "faglig": false
+       "navn": "Bestyrelsesmøde December"
       }
      ]
     }
@@ -659,7 +639,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -696,7 +676,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -730,7 +710,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -766,7 +746,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -804,7 +784,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -838,7 +818,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
@@ -875,7 +855,7 @@
     "1. kvartal 2026: ingen data",
     "2. kvartal 2026: ingen data",
     "3. kvartal 2026: ingen data",
-    "4. kvartal 2026: intet fagligt arrangement afholdt eller planlagt endnu"
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
