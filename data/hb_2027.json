@@ -1,7 +1,7 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T14:45:57Z",
+ "beregnet": "2026-09-28T15:17:20Z",
  "idag": "2026-09-28",
  "data_fra": {
   "Aalborg": "2026-01-01",
@@ -9,10 +9,10 @@
   "Bornholm": "2026-01-01",
   "Egedal-Furesø": "2026-01-01",
   "Frederiksberg": "2026-01-01",
-  "Fyn": "2026-01-01",
+  "Fyn": "2026-09-28",
   "Herning": "2026-01-01",
   "Horsens": "2026-01-01",
-  "Kolding": "2026-09-28",
+  "Kolding": "2026-01-01",
   "Kronjylland": "2026-01-01",
   "København": "2026-03-14",
   "Køge Bugt": "2026-01-01",
@@ -31,7 +31,7 @@
  "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
  "foreninger": {
   "Aalborg": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -140,7 +140,7 @@
    }
   },
   "Aarhus": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -282,7 +282,7 @@
    }
   },
   "Egedal-Furesø": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -340,7 +340,7 @@
    }
   },
   "Frederiksberg": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -406,13 +406,13 @@
    }
   },
   "Fyn": {
-   "prognose": "ikke_godkendt",
+   "prognose": "ukendt",
    "grunde": [
-    "Intet arrangement i 1. kvartal 2026"
+    "1. kvartal 2026: ingen data"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "nej",
+     "status": "ukendt",
      "afholdt": [],
      "planlagt": []
     },
@@ -472,7 +472,7 @@
    }
   },
   "Herning": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -538,7 +538,7 @@
    }
   },
   "Horsens": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -627,31 +627,31 @@
    }
   },
   "Kolding": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data (ingen Facebook-side)",
-    "2. kvartal 2026: ingen data (ingen Facebook-side)",
-    "3. kvartal 2026: ingen data (ingen Facebook-side)",
-    "4. kvartal 2026: ingen data (ingen Facebook-side)"
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
+    "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
     "Q4": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     }
@@ -662,7 +662,7 @@
    }
   },
   "Kronjylland": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -752,7 +752,7 @@
    }
   },
   "København": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -916,7 +916,7 @@
    }
   },
   "Nordkøbenhavn": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -1021,7 +1021,7 @@
    }
   },
   "Nordsjælland": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -1094,7 +1094,7 @@
    }
   },
   "Næstved": {
-   "prognose": "på_vej",
+   "prognose": "alle_plus_naeste",
    "grunde": [],
    "kvartaler": {
     "Q1": {
@@ -1354,7 +1354,7 @@
    }
   },
   "Sydvestjylland": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -1424,7 +1424,7 @@
    }
   },
   "Sønderjylland": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
@@ -1530,7 +1530,7 @@
    }
   },
   "Vestegnen": {
-   "prognose": "i_fare",
+   "prognose": "mangler_nu",
    "grunde": [
     "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
@@ -1613,7 +1613,7 @@
    }
   },
   "Viborg": {
-   "prognose": "i_fare",
+   "prognose": "alle",
    "grunde": [
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],

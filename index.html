@@ -17,7 +17,13 @@
 </head>
 <body>
 <div class="app viz-root">
-  <aside class="sidebar" id="sidebar" aria-label="Oversigt">
+  <aside class="sidebar" id="sidebar" aria-label="Sidepanel">
+    <nav class="side-tabs" aria-label="Faner">
+      <button type="button" data-fane="oversigt" aria-selected="true">Oversigt</button>
+      <button type="button" data-fane="visninger" aria-selected="false">Visninger</button>
+      <button type="button" data-fane="hb" aria-selected="false">HB-godkendelse</button>
+      <button type="button" data-fane="arrangementer" aria-selected="false">Arrangementer</button>
+    </nav>
     <section class="side-view" id="side-overview">
       <header class="side-head">
         <h1>LAU's foreninger</h1>
@@ -33,7 +39,7 @@
           <option value="navn">Navn</option>
           <option value="planlagt">Planlagte aktiviteter</option>
           <option value="afholdt90">Afholdt seneste 90 dage</option>
-          <option value="kvartal">Afholdt i kvartalet (valgt på kortet)</option>
+          <option value="kvartal">Afholdt i kvartalet (valgt under Visninger)</option>
           <option value="svar">Tilkendegivelser</option>
         </select>
       </label>
@@ -47,12 +53,14 @@
       <button class="back" id="back">← Alle foreninger</button>
       <div id="forening-body"></div>
     </section>
+    <section class="side-view" id="side-visninger" hidden></section>
+    <section class="side-view" id="side-hb" hidden></section>
+    <section class="side-view" id="side-arrangementer" hidden></section>
   </aside>
 
   <main class="map-wrap" aria-label="Kort over foreningerne">
     <div class="toolbar">
       <div class="map-actions" id="map-actions"></div>
-      <div class="layer-toggles" id="layer-toggles" aria-label="Kortlag"></div>
       <div class="legend" id="legend"></div>
     </div>
     <div id="map" class="map"></div>

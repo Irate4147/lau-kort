@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['scripts/**', '.github/workflows/**']
+    paths: ['scripts/**', '.github/workflows/**', 'data/rettelser.json']  # rettelser: beregn HB-prognosen igen
 
 permissions:
   contents: write

@@ -108,17 +108,26 @@ const HB_KVARTALER = Array.from({length: 4}, (_, q) => {
   const y = HB_AAR - 1, start = i => (i < 4 ? `${y}-${String(i * 3 + 1).padStart(2, '0')}-01` : `${y + 1}-01-01`);
   return {id: `Q${q + 1}`, kort: `Q${q + 1}`, fra: start(q), til: start(q + 1)};
 });
-const HB_FILL = {paa_vej: '#7b3fbf', i_fare: '#d58bdb', ikke: '#8c1452', ukendt: '#d3cde0'};
+// Det indeværende kvartal (indeks i HB_KVARTALER) og kvartalet efter (evt. 1. kvartal næste år).
+const HB_NU = HB_KVARTALER.findIndex(k => dayKey(NOW) >= k.fra && dayKey(NOW) < k.til);
+const HB_NAESTE = (() => {
+  const fra = HB_KVARTALER[HB_NU].til, [y, m] = fra.split('-').map(Number);
+  return {fra, til: m === 10 ? `${y + 1}-01-01` : `${y}-${String(m + 3).padStart(2, '0')}-01`};
+})();
+// Kategorierne, bedst først. 'ikke' er den eneste, der ikke kan godkendes; 'ukendt', når historikken mangler.
+const HB_FILL = {plus_naeste: '#4b1f8f', alle: '#7b3fbf', planlagt_nu: '#a98ad8', mangler_nu: '#e39be3', ikke: '#8c1452', ukendt: '#d3cde0'};
 const HB_STATUS = {
-  paa_vej: {label: 'Aktivitet i alle kvartaler indtil videre'},
-  i_fare:  {label: 'Mangler aktivitet i indeværende eller kommende kvartal'},
-  ikke:    {label: `Kan ikke blive HB-godkendt i ${HB_AAR}`},
-  ukendt:  {label: 'Historik mangler'},
+  plus_naeste: {label: 'Aktivitet i alle kvartaler inkl. det indeværende + planlagt i næste kvartal'},
+  alle:        {label: 'Aktivitet i alle kvartaler inkl. det indeværende'},
+  planlagt_nu: {label: 'Aktivitet i alle tidligere kvartaler – det indeværende har et planlagt arrangement'},
+  mangler_nu:  {label: 'Aktivitet i alle tidligere kvartaler – intet planlagt i det indeværende endnu'},
+  ikke:        {label: `Mangler aktivitet i et kvartal – kan ikke HB-godkendes i ${HB_AAR}`},
+  ukendt:      {label: 'Historik mangler'},
 };
 const HB_KV = {
-  ja:       {label: 'afholdt', farve: HB_FILL.paa_vej},
-  planlagt: {label: 'planlagt', farve: '#b894e3'},
-  mangler:  {label: 'intet endnu', farve: HB_FILL.i_fare},
+  ja:       {label: 'afholdt', farve: HB_FILL.alle},
+  planlagt: {label: 'planlagt', farve: HB_FILL.planlagt_nu},
+  mangler:  {label: 'intet endnu', farve: HB_FILL.mangler_nu},
   nej:      {label: 'intet afholdt', farve: HB_FILL.ikke},
   ukendt:   {label: 'ingen data', farve: HB_FILL.ukendt},
 };
@@ -130,22 +139,30 @@ function hbKvartal(f, k) {
   if (!f.facebook || k.fra < daekketFra(f.navn)) return 'ukendt';
   return dayKey(NOW) < k.til ? 'mangler' : 'nej';
 }
+/** Foreningens kategori (nøgle i HB_STATUS) ud fra de afsluttede kvartaler, det indeværende og det næste. */
 function hbPrognose(f) {
-  const s = HB_KVARTALER.map(k => hbKvartal(f, k));
-  return s.includes('nej') ? 'ikke' : s.includes('ukendt') ? 'ukendt' : s.includes('mangler') ? 'i_fare' : 'paa_vej';
+  const s = HB_KVARTALER.map(k => hbKvartal(f, k)), foer = s.slice(0, HB_NU), nu = s[HB_NU];
+  if (foer.includes('nej')) return 'ikke';
+  if (foer.includes('ukendt') || nu === 'ukendt') return 'ukendt';
+  if (nu === 'planlagt') return 'planlagt_nu';
+  if (nu !== 'ja') return 'mangler_nu';
+  const naeste = f.planlagt.some(e => { const d = dayKey(e.startD); return d >= HB_NAESTE.fra && d < HB_NAESTE.til; });
+  return naeste ? 'plus_naeste' : 'alle';
 }
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
+/** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
+const fbSider = f => [f.facebook, ...(f.facebook_ekstra || []).map(e => (typeof e === 'string' ? e : e.url))].filter(Boolean);
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
 
 let DATA = null;
 let selected = null;
-// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …) eller 'hb' (HB-godkendelse næste år).
+// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …), 'hb' (HB-godkendelse næste år) eller 'ingen'.
 let farvning = (() => {
   let v = 'status';
   try { v = localStorage.getItem('lau-farvning') || v; } catch (_) { /* fx privat vindue */ }
   if (v === 'kvartal') v = KVARTAL.id; // ældre gemt værdi
-  return v === 'hb' || KVARTALER.some(k => k.id === v) ? v : 'status';
+  return v === 'hb' || v === 'ingen' || KVARTALER.some(k => k.id === v) ? v : 'status';
 })();
 const valgtKvartal = () => KVARTALER.find(k => k.id === farvning) || null;
 const MAP = {map: null, ready: false, items: [], cards: new Map()};
@@ -154,14 +171,35 @@ const MAP = {map: null, ready: false, items: [], cards: new Map()};
 
 const PANEL_SECTIONS = [];
 const MAP_LAYERS = [];
-const layerState = {};
+// Til/fra-tilstand for alt under "Visninger" (indbyggede elementer og lag), gemt i browseren.
+const layerState = (() => {
+  try { return JSON.parse(localStorage.getItem('lau-visning')) || {}; } catch (_) { return {}; }
+})();
+const gemVisning = () => { try { localStorage.setItem('lau-visning', JSON.stringify(layerState)); } catch (_) { /* fx privat vindue */ } };
+/**
+ * Indbyggede elementer, der kan slås til og fra under "Visninger". Lag med toggle: true kommer med automatisk
+ * (i gruppen layer.gruppe, standard 'kort').
+ */
+const VISNINGER = [
+  {id: 'bokse', gruppe: 'aktiviteter', label: 'Begivenhedsbokse', hint: 'Dato og titel ved siden af stedet'},
+  {id: 'punkter', gruppe: 'aktiviteter', label: 'Aktivitetspunkter'},
+  {id: 'landsforeningen', gruppe: 'aktiviteter', label: 'Landsforeningens aktiviteter'},
+  {id: 'aflyste', gruppe: 'aktiviteter', label: 'Aflyste aktiviteter'},
+  {id: 'foreningsnavne', gruppe: 'kort', label: 'Foreningsnavne'},
+  {id: 'foreningsgraenser', gruppe: 'kort', label: 'Grænser mellem foreninger'},
+  {id: 'kommunegraenser', gruppe: 'kort', label: 'Kommunegrænser'},
+  {id: 'stednavne', gruppe: 'kort', label: 'Stednavne på grundkortet'},
+  {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
+];
+for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, synlig?(f), render(f) -> html, efter?(el, f)}. */
 function registerSection(sec, {efter} = {}) {
   const i = efter ? PANEL_SECTIONS.findIndex(s => s.id === efter) : -1;
   PANEL_SECTIONS.splice(i >= 0 ? i + 1 : PANEL_SECTIONS.length, 0, sec);
 }
 /**
- * Kortlag: {id, label, toggle, standard, synlig?(ctx), tegn(api, ctx)}.
+ * Kortlag: {id, label, toggle, standard, gruppe?, hint?, tilgaengelig?(), synlig?(ctx), tegn(api, ctx)}.
+ * Lag med toggle: true får en til/fra-knap under "Visninger" (når tilgaengelig() er sand).
  * api.source(navn, geojson) og api.layer(maplibre-lagspec) – laget fjernes/tegnes igen automatisk.
  * ctx = {selected, zoomed, map}.
  */
@@ -181,40 +219,64 @@ const noteLager = () => (CONFIG.privat && CONFIG.privat.noter) || lokaleNoter;
 
 // ------------------------------------------------------------------ data
 
+// Rå data, som de er hentet (inden rettelser); DATA beregnes ud fra dem med beregn().
+let RAW = null;
+
 async function load() {
   const get = (base, p) => fetch(base + p, {cache: 'no-cache'}).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
   const getData = p => get(CONFIG.dataBase, p).catch(() => get(CONFIG.assetBase, p));
-  const [foreninger, events, meta, topo, hb] = await Promise.all([
+  const [foreninger, events, meta, topo, hb, rettelser] = await Promise.all([
     getData('data/foreninger.json'), getData('data/events.json'), getData('data/meta.json'),
-    get(CONFIG.assetBase, 'geo/kommuner.topo.json'), getData('data/hb.json').catch(() => null)]);
+    get(CONFIG.assetBase, 'geo/kommuner.topo.json'), getData('data/hb.json').catch(() => null),
+    hentRettelser(getData).catch(() => ({}))]);
   const firstRun = meta.koersler.length ? new Date(meta.koersler[0].tid) : NOW;
   // Afholdte aktiviteter kendes fra den første ugentlige kørsel, eller længere tilbage, hvis historikken er hentet.
   HISTORIK.hentet = new Set(((meta.historik && meta.historik.koersler) || []).filter(k => k.status === 'SUCCEEDED').map(k => k.forening));
   HISTORIK.ugentligFra = dayKey(firstRun);
   HISTORIK.fra = meta.historik && meta.historik.fra ? dayKey(new Date(meta.historik.fra)) : HISTORIK.ugentligFra;
+  // Seneste vellykkede historik-kørsel pr. side (ældre kørsler uden "side" gjaldt hovedsiden). Ramte den loftet, og lå
+  // alle hentede i perioden, kan der mangle ældre begivenheder – så dækker historikken kun fra den ældste hentede.
+  // En forening er kun dækket, når alle dens sider er hentet. (Beregnes på de hentede data, uden rettelser.) Som hb.py.
+  const prSide = new Map();
+  for (const k of (meta.historik && meta.historik.koersler) || []) {
+    if (k.status !== 'SUCCEEDED') continue;
+    const aeldste = k.aeldste ? dayKey(new Date(k.aeldste))
+      : events.filter(e => e.historisk && (e.foreninger || [e.forening]).includes(k.forening)).map(e => dayKey(new Date(e.start))).sort()[0];
+    const loft = k.hentet >= HISTORIK_LOFT && k.begivenheder >= k.hentet;
+    prSide.set(`${k.forening}|${k.side || ''}`, loft && aeldste ? aeldste : HISTORIK.fra);
+  }
+  for (const f of foreninger) {
+    const s = fbSider(f).map((u, i) => prSide.get(`${f.navn}|${u}`) || (i === 0 ? prSide.get(`${f.navn}|`) : null));
+    if (s.length && s.every(Boolean)) HISTORIK.fraFor.set(f.navn, s.sort()[s.length - 1]);
+  }
+  // historik_fra i foreninger.json: historikken er tjekket manuelt fra den dato (fx ingen arrangementer).
+  for (const f of foreninger) if (f.historik_fra) HISTORIK.fraFor.set(f.navn, f.historik_fra);
+  RAW ={foreninger, events, meta, topo, hb, firstRun, byId: new Map(events.map(e => [e.id, e])), geom: new Map()};
+  RET.repo = rettelser;
+  RET.data = flet(rettelser, RET.lokal);
+  beregn();
+}
+
+/** Beregner DATA ud fra RAW og rettelserne. Kaldes igen, når en rettelse gemmes. */
+function beregn() {
+  const {meta, topo, hb, firstRun} = RAW;
+  const foreninger = RAW.foreninger.map(f => ({...f}));
+  const alle = anvendRettelser(RAW.events.map(e => ({...e})), RET.data);
   const hbNu = (hb && hb[`hb${HB_AAR - 1}`] && hb[`hb${HB_AAR - 1}`].foreninger) || {};
   const historik = !!(meta.historik && meta.historik.fra && HISTORIK.hentet.size);
   const dataFra = historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
 
-  for (const e of events) {
+  for (const e of alle) {
     e.startD = new Date(e.start);
     e.slutD = new Date(e.slut || e.start);
     e.firstD = new Date(e.foerst_set);
     e.kat = kategori(e);
-    e.ny = !e.historisk && NOW - e.firstD < NEW_DAYS * DAY;
+    e.ny = !e.historisk && !e.manuel && NOW - e.firstD < NEW_DAYS * DAY;
     e.foreninger = e.foreninger || [e.forening];
     e.national = e.forening === NATIONAL;
     e.soon = !e.forsvundet && e.slutD >= NOW && e.startD <= H14;
   }
-  // Seneste vellykkede historik-kørsel pr. forening. Ramte den loftet, og lå alle hentede i perioden, kan der mangle
-  // ældre begivenheder – så dækker historikken kun fra den ældste hentede.
-  const sidsteKoersel = new Map();
-  for (const k of (meta.historik && meta.historik.koersler) || []) if (k.status === 'SUCCEEDED') sidsteKoersel.set(k.forening, k);
-  for (const [navn, k] of sidsteKoersel) {
-    const aeldste = events.filter(e => e.historisk && e.foreninger.includes(navn)).map(e => dayKey(e.startD)).sort()[0];
-    const loft = k.hentet >= HISTORIK_LOFT && k.begivenheder >= k.hentet;
-    HISTORIK.fraFor.set(navn, loft && aeldste ? aeldste : HISTORIK.fra);
-  }
+  const events = alle.filter(e => !e.skjult);
   const byName = new Map();
   for (const f of foreninger) {
     byName.set(f.navn, f);
@@ -235,13 +297,16 @@ async function load() {
       : f.within14.some(e => !e.aflyst) ? 'snart' : f.planlagt.length ? 'planlagt' : 'ingen';
     f.gnsSvar = mean(gyldige.filter(e => e.svar != null).map(e => e.svar));
     // Varsel kan kun måles for aktiviteter opdaget efter dataindsamlingen startede.
-    f.varsel = median(gyldige.filter(e => !e.historisk && e.firstD - firstRun > DAY).map(e => (e.startD - e.firstD) / DAY));
+    f.varsel = median(gyldige.filter(e => !e.historisk && !e.manuel && e.firstD - firstRun > DAY).map(e => (e.startD - e.firstD) / DAY));
     if (!f.national) {
       f.hbKv = Object.fromEntries(HB_KVARTALER.map(k => [k.id, hbKvartal(f, k)]));
       f.hb = hbPrognose(f);
       f.hbNu = hbNu[f.navn] || null; // årets HB-status og mangler fra data/hb.json
-      f.merged = topojson.merge(topo, topo.objects.kom.geometries.filter(g => g.properties.forening === f.navn));
-      f.bounds = d3.geoBounds(f.merged);
+      if (!RAW.geom.has(f.navn)) {
+        const merged = topojson.merge(topo, topo.objects.kom.geometries.filter(g => g.properties.forening === f.navn));
+        RAW.geom.set(f.navn, {merged, bounds: d3.geoBounds(merged)});
+      }
+      Object.assign(f, RAW.geom.get(f.navn));
     }
   }
   const features = topojson.feature(topo, topo.objects.kom).features;
@@ -266,7 +331,7 @@ async function load() {
     events: {type: 'FeatureCollection', features: events.filter(e => e.lat != null && e.lng != null).map(e => ({
       type: 'Feature', properties: {id: e.id, national: e.national}, geometry: {type: 'Point', coordinates: [e.lng, e.lat]}}))},
   };
-  DATA = {foreninger, lokale, events, meta, topo, features, byName, firstRun, dataFra, historik, geo, byId: new Map(events.map(e => [e.id, e]))};
+  DATA = {foreninger, lokale, events, alle, meta, topo, features, byName, firstRun, dataFra, historik, geo, byId: new Map(alle.map(e => [e.id, e]))};
 }
 
 function kategori(e) {
@@ -294,10 +359,11 @@ const mapPadding = () => (calloutsEnabled() ? 48 : 20);
 const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
 const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
 const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 'ukendt', 0.35, 0.25];
-const HB_COLOR = ['match', ['get', 'hb'], 'paa_vej', HB_FILL.paa_vej, 'i_fare', HB_FILL.i_fare, 'ikke', HB_FILL.ikke, HB_FILL.ukendt];
+const HB_COLOR = ['match', ['get', 'hb'], ...Object.entries(HB_FILL).flat(), HB_FILL.ukendt];
 const HB_OPACITY = ['match', ['get', 'hb'], 'ukendt', 0.35, 0.6];
 /** Foreningens farve og forklaring i den valgte farvning. */
 function farveFor(f) {
+  if (farvning === 'ingen') return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
   if (farvning === 'hb') return f.hb ? {farve: HB_FILL[f.hb], label: HB_STATUS[f.hb].label} : {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'};
   const k = valgtKvartal();
   if (!k) return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
@@ -309,10 +375,11 @@ function applyFill() {
   if (!MAP.ready) return;
   const f = selected && DATA.byName.get(selected);
   const local = f && !f.national ? f.navn : '';
-  const k = valgtKvartal(), hb = farvning === 'hb';
+  const k = valgtKvartal(), hb = farvning === 'hb', ingen = farvning === 'ingen';
   MAP.map.setPaintProperty('kom-fill', 'fill-color', hb ? HB_COLOR : k ? kvColor(k) : STATUS_COLOR);
-  MAP.map.setPaintProperty('kom-fill', 'fill-opacity',
-    local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
+  // Uden farvning er fladerne usynlige, men kan stadig klikkes på.
+  MAP.map.setPaintProperty('kom-fill', 'fill-opacity', ingen ? (local ? ['case', ['==', ['get', 'forening'], local], 0.25, 0] : 0)
+    : local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
 }
 
 function setFarvning(mode) {
@@ -321,6 +388,34 @@ function setFarvning(mode) {
   applyFill();
   renderLegend();
   renderRank();
+  renderVisninger();
+  renderHB();
+}
+
+/** Slår et element under "Visninger" til eller fra. */
+function setVisning(id, on) {
+  layerState[id] = on;
+  gemVisning();
+  applyVisning();
+  if (MAP_LAYERS.some(l => l.id === id)) drawLayers();
+  if (id === 'landsforeningen' || id === 'aflyste') { if (MAP.ready) setMode(selected, {fit: false}); }
+  if (id === 'bokse') layoutCallouts();
+  renderLegend();
+  renderVisninger();
+  renderHB();
+}
+
+/** Anvender til/fra-tilstanden på grundlagene (lag, der ikke tegnes via registerLayer). */
+function applyVisning() {
+  $('legend').hidden = !layerState.tegnforklaring;
+  if (!MAP.ready) return;
+  const vis = (id, on) => { if (MAP.map.getLayer(id)) MAP.map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none'); };
+  vis('f-labels', layerState.foreningsnavne);
+  vis('f-border', layerState.foreningsgraenser);
+  vis('kom-inner', layerState.kommunegraenser);
+  vis('ev-local', layerState.punkter);
+  vis('ev-national', layerState.punkter);
+  for (const id of MAP.stednavne) vis(id, layerState.stednavne);
 }
 
 function initMap() {
@@ -373,12 +468,14 @@ function addBaseLayers() {
   const firstSymbol = (layers.find(l => l.type === 'symbol') || {}).id;
   const firstRoad = (layers.find(l => /^(tunnel|road|bridge|highway)/.test(l.id)) || {}).id || firstSymbol;
   // Danske/lokale stednavne i stedet for engelske, og ingen lande-/delstatsnavne oven i foreningerne.
+  MAP.stednavne = [];
   for (const l of layers) {
     if (l.type !== 'symbol') continue;
-    if (/^label_(country|state)/.test(l.id)) map.setLayoutProperty(l.id, 'visibility', 'none');
-    else if (/^(label_|water_name|waterway_line_label)/.test(l.id)) {
+    if (/^label_(country|state)/.test(l.id)) { map.setLayoutProperty(l.id, 'visibility', 'none'); continue; }
+    if (/^(label_|water_name|waterway_line_label)/.test(l.id)) {
       map.setLayoutProperty(l.id, 'text-field', ['coalesce', ['get', 'name:da'], ['get', 'name']]);
     }
+    MAP.stednavne.push(l.id);
   }
 
   map.addSource('kom', {type: 'geojson', data: g.kom});
@@ -430,14 +527,18 @@ function addBaseLayers() {
 /** Hvilke aktiviteter vises (overblik: næste 14 dage; forening: dens kommende + landsforeningens i området). */
 function eventsFor(navn) {
   const f = navn && DATA.byName.get(navn);
-  if (!f) return DATA.events.filter(e => e.soon && DATA.byName.has(e.forening));
-  if (f.national) return f.upcoming;
-  const nat = DATA.byName.get(NATIONAL);
-  const lands = nat ? nat.upcoming.filter(e => e.kommune && f.kommuner.includes(e.kommune) && !f.upcoming.includes(e)) : [];
-  return [...f.upcoming, ...lands];
+  let list;
+  if (!f) list = DATA.events.filter(e => e.soon && DATA.byName.has(e.forening));
+  else if (f.national) list = f.upcoming;
+  else {
+    const nat = DATA.byName.get(NATIONAL);
+    const lands = nat ? nat.upcoming.filter(e => e.kommune && f.kommuner.includes(e.kommune) && !f.upcoming.includes(e)) : [];
+    list = [...f.upcoming, ...lands];
+  }
+  return list.filter(e => (layerState.aflyste || !e.aflyst) && (layerState.landsforeningen || !e.national || (f && f.national)));
 }
 
-function setMode(navn, {animate = true} = {}) {
+function setMode(navn, {animate = true, fit = true} = {}) {
   const map = MAP.map;
   const f = navn && DATA.byName.get(navn);
   const local = f && !f.national ? f.navn : '';
@@ -452,8 +553,8 @@ function setMode(navn, {animate = true} = {}) {
   setCalloutItems(list);
 
   const bounds = local ? f.bounds : DK_BOUNDS;
-  map.fitBounds(bounds, {padding: mapPadding(), duration: animate ? 900 : 0, maxZoom: 11});
-  renderLayerToggles();
+  if (fit) map.fitBounds(bounds, {padding: mapPadding(), duration: animate ? 900 : 0, maxZoom: 11});
+  applyVisning();
   drawLayers();
 }
 
@@ -485,7 +586,7 @@ function layoutCallouts() {
   if (!MAP.map || !MAP.overlay) return;
   const W = MAP.overlay.clientWidth, H = MAP.overlay.clientHeight;
   const note = MAP.overlay.querySelector('.more-note');
-  if (!calloutsEnabled()) {
+  if (!calloutsEnabled() || !layerState.bokse) {
     for (const c of MAP.cards.values()) c.hidden = true;
     MAP.leaders.innerHTML = '';
     note.hidden = true;
@@ -551,12 +652,15 @@ function openPopover(e, {card, x, y}) {
   const wrap = document.querySelector('.map-wrap').getBoundingClientRect();
   const f = DATA.byName.get(e.forening);
   const svar = e.svar != null ? `<div class="pop-meta">${e.deltager ?? 0} deltager · ${e.interesserede ?? 0} interesserede</div>` : '';
+  const ret = (e.fremmoede != null ? `<div class="pop-meta">Faktisk fremmøde: ${esc(e.fremmoede)}</div>` : '')
+    + (e.note ? `<div class="pop-meta pop-note">${esc(e.note)}</div>` : '');
   pop.innerHTML = `<button class="close-pop" aria-label="Luk">×</button>
-    <div class="pop-title">${esc(e.navn)}${e.aflyst ? ' <span class="badge cancel">AFLYST</span>' : ''}</div>
+    <div class="pop-title">${esc(e.navn)}${e.aflyst ? ' <span class="badge cancel">AFLYST</span>' : ''}${e.bekraeftet ? ' <span class="badge ok">✓</span>' : ''}</div>
     <div class="pop-meta">${esc(fmtDay.format(e.startD))} kl. ${esc(fmtTime.format(e.startD))}</div>
-    <div class="pop-meta">${esc(e.sted || 'Sted ikke angivet')}</div>${svar}
+    <div class="pop-meta">${esc(e.sted || 'Sted ikke angivet')}</div>${svar}${ret}
     <div class="pop-actions">${f ? `<button class="chip" data-f="${esc(f.navn)}">${esc(visningsnavn(f))}</button>` : ''}
-      <a href="${esc(e.url)}" target="_blank" rel="noopener">Se på Facebook ↗</a></div>`;
+      ${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">Se på Facebook ↗</a>` : ''}
+      <button class="linkbtn" data-ret="${esc(e.id)}">Ret</button></div>`;
   pop.hidden = false;
   const pw = pop.offsetWidth, ph = pop.offsetHeight;
   let left, top;
@@ -574,6 +678,7 @@ function openPopover(e, {card, x, y}) {
   pop.style.left = `${Math.max(8, Math.min(wrap.width - pw - 8, left))}px`;
   pop.style.top = `${Math.max(8, Math.min(wrap.height - ph - 8, top))}px`;
   pop.querySelector('.close-pop').addEventListener('click', closePopover);
+  pop.querySelector('[data-ret]').addEventListener('click', () => { closePopover(); retArrangement(e.id); });
   bindForeningLinks(pop);
 }
 
@@ -615,26 +720,12 @@ function drawLayers() {
   }
 }
 
-function renderLayerToggles() {
-  const el = $('layer-toggles');
-  const f = selected && DATA.byName.get(selected);
-  const ctx = {selected, zoomed: !!(f && !f.national)};
-  const toggles = MAP_LAYERS.filter(l => l.toggle && (!l.synlig || l.synlig(ctx)));
-  el.innerHTML = `<label title="Farv lokalforeningerne efter nuværende aktivitet eller efter, om de har afholdt noget i et kvartal">Farv efter
-    <select data-farvning><option value="status">Aktivitet nu</option>${KVARTALER.map(k =>
-      `<option value="${k.id}"${farvning === k.id ? ' selected' : ''}>Afholdt i ${esc(k.kort)}</option>`).join('')}
-      <option value="hb"${farvning === 'hb' ? ' selected' : ''}>HB-godkendelse ${HB_AAR}</option></select></label>`
-    + toggles.map(l => `<label><input type="checkbox" data-layer="${esc(l.id)}"${layerState[l.id] ? ' checked' : ''}> ${esc(l.label)}</label>`).join('');
-  el.querySelector('[data-farvning]').addEventListener('change', ev => setFarvning(ev.target.value));
-  el.querySelectorAll('[data-layer]').forEach(i => i.addEventListener('change', () => { layerState[i.dataset.layer] = i.checked; drawLayers(); renderLegend(); }));
-}
-
 const pointsFC = list => ({type: 'FeatureCollection', features: list.filter(e => e.lat != null && e.lng != null)
   .map(e => ({type: 'Feature', properties: {id: e.id}, geometry: {type: 'Point', coordinates: [e.lng, e.lat]}}))});
 
 // Indbyggede kortlag.
 registerLayer({
-  id: 'kommunenavne', label: 'Kommunenavne', toggle: true, standard: true,
+  id: 'kommunenavne', label: 'Kommunenavne', hint: 'Når en forening er valgt', toggle: true, standard: true,
   synlig: ctx => ctx.zoomed,
   tegn(api, ctx) {
     api.layer({id: 'txt', type: 'symbol', source: 'klabels', filter: ['==', ['get', 'forening'], ctx.selected], layout: {
@@ -644,7 +735,7 @@ registerLayer({
   },
 });
 registerLayer({
-  id: 'afholdte', label: 'Afholdte aktiviteter', toggle: true, standard: false,
+  id: 'afholdte', label: 'Afholdte aktiviteter', gruppe: 'aktiviteter', hint: 'Hvide prikker', toggle: true, standard: false,
   tegn(api, ctx) {
     const list = ctx.selected ? DATA.byName.get(ctx.selected).afholdt : DATA.events.filter(e => !e.forsvundet && !e.aflyst && e.slutD < NOW);
     const src = api.source('pts', pointsFC(list));
@@ -654,7 +745,7 @@ registerLayer({
 });
 registerLayer({
   // Oven på den valgte farvning: skraverer de foreninger magenta, der ikke kan blive HB-godkendt næste år.
-  id: 'hb', label: `Kan ikke HB-godkendes ${HB_AAR}`, toggle: true, standard: false,
+  id: 'hb', label: `Skravér foreninger, der ikke kan HB-godkendes ${HB_AAR}`, gruppe: 'hb', toggle: true, standard: false,
   tegn(api, ctx) {
     if (!ctx.map.hasImage('hb-skravering')) ctx.map.addImage('hb-skravering', skravering(HB_FILL.ikke));
     const feats = DATA.geo.outlines.features
@@ -682,6 +773,7 @@ function skravering(farve, size = 10) {
 registerLayer({
   // Eksempel på et privat lag: vises kun, hvis adminversionen leverer medlemstal pr. by.
   id: 'medlemmer', label: 'Medlemmer pr. by', toggle: true, standard: false,
+  tilgaengelig: () => !!(CONFIG.privat && CONFIG.privat.medlemmer),
   synlig: () => !!(CONFIG.privat && CONFIG.privat.medlemmer),
   tegn(api, ctx) {
     const rows = CONFIG.privat.medlemmer.filter(r => !ctx.zoomed || r.forening === ctx.selected);
@@ -744,8 +836,9 @@ function evList(list, showForening, emptyText = 'Ingen planlagte aktiviteter.') 
     const f = DATA.byName.get(e.forening);
     return `<li>
     <div class="date">${esc(fmtDay.format(e.startD))}<br><span class="meta">kl. ${esc(fmtTime.format(e.startD))}</span></div>
-    <div><a class="title" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.navn)}</a>${
-      e.aflyst ? '<span class="badge cancel">AFLYST</span>' : ''}${e.ny && !e.aflyst ? '<span class="badge new">NY</span>' : ''}
+    <div>${e.url ? `<a class="title" href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.navn)}</a>` : `<span class="title">${esc(e.navn)}</span>`}${
+      e.aflyst ? '<span class="badge cancel">AFLYST</span>' : ''}${e.ny && !e.aflyst ? '<span class="badge new">NY</span>' : ''}${
+      e.bekraeftet && !e.aflyst ? '<span class="badge ok" title="Bekræftet">✓</span>' : ''}
       <div class="meta">${showForening && f ? `<button class="forening-link" data-f="${esc(f.navn)}">${esc(visningsnavn(f))}</button> · ` : ''}${esc(e.sted || 'Sted ikke angivet')}</div>
     </div></li>`;
   }).join('') + '</ul>';
@@ -1050,7 +1143,17 @@ function openForening(navn, {animate = true} = {}) {
   selected = navn;
   hideTip();
   closePopover();
+  renderForening(f);
+  visFane('oversigt');
+  $('sidebar').scrollTop = 0;
+  document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.f === navn)));
+  $('zoom-reset').hidden = false;
+  history.replaceState(null, '', '#' + encodeURIComponent(navn));
+  if (MAP.ready) setMode(navn, {animate});
+  renderHB();
+}
 
+function renderForening(f) {
   const body = $('forening-body');
   body.innerHTML = `
     <h2 class="fname">${esc(visningsnavn(f))}</h2>
@@ -1058,8 +1161,14 @@ function openForening(navn, {animate = true} = {}) {
     ${f.facebook || KVARTALER.some(k => f.kv[k.id]) ? `<div class="kvartaler" title="Afholdte aktiviteter pr. kvartal">${KVARTALER.map(k =>
       `<span class="status"><span class="dot" style="background:${KVARTAL_FILL[kvStatus(f, k)]}"></span>${esc(k.kort)}: ${f.kv[k.id]} afholdt</span>`).join('')}</div>` : ''}
     <div class="kommuner">${f.national ? 'Arrangementer i hele landet' : `Dækker ${esc(f.kommuner.join(', '))}`}</div>
-    ${f.facebook ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>`
-      : '<p class="empty">Ingen Facebook-side tilknyttet endnu, så aktiviteter kan ikke hentes automatisk.</p>'}`;
+    ${f.facebook ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>${fbSider(f).slice(1).map(u =>
+      ` · <a class="fb" href="${esc(u)}" target="_blank" rel="noopener">Tidligere side ↗</a>`).join('')}`
+      : '<p class="empty">Ingen Facebook-side tilknyttet endnu, så aktiviteter kan ikke hentes automatisk.</p>'}
+    <button class="linkbtn arr-link" data-arr-forening="${esc(f.navn)}">Arrangementer og rettelser →</button>`;
+  body.querySelector('[data-arr-forening]').addEventListener('click', () => {
+    Object.assign(ARR, {forening: f.navn, filter: 'alle', q: '', aaben: null});
+    visFane('arrangementer');
+  });
   for (const sec of PANEL_SECTIONS) {
     if (sec.synlig && !sec.synlig(f)) continue;
     const el = document.createElement('section');
@@ -1070,31 +1179,119 @@ function openForening(navn, {animate = true} = {}) {
     if (sec.efter) sec.efter(el, f);
   }
   bindTips(body);
-  $('side-overview').hidden = true;
-  $('side-forening').hidden = false;
-  $('sidebar').scrollTop = 0;
-  document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.f === navn)));
-  $('zoom-reset').hidden = false;
-  history.replaceState(null, '', '#' + encodeURIComponent(navn));
-  if (MAP.ready) setMode(navn, {animate});
 }
 
 function closeForening() {
   selected = null;
   closePopover();
-  $('side-forening').hidden = true;
-  $('side-overview').hidden = false;
+  visFane(FANE === 'oversigt' ? 'oversigt' : FANE);
   document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', 'false'));
   $('zoom-reset').hidden = true;
   history.replaceState(null, '', location.pathname + location.search);
   if (MAP.ready) setMode(null);
+  renderHB();
+}
+
+// ------------------------------------------------------------------ sidepanelets faner
+
+let FANE = 'oversigt';
+const FANER = {oversigt: 'Oversigt', visninger: 'Visninger', hb: 'HB-godkendelse', arrangementer: 'Arrangementer'};
+function visFane(fane) {
+  FANE = fane;
+  document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.fane === fane)));
+  $('side-overview').hidden = fane !== 'oversigt' || !!selected;
+  $('side-forening').hidden = fane !== 'oversigt' || !selected;
+  $('side-visninger').hidden = fane !== 'visninger';
+  $('side-hb').hidden = fane !== 'hb';
+  $('side-arrangementer').hidden = fane !== 'arrangementer';
+  if (fane === 'arrangementer') renderArrangementer();
+  $('sidebar').scrollTop = 0;
+}
+
+// ------------------------------------------------------------------ fane: visninger
+
+const FARVNINGER = () => [
+  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for 14 dage / planlagt senere / intet'},
+  ...KVARTALER.map(k => ({id: k.id, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
+  {id: 'ingen', label: 'Ingen farve'},
+];
+const GRUPPER = {aktiviteter: 'Aktiviteter på kortet', kort: 'Kortet'};
+const toggles = gruppe => [...VISNINGER, ...MAP_LAYERS.filter(l => l.toggle && (!l.tilgaengelig || l.tilgaengelig()))]
+  .filter(v => (v.gruppe || 'kort') === gruppe);
+const toggleHtml = v => `<label class="opt"><input type="checkbox" data-vis="${esc(v.id)}"${layerState[v.id] ? ' checked' : ''}>
+  <span>${esc(v.label)}${v.hint ? `<span class="hint">${esc(v.hint)}</span>` : ''}</span></label>`;
+function bindVisning(el) {
+  el.querySelectorAll('[data-vis]').forEach(i => i.addEventListener('change', () => setVisning(i.dataset.vis, i.checked)));
+  el.querySelectorAll('[data-farvning]').forEach(i => i.addEventListener('change', () => { if (i.checked) setFarvning(i.value); }));
+}
+
+function renderVisninger() {
+  const el = $('side-visninger');
+  if (!DATA) return;
+  el.innerHTML = `<header class="side-head"><h1>Visninger</h1><p class="updated">Vælg, hvad kortet viser. Valgene huskes i denne browser.</p></header>
+    <h2>Farv foreningerne efter</h2>
+    <div class="opts">${FARVNINGER().map(v => `<label class="opt"><input type="radio" name="farvning" value="${esc(v.id)}" data-farvning${
+      farvning === v.id ? ' checked' : ''}><span>${esc(v.label)}${v.hint ? `<span class="hint">${esc(v.hint)}</span>` : ''}</span></label>`).join('')}
+      </div>${farvning === 'hb' ? `<p class="note">Kortet er farvet efter HB-godkendelse ${HB_AAR} (fanen <button class="linkbtn" data-til-hb>HB-godkendelse</button>).</p>` : ''}
+    ${Object.entries(GRUPPER).map(([g, t]) => `<h2>${esc(t)}</h2><div class="opts">${toggles(g).map(toggleHtml).join('')}</div>`).join('')}
+    <button class="linkbtn" data-nulstil>Nulstil visninger</button>`;
+  bindVisning(el);
+  const tilHB = el.querySelector('[data-til-hb]');
+  if (tilHB) tilHB.addEventListener('click', () => visFane('hb'));
+  el.querySelector('[data-nulstil]').addEventListener('click', () => {
+    for (const v of VISNINGER) layerState[v.id] = v.standard !== false;
+    for (const l of MAP_LAYERS) layerState[l.id] = l.standard !== false;
+    gemVisning();
+    setFarvning('status');
+    applyVisning();
+    if (MAP.ready) setMode(selected, {fit: false});
+    renderLegend();
+  });
+}
+
+// ------------------------------------------------------------------ fane: HB-godkendelse
+
+function renderHB() {
+  const el = $('side-hb');
+  if (!DATA) return;
+  const tael = Object.fromEntries(Object.keys(HB_STATUS).map(k => [k, DATA.lokale.filter(f => f.hb === k).length]));
+  const orden = {ikke: 0, mangler_nu: 1, planlagt_nu: 2, ukendt: 3, alle: 4, plus_naeste: 5}; // dem, der kræver handling, først
+  const rows = [...DATA.lokale].sort((a, b) => orden[a.hb] - orden[b.hb] || a.navn.localeCompare(b.navn, 'da'));
+  const nuTekst = {godkendt: 'Godkendt', ikke_godkendt: 'Ikke godkendt', uafklaret: 'Uafklaret'};
+  el.innerHTML = `<header class="side-head"><h1>HB-godkendelse ${HB_AAR}</h1>
+      <p class="updated">Krav (Organisationshåndbogen 8.2): mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}. Om det er fagligt, vurderes ikke.</p></header>
+    <h2>Visninger</h2>
+    <div class="opts">
+      <label class="opt"><input type="checkbox" data-hb-farve${farvning === 'hb' ? ' checked' : ''}><span>Farv kortet efter HB-godkendelse ${HB_AAR}<span class="hint">Lilla/magenta – slås fra igen til "Aktivitet nu"</span></span></label>
+      ${MAP_LAYERS.filter(l => l.toggle && l.gruppe === 'hb').map(toggleHtml).join('')}
+    </div>
+    <h2>Kategorier (${esc(HB_KVARTALER[HB_NU].kort)} er det indeværende kvartal)</h2>
+    <ol class="hb-kat">${Object.entries(HB_STATUS).map(([k, s]) =>
+      `<li${k === 'ukendt' ? ' class="uden-nr"' : ''}><span class="dot-inline" style="background:${HB_FILL[k]}"></span><span>${esc(s.label)}</span><b>${tael[k]}</b></li>`).join('')}</ol>
+    <h2>Status pr. forening</h2>
+    <table class="hb-tabel"><thead><tr><th>Forening</th>${HB_KVARTALER.map(k => `<th>${esc(k.kort)}</th>`).join('')}<th title="HB-status ${HB_AAR - 1}">${HB_AAR - 1}</th></tr></thead>
+    <tbody>${rows.map(f => `<tr tabindex="0" data-f="${esc(f.navn)}"${f.navn === selected ? ' class="valgt"' : ''}>
+      <td><span class="dot-inline" style="background:${HB_FILL[f.hb]}" title="${esc(HB_STATUS[f.hb].label)}"></span>${esc(f.navn)}</td>
+      ${HB_KVARTALER.map(k => { const s = HB_KV[f.hbKv[k.id]]; return `<td><span class="kv-dot" style="background:${s.farve}" title="${esc(`${k.kort}: ${s.label}`)}"></span></td>`; }).join('')}
+      <td class="muted">${esc(f.hbNu ? (nuTekst[f.hbNu.status] || f.hbNu.status) : '–')}</td></tr>`).join('')}</tbody></table>
+    <div class="chart-legend">${Object.values(HB_KV).map(s => `<span><span class="swatch" style="background:${s.farve}"></span>${esc(s.label)}</span>`).join('')}</div>
+    <p class="note">Mangler et afholdt arrangement, fordi det ikke lå på Facebook? Tilføj eller bekræft det under <button class="linkbtn" data-til-arr>Arrangementer</button> – så tæller det med her.</p>`;
+  bindVisning(el);
+  el.querySelector('[data-hb-farve]').addEventListener('change', ev => setFarvning(ev.target.checked ? 'hb' : 'status'));
+  el.querySelector('[data-til-arr]').addEventListener('click', () => visFane('arrangementer'));
+  el.querySelectorAll('tr[data-f]').forEach(tr => {
+    const aabn = () => { openForening(tr.dataset.f); visFane('hb'); };
+    tr.addEventListener('click', aabn);
+    tr.addEventListener('keydown', ev => { if (ev.key === 'Enter') aabn(); });
+  });
 }
 
 function renderLegend() {
   const hbLag = !layerState.hb ? '' : `<span><svg width="14" height="12" aria-hidden="true"><rect x="1" y="1" width="12" height="10" fill="none" stroke="${HB_FILL.ikke}" stroke-width="2"/><path d="M1 9L7 3M5 11L13 3" stroke="${HB_FILL.ikke}" stroke-width="1.6"/></svg>${esc(HB_STATUS.ikke.label)}</span>`;
-  const tegnforklaring = hbLag
-    + '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
-    + '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>';
+  const tegnforklaring = hbLag + (!layerState.punkter ? ''
+    : '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
+    + (layerState.landsforeningen ? '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>' : ''));
+  if (farvning === 'ingen') { $('legend').innerHTML = tegnforklaring; return; }
   if (farvning === 'hb') {
     const brugt = new Set(DATA.lokale.map(f => f.hb));
     $('legend').innerHTML = Object.entries(HB_STATUS).filter(([k]) => brugt.has(k))
@@ -1115,9 +1312,387 @@ function renderLegend() {
     + tegnforklaring;
 }
 
+// ------------------------------------------------------------------ rettelser af arrangementer
+/*
+ * data/rettelser.json: {"rettelser": {"<id>": {status?, navn?, forening?, start?, slut?, sted?, deltagere?, note?, manuel?, rettet}}}
+ * Rettelser går forud for de hentede Facebook-data (scriptet overskriver aldrig filen). status:
+ *   'afholdt'       bekræftet afholdt (eller finder sted), også selvom Facebook siger aflyst/fjernet
+ *   'ikke_afholdt'  blev ikke til noget (tælles som aflyst)
+ *   'skjult'        ikke et LAU-arrangement / dublet – fjernes helt
+ * manuel: true er et arrangement, der ikke ligger på Facebook (id 'm-…'). scripts/hb.py anvender samme regler.
+ * Lagring: adminversionens CONFIG.privat.rettelser {hent(), gem(aendringer)}, ellers GitHub (med et token, så
+ * rettelsen committes til repoet og ses af alle), ellers kun i denne browser.
+ */
+const RET = {repo: {}, lokal: {}, data: {}};
+try { RET.lokal = JSON.parse(localStorage.getItem('lau-rettelser')) || {}; } catch (_) { /* fx privat vindue */ }
+const GH_REPO = 'Irate4147/lau-kort', GH_BRANCH = 'main', GH_STI = 'data/rettelser.json';
+const ghConf = () => { try { return JSON.parse(localStorage.getItem('lau-github')); } catch (_) { return null; } };
+/** Fletter rettelser; null i b fjerner en rettelse fra a. */
+function flet(a, b) {
+  const out = {...a};
+  for (const [id, r] of Object.entries(b || {})) { if (r) out[id] = r; else delete out[id]; }
+  return out;
+}
+
+function anvendRettelser(events, rettelser) {
+  const byId = new Map(events.map(e => [e.id, e]));
+  for (const [id, r] of Object.entries(rettelser || {})) {
+    let e = byId.get(id);
+    if (!e) {
+      if (!r.manuel || !r.start || !r.forening) continue; // Facebook-begivenheden findes ikke (længere)
+      e = {id, manuel: true, url: '', navn: '', sted: '', lat: null, lng: null, kommune: null, online: false, aflyst: false,
+        forsvundet: false, deltager: null, interesserede: null, svar: null, beskrivelse: '', foerst_set: r.rettet || r.start};
+      events.push(e);
+    }
+    for (const k of ['navn', 'start', 'slut', 'sted']) if (r[k] != null && r[k] !== '') e[k] = r[k];
+    if (r.forening && r.forening !== e.forening) { e.forening = r.forening; e.foreninger = [r.forening]; }
+    if (r.status === 'afholdt') Object.assign(e, {aflyst: false, forsvundet: false, bekraeftet: true});
+    else if (r.status === 'ikke_afholdt') e.aflyst = true;
+    else if (r.status === 'skjult') e.skjult = true;
+    if (r.deltagere != null) e.fremmoede = r.deltagere;
+    if (r.note) e.note = r.note;
+    e.rettelse = r;
+  }
+  return events;
+}
+
+// ---- GitHub-lagring (Contents API)
+
+const b64 = tekst => { let s = ''; for (const b of new TextEncoder().encode(tekst)) s += String.fromCharCode(b); return btoa(s); };
+const fraB64 = data => new TextDecoder().decode(Uint8Array.from(atob(data.replace(/\s/g, '')), c => c.charCodeAt(0)));
+async function gh(conf, sti, init = {}) {
+  const r = await fetch('https://api.github.com' + sti, {...init, cache: 'no-store', headers: {
+    Accept: 'application/vnd.github+json', Authorization: `Bearer ${conf.token}`, ...(init.headers || {})}});
+  return r;
+}
+async function ghHent(conf) {
+  const r = await gh(conf, `/repos/${GH_REPO}/contents/${GH_STI}?ref=${GH_BRANCH}`);
+  if (r.status === 404) return {data: {}, sha: null};
+  if (!r.ok) throw new Error(`GitHub svarede ${r.status}`);
+  const j = await r.json();
+  return {data: (JSON.parse(fraB64(j.content)).rettelser) || {}, sha: j.sha};
+}
+async function ghGem(conf, aendringer, besked) {
+  for (let forsoeg = 0; forsoeg < 3; forsoeg++) {
+    const {data, sha} = await ghHent(conf); // altid frisk, så samtidige rettelser ikke overskrives
+    const ny = flet(data, aendringer);
+    const sorteret = Object.fromEntries(Object.keys(ny).sort().map(k => [k, ny[k]]));
+    const r = await gh(conf, `/repos/${GH_REPO}/contents/${GH_STI}`, {method: 'PUT', body: JSON.stringify({
+      message: besked, branch: GH_BRANCH, ...(sha ? {sha} : {}),
+      content: b64(JSON.stringify({rettelser: sorteret}, null, 1) + '\n')})});
+    if (r.ok) return ny;
+    if (r.status !== 409 && r.status !== 422) throw new Error(r.status === 403 || r.status === 401 ? 'Tokenet har ikke skriveadgang' : `GitHub svarede ${r.status}`);
+  }
+  throw new Error('Filen blev ændret samtidig – prøv igen');
+}
+
+/** Henter de fælles rettelser: fra adminversionen, frisk fra GitHub (hvis forbundet) eller fra data/. */
+async function hentRettelser(getData) {
+  if (CONFIG.privat && CONFIG.privat.rettelser) return (await CONFIG.privat.rettelser.hent()) || {};
+  const conf = ghConf();
+  if (conf) { try { return (await ghHent(conf)).data; } catch (_) { /* falder tilbage til data/ */ } }
+  return ((await getData('data/rettelser.json')) || {}).rettelser || {};
+}
+const lagerType = () => (CONFIG.privat && CONFIG.privat.rettelser ? 'privat' : ghConf() ? 'github' : 'lokal');
+
+/** Gemmer rettelser ({id: rettelse | null}) og tegner alt igen. */
+async function gemRettelser(aendringer, besked) {
+  const type = lagerType();
+  if (type === 'lokal') {
+    RET.lokal = {...RET.lokal, ...aendringer};
+    localStorage.setItem('lau-rettelser', JSON.stringify(RET.lokal));
+  } else {
+    const alle = {...RET.lokal, ...aendringer}; // lokale rettelser kommer med op ved første fælles gem
+    if (type === 'privat') await CONFIG.privat.rettelser.gem(alle);
+    RET.repo = type === 'privat' ? flet(RET.repo, alle) : await ghGem(ghConf(), alle, besked);
+    RET.lokal = {};
+    try { localStorage.removeItem('lau-rettelser'); } catch (_) { /* ignorer */ }
+  }
+  RET.data = flet(RET.repo, RET.lokal);
+  opdater();
+}
+
+/** Beregner og tegner alt igen efter en rettelse – uden at flytte kortet. */
+function opdater() {
+  beregn();
+  if (selected && !DATA.byName.has(selected)) selected = null;
+  if (MAP.ready) {
+    MAP.map.getSource('kom').setData(DATA.geo.kom);
+    MAP.map.getSource('events').setData(DATA.geo.events);
+  }
+  for (const c of MAP.cards.values()) c.remove();
+  MAP.cards.clear();
+  renderOverview();
+  renderLegend();
+  if (selected) renderForening(DATA.byName.get(selected));
+  if (MAP.ready) setMode(selected, {fit: false});
+  renderHB();
+  if (FANE === 'arrangementer') renderArrangementer();
+}
+
+// ------------------------------------------------------------------ fane: arrangementer
+
+const ARR = {forening: '', filter: 'alle', q: '', aaben: null};
+const ARR_STATUS = {
+  planlagt:     {label: 'Planlagt', farve: 'var(--accent-light)'},
+  bekraeftet:   {label: 'Afholdt – bekræftet', farve: '#1f9d55'},
+  afholdt:      {label: 'Afholdt ifølge Facebook', farve: 'var(--accent)'},
+  forsvundet:   {label: 'Fjernet fra Facebook', farve: '#9d9b94'},
+  aflyst:       {label: 'Aflyst', farve: 'var(--critical)'},
+  ikke_afholdt: {label: 'Ikke afholdt', farve: 'var(--critical)'},
+  skjult:       {label: 'Skjult', farve: 'var(--grid)'},
+};
+function arrStatus(e) {
+  if (e.skjult) return 'skjult';
+  if (e.aflyst) return e.rettelse && e.rettelse.status === 'ikke_afholdt' ? 'ikke_afholdt' : 'aflyst';
+  if (e.forsvundet) return 'forsvundet';
+  if (e.slutD >= NOW) return 'planlagt';
+  return e.bekraeftet ? 'bekraeftet' : 'afholdt';
+}
+const ARR_FILTRE = {
+  alle:        {label: 'Alle (uden skjulte)', vis: e => !e.skjult},
+  ubekraeftet: {label: 'Afholdte, ikke bekræftet', vis: e => ['afholdt', 'forsvundet'].includes(arrStatus(e))},
+  bekraeftet:  {label: 'Bekræftet afholdt', vis: e => arrStatus(e) === 'bekraeftet'},
+  planlagt:    {label: 'Planlagte', vis: e => arrStatus(e) === 'planlagt'},
+  ikke:        {label: 'Aflyst / ikke afholdt', vis: e => ['aflyst', 'ikke_afholdt'].includes(arrStatus(e))},
+  rettet:      {label: 'Rettede', vis: e => !!e.rettelse},
+  manuel:      {label: 'Tilføjet manuelt', vis: e => !!e.manuel},
+  skjult:      {label: 'Skjulte', vis: e => !!e.skjult},
+};
+
+/** Åbner fanen Arrangementer med ét arrangement klar til redigering. */
+function retArrangement(id) {
+  Object.assign(ARR, {forening: '', filter: DATA.byId.get(id) && DATA.byId.get(id).skjult ? 'skjult' : 'alle', q: '', aaben: id});
+  visFane('arrangementer');
+  const li = document.querySelector(`#arr-list li[data-id="${CSS.escape(id)}"]`);
+  if (li) li.scrollIntoView({block: 'start'});
+}
+
+function renderArrangementer() {
+  const el = $('side-arrangementer');
+  if (!DATA) return;
+  const foreningOpt = sel => DATA.foreninger.map(f => `<option value="${esc(f.navn)}"${sel === f.navn ? ' selected' : ''}>${esc(visningsnavn(f))}</option>`).join('');
+  el.innerHTML = `<header class="side-head"><h1>Arrangementer</h1>
+      <p class="updated">Ret det, Facebook ikke ved – fx om et arrangement faktisk blev afholdt. Rettelser går forud for de hentede data og tæller med i kort, nøgletal og HB-godkendelse.</p></header>
+    <div class="lager" id="lager"></div>
+    <div class="arr-filtre">
+      <select data-arr="forening" aria-label="Forening"><option value="">Alle foreninger</option>${foreningOpt(ARR.forening)}</select>
+      <select data-arr="filter" aria-label="Vis">${Object.entries(ARR_FILTRE).map(([k, v]) => `<option value="${k}"${ARR.filter === k ? ' selected' : ''}>${esc(v.label)}</option>`).join('')}</select>
+      <input type="search" data-arr="q" placeholder="Søg i titel og sted …" value="${esc(ARR.q)}">
+    </div>
+    <button class="chip" data-arr-ny>+ Tilføj arrangement</button>
+    <div id="arr-ny"></div>
+    <p class="note" id="arr-antal"></p>
+    <ul class="arrlist" id="arr-list"></ul>`;
+  el.querySelectorAll('[data-arr]').forEach(i => i.addEventListener(i.tagName === 'INPUT' ? 'input' : 'change', () => {
+    ARR[i.dataset.arr] = i.value;
+    renderArrListe();
+  }));
+  el.querySelector('[data-arr-ny]').addEventListener('click', () => {
+    const box = $('arr-ny');
+    if (box.firstChild) { box.innerHTML = ''; return; }
+    box.appendChild(arrForm(null));
+  });
+  renderLager();
+  renderArrListe();
+}
+
+function renderLager() {
+  const el = $('lager');
+  if (!el) return;
+  const type = lagerType(), conf = ghConf(), nLokal = Object.keys(RET.lokal).length;
+  const lokalTekst = nLokal ? `<p class="warn">${nLokal} ${nLokal === 1 ? 'rettelse' : 'rettelser'} ligger kun i denne browser.${
+    type !== 'lokal' ? ' <button class="linkbtn" data-upload>Gem for alle nu</button>' : ''}</p>` : '';
+  if (type === 'privat') { el.innerHTML = '<p class="note">Rettelser gemmes i adminversionen.</p>' + lokalTekst; }
+  else if (type === 'github') {
+    el.innerHTML = `<p class="note">Gemmes for alle i repoet (<code>${GH_STI}</code>) som <b>${esc(conf.login || '?')}</b>. Andre ser rettelsen inden for få minutter.
+      <button class="linkbtn" data-afbryd>Log ud</button></p>` + lokalTekst;
+  } else {
+    el.innerHTML = `<p class="note">Rettelser gemmes <b>kun i denne browser</b>, indtil du forbinder GitHub.</p>${lokalTekst}
+      <details class="gh-forbind"><summary>Gem for alle (forbind GitHub)</summary>
+        <p class="note">Opret et <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>
+          med adgang til <code>${GH_REPO}</code> og tilladelsen <i>Contents: Read and write</i>. Tokenet gemmes kun i denne browser.
+          Rettelserne bliver offentlige ligesom resten af repoet – skriv ikke persondata i noter.</p>
+        <form data-forbind><input type="password" name="token" placeholder="github_pat_…" autocomplete="off" required>
+          <button class="chip" type="submit">Forbind</button></form>
+        <div class="form-status" aria-live="polite"></div></details>`;
+  }
+  const up = el.querySelector('[data-upload]');
+  if (up) up.addEventListener('click', async () => {
+    up.disabled = true;
+    try { await gemRettelser({}, 'Rettelser af arrangementer'); } catch (err) { up.disabled = false; alert(err.message); }
+  });
+  const af = el.querySelector('[data-afbryd]');
+  if (af) af.addEventListener('click', () => { localStorage.removeItem('lau-github'); renderLager(); });
+  const form = el.querySelector('[data-forbind]');
+  if (form) form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const status = el.querySelector('.form-status'), conf = {token: form.token.value.trim()};
+    status.textContent = 'Tjekker tokenet …';
+    try {
+      const r = await gh(conf, `/repos/${GH_REPO}`);
+      if (!r.ok) throw new Error(r.status === 404 || r.status === 401 ? 'Tokenet har ikke adgang til repoet' : `GitHub svarede ${r.status}`);
+      const repo = await r.json();
+      if (!repo.permissions || !repo.permissions.push) throw new Error('Tokenet har ikke skriveadgang til repoet');
+      const u = await gh(conf, '/user');
+      conf.login = u.ok ? (await u.json()).login : '';
+      localStorage.setItem('lau-github', JSON.stringify(conf));
+      RET.repo = (await ghHent(conf)).data;
+      RET.data = flet(RET.repo, RET.lokal);
+      opdater();
+    } catch (err) { status.textContent = err.message; }
+  });
+}
+
+function renderArrListe() {
+  const q = ARR.q.trim().toLowerCase();
+  const list = DATA.alle
+    .filter(e => ARR_FILTRE[ARR.filter].vis(e) && (!ARR.forening || e.foreninger.includes(ARR.forening))
+      && (!q || `${e.navn} ${e.sted || ''}`.toLowerCase().includes(q)))
+    .sort((a, b) => b.startD - a.startD);
+  $('arr-antal').textContent = `${list.length} ${list.length === 1 ? 'arrangement' : 'arrangementer'}`;
+  const ul = $('arr-list');
+  ul.innerHTML = '';
+  let maaned = '';
+  for (const e of list) {
+    const m = monthKey(e.startD);
+    if (m !== maaned) {
+      maaned = m;
+      const h = document.createElement('li');
+      h.className = 'arr-maaned';
+      h.textContent = new Intl.DateTimeFormat('da-DK', {month: 'long', year: 'numeric', timeZone: TZ}).format(e.startD);
+      ul.appendChild(h);
+    }
+    ul.appendChild(arrRaekke(e));
+  }
+}
+
+function arrRaekke(e) {
+  const li = document.createElement('li');
+  li.dataset.id = e.id;
+  const st = arrStatus(e), f = DATA.byName.get(e.forening), fortid = e.slutD < NOW, r = e.rettelse || {};
+  const knap = (status, tekst) => `<button class="chip small${r.status === status ? ' on' : ''}" data-status="${status}" aria-pressed="${r.status === status}">${tekst}</button>`;
+  li.innerHTML = `<div class="arr-row">
+      <div class="date">${esc(fmtDay.format(e.startD))}<br><span class="meta">kl. ${esc(fmtTime.format(e.startD))}</span></div>
+      <div>
+        <div class="title">${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.navn)}</a>` : esc(e.navn)}${
+          e.manuel ? '<span class="badge new">MANUEL</span>' : e.rettelse ? '<span class="badge new">RETTET</span>' : ''}</div>
+        <div class="meta">${f ? esc(visningsnavn(f)) : esc(e.forening)} · ${esc(e.sted || 'Sted ikke angivet')}${
+          e.fremmoede != null ? ` · ${esc(e.fremmoede)} mødte op` : e.svar != null ? ` · ${esc(e.svar)} tilkendegivelser` : ''}</div>
+        ${e.note ? `<div class="meta arr-note">${esc(e.note)}</div>` : ''}
+        <div class="arr-status"><span class="dot-inline" style="background:${ARR_STATUS[st].farve}"></span>${esc(ARR_STATUS[st].label)}</div>
+        <div class="arr-actions">${fortid ? knap('afholdt', '✓ Afholdt') + knap('ikke_afholdt', '✗ Ikke afholdt') : ''}
+          <button class="linkbtn" data-rediger>${ARR.aaben === e.id ? 'Luk' : 'Redigér'}</button></div>
+      </div></div>`;
+  li.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', async () => {
+    const ny = {...r};
+    if (ny.status === b.dataset.status) delete ny.status; else ny.status = b.dataset.status;
+    b.disabled = true;
+    try { await gemRettelser({[e.id]: rensRettelse(ny)}, `Rettelse: ${e.navn}`); }
+    catch (err) { b.disabled = false; alert(err.message); }
+  }));
+  li.querySelector('[data-rediger]').addEventListener('click', () => {
+    ARR.aaben = ARR.aaben === e.id ? null : e.id;
+    li.replaceWith(arrRaekke(e));
+  });
+  if (ARR.aaben === e.id) li.appendChild(arrForm(e));
+  return li;
+}
+
+/** Fjerner tomme felter; null, hvis der ikke er noget tilbage at rette. */
+function rensRettelse(r) {
+  const out = {};
+  for (const [k, v] of Object.entries(r)) if (v != null && v !== '' && k !== 'rettet') out[k] = v;
+  if (!Object.keys(out).length || (Object.keys(out).length === 1 && out.manuel)) return null;
+  return {...out, rettet: new Date().toISOString().replace(/\.\d+Z$/, 'Z')};
+}
+
+// Dansk tid <-> UTC for dato- og tidsfelterne.
+const fmtHM = new Intl.DateTimeFormat('en-GB', {hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: TZ});
+function tzOffsetMin(d) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', {timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit',
+    day: '2-digit', hour: '2-digit', minute: '2-digit'}).formatToParts(d).map(x => [x.type, x.value]));
+  return (Date.UTC(+p.year, p.month - 1, +p.day, +p.hour, +p.minute) - Math.floor(d.getTime() / 6e4) * 6e4) / 6e4;
+}
+function fraDanskTid(dato, tid) {
+  const [y, m, d] = dato.split('-').map(Number), [h, mi] = (tid || '12:00').split(':').map(Number);
+  const gaet = Date.UTC(y, m - 1, d, h, mi);
+  let t = gaet - tzOffsetMin(new Date(gaet)) * 6e4;
+  t = gaet - tzOffsetMin(new Date(t)) * 6e4; // rigtig side af sommertidsskiftet
+  return new Date(t);
+}
+const isoZ = d => d.toISOString().replace(/\.\d+Z$/, 'Z');
+
+/** Redigeringsformular for et arrangement (e = null: nyt manuelt arrangement). */
+function arrForm(e) {
+  const ny = !e, orig = e && !e.manuel ? RAW.byId.get(e.id) : null, r = (e && e.rettelse) || {};
+  const form = document.createElement('form');
+  form.className = 'arr-form';
+  const start = e ? e.startD : null;
+  const statusOpt = [
+    ...(orig ? [['', `Som på Facebook${orig.aflyst ? ' (aflyst)' : orig.forsvundet ? ' (fjernet)' : ''}`]] : []),
+    ['afholdt', 'Afholdt / finder sted'], ['ikke_afholdt', 'Ikke afholdt / aflyst'], ['skjult', 'Skjul – ikke et LAU-arrangement / dublet']];
+  const valgt = ny ? 'afholdt' : r.status || (orig ? '' : 'afholdt');
+  form.innerHTML = `
+    <label>Titel<input name="navn" required value="${esc(e ? e.navn : '')}"></label>
+    <label>Forening<select name="forening" required>${ny ? '<option value="">Vælg …</option>' : ''}${DATA.foreninger.map(f =>
+      `<option value="${esc(f.navn)}"${(e ? e.forening : ARR.forening) === f.navn ? ' selected' : ''}>${esc(visningsnavn(f))}</option>`).join('')}</select></label>
+    <div class="row2"><label>Dato<input type="date" name="dato" required value="${start ? dayKey(start) : ''}"></label>
+      <label>Kl.<input type="time" name="tid" value="${start ? fmtHM.format(start) : '19:00'}"></label></div>
+    <label>Sted<input name="sted" value="${esc(e ? e.sted || '' : '')}"></label>
+    <label>Status<select name="status">${statusOpt.map(([v, t]) => `<option value="${v}"${valgt === v ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>
+    <label>Faktisk fremmøde<input type="number" min="0" name="deltagere" value="${r.deltagere ?? ''}" placeholder="Antal"></label>
+    <label>Note<textarea name="note" rows="2" placeholder="Offentlig – ingen persondata">${esc(r.note || '')}</textarea></label>
+    ${orig ? `<p class="note">Facebook: ${esc(orig.navn)} · ${esc(fmtDate.format(new Date(orig.start)))} kl. ${esc(fmtTime.format(new Date(orig.start)))} · ${esc(orig.sted || 'intet sted')} · ${esc(orig.forening)}</p>` : ''}
+    <div class="form-actions"><button class="chip primary" type="submit">Gem</button>
+      <button class="linkbtn" type="button" data-annuller>Annullér</button>
+      ${e && e.rettelse ? `<button class="linkbtn danger" type="button" data-nulstil>${e.manuel ? 'Slet arrangement' : 'Nulstil til Facebook'}</button>` : ''}</div>
+    <div class="form-status" aria-live="polite"></div>`;
+  const status = form.querySelector('.form-status');
+  const luk = () => { if (ny) $('arr-ny').innerHTML = ''; else { ARR.aaben = null; renderArrListe(); } };
+  const gem = async (aendring, besked) => {
+    form.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    status.textContent = 'Gemmer …';
+    try { ARR.aaben = null; await gemRettelser(aendring, besked); }
+    catch (err) { status.textContent = err.message; form.querySelectorAll('button').forEach(b => { b.disabled = false; }); }
+  };
+  form.querySelector('[data-annuller]').addEventListener('click', luk);
+  const nulstil = form.querySelector('[data-nulstil]');
+  if (nulstil) nulstil.addEventListener('click', () => {
+    if (e.manuel && !confirm(`Slet "${e.navn}"?`)) return;
+    gem({[e.id]: null}, `${e.manuel ? 'Slet' : 'Nulstil'}: ${e.navn}`);
+  });
+  form.addEventListener('submit', ev => {
+    ev.preventDefault();
+    const v = Object.fromEntries(new FormData(form));
+    const startD = fraDanskTid(v.dato, v.tid);
+    if (isNaN(startD)) { status.textContent = 'Ugyldig dato'; return; }
+    const navn = v.navn.trim(), sted = v.sted.trim();
+    const felter = {status: v.status || null, deltagere: v.deltagere === '' ? null : +v.deltagere, note: v.note.trim() || null};
+    let rettelse, id;
+    if (orig) {
+      id = e.id;
+      const origStart = new Date(orig.start), varighed = new Date(orig.slut || orig.start) - origStart;
+      const flyttet = startD.getTime() !== origStart.getTime();
+      rettelse = {...felter,
+        navn: navn !== orig.navn ? navn : null,
+        sted: sted !== (orig.sted || '') ? sted : null,
+        forening: v.forening !== orig.forening ? v.forening : null,
+        start: flyttet ? isoZ(startD) : null,
+        slut: flyttet ? isoZ(new Date(startD.getTime() + varighed)) : null};
+    } else {
+      id = e ? e.id : 'm-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const varighed = e ? e.slutD - e.startD : 2 * 36e5;
+      rettelse = {manuel: true, ...felter, navn, sted, forening: v.forening, start: isoZ(startD), slut: isoZ(new Date(startD.getTime() + varighed))};
+    }
+    gem({[id]: rensRettelse(rettelse)}, `${ny ? 'Nyt arrangement' : 'Rettelse'}: ${navn}`);
+  });
+  return form;
+}
+
 // ------------------------------------------------------------------ start
 
-window.LAU = {registerSection, registerLayer, openForening, closeForening, CONFIG, get data() { return DATA; }, get map() { return MAP.map; }};
+window.LAU = {registerSection, registerLayer, openForening, closeForening, visFane, CONFIG, get data() { return DATA; }, get map() { return MAP.map; }};
 
 async function main() {
   try {
@@ -1139,8 +1714,11 @@ async function main() {
     if (ev.key !== 'Escape') return;
     if (!$('popover').hidden) closePopover(); else if (selected) closeForening();
   });
+  document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.addEventListener('click', () => visFane(b.dataset.fane)));
+  renderVisninger();
+  renderHB();
+  applyVisning();
   initMap();
-  renderLayerToggles();
 }
 
 main();

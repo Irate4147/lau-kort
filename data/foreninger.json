@@ -58,6 +58,16 @@
  {
   "navn": "Fyn",
   "facebook": "https://www.facebook.com/profile.php?id=61575380947985",
+  "facebook_ekstra": [
+   {
+    "url": "https://www.facebook.com/LiberalAlliancesUngdomOdense",
+    "begivenheder": [
+     "https://www.facebook.com/events/1696287368021865/",
+     "https://www.facebook.com/events/1815408935787266/",
+     "https://www.facebook.com/events/1635220731133432/"
+    ]
+   }
+  ],
   "kommuner": [
    "Assens",
    "Faaborg-Midtfyn",
@@ -94,7 +104,8 @@
  },
  {
   "navn": "Kolding",
-  "facebook": null,
+  "facebook": "https://www.facebook.com/LAUKolding",
+  "historik_fra": "2026-01-01",
   "kommuner": [
    "Kolding",
    "Vejen"
