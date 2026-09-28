@@ -37,13 +37,13 @@ def kvartaler(aar):
     return [(q + 1, date(aar, 3 * q + 1, 1), date(aar + (q == 3), (3 * q + 3) % 12 + 1, 1)) for q in range(4)]
 
 
-def data_fra(meta):
-    """Første dag, hvor foreningernes arrangementer er kendt (ugentlige kørsler eller historik)."""
-    starter = [dansk_dag(k["tid"]) for k in meta.get("koersler", [])]
+def daekning(meta):
+    """Første dag med data: de ugentlige kørsler for alle, og historikken for foreninger, hvor den er hentet."""
+    ugentlig = min((dansk_dag(k["tid"]) for k in meta.get("koersler", [])), default=None)
     hist = meta.get("historik") or {}
-    if hist.get("fra") and any(k.get("status") == "SUCCEEDED" for k in hist.get("koersler", [])):
-        starter.append(dansk_dag(hist["fra"]))
-    return min(starter) if starter else None
+    hentet = {k["forening"] for k in hist.get("koersler", []) if k.get("status") == "SUCCEEDED"}
+    hist_fra = dansk_dag(hist["fra"]) if hist.get("fra") else None
+    return lambda navn: min(d for d in (ugentlig, hist_fra if navn in hentet else None) if d) if ugentlig else None
 
 
 def vurder(aar, idag=None):
@@ -53,13 +53,14 @@ def vurder(aar, idag=None):
     meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8"))
     hb = json.loads((DATA / "hb.json").read_text(encoding="utf-8"))
     hb_nu = hb.get(f"hb{aar}", {}).get("foreninger", {})
-    fra = data_fra(meta)
+    fra_for = daekning(meta)
 
     resultat = {}
     for f in foreninger:
         if f.get("national"):
             continue
         navn = f["navn"]
+        fra = fra_for(navn)
         ev = [e for e in events
               if navn in (e.get("foreninger") or [e["forening"]]) and not e.get("aflyst") and not e.get("forsvundet")]
         kv = {}
@@ -113,7 +114,8 @@ def vurder(aar, idag=None):
         "hb_aar": aar + 1,
         "beregnet": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "idag": idag.isoformat(),
-        "data_fra": fra.isoformat() if fra else None,
+        "data_fra": {f["navn"]: (fra_for(f["navn"]).isoformat() if fra_for(f["navn"]) else None)
+                     for f in foreninger if not f.get("national")},
         "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. "
                 "Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
         "foreninger": resultat,
@@ -127,11 +129,11 @@ def main():
     ud.write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
     tegn = {"ja": "✓", "nej": "✗", "ukendt": "?", "planlagt": "…", "mangler": "!"}
-    print(f"HB {aar + 1} – kvartalskrav i {aar} (data fra {res['data_fra']}, i dag {res['idag']})")
-    print(f"{'Forening':16} {'HB ' + str(aar):14} Q1 Q2 Q3 Q4  Prognose")
+    print(f"HB {aar + 1} – kvartalskrav i {aar} (i dag {res['idag']})")
+    print(f"{'Forening':16} {'HB ' + str(aar):14} {'Data fra':11} Q1 Q2 Q3 Q4  Prognose")
     for navn, r in sorted(res["foreninger"].items(), key=lambda x: (x[1]["prognose"], x[0])):
         kv = "  ".join(tegn[r["kvartaler"][f"Q{q}"]["status"]] for q in range(1, 5))
-        print(f"{navn:16} {r[f'hb{aar}'].get('status', '–'):14} {kv}   {r['prognose']}")
+        print(f"{navn:16} {r[f'hb{aar}'].get('status', '–'):14} {res['data_fra'][navn] or '–':11} {kv}   {r['prognose']}")
     print(f"Skrevet til {ud.relative_to(ROOT)}")
 
 
