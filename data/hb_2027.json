@@ -1,7 +1,7 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T14:21:21Z",
+ "beregnet": "2026-09-28T14:36:18Z",
  "idag": "2026-09-28",
  "data_fra": {
   "Aalborg": "2026-01-01",
@@ -11,22 +11,22 @@
   "Frederiksberg": "2026-01-01",
   "Fyn": "2026-01-01",
   "Herning": "2026-01-01",
-  "Horsens": "2026-09-28",
+  "Horsens": "2026-01-01",
   "Kolding": "2026-09-28",
-  "Kronjylland": "2026-09-28",
-  "København": "2026-09-28",
-  "Køge Bugt": "2026-09-28",
-  "Nordkøbenhavn": "2026-09-28",
-  "Nordsjælland": "2026-09-28",
-  "Næstved": "2026-09-28",
-  "Roskilde": "2026-09-28",
-  "Silkeborg": "2026-09-28",
-  "Sydvestjylland": "2026-09-28",
-  "Sønderjylland": "2026-09-28",
-  "Vejle": "2026-09-28",
-  "Vestegnen": "2026-09-28",
-  "Vestsjælland": "2026-09-28",
-  "Viborg": "2026-09-28"
+  "Kronjylland": "2026-01-01",
+  "København": "2026-01-01",
+  "Køge Bugt": "2026-01-01",
+  "Nordkøbenhavn": "2026-01-01",
+  "Nordsjælland": "2026-01-01",
+  "Næstved": "2026-01-01",
+  "Roskilde": "2026-01-01",
+  "Silkeborg": "2026-01-01",
+  "Sydvestjylland": "2026-01-01",
+  "Sønderjylland": "2026-01-01",
+  "Vejle": "2026-01-01",
+  "Vestegnen": "2026-01-01",
+  "Vestsjælland": "2026-01-01",
+  "Viborg": "2026-01-01"
  },
  "note": "Kun kvartalskravet vurderes her: om der er afholdt et arrangement i hvert kvartal. Medlemstal, regnskab, bank og generalforsamling for året vurderes først ved ansøgningen.",
  "foreninger": {
@@ -662,27 +662,83 @@
    }
   },
   "Kronjylland": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-04",
+       "navn": "Oplæg med Carsten Bach"
+      },
+      {
+       "dato": "2026-02-04",
+       "navn": "Ordinær generalforsamling '26"
+      },
+      {
+       "dato": "2026-02-24",
+       "navn": "Grundlæggende liberalisme + politiske forslag"
+      },
+      {
+       "dato": "2026-03-05",
+       "navn": "LAU-Kronjylland laver morgenuddeling"
+      },
+      {
+       "dato": "2026-03-09",
+       "navn": "LAU Kronjylland laver folketingsvalg-tour"
+      },
+      {
+       "dato": "2026-03-10",
+       "navn": "LAU-Kronjylland holder morgenuddeling - foran Paderup Gymnasium"
+      },
+      {
+       "dato": "2026-03-22",
+       "navn": "LAU Kronjylland laver uddeling inden kampen mod Silkeborg!"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-17",
+       "navn": "LAU-Kronjylland og LAU-Mariagerfjord laver fælles arrangement - med oplæg fra Lars Jørgensen"
+      },
+      {
+       "dato": "2026-05-29",
+       "navn": "LAU-Kronjylland laver introarrangement!"
+      },
+      {
+       "dato": "2026-06-21",
+       "navn": "Åbent bestyrelsesmøde"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-30",
+       "navn": "Liberal Alliances Ungdom Kronjylland holder sommerfest"
+      },
+      {
+       "dato": "2026-08-17",
+       "navn": "Jens Meilvang holder oplæg i LAU-Kronjylland!"
+      },
+      {
+       "dato": "2026-09-05",
+       "navn": "Sensommerfest i LA Østjylland"
+      },
+      {
+       "dato": "2026-09-11",
+       "navn": "LAU-Kronjylland laver morgen-uddeling foran HHX!"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -696,14 +752,16 @@
    }
   },
   "København": {
-   "prognose": "ukendt",
-   "grunde": [
-    "2. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
      "status": "ja",
      "afholdt": [
+      {
+       "dato": "2026-03-14",
+       "navn": "MIDTVEJSFEST"
+      },
       {
        "dato": "2026-03-20",
        "navn": "STATUS PÅ FOLKETINGSVALGKAMPEN"
@@ -712,13 +770,87 @@
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-02",
+       "navn": "KANDIDATPRÆSENTATION (/-DEBAT)"
+      },
+      {
+       "dato": "2026-04-10",
+       "navn": "GENERALFORSAMLING I LAU KØBENHAVN 2026"
+      },
+      {
+       "dato": "2026-05-01",
+       "navn": "LAU KBH & Nord KBH tager til landsmødet"
+      },
+      {
+       "dato": "2026-05-05",
+       "navn": "Oplæg v. Mads Strange inden generalforsamling i LA storkredsen"
+      },
+      {
+       "dato": "2026-05-19",
+       "navn": "LAU KBH besøger Dansk Erhverv oplæg v. Rasmus Brygger"
+      },
+      {
+       "dato": "2026-05-20",
+       "navn": "Oplæg med Max Meyer – Dansk Zionistforbund"
+      },
+      {
+       "dato": "2026-06-03",
+       "navn": "LAU KBH får besøg af Dansk Iværksætter Forening"
+      },
+      {
+       "dato": "2026-06-10",
+       "navn": "LAU KBH får besøg af Europabevægelsen oplæg v. Oliver"
+      },
+      {
+       "dato": "2026-06-25",
+       "navn": "TVÆRPOLITISK SOMMERFEST! (Every Body Denmark)"
+      },
+      {
+       "dato": "2026-06-25",
+       "navn": "Introaften med LAU København v/landsformand Ezekiel Rohde"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "planlagt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-23",
+       "navn": "Lau NordKBH og Lau KBH tager til Sommerlejr"
+      },
+      {
+       "dato": "2026-08-14",
+       "navn": "Sommerfest i København"
+      },
+      {
+       "dato": "2026-08-18",
+       "navn": "Oplæg hos Landbrug & Fødevarer på axelborg"
+      },
+      {
+       "dato": "2026-09-02",
+       "navn": "LAU KBH får besøg af Foreningen Atomkraft Ja Tak oplæg v. Morten Nygaard"
+      },
+      {
+       "dato": "2026-09-09",
+       "navn": "LAU KBH får besøg af Novo Nordisk oplæg v. Associate Public Affairs Director"
+      },
+      {
+       "dato": "2026-09-19",
+       "navn": "LAU København tager til Frihedstopmødet"
+      },
+      {
+       "dato": "2026-09-22",
+       "navn": "LAU København til oplæg hos Mærsk!!"
+      },
+      {
+       "dato": "2026-09-25",
+       "navn": "LAU København tager til kursus på fyn"
+      }
+     ],
      "planlagt": [
       {
        "dato": "2026-09-29",
@@ -746,26 +878,30 @@
    }
   },
   "Køge Bugt": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-02-14",
+       "navn": "LAU Køge bugt generalforsamling 2026"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -780,26 +916,93 @@
    }
   },
   "Nordkøbenhavn": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-02-17",
+       "navn": "Optakt til folketingsvalget med Jonas Juhl"
+      },
+      {
+       "dato": "2026-02-19",
+       "navn": "SÆT DIT PRÆG PÅ LANDSMØDET💙📚"
+      },
+      {
+       "dato": "2026-03-02",
+       "navn": "Generalforsamling og FT Tour🔥"
+      },
+      {
+       "dato": "2026-03-14",
+       "navn": "Intro før uddeling med Alex!"
+      },
+      {
+       "dato": "2026-03-20",
+       "navn": "Valgkampsslutspurt"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-08",
+       "navn": "Introaften med Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-04-29",
+       "navn": "Debattræning med Jonas Juhl"
+      },
+      {
+       "dato": "2026-05-01",
+       "navn": "LAU KBH & Nord KBH tager til landsmødet"
+      },
+      {
+       "dato": "2026-05-21",
+       "navn": "Ordførerpræsentaton"
+      },
+      {
+       "dato": "2026-06-03",
+       "navn": "Åbent bestyrelsesmøde"
+      },
+      {
+       "dato": "2026-06-04",
+       "navn": "LAU NordKBH På Udebane m. Rasmus Munch Søndergaard"
+      },
+      {
+       "dato": "2026-06-18",
+       "navn": "Pagne og Policy"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-23",
+       "navn": "Lau NordKBH og Lau KBH tager til Sommerlejr"
+      },
+      {
+       "dato": "2026-08-14",
+       "navn": "Sommerfest i København"
+      },
+      {
+       "dato": "2026-08-22",
+       "navn": "Lau NordKBH tager til extraordinærtlandsmøde"
+      },
+      {
+       "dato": "2026-09-03",
+       "navn": "LAU NordKBH x DSU Lyngby/Gentofte"
+      },
+      {
+       "dato": "2026-09-17",
+       "navn": "Oplæg med Anton Leopold Krogh"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -818,26 +1021,61 @@
    }
   },
   "Nordsjælland": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-08",
+       "navn": "Kom ind og oplev Debatten!"
+      },
+      {
+       "dato": "2026-02-19",
+       "navn": "SÆT DIT PRÆG PÅ LANDSMØDET💙📚"
+      },
+      {
+       "dato": "2026-03-03",
+       "navn": "Ordinær generalforsamling 2026 Nordsjælland"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-14",
+       "navn": "Introarrangement med Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-04-16",
+       "navn": "Kom ind og oplev debatten 🎤"
+      },
+      {
+       "dato": "2026-05-16",
+       "navn": "Tag med Lau Nordsjælland på Klampenborg Galopbane!🏇🏇🍾"
+      },
+      {
+       "dato": "2026-06-18",
+       "navn": "Pagne og Policy"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-08-14",
+       "navn": "Sommerfest i København"
+      },
+      {
+       "dato": "2026-09-15",
+       "navn": "Ezekiel kommer og snakker om puljer"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -856,26 +1094,73 @@
    }
   },
   "Næstved": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
-   ],
+   "prognose": "på_vej",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-20",
+       "navn": "Velkommen tilbage i det nye år. Nu med blå borgmester efter 105 år!"
+      },
+      {
+       "dato": "2026-02-18",
+       "navn": "Liberalismen – hvad er det?"
+      },
+      {
+       "dato": "2026-03-16",
+       "navn": "GENERALFORSAMLING I LAU NÆSTVED"
+      },
+      {
+       "dato": "2026-03-16",
+       "navn": "MØD FOLKETINGSPOLITIKERE, OG MÆRK VALGSTEMNINGEN INDEN VALGET!"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-23",
+       "navn": "Intro oplæg med Tobias Pagh"
+      },
+      {
+       "dato": "2026-05-14",
+       "navn": "Brætspilsaften"
+      },
+      {
+       "dato": "2026-05-28",
+       "navn": "Tværfagligt med byrådsmedlemmer"
+      },
+      {
+       "dato": "2026-06-19",
+       "navn": "Sommergrill med LAU Næstved"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-19",
+       "navn": "VM bold med LAU Næstved"
+      },
+      {
+       "dato": "2026-08-09",
+       "navn": "Tag på stadion med Lau Næstved"
+      },
+      {
+       "dato": "2026-08-28",
+       "navn": "Rundvisning på Christiansborg af Joachim Riis"
+      },
+      {
+       "dato": "2026-08-30",
+       "navn": "kanotur med Lau Næstved"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -906,26 +1191,106 @@
    }
   },
   "Roskilde": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data"
+    "Intet arrangement i 1. kvartal 2026"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-08",
+       "navn": "Bestyrelsesmøde April"
+      },
+      {
+       "dato": "2026-04-11",
+       "navn": "LAU Roskilde Tager til LA's Landsmøde"
+      },
+      {
+       "dato": "2026-04-20",
+       "navn": "Introarrangement m/ Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-04-24",
+       "navn": "LAU Roskilde tager til formandsdebat i KBH"
+      },
+      {
+       "dato": "2026-05-01",
+       "navn": "LAU Roskilde Tager til LAU's Landsmøde"
+      },
+      {
+       "dato": "2026-05-11",
+       "navn": "Feminisme i Danmark i historisk kontekst & nutidens borgerlige svar - Oplæg/v Ida Bertelsen"
+      },
+      {
+       "dato": "2026-05-13",
+       "navn": "Bestyrelsesmøde Maj"
+      },
+      {
+       "dato": "2026-05-29",
+       "navn": "Aftensalg i Holbæk"
+      },
+      {
+       "dato": "2026-06-02",
+       "navn": "Bestyrelsesmøde Juni"
+      },
+      {
+       "dato": "2026-06-17",
+       "navn": "Liberalisme, Konservatisme & Borgerlighed"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-06",
+       "navn": "Bestyrelsesmøde Juli"
+      },
+      {
+       "dato": "2026-07-07",
+       "navn": "Oplæg om skattebetalerne v/ Martin Ågerup"
+      },
+      {
+       "dato": "2026-08-04",
+       "navn": "Bestyrelsesmøde August"
+      },
+      {
+       "dato": "2026-08-14",
+       "navn": "LAU Roskilde tager til sommerfest i KBH"
+      },
+      {
+       "dato": "2026-08-21",
+       "navn": "LAU Roskilde hjælper med opsætning til ekstraordinært landsmøde"
+      },
+      {
+       "dato": "2026-08-22",
+       "navn": "LAU Roskilde tager til ekstraordinært landsmøde"
+      },
+      {
+       "dato": "2026-08-28",
+       "navn": "Aftensalg i Holbæk"
+      },
+      {
+       "dato": "2026-08-29",
+       "navn": "Viby Høstfest"
+      },
+      {
+       "dato": "2026-09-01",
+       "navn": "Bestyrelsesmøde September"
+      },
+      {
+       "dato": "2026-09-03",
+       "navn": "ekstraordinært landsmøde debrief samt oplæg af økonomi- & erhvervsordfører Victor Galland"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -952,26 +1317,26 @@
    }
   },
   "Silkeborg": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -989,27 +1354,63 @@
    }
   },
   "Sydvestjylland": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-19",
+       "navn": "Politisk Formand, Ezekiel Rohde kommer til sydvest"
+      },
+      {
+       "dato": "2026-02-13",
+       "navn": "Mads Engelund (DF), besøger LAU Sydvest"
+      },
+      {
+       "dato": "2026-03-06",
+       "navn": "Libaral Alliance Ungdom Sydvestjyllands generalforsamling"
+      },
+      {
+       "dato": "2026-03-11",
+       "navn": "TOUR DE FT'"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-14",
+       "navn": "Kom godt i gang i LAU – Intro med Tobias Pagh"
+      },
+      {
+       "dato": "2026-04-27",
+       "navn": "kandidat præsentation"
+      },
+      {
+       "dato": "2026-05-13",
+       "navn": "Åbent bestyrelsesmøde + brætspil"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-17",
+       "navn": "Fanø Sommercup 2026"
+      },
+      {
+       "dato": "2026-09-25",
+       "navn": "LAU Sydvest VS Resten i politik"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -1023,27 +1424,51 @@
    }
   },
   "Sønderjylland": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-03-18",
+       "navn": "TOUR DE FT"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-09",
+       "navn": "Introarrangement og Oplæg m. Ezekiel Rohde"
+      },
+      {
+       "dato": "2026-06-15",
+       "navn": "Oplæg om DSU, og lokalforeningspuljerne m/ landsnæstformand Simone Nielsem"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-07-23",
+       "navn": "LAU Sønderjylland tager til Sommerlejr"
+      },
+      {
+       "dato": "2026-08-04",
+       "navn": "Oplæg, Minigolf og Pandekage Hygge med LAU Sønderjylland"
+      },
+      {
+       "dato": "2026-09-01",
+       "navn": "Oplæg ved Retsordfører Nicolai Melholdt"
+      }
+     ],
      "planlagt": []
     },
     "Q4": {
@@ -1059,26 +1484,34 @@
    }
   },
   "Vejle": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-02-24",
+       "navn": "Generalforsamling og FT Kickoff m. Tobias Pagh"
+      },
+      {
+       "dato": "2026-03-20",
+       "navn": "Ungevælgermøde | Pizza🍕 & Politik📢"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -1097,26 +1530,38 @@
    }
   },
   "Vestegnen": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-22",
+       "navn": "Korte videoer og valgkamp - sådan kommunikerer du liberal politik på sociale medier"
+      },
+      {
+       "dato": "2026-03-16",
+       "navn": "Ordinær generalforsamling LAU Vestegnen"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-07",
+       "navn": "Intromøde v. Politisk formand Ezekiel Rohde"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -1131,26 +1576,26 @@
    }
   },
   "Vestsjælland": {
-   "prognose": "ukendt",
+   "prognose": "ikke_godkendt",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
-    "3. kvartal 2026: ingen data",
+    "Intet arrangement i 1. kvartal 2026",
+    "Intet arrangement i 2. kvartal 2026",
+    "3. kvartal 2026: intet arrangement afholdt eller planlagt endnu",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
+     "status": "nej",
      "afholdt": [],
      "planlagt": []
     },
     "Q3": {
-     "status": "ukendt",
+     "status": "mangler",
      "afholdt": [],
      "planlagt": []
     },
@@ -1168,26 +1613,46 @@
    }
   },
   "Viborg": {
-   "prognose": "ukendt",
+   "prognose": "i_fare",
    "grunde": [
-    "1. kvartal 2026: ingen data",
-    "2. kvartal 2026: ingen data",
     "4. kvartal 2026: intet arrangement afholdt eller planlagt endnu"
    ],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-03-06",
+       "navn": "Liberal Alliances Ungdom Viborg generalforsamling og foredrag om Kernekraft"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-04-21",
+       "navn": "Introaften i LAU Viborg med politisk formand"
+      },
+      {
+       "dato": "2026-05-29",
+       "navn": "📢 Oplæg om overvågning + bowling med LAU Viborg 🎳"
+      }
+     ],
      "planlagt": []
     },
     "Q3": {
      "status": "ja",
      "afholdt": [
+      {
+       "dato": "2026-08-20",
+       "navn": "Ekstra ordinær generalforsamling + oplæg"
+      },
+      {
+       "dato": "2026-08-20",
+       "navn": "Ekstra ordinær generalforsamling + oplæg"
+      },
       {
        "dato": "2026-08-29",
        "navn": "LAU Vestjylland Sommerfest"
