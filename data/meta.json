@@ -108,6 +108,7 @@
   "PV13mhkKH02KRxo6P",
   "Q0dgfFfkGVfxK5uZY",
   "Qm9bE2OsyfDKkvukG",
+  "QyEVMZp5glVCot2AT",
   "R9G1xoW1Cr53XVtfg",
   "RYqfSkuklcrpstyFG",
   "SqULYxXOcP75cGrhc",
@@ -147,6 +148,7 @@
   "pHYzYlU5H0ffk1jd0",
   "phJvZajzGzrQ9edaS",
   "rCgRYXBSmbju1XdoI",
+  "rKjmaw0e9uQjQdVyu",
   "s1MtBAqlJjjlNDUZ9",
   "sCqXpsUbKvIh6yT1j",
   "ubS51fNCUueEjSaMf",
@@ -154,7 +156,7 @@
   "zV457MIVjJYnjCYU1",
   "zz2FSQsbvQfUwolup"
  ],
- "opdateret": "2026-09-28T15:25:58Z",
+ "opdateret": "2026-09-28T16:09:04Z",
  "historik": {
   "koersler": [
    {
@@ -727,6 +729,28 @@
     "begivenheder": 3,
     "aeldste": "2026-03-03T18:00:00Z",
     "udvalgte": true
+   },
+   {
+    "id": "QyEVMZp5glVCot2AT",
+    "tid": "2026-09-28T16:06:31Z",
+    "forening": "Roskilde",
+    "side": "https://www.facebook.com/LAURoskilde",
+    "status": "SUCCEEDED",
+    "hentet": 40,
+    "max": 40,
+    "begivenheder": 35,
+    "aeldste": "2025-11-25T18:00:00Z"
+   },
+   {
+    "id": "rKjmaw0e9uQjQdVyu",
+    "tid": "2026-09-28T16:06:31Z",
+    "forening": "København",
+    "side": "https://www.facebook.com/laungdomkbh",
+    "status": "SUCCEEDED",
+    "hentet": 40,
+    "max": 40,
+    "begivenheder": 30,
+    "aeldste": "2025-10-18T12:00:00Z"
    }
   ],
   "fra": "2026-01-01T00:00:00Z"

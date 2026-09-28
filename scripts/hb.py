@@ -94,7 +94,7 @@ def daekning(meta, events, foreninger):
         else:
             aeldste = min((dansk_dag(e["start"]) for e in events
                            if e.get("historisk") and navn in (e.get("foreninger") or [e["forening"]])), default=None)
-        loft = k.get("hentet", 0) >= HISTORIK_LOFT and k.get("begivenheder", 0) >= k.get("hentet", 0)
+        loft = k.get("hentet", 0) >= k.get("max", HISTORIK_LOFT) and k.get("begivenheder", 0) >= k.get("hentet", 0)
         pr_side[(navn, k.get("side"))] = aeldste if loft and aeldste else hist_fra
     # En forening er kun dækket, når alle dens sider er hentet – og så fra den seneste af siderne.
     fra_for = {}
