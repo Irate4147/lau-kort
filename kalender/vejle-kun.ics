@@ -1,0 +1,56 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Vejle (kun lokalt)
+X-WR-CALDESC:Kun LAU Vejles egne arrangementer. https://irate4147.github.io
+ /lau-kort/#Vejle
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:879723971100086@lau-kort
+DTSTAMP:20260928T142245Z
+DTSTART:20260224T180000Z
+DTEND:20260224T200000Z
+SUMMARY:Generalforsamling og FT Kickoff m. Tobias Pagh
+DESCRIPTION:LAU Vejle\n\nNu går det løs!🔥\n\nVi afholder både general
+ forsamling og FT Kickoff i Vejle den 24. februar. Det bliver vildt\, og de
+ t bliver sjovt\, og du skal selvfølgelig med! Alle er velkommen\, uagtet 
+ om man er helt ny eller har været med i mange år. Tag også gerne en ven
+  under armen\, hvis de har interesse.\n\nVi får desuden fint besøg af vo
+ res landsformand\, Tobias Pagh\, og Folketingsmedlem\, Helena Artmann Andr
+ esen\, der hver især vil sætte ord på den forestående valgkamp\, og hv
+ ordan man kan bidrage undervejs🙌\n\nDagsordenen for generalforsamlingen
+  kan du se herunder:\n\n1. Valg af dirigent\n2. Valg af referent\n3. V\n\n
+ https://www.facebook.com/events/879723971100086/
+CATEGORIES:LAU Vejle
+LOCATION:Ved Anlæget 14B\, 7100 Vejle\, Denmark
+GEO:55.71131;9.53411
+URL:https://www.facebook.com/events/879723971100086/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:944735881573301@lau-kort
+DTSTAMP:20260928T142245Z
+DTSTART:20260320T150000Z
+DTEND:20260320T170000Z
+SUMMARY:Ungevælgermøde | Pizza🍕 & Politik📢
+DESCRIPTION:LAU Vejle\n\n✨ Folketingsvalg 24. marts – Kom til ungevælg
+ ermøde i Vejle! ✨\n\nI anledning af folketingsvalget den 24. marts invi
+ terer Vejle Ungeråd til et spændende og nærværende ungevælgermøde\, 
+ hvor du kan møde folketingskandidaterne ansigt til ansigt og høre deres 
+ bud på det\, der betyder mest i unges hverdag ❤️\n\nHvad mener de om 
+ uddannelse\, job\, klima\, trivsel og fællesskab?\nOg endnu vigtigere –
+  hvad vil du gerne have dem til at svare på?\n\nFor at sikre\, at det er 
+ de unge – og ikke politikerne – der sætter dagsordenen\, kan du stemm
+ e på de 3 emner\, du helst vil høre kandidaterne debattere her:\n👉 ht
+ tps://for\n\nhttps://www.facebook.com/events/944735881573301/
+CATEGORIES:LAU Vejle
+LOCATION:Ungekulturhuset Værket
+GEO:55.70212;9.53572
+URL:https://www.facebook.com/events/944735881573301/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,34 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Køge Bugt (kun lokalt)
+X-WR-CALDESC:Kun LAU Køge Bugts egne arrangementer. https://irate4147.gith
+ ub.io/lau-kort/#Køge Bugt
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:911424294773164@lau-kort
+DTSTAMP:20260928T141908Z
+DTSTART:20260214T150000Z
+DTEND:20260214T170000Z
+SUMMARY:LAU Køge bugt generalforsamling 2026
+DESCRIPTION:LAU Køge Bugt\n\nHej alle\,\n\nÅrets generalforsamling vil bl
+ ive afholdt lørdag d. 14 februar kl. 16:00 ved adressen Kornager 9\, Grev
+ e.\n\nGeneralforsamlingen er foreningens højeste myndighed og afholdes å
+ rligt. Her fastlægges den politiske og organisatoriske retning for det ko
+ mmende år\, og der vælges ny bestyrelse for det kommende år. \n\nPå ge
+ neralforsamlingen gennemgås og behandles blandt andet:\n\n- Bestyrelsens 
+ beretning for det forgangne år\n\n- Forelæggelse og godkendelse af regns
+ kab\n\n- Indkomne forslag og eventuelle vedtægtsændringer\n\n- Valg af f
+ ormand\, næstformand\, kasserer\, bestyrelsesmedlemmer\, suppleanter og \
+ n\nhttps://www.facebook.com/events/911424294773164/
+CATEGORIES:LAU Køge Bugt
+LOCATION:Greve
+GEO:55.582115647368;12.263479584252
+URL:https://www.facebook.com/events/911424294773164/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

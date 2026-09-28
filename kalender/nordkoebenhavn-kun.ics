@@ -1,0 +1,367 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Nordkøbenhavn (kun lokalt)
+X-WR-CALDESC:Kun LAU Nordkøbenhavns egne arrangementer. https://irate4147.
+ github.io/lau-kort/#Nordkøbenhavn
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:884107607846044@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260217T170000Z
+DTEND:20260217T200000Z
+SUMMARY:Optakt til folketingsvalget med Jonas Juhl
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom og mød den lokale folketingskandiat 
+ Jonas Juhl i Byens Hus i Hellerup.\nVi mødes på 2. Sal i lokalet “Cirk
+ len”\n\nDet er pizza og øl\n\nhttps://www.facebook.com/events/884107607
+ 846044/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, Hellerup
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/884107607846044/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2999228800262265@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260219T170000Z
+DTEND:20260219T190000Z
+SUMMARY:SÆT DIT PRÆG PÅ LANDSMØDET💙📚
+DESCRIPTION:LAU Nordkøbenhavn · LAU Nordsjælland\n\n🚆 LIGE VED S-TOGE
+ T🚆\n\nLAU Nordsjælland og LAU Nordkøbenhavn inviterer til en hyggelig
+  og uformel aften\, hvor du kan sætte dit præg på landsmødet eller bar
+ e komme for pizzaen og hyggens skyld 🍕\n\nVi får besøg af vores polit
+ iske formand\, som giver en intro til liberalismen\, forklarer hvordan pol
+ itikken i LAU er skruet sammen\, og hvordan man skriver forslag til landsm
+ ødet. Bagefter laver vi workshop\, hvor vi selv prøver kræfter med idé
+ er og forslag.\n\n📍 Holte Bibliotek\, Holte Midtpunkt 23\, 2840 Holte.\
+ nlokale hvide A\n (lige ved S-toget\, Holte station)\n🕕 19/2 kl. 18.00\
+ n🍽️ Mega lækker fællesspisning. \n\n\nhttps://www.facebook.com/even
+ ts/2999228800262265/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Holte Midtpunkt 23\, 2840 Holte\, Danmark
+GEO:55.81146;12.47149
+URL:https://www.facebook.com/events/2999228800262265/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1205896494416449@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260302T180000Z
+DTEND:20260302T200000Z
+SUMMARY:Generalforsamling og FT Tour🔥
+DESCRIPTION:LAU Nordkøbenhavn\n\nDer indkaldes til generalforsamling i Lib
+ eral Alliances Ungdom Nordkøbenhavn \n2. Marts 2026 kl 19 i Byens Hus Hel
+ lerup\, Hellerupvej 24\, 2900 Hellerup.\nVi mødes i lokalet "Store Claus"
+  på 1. sal. \nDer vil være pizzaer og sodavand på foreningens regning.\
+ n\nDagsorden\n1. Valg af dirigent.\n2. Valg af referent.\n3. Valg af stemm
+ etællere.\n4. Bestyrelsens beretning.\n5. Forelæggelse af regnskab til g
+ odkendelse.\n6. Behandling af indkomne forslag.\n7. Valg af:\na. Formand.\
+ nb. Næstformand.\nc. Kasserer.\nd. 2-6 bestyrelsesmedlemmer.\ne. Op til 3
+  suppleanter til bestyrelsen.\nf. Revisor.\ng. Op til 2 revisorsupplea\n\n
+ https://www.facebook.com/events/1205896494416449/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, 2900 Hellerup\, Denmark
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/1205896494416449/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1259219773003188@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260314T083000Z
+DTEND:20260314T103000Z
+SUMMARY:Intro før uddeling med Alex!
+DESCRIPTION:LAU Nordkøbenhavn\n\nPå lørdag d. 14 marts deler vi flyers u
+ d på lyngby hovedgade\, mellem Magasin og Lyngby Storcenter sammen med Al
+ ex Vanopslagh kl. 10:15. Vi mødes os\, der er med i LAU nordkøbenhavn al
+ lerede kl. 9:30 hjemme hos vores bestyrelsesmedlem Johan Thomsen ved Sophu
+ s Schandorphs vej 8A. Kom glad\, især hvis du er et nyt medlem\, hvor vi 
+ drikker en sodavand og ønsker hinanden en god valgkamp. Jeg håber vi ses
+  til en hyggelig dag.\nDer er gratis sodavand \n\nhttps://www.facebook.com
+ /events/1259219773003188/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:S. Schandorphs Vej 8A\, 2800 Kongens Lyngby\, Sophus Schandorphs V
+ ej 8A\, 2800 Kongens Lyngby\, Danmark
+GEO:55.76798;12.4898
+URL:https://www.facebook.com/events/1259219773003188/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:961004333363614@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260320T170000Z
+DTEND:20260320T190000Z
+SUMMARY:Valgkampsslutspurt
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi hygger her i valgkampens slutspurt med
+  GRATIS øl\, sodavand og pizza. Vores folketingskandidater: Freja Brandh
+ øj og Jonas Juhl og siger evt. et par ord om valgkamp. Ellers skal vi hyg
+ ge og måske spille jeopardy. Når vi ikke magter længere\, tager dem som
+  har lyst\, ind i byen med flere fra LAU København.\nKom glad\, der er so
+ m sagt GRATIS pizza og øl\n\nhttps://www.facebook.com/events/961004333363
+ 614/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, Hellerup
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/961004333363614/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1593037382001549@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260408T170000Z
+DTEND:20260408T190000Z
+SUMMARY:Introaften med Ezekiel Rohde
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi har fået en hel masse medlemmer ovenp
+ å folketingsvalget. Derfor har vi valgt at arrangere en introaften\, hvor
+  vi får besøg af vores politiske formand: Ezekiel Rohde. Han vil fortæl
+ le om LAU og hvad vi er for en størrelse. Alle er velkomne\, både nye so
+ m gamle og der vil være noget pizza og drikkelse på foreningens regning.
+ \nVelkomst v. Marcus Jiang\nOplæg v. Ezekiel Rohde\nPizza og hygge\nTak f
+ or i aften\nDet hele foregår i byens hus i lokalet: Atrium\n\nhttps://www
+ .facebook.com/events/1593037382001549/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, 2900 Hellerup\, Denmark
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/1593037382001549/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1286433810288009@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260429T170000Z
+DTEND:20260429T190000Z
+SUMMARY:Debattræning med Jonas Juhl
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom med til debattræning i byens hus med
+  Jonas Juhl!\nDette er en god mulighed for at møde foreningen og blive be
+ dre til at debattere. Man behøver ikke at have erfaring med debat og man 
+ skal ikke medbringe noget selv. \nDer vil være pizza\, sodavand og øl. \
+ nVi glæder os til at se jer!!\n\nhttps://www.facebook.com/events/12864338
+ 10288009/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, 2900 Hellerup\, Denmark
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/1286433810288009/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1952027042104519@lau-kort
+DTSTAMP:20260928T141908Z
+DTSTART:20260501T153000Z
+DTEND:20260501T173000Z
+SUMMARY:LAU KBH & Nord KBH tager til landsmødet
+DESCRIPTION:LAU København · LAU Nordkøbenhavn\n\nTag med LAU København 
+ og LAU Nordkøbenhavn i partybus til LM26\n\nVi mødes kl. 17.30\, og buss
+ en afgår præcis kl. 17.45. Bemærk venligst\, at hvis du ankommer efter 
+ kl. 17.45\, vil bussen være kørt.\n\nTilmeldingen er åben for alle medl
+ emmer af Liberal Alliances Ungdom.\n\nDer vil være mulighed for at købe 
+ øl i bussen til 15 kr. pr. stk. Det er ikke tilladt selv at medbringe dri
+ kkevarer.\n\nHvis du er under 16 år\, skal du medbringe forældretilladel
+ se for at få serveret øl.\n\nBussen kører direkte til fredagsbaren på 
+ Garbos og der lander vi ca 18:50 hvis trafikken er med os.\n\nHar du spør
+ gsmål\, er du velkomm\n\nhttps://www.facebook.com/events/1952027042104519
+ /
+CATEGORIES:LAU København
+LOCATION:Hellerup Station
+GEO:55.730991673501;12.5674346345
+URL:https://www.facebook.com/events/1952027042104519/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1327854579268771@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260521T180000Z
+DTEND:20260521T200000Z
+SUMMARY:Ordførerpræsentaton
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom med LAU NordKBH til ordførerpræsent
+ ation den 21. Maj kl. 20:00. \nDette er en god mulighed for at forstå de 
+ forskellige ordførerposter og hvem der stiller op til dem. Der vil være 
+ godt selskab samt Pizza og ØL. \nVi håber på at se dig\n\nhttps://www.f
+ acebook.com/events/1327854579268771/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, 2900 Hellerup\, Denmark
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/1327854579268771/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1692538361877339@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260603T173000Z
+DTEND:20260603T193000Z
+SUMMARY:Åbent bestyrelsesmøde
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi holder åbent bestyrelsesmøde\, hvor 
+ Ezekiel og nogle fra FU vil fortælle om hvordan man søger duf-midler. De
+ r vil være øl og sodavand. Dagsordenen er herunder:\n\n1.	Valg af ordsty
+ rer \n2.	Valg af referent \n3.	Registrering af deltagende \n4.	Arrangement
+ er siden sidst \n5.	Kommende lokale arrangementer \n6.	Kommende nationale 
+ arrangementer \n7.	Opdatering på økonomien i lokalforeningen \n8.	Start 
+ på område-ansvarlig. Skal vi oprette udvalg?\n9.	Mulige projekter fremad
+ rettet \n10.	Hvad skal søges til DUF? \n11.	Hvad laver vi til næste gang
+ ? - (Her gennemgår hvert bestyrelsesmedlem\, hvad de laver til næst\n\nh
+ ttps://www.facebook.com/events/1692538361877339/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Rudersdal Bibliotekerne. Holte Bibliotek
+GEO:55.8193;12.46942
+URL:https://www.facebook.com/events/1692538361877339/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1297227011952975@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260604T160000Z
+DTEND:20260604T180000Z
+SUMMARY:LAU NordKBH På Udebane m. Rasmus Munch Søndergaard
+DESCRIPTION:LAU Nordkøbenhavn\n\nVelkommen til LAU NordKBH på udebane! \n
+ \nDette er en helt ny serie\, hvor vi tager ud og møder spændende mennes
+ ker/grupper. Det vil nødvendigvis ikke være politisk\, men lærerigt hve
+ r gang.\nDenne gang får vi besøg af Rasmus Munch Søndergaard – blandt
+  andet kendt for sine holdninger om hvordan laktosetolerance fortæller hv
+ or dansk man er.\n\nKom og vær med til en aften med gode diskussioner\, s
+ karpe holdninger og mulighed for at stille spørgsmål selv. Det bliver b
+ åde hyggeligt\, spændende og lidt kontroversielt på den fede måde.\n\n
+ Tag en ven med\, duk op\, og vær en del af samtalen. Vi glæder os til at
+  s\n\nhttps://www.facebook.com/events/1297227011952975/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Holte Midtpunkt 23\, 2840 Holte\, Danmark
+GEO:55.81146;12.47149
+URL:https://www.facebook.com/events/1297227011952975/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1907194426633588@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260618T170000Z
+DTEND:20260618T190000Z
+SUMMARY:Pagne og Policy
+DESCRIPTION:LAU Nordkøbenhavn · LAU Nordsjælland\n\nLAU Nordsjælland og
+  Nordkøbenhavn inviterer til endnu en omgang Pagne & Policy på Vedbæk S
+ trand.\n\nGlæd dig til en hyggelig sommeraften med gode samtaler\, politi
+ ske diskussioner og kolde forfriskninger i godt selskab. Arrangementet er 
+ en oplagt mulighed for at mødes med andre politisk interesserede\, udveks
+ le holdninger og nyde en afslappet aften ved vandet.\n\nVi mødes den 18. 
+ juni 2026 kl. 19.00 ved Vedbæk Strand\n\nMødested: Ved beachvolleybanen\
+ n\nVi ser frem til en hyggelig aften med gode samtaler og godt selskab\n\n
+ https://www.facebook.com/events/1907194426633588/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Vedbæk Strandvej\, 2950 Vedbæk\, Danmark
+GEO:55.85563;12.56581
+URL:https://www.facebook.com/events/1907194426633588/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1050370744599819@lau-kort
+DTSTAMP:20260928T141908Z
+DTSTART:20260723T140000Z
+DTEND:20260723T160000Z
+SUMMARY:Lau NordKBH og Lau KBH tager til Sommerlejr
+DESCRIPTION:LAU København · LAU Nordkøbenhavn\n\nLau NordKBH og Lau KBH 
+ følges sammen til Lau's sommerlejr! \nVi mødes ved hovedbanegården på 
+ torsdag d. 23. Vi tager afgangen\, der kører 16:17\, men kom gerne allere
+ de kl 16.\nhttps://beta.rejseplanen.dk/webapp-nextgen?ds=ac1f88b8-3588-416
+ 1-b179-3a9c69e62244&tenant=default \nDet skal nok blive super hyggeligt\, 
+ så vi håber i vil tage med\n\nhttps://www.facebook.com/events/1050370744
+ 599819/
+CATEGORIES:LAU København
+LOCATION:Københavns Hovedbanegård
+GEO:55.672311809567;12.565226402105
+URL:https://www.facebook.com/events/1050370744599819/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1380228697326639@lau-kort
+DTSTAMP:20260928T141908Z
+DTSTART:20260814T143000Z
+DTEND:20260814T163000Z
+SUMMARY:Sommerfest i København
+DESCRIPTION:LAU København · LAU Nordkøbenhavn · LAU Nordsjælland\n\nSo
+ mmerfest i København\n\nKære alle - både i og uden for København!\n\nV
+ i inviterer til sommerfest på LAs terrasse på Christiansborg fredag den 
+ 14. august kl. 16.30\, hvor Mads Strange er vært.\n\nSammen med Nordsjæl
+ land\, Roskilde og Nordkøbenhavn holder vi en hyggelig sommerfest på Chr
+ istiansborg.\n\nAdressen: Christiansborg\, 1218 København\n\n"Vi mødes v
+ ed hovedtrappen i Rigsdagsgården"\n\nPlanen er\, at vi starter med at sid
+ de på LAs terrasse\, hygge os\, afholde nogle sjove aktiviteter og få be
+ søg af et par gæster. Bagefter går vi en tur til bibliotekshaven\, hvor
+  vi spiller kongespil og andre spil\, som vi\n\nhttps://www.facebook.com/e
+ vents/1380228697326639/
+CATEGORIES:LAU København
+LOCATION:Christiansborg Slot\, Rigsdagsgården 8\, 1218 København K\, Danm
+ ark
+GEO:55.675610629128;12.580481298896
+URL:https://www.facebook.com/events/1380228697326639/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1732224078015434@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260822T083000Z
+DTEND:20260822T103000Z
+SUMMARY:Lau NordKBH tager til extraordinærtlandsmøde
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi mødes 10:30 under uret.\nSkal du til 
+ LAUs landsmøde\, kan du følges med LAU NordKBH. \nDet bliver pisse hygge
+ ligt og det er en god mulighed for at møde flere for din forening eller v
+ ære sammen med dem du kender.\n\nhttps://www.facebook.com/events/17322240
+ 78015434/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Københavns Hovedbanegård
+GEO:55.672311809567;12.565226402105
+URL:https://www.facebook.com/events/1732224078015434/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1579339737171249@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260903T160000Z
+DTEND:20260903T180000Z
+SUMMARY:LAU NordKBH x DSU Lyngby/Gentofte
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi laver et collab\, hvor vi skal debatte
+ re lidt og ellers bare hygge og spise noget pizza. Hvis man vil have pizza
+ \, så skal man trykke "deltager" på begivenheden.\nVi glæder os til at 
+ se jer alle.\nProgram - tidspunkterne er vejledende\n18:00 Pizza \n\n18:30
+  Enige vs uenige:\n\n18:45 Øve sig på debatemner i grupper\n\n19:00 Grup
+ pe debat\n\n19:30 Hygge og evt. Jeopardy\n\nhttps://www.facebook.com/event
+ s/1579339737171249/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Gentofte Rådhus
+GEO:55.7494;12.55635
+URL:https://www.facebook.com/events/1579339737171249/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1084097980891541@lau-kort
+DTSTAMP:20260928T141950Z
+DTSTART:20260917T173000Z
+DTEND:20260917T194500Z
+SUMMARY:Oplæg med Anton Leopold Krogh
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af Anton Leopold Krogh\, d
+ er vil snakke om liberalismen. \nAnton underviser på CEPOS Akademi og arb
+ ejder i LA's sekretariat.\nDet bliver rigtig spændende! Vi håber I glæd
+ er jer lige så meget som os :))\n\nhttps://www.facebook.com/events/108409
+ 7980891541/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Fuglsanggårdskolen
+GEO:55.792720370308;12.478320449512
+URL:https://www.facebook.com/events/1084097980891541/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:923351157155422@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261015T170000Z
+DTEND:20261015T190000Z
+SUMMARY:Oplæg med Nicolai Melholt
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af LAU's retsordfører\, s
+ om vil tale om aktuel retspolitik.\nVi er på Lyngby-Taarbæk Rådhus\n\nh
+ ttps://www.facebook.com/events/923351157155422/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Lyngby Torv 17\, 2800 Kongens Lyngby\, Danmark
+GEO:55.76975;12.50227
+URL:https://www.facebook.com/events/923351157155422/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

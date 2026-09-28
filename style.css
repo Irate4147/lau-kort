@@ -275,6 +275,49 @@ ul.arrlist { list-style: none; margin: 0; padding: 0; }
 .badge.ok { background: #1f9d55; color: #fff; }
 .pop-note { font-style: italic; }
 
+/* ---- kalender øverst til højre på kortet ---- */
+.kal {
+  position: absolute; right: 10px; top: 60px; z-index: 4; width: 300px; overflow-y: auto;
+  background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 10px 12px; font-size: 13px;
+}
+.kal[hidden] { display: none; }
+.kal-head { display: flex; align-items: center; gap: 8px; }
+.kal-head strong { font-size: 14px; }
+.kal-filter { margin-left: auto; font: inherit; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--axis); background: var(--surface-1); color: var(--text-primary); cursor: pointer; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kal-luk { border: 0; background: none; font-size: 20px; line-height: 1; cursor: pointer; color: var(--text-secondary); padding: 0 2px; }
+.kal-valg { margin: 8px 0 4px; padding: 6px; border: 1px solid var(--grid); border-radius: 8px; max-height: 240px; overflow-y: auto; }
+.kal-valg .opt { padding: 2px; }
+.kal-valg-knapper { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; position: sticky; bottom: -6px; background: var(--surface-1); padding: 4px 0; }
+.kal-nav { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 4px; }
+.kal-nav button { border: 0; background: none; cursor: pointer; color: var(--text-primary); font: inherit; font-size: 16px; padding: 2px 8px; border-radius: 6px; }
+.kal-nav button:hover { background: var(--page); }
+.kal-nav .kal-titel { font-size: 13px; font-weight: 600; text-transform: capitalize; }
+.kal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.kal-ugedag { font-size: 10px; color: var(--muted); padding-bottom: 2px; }
+.kal-dag {
+  display: flex; flex-direction: column; align-items: center; gap: 1px; height: 34px; padding: 3px 0 0;
+  border: 1px solid transparent; border-radius: 6px; background: none; color: var(--text-primary); font: inherit; font-size: 12px; cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.kal-dag:disabled { cursor: default; color: var(--text-secondary); }
+.kal-dag.fortid { color: var(--muted); }
+.kal-dag:not(:disabled):hover { background: var(--page); border-color: var(--grid); }
+.kal-dag.idag > span:first-child { background: var(--accent); color: #fff; border-radius: 999px; padding: 0 5px; font-weight: 600; }
+.kal-dag.valgt { border-color: var(--text-primary); }
+.kal-dag .prikker { display: flex; gap: 2px; height: 6px; }
+.kal-dag .prikker i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.kal-dag .prikker i.nat { background: var(--text-primary); border-radius: 1px; transform: rotate(45deg) scale(.9); }
+.kal-dag .prikker i.afl { opacity: .35; }
+.kal-liste h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); margin: 10px 0 2px; display: flex; justify-content: space-between; align-items: baseline; }
+.kal-liste h3 .linkbtn { font-size: 11px; text-transform: none; letter-spacing: 0; }
+.kal-liste .evlist li { grid-template-columns: 70px 1fr; padding: 5px 0; }
+.kal-abonner { border-top: 1px solid var(--grid); margin-top: 8px; padding-top: 8px; }
+.kal-abonner .note { margin: 6px 0; }
+.kal-fil { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 4px 0; font-size: 12px; }
+.kal-fil span { flex-basis: 100%; font-weight: 500; }
+.kal-fil .linkbtn { font-size: 12px; display: inline-flex; align-items: center; gap: 3px; }
+
 /* ---- mobil: kortet øverst, panelet nedenunder ---- */
 @media (max-width: 760px) {
   .app { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
@@ -282,4 +325,5 @@ ul.arrlist { list-style: none; margin: 0; padding: 0; }
   .sidebar { order: 2; border-right: 0; overflow: visible; }
   .legend { margin-left: 0; }
   .side-tabs { position: static; }
+  .kal { width: min(300px, calc(100% - 20px)); }
 }

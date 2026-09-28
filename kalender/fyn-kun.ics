@@ -1,0 +1,202 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Fyn (kun lokalt)
+X-WR-CALDESC:Kun LAU Fyns egne arrangementer. https://irate4147.github.io/l
+ au-kort/#Fyn
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1696287368021865@lau-kort
+DTSTAMP:20260928T152527Z
+DTSTART:20260303T180000Z
+DTEND:20260303T200000Z
+SUMMARY:Intro til LAU v. Tobias Pagh & Loui Femhøj
+DESCRIPTION:LAU Fyn\n\nKom med d. 3 Marts hvor vores genopstillende Landsfo
+ rmand\, Tobias og vores Landssekretær kommer forbi Odense for at give en 
+ ordentlig introduktion til LAU!\n\nArrangementer foregår kl 19 i Ungdomsh
+ uset\, som ligger 50 meter fra Odense banegård! Både nye og gamle medlem
+ mer er selvfølgelig velkomne\, og vi glæder os til at se en masse af jer
+  🥳\n\nhttps://www.facebook.com/events/1696287368021865/
+CATEGORIES:LAU Fyn
+LOCATION:Ungdomshuset Odense\, Nørregade 60\, 5000 Odense\, Denmark
+GEO:55.400408560669;10.388823151588
+URL:https://www.facebook.com/events/1696287368021865/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1815408935787266@lau-kort
+DTSTAMP:20260928T152527Z
+DTSTART:20260313T180000Z
+DTEND:20260313T200000Z
+SUMMARY:Generalforsamling og FT-Tour m. Tobias Pagh🔥
+DESCRIPTION:LAU Fyn\n\nSå er Folketingsvalget skudt i gang!\n\nDerfor komm
+ er vores landsformand\, Tobias Pagh\, forbi og holder gang i festen efter 
+ vores generalforsamling den 13. marts. Vi får samtidig besøg af vores un
+ ge liberale kandidat\, Malte Jäger. Vi glæder os til at se dig\, selvom 
+ det kan være svært at vælge mellem x Factor og FT Tour\, men vi garante
+ rer dig\, at du ikke vil fortryde det.\n\nVi sørger for snacks\, sodavand
+  og øl\, vi leverer showet\, I skal bare dukke op til en festlig aften. \
+ n\nVi ses!\n\nhttps://www.facebook.com/events/1815408935787266/
+CATEGORIES:LAU Fyn
+LOCATION:Ungdomshuset Odense
+GEO:55.400408560669;10.388823151588
+URL:https://www.facebook.com/events/1815408935787266/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1635220731133432@lau-kort
+DTSTAMP:20260928T152527Z
+DTSTART:20260324T180000Z
+DTEND:20260324T200000Z
+SUMMARY:LAU Fyn holder valgfest! 🤩
+DESCRIPTION:LAU Fyn\n\nVil du gerne være med til at fejre et forhåbentlig
+ t godt valgresultat for liberal alliance?\nSå har vi arrangementet. LAU F
+ yn inviterer til en sjov og hyggelig valgaften. Vi sørger for snacks\, dr
+ ikkelse\, en sjov aften i godt selskab. Vi forventer blot at du medbringer
+  dit gode humør.\nDet bliver i Ungodmshuset i Odense\, på 3. sal til ven
+ stre\; Nørregade 60\, 5000 Odense C \nVi glæder os til at se dig 🥳\n\
+ nhttps://www.facebook.com/events/1635220731133432/
+CATEGORIES:LAU Fyn
+LOCATION:Ungdomshuset Odense
+GEO:55.400408560669;10.388823151588
+URL:https://www.facebook.com/events/1635220731133432/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2711088875956987@lau-kort
+DTSTAMP:20260928T140337Z
+DTSTART:20260415T163000Z
+DTEND:20260415T183000Z
+SUMMARY:Introarrangement med Ezekiel Rohde
+DESCRIPTION:LAU Fyn\n\nVil du gerne blive klogere på\, hvad LAU egentlig e
+ r – eller er du bare nysgerrig på\, hvad vi laver i foreningen? Så er 
+ det her arrangement lige noget for dig!\n\nDenne aften får vi besøg af E
+ zekiel Rohde\, som vil give en introduktion til LAU og fortælle om\, hvad
+  foreningen står for\, og hvad vi arbejder med.\n\nUanset om du er nyt me
+ dlem\, har været med længe\, eller bare er nysgerrig\, er du meget velko
+ mmen. Det bliver en hyggelig aften\, hvor du kan stille alle de spørgsmå
+ l\, du har.\n\nVi mødes i Odense Kultur & Idrætshus (lige ved letbanesto
+ ppet Bolbro) i lokale K.\n\nDu kan komme fra kl. 18.30\, og oplæ\n\nhttps
+ ://www.facebook.com/events/2711088875956987/
+CATEGORIES:LAU Fyn
+LOCATION:Stadionvej 50\, 5200 Odense V\, Danmark
+GEO:55.39544;10.35163
+URL:https://www.facebook.com/events/2711088875956987/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:26389675750725556@lau-kort
+DTSTAMP:20260928T140337Z
+DTSTART:20260511T161500Z
+DTEND:20260511T181500Z
+SUMMARY:Regnbuens Danmarkshistorie
+DESCRIPTION:LAU Fyn\n\nTværpolitisk arrangement \n\nhttps://www.facebook.c
+ om/events/26389675750725556/
+CATEGORIES:LAU Fyn
+LOCATION:Lambda - LGBTQ på Fyn
+GEO:55.39686;10.39564
+URL:https://www.facebook.com/events/26389675750725556/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2086029579002705@lau-kort
+DTSTAMP:20260928T140337Z
+DTSTART:20260807T160000Z
+DTEND:20260807T180000Z
+SUMMARY:Sommerhygge
+DESCRIPTION:LAU Fyn\n\nKom til sommerhygge i eventyrhaven med dine liberale
+  venner. Der vil være hyggeligt selskab fra klokken 18. Der vil være sø
+ rget for noget pizza\, lidt at drikke\, og havespil. Man kan selv supplere
+  med hvad man har lyst til. Så medbring det gode humør. Det er også en 
+ god mulighed for at komme og lære nogle at kende\n\nhttps://www.facebook.
+ com/events/2086029579002705/
+CATEGORIES:LAU Fyn
+LOCATION:Odense\, Denmark
+URL:https://www.facebook.com/events/2086029579002705/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1563999355127647@lau-kort
+DTSTAMP:20260928T140337Z
+DTSTART:20260822T080000Z
+DTEND:20260822T100000Z
+SUMMARY:LAU Fyn tager til landsmødet
+DESCRIPTION:LAU Fyn\n\n💙 LAU Fyn tager til LANDSMØDET! 🚆🎉\n\nDen 
+ 22. august går turen til landsmødet – og selvfølgelig skal LAU Fyn me
+ d! 💙\n\nGlæd dig til en dag fyldt med politik\, fællesskab\, debat og
+  masser af god stemning sammen med liberale fra hele landet. Det er samtid
+ ig en oplagt mulighed for at lære nye mennesker at kende og opleve LAU-f
+ ællesskabet\, når det er allerbedst! 🙌\n\n🚆 Vi følges derhen samm
+ en\n📍 Vi mødes på banegården\n⏰ Kl. 10.00\n📅 22. august\n\nUans
+ et om det er dit første landsmøde\, eller du har været med før\, håbe
+ r vi virkelig\, at du har lyst til at tage med!\n\nSå pak det gode humør
+  – LAU Fyn tager til lan\n\nhttps://www.facebook.com/events/156399935512
+ 7647/
+CATEGORIES:LAU Fyn
+LOCATION:Odense Banegård Center
+GEO:55.401633773377;10.386530661409
+URL:https://www.facebook.com/events/1563999355127647/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:985892704452896@lau-kort
+DTSTAMP:20260928T140337Z
+DTSTART:20260831T144500Z
+DTEND:20260831T164500Z
+SUMMARY:🏛️ Behind the Scenes: Odense Byråd
+DESCRIPTION:LAU Fyn\n\nFå et unikt indblik i livet som byrådsmedlem!\n\nH
+ ar du nogensinde tænkt over\, hvordan beslutningerne i Odense egentlig bl
+ iver truffet? Nu har du chancen for at komme helt tæt på.\n\nTag med byr
+ ådsmedlemmerne Araz Khan og Peter Thomasen på en eksklusiv rundvisning i
+  byrådssalen og rådhuset. De fortæller om hverdagen som byrådsmedlem\,
+  arbejdet bag de politiske beslutninger og vejen fra idé til virkelighed 
+ i Odense Kommune.\n\n📍 Vi mødes kl. 16.50 ved Odense Rådhus.\n\nEfter
+  rundvisningen er der mulighed for at spise sammen og hygge. Arrangementet
+  er den perfekte mulighed for at stille alle de spørgsmål\n\nhttps://www
+ .facebook.com/events/985892704452896/
+CATEGORIES:LAU Fyn
+LOCATION:Odense\, Denmark
+URL:https://www.facebook.com/events/985892704452896/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1076992115383567@lau-kort
+DTSTAMP:20260928T092517Z
+DTSTART:20261002T170000Z
+DTEND:20261002T190000Z
+SUMMARY:Indvielse af vores nye lokaler
+DESCRIPTION:LAU Fyn\n\nKom til indvielse af vores nye lokaler🩵Tag din ve
+ n med under armen\, for at se vores nye fælles hjem\n\nhttps://www.facebo
+ ok.com/events/1076992115383567/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42\, Odense C
+GEO:55.39395;10.38392
+URL:https://www.facebook.com/events/1076992115383567/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1466109438672457@lau-kort
+DTSTAMP:20260928T092517Z
+DTSTART:20261028T173000Z
+DTEND:20261028T193000Z
+SUMMARY:LAU Fyn tager til Alex Vanopslaghs bogturné!
+DESCRIPTION:LAU Fyn\n\n📚💙 LAU Fyn tager til Alex Vanopslaghs bogturn
+ é!\n\nDen 28. oktober går turen til Svendborg\, hvor Alex Vanopslagh læ
+ gger vejen forbi Svendborg Teater på sin bogturné – og selvfølgelig t
+ ager LAU Fyn med!\n\nOplægget foregår fra kl. 18.30–20.00\, og planen 
+ er\, at vi tager samlet afsted fra Odense. Nærmere information om transpo
+ rt og mødested kommer\, når vi nærmer os. 🚆\n\n🎟️ GRATIS BILLET
+  TIL DE 10 FØRSTE!\n\nLAU Fyn giver en billet til de første 10 personer\
+ , der trykker “Deltager” på arrangementet. Er du blandt de 10 første
+ \, sender vi dig en besked med en bekræftelse på\, at du har fået en bi
+ llet.\n\nSå hvi\n\nhttps://www.facebook.com/events/1466109438672457/
+CATEGORIES:LAU Fyn
+LOCATION:Odense\, Denmark
+URL:https://www.facebook.com/events/1466109438672457/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

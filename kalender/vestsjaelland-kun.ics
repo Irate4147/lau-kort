@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Vestsjælland (kun lokalt)
+X-WR-CALDESC:Kun LAU Vestsjællands egne arrangementer. https://irate4147.g
+ ithub.io/lau-kort/#Vestsjælland
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+END:VCALENDAR

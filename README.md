@@ -18,6 +18,18 @@ En forening kan have flere Facebook-sider: `"facebook_ekstra": ["…"]` i `data/
 
 Har en forening ikke brug for historikken (fx ingen arrangementer i år), kan `"historik_fra": "ÅÅÅÅ-MM-DD"` sættes i `data/foreninger.json`: så regnes dens data som komplette fra den dato, og "Hent historik" springer den over.
 
+## Kalender
+
+Knappen **📅 Kalender** over kortet (eller *Kalender* under Visninger) viser/skjuler en månedskalender øverst til højre. Vælg en eller flere lokalforeninger (valget huskes i browseren) – landsforeningens arrangementer er altid med. Klik på en dag for dens arrangementer.
+
+**Tilføj til din kalender:** `scripts/kalender.py` skriver offentlige iCalendar-filer til `kalender/`, som man kan abonnere på (Google Kalender, Apple Kalender, Outlook – de opdateres automatisk):
+
+- `<forening>.ics` – foreningen + landsforeningen (fx `naestved.ics`; æ/ø/å → ae/oe/aa)
+- `<forening>-kun.ics` + `landsforeningen.ics` – til flere foreninger, så landsforeningen ikke kommer med flere gange
+- `alle.ics` – alle arrangementer
+
+Linket er fx `https://raw.githubusercontent.com/Irate4147/lau-kort/main/kalender/naestved.ics`. Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
+
 Sidepanelet har fire faner:
 
 - **Oversigt** – nøgletal, de næste 14 dage og alle foreninger (klik for foreningspanelet).

@@ -1,0 +1,277 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Aarhus (kun lokalt)
+X-WR-CALDESC:Kun LAU Aarhuss egne arrangementer. https://irate4147.github.i
+ o/lau-kort/#Aarhus
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1147007857276370@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260107T163000Z
+DTEND:20260107T183000Z
+SUMMARY:Oplæg “Barn af et tvangsægteskab”
+DESCRIPTION:LAU Aarhus\n\nDen 7. januar får vi besøg af journalist\, Deni
+ z Serinci. Han holder oplæg om at være barn af et tvangsægteskab og soc
+ ial kontrol.\n\nOm oplægget siger han selv følgende: \nJeg er født af k
+ urdiske forældre\, som var fætter-kusine og blev tvangsgift med hinanden
+  som 16-årige. Det gav en masse handicappede børn i familien. Som ung tr
+ oede jeg selv på traditionerne og social kontrol. Efter gymnasietiden fik
+  flere oplevelser mig til at tage afstand fra min kultur (læs her). Nu ha
+ r jeg skrevet en bog om social kontrol og advarer andre imod social kontro
+ l. Ligestillingsminister Marie Bjerre udpegede mig i\n\nhttps://www.facebo
+ ok.com/events/1147007857276370/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1147007857276370/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1412554057053114@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260115T180000Z
+DTEND:20260115T200000Z
+SUMMARY:Oplæg om politisk kommunikation og kampagner
+DESCRIPTION:LAU Aarhus\n\nTorsdag d. 15. januar får vi besøg af kampagnef
+ ormand\, Katrine Hviid!!\n\nHun vil fortælle om kampagner og politisk kom
+ munikation på sociale medier. Det bliver fedt\, og vi glæder os til at s
+ e jer.\n\nForeningen giver første omgang i baren💙\n\nhttps://www.faceb
+ ook.com/events/1412554057053114/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1412554057053114/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1784034632311684@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260121T170000Z
+DTEND:20260121T190000Z
+SUMMARY:Oplæg v. Allan Smith
+DESCRIPTION:LAU Aarhus\n\nAllan Smith holder oplæg for os d. 21. januar!\n
+ \nSæt kryds i kalenderen d. 21. januar\, hvor vi får besøg af Allan Smi
+ th\, der har en stor stemme i ligestillingsdebatten. Det bliver lærerigt 
+ og lægger forhåbentlig op til dialog\, debat og refleksion.\n\nVi glæde
+ r os til at se dig!\n\nhttps://www.facebook.com/events/1784034632311684/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1784034632311684/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1453479186495653@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260129T180000Z
+DTEND:20260129T200000Z
+SUMMARY:Tværpolitisk Skolevalgsfest
+DESCRIPTION:LAU Aarhus\n\nKom og vær med til\, at følge skolevalgets afg
+ ørelse sammen med politiske venner og fjender. Alle er velkommen til at k
+ omme og være med til\, at fejre en dag i demokratiets tegn 👏🏼\n\nVi
+  glæder os til at se jer! 🤩\n\nhttps://www.facebook.com/events/1453479
+ 186495653/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1. Sal\, 8000 Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1453479186495653/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:813665665034645@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260201T170000Z
+DTEND:20260201T190000Z
+SUMMARY:Ordinær generalforsamling
+DESCRIPTION:LAU Aarhus\n\nForeningsåret nærmer sig sin afslutning\, og de
+ rfor holder LAU Århus GF!!\n\nPå generalforsamlingen skal der blandt and
+ et vælges en ny bestyrelse\, som skal varetage foreningens drift i det ko
+ mmende år.\n\nAlle medlemmer af Liberal Alliances Ungdom har møde- og ta
+ leret på generalforsamlingen.\nMedlemmer af Liberal Alliances Ungdom Årh
+ us har desuden stemmeret.\n\nDerudover giver foreningen aftensmad🍕\nVi 
+ glæder os til at se dig til en vigtig aften!\n\nhttps://www.facebook.com/
+ events/813665665034645/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/813665665034645/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1688940975850783@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260306T150000Z
+DTEND:20260307T010000Z
+SUMMARY:FT kickoff og kandidatpræsentation
+DESCRIPTION:LAU Aarhus\n\nSkal den næste statsminister hedde Alex Vanopsla
+ gh? Hvem skal lede Liberal Alliances Ungdom i det kommende år?\n\nD. 6 ma
+ rts skyder Alex valget i gang i Århus og kandidater til det kommende forr
+ etningsudvalg kommer fra nær og fjern for at fortælle jer præcis hvorfo
+ r i skal stemme på dem til landsmødet!\n\nVi slutter selvfølgelig af me
+ d gratis aftensmad og et brag af en fest til sent på natten!\n\nAlle LAU'
+ ere er selvfølgelig velkomne uanset hvor i landet man kommer fra.\n\nKick
+ -off arrangementet foregår på Rustik\, Åboulevarden 21\, 8000 Aarhus C 
+ fra 16:00-17:30 og derefter er der kandidatpræsentation o\n\nhttps://www.
+ facebook.com/events/1688940975850783/
+CATEGORIES:LAU Aarhus
+LOCATION:Åboulevarden 21\, 8000 Aarhus C\, Danmark
+GEO:56.15492;10.20981
+URL:https://www.facebook.com/events/1688940975850783/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3956892694612303@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260417T163000Z
+DTEND:20260417T183000Z
+SUMMARY:Intro Arrangement
+DESCRIPTION:LAU Aarhus\n\nIntro arrangement i LAU Århus!\n\nD. 17 April ho
+ lder vi intro arrangement hvor du kan høre alt om\, hvad LAU er\, møde f
+ oreningen og høre røverhistorier fra gamle dage. Vi får selskab af form
+ andskandidat og nuværende politisk formand\, Ezekiel. Foreningen giver af
+ tensmad og den første øl eller sodavand!\n\nEr du nyt medlem\, så er de
+ tte den perfekte begivenhed for at komme godt ind i fælleskabet i LAU År
+ hus!\n\nVi håber at se så mange af jer som muligt!\n\nKontakt: tlf 51 86
+  43 30 eller formand@lau-aarhus.dk\n\nhttps://www.facebook.com/events/3956
+ 892694612303/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, 8000 Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/3956892694612303/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1685452496044926@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260430T160000Z
+DTEND:20260430T180000Z
+SUMMARY:**AFLYST/UDSKUDT**Oplæg v/ Mads Stange og Anton Leopold Krogh
+DESCRIPTION:LAU Aarhus\n\n**AFLYST/UDSKUDT** Vi får besøg af folketingsme
+ dlem Mads Strange og Anton Leopold Krogh der arbejder på LA's sekretariat
+ . De vil fortælle om deres valgkamp og hvad de kommer til at arbejde på 
+ i denne folketingsperiode.\n\nBegge har meget at lære fra sig og vi håbe
+ r derfor på\, at se så mange af jer som muligt\, til hvad der lover at b
+ live en hyggelig og lærerig aften!\n\nBåde LAU'ere og LA'ere er velkomne
+ !\n\nhttps://www.facebook.com/events/1685452496044926/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, 8000 Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1685452496044926/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1293897949514042@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260626T143000Z
+DTEND:20260626T163000Z
+SUMMARY:Det Liberale slag ⚽️🏆
+DESCRIPTION:LAU Aarhus\n\nDet er blevet tid til det årlige Liberale Slag\,
+  som udspiller sig på fodboldbanen. \n\nDet plejer at være en intens og 
+ underholdende affære🤩 \n\nVejret ser lovende ud\, så kom og hep på v
+ ores seje spillere og drik en kold øl/sodavand i solen med os☀️\n\nEf
+ ter fodboldkampen er der lagt op til lidt sommerhygge i lokalerne\, kom gl
+ ad! Vi glæder os til at se jer til en hyggelig dag/aften🍻☀️ \n\nht
+ tps://www.facebook.com/events/1293897949514042/
+CATEGORIES:LAU Aarhus
+LOCATION:Møllevangskolen Aarhus (officiel)
+GEO:56.164961961317;10.184518480973
+URL:https://www.facebook.com/events/1293897949514042/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1598997071948912@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260805T153000Z
+DTEND:20260805T173000Z
+SUMMARY:AGF vs. Sabah FK med LAU Århus
+DESCRIPTION:LAU Aarhus\n\nAGF jagter stadig Champions League og derfor mød
+ es vi d. 5 august og ser opgøret mellem de danske mestre og Sabah FK!\n\n
+ Der er kampstart kl. 18:30\, men lokalerne er åbne fra kl. 17:30\n\nDu be
+ høver naturligvis ikke at være fodbold fan eller at eje en AGF-trøje - 
+ det bliver en fest uanset hvad!\n\nhttps://www.facebook.com/events/1598997
+ 071948912/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1598997071948912/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1319149813342559@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260811T153000Z
+DTEND:20260811T173000Z
+SUMMARY:AGF vs. Sabah FK
+DESCRIPTION:LAU Aarhus\n\nAGF er foran 2-1 og på tirsdag skal de sikre sej
+ ren over Sabah FK og dermed komme ét skridt tættere på Champions League
+ .\n\nVi mødes derfor i lokalerne og ser kampen sammen! Lokalerne åbner k
+ l. 17:30 og der er kampstart kl 18:00\n\nDu behøver naturligvis ikke at v
+ ære fodboldfanatiker eller for den sags skyld AGF fan - alle er velkomne!
+ \n\nhttps://www.facebook.com/events/1319149813342559/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1319149813342559/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1030475569701706@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260822T100000Z
+DTEND:20260822T120000Z
+SUMMARY:LAU Århus tager til landsmøde!
+DESCRIPTION:LAU Aarhus\n\nD. 22 August er der ekstraordinært landsmøde i 
+ Roskilde\n\nKom med og sæt dit præg på foreningen!\n\nTilmelding er gra
+ tis og sker på LAU’s membersite\n\nHar du nogle spørgsmål står forre
+ tningsudvalget altid til rådighed til at svare. \n\nLokalformanden i Årh
+ us\, Anders Sanggaard er også tilgængelig på messenger eller på tlf. 5
+ 1864330\n\nhttps://www.facebook.com/events/1030475569701706/
+CATEGORIES:LAU Aarhus
+LOCATION:Hedegårdenes Skole
+GEO:55.640203070244;12.102278562641
+URL:https://www.facebook.com/events/1030475569701706/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1578660200395351@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260828T153000Z
+DTEND:20260828T173000Z
+SUMMARY:Oplæg v/ medlem af Folketinget Carsten Bach
+DESCRIPTION:LAU Aarhus\n\nVi får besøg af ingen ringere end Carsten Bach\
+ , der er medlem af folketinget og forsvars- og beredskabsordfører for Lib
+ eral Alliance!\n\nCarstens oplæg er altid spændende og underholdende\, s
+ å kom og nyd din fredag aften med et fremragende oplæg og en kold øl el
+ ler sodavand🍻\n\nDa det er fredag forbliver lokalerne åbne så længe 
+ man har lyst\, så der er rigeligt tid til at få sludret over nogle kolde
+  drikkevarer efter oplægget!\n\nVi glæder os til at se så mange af jer 
+ som muligt!\n\n\nhttps://www.facebook.com/events/1578660200395351/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1578660200395351/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1768455491159308@lau-kort
+DTSTAMP:20260928T140041Z
+DTSTART:20260919T120000Z
+DTEND:20260919T140000Z
+SUMMARY:LAU Århus flytter ud!
+DESCRIPTION:LAU Aarhus\n\nPå lørdag siger vi farvel til vores lokaler. Vi
+  skal derfor have flyttet alle vores ting og vi har brug for jeres hjælp!
+  Uanset om du kan bidrage en halv time eller tre\, om du har bil eller ej\
+ , så er alt hjælp velkomment!\n\nhttps://www.facebook.com/events/1768455
+ 491159308/
+CATEGORIES:LAU Aarhus
+LOCATION:Fredens Torv 8\, 1 sal\, Aarhus\, Denmark
+GEO:56.15422;10.20957
+URL:https://www.facebook.com/events/1768455491159308/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

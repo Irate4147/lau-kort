@@ -1,0 +1,585 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Kronjylland
+X-WR-CALDESC:LAU Kronjylland og Landsforeningen. https://irate4147.github.i
+ o/lau-kort/#Kronjylland
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1419371666475397@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260104T160000Z
+DTEND:20260104T180000Z
+SUMMARY:Oplæg med Carsten Bach
+DESCRIPTION:LAU Kronjylland\n\nKom med og hør Carsten Bach fortælle lidt 
+ om det nyeste fra borgen!\n\nhttps://www.facebook.com/events/1419371666475
+ 397/
+CATEGORIES:LAU Kronjylland
+LOCATION:Randers
+URL:https://www.facebook.com/events/1419371666475397/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2383366292116018@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260111T100000Z
+DTEND:20260111T120000Z
+SUMMARY:Bestyrelsesworkshop: Lokal Politikudvikling
+DESCRIPTION:Landsforeningen\n\nBestyrelsesworkshop: Lokal Politikudvikling\
+ n\nDagsorden:\n\n11:00: Lokalpolitisk udvalg i en lokalforening v/ Lars J
+ ørgensen\n\n12:00: Hvordan laver man et politisk valgmagasin og hvordan t
+ ilpasser man sin politik lokalt? v/ Daniel Elmann\n\n13:00-13:30: Frokost\
+ n\n13:30-14:30: Workshop om lokal politikudvikling\n\n14:30-15:00: Præsen
+ tation af alle gruppers arbejde\n\n15:00-15:15: Pause\n\n15:15-16:15: Opl
+ æg om det at være byrådsmedlem og processen med lokal politikudvikling 
+ som byrådsmedlem v/ Matle Jäger\n\n16:15-17: Afslutning og oprydning\n\n
+ OBS: Der tages forbehold for forsinkelser i tidsplanen på 15-30 min\n\nht
+ tps://www.facebook.com/events/2383366292116018/
+CATEGORIES:Landsforeningen
+LOCATION:Liberal Alliances Ungdom Århus
+GEO:56.158317619291;10.206310832734
+URL:https://www.facebook.com/events/2383366292116018/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1225418072870247@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260204T170000Z
+DTEND:20260204T200000Z
+SUMMARY:Ordinær generalforsamling '26
+DESCRIPTION:LAU Kronjylland\n\nForeningsåret nærmer sig sin afslutning\, 
+ og derfor holder LAU Kronjylland ordinær generalforsamling!\n\nDer skal b
+ l.a. vælges en ny bestyrelse\, som skal varetage foreningens drift i løb
+ et af 2026.\n\nAlle medlemmer af Liberal Alliances Ungdom Kronjylland har 
+ møde-\, tale- og ikke mindst stemmeret!\n\nDerudover giver foreningen bå
+ de pizza og øl!\n\nVi glæder os til at se jer og at få en god start på
+  det nye foreningsår sammen.\n\nhttps://www.facebook.com/events/122541807
+ 2870247/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/1225418072870247/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:722649033843109@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260215T093000Z
+DTEND:20260215T160000Z
+SUMMARY:Liberalt Seminar - De vigtigste liberale tænkere
+DESCRIPTION:Landsforeningen\n\nSå er det igen blevet tid til Liberalt Semi
+ nar. Denne gang afholder vi foreningsårets tredje og sidste seminar\, som
+  finder sted søndag den 15. februar.\n\nSeminarets fokus vil være de vig
+ tigste liberale tænkere. Hvilke tænkere vi dykker ned i\, samt hvilke op
+ lægsholdere der vil besøge os og gøre os klogere på deres idéer\, vil
+  blive annonceret løbende.\n\nMen sæt allerede nu kryds i kalenderen til
+  en inspirerende dag med liberal idédebat i godt selskab. Foreningsårets
+  sidste Liberale Seminar afholdes hos CEPOS i København på Landgreven 3\
+ , 3. sal. 1301 København K.\n\nEn billet koster 50kr. og inkluder\n\nhttp
+ s://www.facebook.com/events/722649033843109/
+CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
+URL:https://www.facebook.com/events/722649033843109/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:894759016385258@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260220T180000Z
+DTEND:20260222T180000Z
+SUMMARY:Kursus : Arbejdsmarked- og Økonomi
+DESCRIPTION:Landsforeningen\n\nKURSUS- ARBEJDSMARKED- OG ØKONOMI!\n\nVi af
+ holder sidste kursus inden landsmødet - glæd jer!\n\nTeamaet for kurset 
+ bliver Arbejdsmarked- og Økonomi\, hvor vi får kloge hoveder ud for at f
+ ortælle os nogle ting\, samt lave fede udfordringer\, så vi alle kan gå
+  derfra lidt klogere end da vi kom.\n\nSå bliver det også en weekend sp
+ ækket med fællesskab! \n\nSmid allerede datoen i kalenderen\, og køb di
+ n billet. \n\nKøb billet her: https://liberalallianceungdom.membersite.dk
+ /Events/ComingEvents\n\n\n\nhttps://www.facebook.com/events/89475901638525
+ 8/
+CATEGORIES:Landsforeningen
+LOCATION:Mandehoved 10\, 4660 Store Heddinge\, Danmark
+GEO:55.3277;12.45001
+URL:https://www.facebook.com/events/894759016385258/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:993571353623653@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260224T174500Z
+DTEND:20260224T194500Z
+SUMMARY:Grundlæggende liberalisme + politiske forslag
+DESCRIPTION:LAU Kronjylland\n\nKom med\, når LAU's politiske ordfører\, E
+ zekiel\, kommer til Randers d. 24. februar!\n\nHan vil fortæller om grund
+ læggende liberalisme\, hvordan LAU's politik er struktureret\, samt hvord
+ an man kan skrive politiske forslag til landsmødet.\n\nHerefter vil der v
+ ære en workshop\, hvor vi skriver vores forslag til landsmødet. \n\nSå 
+ hvis du gerne\, vil lære mere om LAU's politik\, samt få direkte indflyd
+ else på den\, er det en oplagt mulighed for dig!\n\nHåber vi ses!\n\n\nh
+ ttps://www.facebook.com/events/993571353623653/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/993571353623653/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1857859424841705@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260305T060000Z
+DTEND:20260305T080000Z
+SUMMARY:LAU-Kronjylland laver morgenuddeling
+DESCRIPTION:LAU Kronjylland\n\nGlæd dig til morgenuddeling med vores lokal
+ e folketingsmedlemmer - Louise Brown og Jens Meilvang!\n\nVi uddeler flyer
+ s\, tyggegummi\, sodavand og et helveds godt humør!\n\nDet eneste du skal
+  gøre\, er at trykke "deltage" og møde op - så hjælper du med at gøre
+  Danmark mere liberal - What's not to like?\n\nVi ses!\n\nhttps://www.face
+ book.com/events/1857859424841705/
+CATEGORIES:LAU Kronjylland
+LOCATION:Randers Statsskole
+GEO:56.469702368111;10.027019866976
+URL:https://www.facebook.com/events/1857859424841705/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1239247947568156@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260309T150000Z
+DTEND:20260309T170000Z
+SUMMARY:LAU Kronjylland laver folketingsvalg-tour
+DESCRIPTION:LAU Kronjylland\n\nLAU Kronjylland inviterer til folketingsvalg
+ -tour!\n\nVi starter med et oplæg\, og derefter er der pizza og drikkelse
+ .\n\nVil du være frivillig til folketingsvalget? \nKom og vær med – vi
+  glæder os\n\nhttps://www.facebook.com/events/1239247947568156/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/1239247947568156/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1577510453480153@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260310T064500Z
+DTEND:20260310T084500Z
+SUMMARY:LAU-Kronjylland holder morgenuddeling - foran Paderup Gymnasium
+DESCRIPTION:LAU Kronjylland\n\nGlæd dig til endnu en morgenuddeling!\n\nVi
+  står foran indgangen ved Paderup Gymnasium - klokken 07:45 - og endda sa
+ mmen Jens Meilvang - det bliver pisse fedt!\n\nVi ses - det her bliver god
+ t!\n\nhttps://www.facebook.com/events/1577510453480153/
+CATEGORIES:LAU Kronjylland
+LOCATION:Paderup Gymnasium
+GEO:56.43198;10.07468
+URL:https://www.facebook.com/events/1577510453480153/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1858640431508184@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260322T121500Z
+DTEND:20260322T141500Z
+SUMMARY:LAU Kronjylland laver uddeling inden kampen mod Silkeborg!
+DESCRIPTION:LAU Kronjylland\n\nGlæd dig til endnu en uddeling!\n\nVi laver
+  en uddeling\, ved Randers Stadion\, inden kampen mod Silkeborg.\n\nVi ses
+  klokken 13:15!\n\nhttps://www.facebook.com/events/1858640431508184/
+CATEGORIES:LAU Kronjylland
+LOCATION:Randers Stadion
+GEO:56.465745334389;10.010152574348
+URL:https://www.facebook.com/events/1858640431508184/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1564618767955233@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260417T153000Z
+DTEND:20260417T173000Z
+SUMMARY:LAU-Kronjylland og LAU-Mariagerfjord laver fælles arrangement - me
+ d oplæg fra Lars Jørgensen
+DESCRIPTION:LAU Kronjylland\n\nGlæd dig til et fagligt arrangement med LAU
+ -Mariagerfjord og LAU-Kronjylland!\n\nVi starter aftenen ud\, med et oplæ
+ g fra Lars Jørgensen\, Økonomi- og Erhvervsordfører i LAU.\n\nTemaet fo
+ r oplægget er: "Sådan er kapitalismen":\n\n"Utak er de armes løn\nDet' 
+ de riges paradis\, men\nJeg syn's fanme det er synd\n\nDet er ordene fra o
+ mkvædet i sangen Kapitalismen. - Men hvordan er kapitalismen i virkelighe
+ den? Og hvorfor er det den største økonomiske succeshistorie gennem hist
+ orien?"\nAlt dette dykker Lars ned i\, i sit oplæg.\n\nEfter oplægget er
+  der pizza\, sodavand og øl!\n\nVi glæder os\, til et godt arrangement!\
+ n\nhttps://www.facebook.com/events/1564618767955233/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/1564618767955233/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:801514832805857@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260501T150000Z
+DTEND:20260503T150000Z
+SUMMARY:Liberal Alliances Ungdoms Landsmøde 2026
+DESCRIPTION:Landsforeningen\n\nSå er det ved at være snart\, at vi igen s
+ kal til landsmøde i Liberal Alliances Ungdom! \n\nDenne gang bliver det i
+  Roskilde\, hvor vi den 1. til den 3. maj skal diskutere politik\, behandl
+ e vedtægter og vælge vores ledelse\, men hvor vi selvfølgelig også ska
+ l hygge os og have det sjovt\, både til fredagsbaren til lørdagens helt 
+ store gallafest. Her vil der være festtaler og festindslag fra venner af 
+ partiet. \n\nDer er sørget for overnatning og mad\, alt sammen inkluderet
+  i billetten\, lige så vel som der er sørget for bustransport til dem\, 
+ der kommer langvejs fra.\n\nNærmere info og program vil blive mel\n\nhttp
+ s://www.facebook.com/events/801514832805857/
+CATEGORIES:Landsforeningen
+LOCATION:Københavnsvej 34\, 4000 Roskilde\, Danmark
+GEO:55.64093;12.10162
+URL:https://www.facebook.com/events/801514832805857/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:836388372833565@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260501T170000Z
+DTEND:20260501T190000Z
+SUMMARY:FREDAGSBAR PÅ GARBOS
+DESCRIPTION:Landsforeningen\n\nFREDAGSBAR PÅ GARBOS I ROSKILDE 🥳\n\nVi 
+ skyder landsmødet i gang med en fredagsbar på Garbos i Roskilde.\n\nAfte
+ nen byder på godt selskab\, kolde øl og sodavand i baren samt godt humø
+ r. Derudover får vi besøg af folketings- og byrådsmedlem Lars-Christian
+  Brask\, som lægger vejen forbi i sin egen hjemby og deler røverhistorie
+ r.\n\nFredagsbaren afholdes fredag d. 1/5 kl. 19.00–21.00.\nAdresse: Her
+ segade 17\, 4000 Roskilde.\n\nKig forbi og vær med til at sparke landsmø
+ det i gang.\n\nOBS: Du skal være 18+ for at deltage i fredagsbaren.\n\nVi
+  glæder os til at se dig og til sammen at skyde landsmødet officielt i g
+ a\n\nhttps://www.facebook.com/events/836388372833565/
+CATEGORIES:Landsforeningen
+LOCATION:Hersegade 17\, 4000 Roskilde\, Danmark
+GEO:55.63897;12.08559
+URL:https://www.facebook.com/events/836388372833565/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1751961662774203@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260529T170000Z
+DTEND:20260529T190000Z
+SUMMARY:LAU-Kronjylland laver introarrangement!
+DESCRIPTION:LAU Kronjylland\n\nGlæd dig til et introarrangement ved Operae
+ n!\n\nEr du et nyt medlem\, som gerne vil være aktiv?\nEr du et gammelt m
+ edlem\, som bare er tørstig?\nEr du ingen af delene?\nUanset hvad - så s
+ kal du afsted!\n\nVi ses!\n\n*Da vi skal bestille bord - må I gerne trykk
+ e "deltager" senest 26. maj*\n\nhttps://www.facebook.com/events/1751961662
+ 774203/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vester Kirkestræde 12\, 8900 Randers C\, Danmark
+GEO:56.46011;10.03438
+URL:https://www.facebook.com/events/1751961662774203/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1458120242751693@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260606T083000Z
+DTEND:20260606T133000Z
+SUMMARY:Introdag på Christiansborg v/Mads Strange
+DESCRIPTION:Landsforeningen\n\nUnder folketingsvalget kunne vi i LAU byde h
+ ele 333 nye medlemmer velkommen!\n\nLørdag den 6. juni vil vi derfor gern
+ e byde jer nye medlemmer indenfor bag Christiansborgs tykke mure til en sp
+ ændende introdag!\n\nDagen vil forhåbentlig give jer en god introduktion
+  til LAU som organisation. Samtidig får I mulighed for at se Christiansbo
+ rg og møde nyvalgt folketingsmedlem for Liberal Alliance\, Mads Strange.\
+ n\nMindst lige så vigtigt får I også mulighed for at møde en masse and
+ re nye LAU’ere fra hele landet.\n\nI LAU prioriterer vi nemlig\, at ens 
+ geografiske placering ikke bliver afgørende for\, om man kan\n\nhttps://w
+ ww.facebook.com/events/1458120242751693/
+CATEGORIES:Landsforeningen
+LOCATION:Rigsdagsgården 8\, 1218 København K\, Danmark
+GEO:55.67564;12.58039
+URL:https://www.facebook.com/events/1458120242751693/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1530219338694257@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260607T083000Z
+DTEND:20260607T150000Z
+SUMMARY:Liberalt Seminar - I krig for demokratiet
+DESCRIPTION:Landsforeningen\n\nSå er det blevet tid til at afholde årets 
+ første liberale seminar. Det afholdes i København\, hvor vi har fået mu
+ lighed for at være i Ungdommens Demokratihus\, som findes på Slagtehusga
+ de 10A\, 1715 København.\n\nDenne gang er emnet "I krig for demokratiet".
+  Har vi gjort nok? Skulle vi have gjort noget mere? Eller var det en fejl 
+ at blande sig fra starten? Det er alt sammen spørgsmål\, som vi får sva
+ r på\, når tre spændende oplægsholdere kommer forbi og deler deres syn
+  på emnet.\n\nSæt kryds i kalenderen allerede i dag til den 7. juni. Det
+  bliver en spændende dag fyldt med liberal idédebat i et fantast\n\nhttp
+ s://www.facebook.com/events/1530219338694257/
+CATEGORIES:Landsforeningen
+LOCATION:Slagtehusgade 10A\, 1715 København V\, Danmark
+GEO:55.66886;12.56022
+URL:https://www.facebook.com/events/1530219338694257/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:966730789329776@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260608T220000Z
+DTEND:20260613T220000Z
+SUMMARY:Liberal Alliances Ungdom På Folkemødet 2026
+DESCRIPTION:Landsforeningen\n\nLAU skal selvfølgelig endnu engang på folk
+ emødet! ☀️\n\nTRANSPORT\nAfgang fra København: d. 9 juni 2026\, klok
+ ken 10:25\n📍Carsten Niebuhrs Gade 30\, 1577 København V.\nDet er vigti
+ gt\, at alle står klar senest klokken 10:00 - sharp!\n\nAfgang fra Alling
+ e: d. 14 juni 2026\, klokken 13:15 \n📍Bussen afgår fra samme sted\, so
+ m vi bliver sat af - ved Camp Ung Agenda.\nDet er vigtigt\, at alle står 
+ klar senest klokken 12:50 - sharp!\n\nVi glæder os til en hyggelig uge!\n
+ \nKøb din billet her:\nhttps://liberalallianceungdom.membersite.dk/Events
+ /ComingEvents\n\nhttps://www.facebook.com/events/966730789329776/
+CATEGORIES:Landsforeningen
+URL:https://www.facebook.com/events/966730789329776/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1712646866585853@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260621T130000Z
+DTEND:20260621T150000Z
+SUMMARY:Åbent bestyrelsesmøde
+DESCRIPTION:LAU Kronjylland\n\nLiberal Alliances Ungdom Kronjylland inviter
+ er til åbent bestyrelsesmøde den 21. juni klokken 15:00\n\nDet holdes ve
+ d Dronningborg Bibliotek - mødelokale 2\n\nhttps://www.facebook.com/event
+ s/1712646866585853/
+CATEGORIES:LAU Kronjylland
+LOCATION:Dronningborg Bibliotek\, Udbyhøjvej 81\, 8930 Randers NØ\, Danma
+ rk
+GEO:56.47181;10.06582
+URL:https://www.facebook.com/events/1712646866585853/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1669459540964627@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260723T170000Z
+DTEND:20260726T170000Z
+SUMMARY:Sommerlejr 2026
+DESCRIPTION:Landsforeningen\n\nSå er det endnu engang tid til LAU's årlig
+ e sommerlejr!\n\nI år er vi på Stevns Klint Naturcenter fra torsdag den 
+ 23. juli til søndag den 26. juli.\n\nDer vil være mulighed for at blive 
+ hentet på togstationen tættest på centret.\n\nYderligere information ko
+ mmer løbende\, men man kan allerede nu købe billet på linket herunder:\
+ nhttps://liberalallianceungdom.membersite.dk/Events/ComingEvents\n\nhttps:
+ //www.facebook.com/events/1669459540964627/
+CATEGORIES:Landsforeningen
+LOCATION:Mandehoved 10\, A\, 4660 Mandehoved
+GEO:55.32834;12.44918
+URL:https://www.facebook.com/events/1669459540964627/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1195591109359821@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260730T153000Z
+DTEND:20260730T173000Z
+SUMMARY:Liberal Alliances Ungdom Kronjylland holder sommerfest
+DESCRIPTION:LAU Kronjylland\n\n🌞 LAU-Kronjylland holder sommerfest! 🌞
+ \n\nGlæd dig til et hyggeligt sommerarrangement\, hvor vi tænder op for 
+ grillen og nyder en afslappet aften sammen.\n\nDer er ingen politik på da
+ gsordenen - bare god mad\, godt selskab og sommerstemning.\n\nDa vi skal k
+ øbe mad ind i god tid\, er det vigtigt\, at du trykker “deltager”\, h
+ vis du kommer.\n\nHar du allergier\, vi skal være opmærksomme på\, så 
+ skriv til Nicolai Melholt.\n\nVi ses!\n\nhttps://www.facebook.com/events/1
+ 195591109359821/
+CATEGORIES:LAU Kronjylland
+LOCATION:Fuglebakken 56\, 8900 Randers C\, Danmark
+GEO:56.47018;10.04218
+URL:https://www.facebook.com/events/1195591109359821/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1773650527348590@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260817T160000Z
+DTEND:20260817T180000Z
+SUMMARY:Jens Meilvang holder oplæg i LAU-Kronjylland!
+DESCRIPTION:LAU Kronjylland\n\n**Glæd dig til et besøg fra Borgen!**\n\nJ
+ ens Meilvang\, Liberal Alliances rets- og transportordfører\, besøger LA
+ U Kronjylland.\n\nHan vil fortælle om\, hvad der sker på Christiansborg\
+ , hvordan hverdagen som folketingsmedlem ser ud - og selvfølgelig dele et
+  par gode røverhistorier fra Borgen.\n\nEfter oplægget byder vi på afte
+ nsmad og drikkevarer.\n\nVi glæder os til at se jer! 💙\n\nhttps://www.
+ facebook.com/events/1773650527348590/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/1773650527348590/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2096429297597392@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260822T100000Z
+DTEND:20260822T120000Z
+SUMMARY:Ekstraordinært landsmøde 2026
+DESCRIPTION:Landsforeningen\n\nKære Liberal Alliances Ungdom.\n\nHovedbest
+ yrelsen har indkaldt til ekstraordinært landsmøde jf. § 11 Stk. 6g i ve
+ dtægterne til afholdelse d. 22. august.\n\nDet foregår - ligesom ved det
+  ordinære landsmøde i maj måned - på Hedegårdenes Skole i Roskilde.\n
+ \nDer er lagt op til vedtægtsbehandling og valg til Forretningsudvalget.\
+ n\nMere information følger på den nationale Facebook-gruppe.\n\nTilmeld 
+ dig vha. følgende link:\nhttps://liberalallianceungdom.membersite.dk/Even
+ ts/ComingEvents\n\nhttps://www.facebook.com/events/2096429297597392/
+CATEGORIES:Landsforeningen
+LOCATION:Hedegårdenes Skole
+GEO:55.640203070244;12.102278562641
+URL:https://www.facebook.com/events/2096429297597392/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2207198693378853@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260905T160000Z
+DTEND:20260905T180000Z
+SUMMARY:Sensommerfest i LA Østjylland
+DESCRIPTION:LAU Kronjylland\n\nKære medlemmer af LA og LAU i Østjylland\n
+ \n\nI er hermed inviteret til vores sommerfest d. 5. september i Skanderbo
+ rg.\nAlle medlemmer af både LAU og LA i hele Østjylland er velkomne!\n\n
+ Der er virkeligt lagt i ovnen til en fantastisk fest med mad fadøl ad lib
+ itum\, cocktails og live musik. Jeg håber at se rigtig mange af jer til f
+ esten. Alt dette for kun 100kr i egenbetaling.\n\nHusk tilmelding er nødv
+ endig!!\n\nhttps://www.facebook.com/events/2207198693378853/
+CATEGORIES:LAU Kronjylland
+LOCATION:Nørregade 60\, 8660 Skanderborg\, Danmark
+GEO:56.04132;9.92986
+URL:https://www.facebook.com/events/2207198693378853/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2507397943107945@lau-kort
+DTSTAMP:20260928T141807Z
+DTSTART:20260911T050000Z
+DTEND:20260911T070000Z
+SUMMARY:LAU-Kronjylland laver morgen-uddeling foran HHX!
+DESCRIPTION:LAU Kronjylland\n\n**Glæd dig til en morgenuddeling**\n\nVi ha
+ r en masse LAU-flyers til overs fra folketingsvalget. De skal uddeles - og
+  du skal hjælpe!\n\nVi mødes foran HHX klokken 07:00.\n\nVi står for at
+  uddelingsmaterialet - du skal bare møde op! \n\nVi ses!\n\nhttps://www.f
+ acebook.com/events/2507397943107945/
+CATEGORIES:LAU Kronjylland
+LOCATION:Tradium - HHX
+GEO:56.468487699934;10.027556416453
+URL:https://www.facebook.com/events/2507397943107945/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1558686819070313@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260919T080000Z
+DTEND:20260919T160000Z
+SUMMARY:Det Danske Frihedstopmøde
+DESCRIPTION:Landsforeningen\n\nArrangeret af Students for Liberty Denmark o
+ g Liberal Alliances Ungdom. Det Danske Frihedstopmøde samler det liberale
+  Danmark og tilbyder muligheden for at høre internationale talere indenfo
+ r filosofi\, idehistorie og policy.\n \nArranged by Students for Liberty D
+ enmark and Liberal Alliance Ungdom. The Danish Freedom summit\, gathers th
+ e classical liberal Denmark and offers the oppertunity to attend internati
+ onal speakers within philosophy\, ideology and policy\n \nProgram:\n10:00 
+ - 10:15 Velkommen\n10:15 - 11:15 Eamonn Butler\n11:15 - 12:15 Panel : Otto
+  Brøns og Robert Tyler\n12:15 - 13:45 Frokost\n13:45\n\nhttps://www.faceb
+ ook.com/events/1558686819070313/
+CATEGORIES:Landsforeningen
+LOCATION:Kedelhallen\, Nyelandsvej 75A\, 2000 Frederiksberg\, Denmark
+GEO:55.684354064049;12.521859080803
+URL:https://www.facebook.com/events/1558686819070313/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1050970907692100@lau-kort
+DTSTAMP:20260928T135857Z
+DTSTART:20260925T170000Z
+DTEND:20260927T170000Z
+SUMMARY:Politisk kursus m. debat- og debatindlægslinje
+DESCRIPTION:Landsforeningen\n\nKom til politisk kursus og modtag politisk d
+ ebattræning i både det mundtlige og skriftlige domæne.\n\nVi får besø
+ g af Jakob Skyggebjerg og Sofie Mosgaard\, der er standhaftige deltagere i
+  den offentlige debat og begge vindere af DM i Debat i hhv. 2025 og 2024.\
+ n\nMan kan deltage på to linjer: Skriftlig debat\, hvor Sofie vil undervi
+ se\, og mundtlig debat\, hvor Jakob vil undervise.\n\nVi ses på Fyn d. 25
+ .-27. september!\n\nDu kan få refunderet dine rejseudgifter. Læs mere p
+ å laungdom.dk\n\nhttps://www.facebook.com/events/1050970907692100/
+CATEGORIES:Landsforeningen
+LOCATION:Hylkedamvej 54\, 5591 Gelsted\, Danmark
+GEO:55.3856;9.93907
+URL:https://www.facebook.com/events/1050970907692100/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1437806824847860@lau-kort
+DTSTAMP:20260928T121718Z
+DTSTART:20261031T093000Z
+DTEND:20261031T113000Z
+SUMMARY:Liberalt Seminar
+DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
+ ://www.facebook.com/events/1437806824847860/
+CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
+URL:https://www.facebook.com/events/1437806824847860/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3036042386787504@lau-kort
+DTSTAMP:20260928T121718Z
+DTSTART:20261120T180000Z
+DTEND:20261122T180000Z
+SUMMARY:Organisatorisk kursus
+DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
+ ://www.facebook.com/events/3036042386787504/
+CATEGORIES:Landsforeningen
+LOCATION:Højsetvej 25\, 6534 Agerskov\, Danmark
+GEO:55.10601;9.17503
+URL:https://www.facebook.com/events/3036042386787504/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2150385339246072@lau-kort
+DTSTAMP:20260928T121718Z
+DTSTART:20270110T090000Z
+DTEND:20270110T110000Z
+SUMMARY:Liberalt Seminar
+DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
+ ://www.facebook.com/events/2150385339246072/
+CATEGORIES:Landsforeningen
+URL:https://www.facebook.com/events/2150385339246072/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1571024191370316@lau-kort
+DTSTAMP:20260928T121718Z
+DTSTART:20270122T180000Z
+DTEND:20270124T180000Z
+SUMMARY:Politisk kursus
+DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
+ ://www.facebook.com/events/1571024191370316/
+CATEGORIES:Landsforeningen
+LOCATION:Skovdalsvej 210\, 9230 Svenstrup J\, Danmark
+GEO:56.91481;9.94449
+URL:https://www.facebook.com/events/1571024191370316/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:913972531764554@lau-kort
+DTSTAMP:20260928T121718Z
+DTSTART:20270226T180000Z
+DTEND:20270228T180000Z
+SUMMARY:Organisatorisk kursus
+DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
+ ://www.facebook.com/events/913972531764554/
+CATEGORIES:Landsforeningen
+LOCATION:Silkeborgvej 37\, 8700 Horsens
+GEO:55.87595;9.81748
+URL:https://www.facebook.com/events/913972531764554/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

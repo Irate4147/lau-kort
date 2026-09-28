@@ -1,0 +1,274 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LAU//lau-kort//DA
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:LAU Horsens (kun lokalt)
+X-WR-CALDESC:Kun LAU Horsenss egne arrangementer. https://irate4147.github.
+ io/lau-kort/#Horsens
+X-WR-TIMEZONE:Europe/Copenhagen
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:1143533271002953@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260120T180000Z
+DTEND:20260120T200000Z
+SUMMARY:LAU - Tirsdag: Debattræning\, Ezekiel Rohde
+DESCRIPTION:LAU Horsens\n\nEr du også tilmeldt til skolevalget? eller kunn
+ e du bare godt tænke dig en lærerig debattræning. Er dette arrangement 
+ lige noget for dig!\n\nVi for nemlig besøg af LAU's PU formand\, Ezekiel 
+ Rohde. Der kommer forbi Horsens den 20 januar. Skriv da allerede datoen i 
+ kalenderen nu.\n\nVi glæder os til at se dig.\n\nNB: Marius Holsts Gade 3
+ \, 8700 Horsens. For præcis adresse skriv til formand(Anastasia berg)\n\n
+ https://www.facebook.com/events/1143533271002953/
+CATEGORIES:LAU Horsens
+LOCATION:Marius Holsts Gade 3\, 8700 Horsens
+GEO:55.86311;9.84005
+URL:https://www.facebook.com/events/1143533271002953/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1642661717169718@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260202T160000Z
+DTEND:20260202T180000Z
+SUMMARY:Nytårskur - 2026
+DESCRIPTION:LAU Horsens\n\nVi inviterer til nytårskur mandag d. 2. februar
+  2026 kl. 17.00\, hvor du kan møde Liberal Alliance Horsens’ nyvalgte b
+ yrådsmedlemmer og ønske godt nytår sammen med andre liberale ildsjæle 
+ i området.\n\nAftenen byder på uformelt samvær\, lidt godt til ganen og
+  gode samtaler om politik\, Horsens og de kommende år i byrådet. Første
+  øl/vand samt mad er inkluderet i billetprisen.¨\n\nVi glæder os til at
+  se dig!\n\nHVER OPÆRKSOM PÅ DEN 20 JANUAR ER FRIST FOR TILDMELDNING.\n\
+ nEr du LAU'er er det 100 kr\n\nEr du LA'er er det 150 kr\n\nEr du gæst er
+  det også 150 kr\n\nHer er tilmeldingslinket:  https://lahorsens.nemtil\n
+ \nhttps://www.facebook.com/events/1642661717169718/
+CATEGORIES:LAU Horsens
+URL:https://www.facebook.com/events/1642661717169718/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1780004796017504@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260213T180000Z
+DTEND:20260213T200000Z
+SUMMARY:Horsens: Generalforsamling - 2026
+DESCRIPTION:LAU Horsens\n\nDen 13 februar holder LAU - Horsens Generalforsa
+ mling.\n\nHer er dagsordenen: \n\nGeneralforsamling – LAU Horsens\nTid o
+ g sted\nDato:\nSted:\nDagsorden jf. vedtægter\nGeneralforsamlingen starte
+ r kl.\nGodkendelse af generalforsamling\nValg af dirigent.\nValg af refere
+ nt.\nValg af stemmetællere.\nBestyrelsens beretning. \nForelæggelse af r
+ egnskab til godkendelse. \nBehandling af indkomne forslag.\nValg af:\nForm
+ and.\nNæstformand.\nKasserer.\n2-6 bestyrelsesmedlemmer.\nOp til 3 supple
+ anter til bestyrelsen.\nRevisor\nOp til 2 revisorsuppleanter.\nEventuelt\n
+ indsamling af underskrifter: \nGeneralforsamlingsreferat for 2026\, \n\nht
+ tps://www.facebook.com/events/1780004796017504/
+CATEGORIES:LAU Horsens
+LOCATION:Houmannsgade 14a 2.sal
+GEO:55.86818;9.84323
+URL:https://www.facebook.com/events/1780004796017504/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:932598406106012@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260217T180000Z
+DTEND:20260217T200000Z
+SUMMARY:lau’s politiske struktur og landsmøde workshop\, Ezekiel Rohde
+DESCRIPTION:LAU Horsens\n\nDen 17 februar for vi besøg af Ezekiel Rohde de
+ r holder et oplæg om lau’s politiske struktur. Hvor han derefter laver 
+ en workshop om at skrive forslag til landsmødet. Vil du sætte dit præg 
+ på foreningen. Er dette arrangement lige noget for dig.\n\nVi glæder os 
+ til at se dig!\n\nNB: Skriv til Anastasia Berg for præcis adresse.\n\nhtt
+ ps://www.facebook.com/events/932598406106012/
+CATEGORIES:LAU Horsens
+LOCATION:Marius Holst Gade 3\, horsens 8700
+GEO:55.86311;9.84005
+URL:https://www.facebook.com/events/932598406106012/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:839973975723973@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260303T180000Z
+DTEND:20260303T200000Z
+SUMMARY:Kampagner\, valgkamp og korte videoer\, med Katrine Hviid
+DESCRIPTION:LAU Horsens\n\nGår du og drømmer om at fatte hvordan man prod
+ ucere kampagner & korte videoer til fx en valgkamp\, en af LAU's SoMe side
+ r eller til din helt egen Tiktok/insta også. Så er dette oplæg noget fo
+ r dig. Vi for Nemlig Katrine Hviid på besøg\, som har stået for LAU's S
+ oMe både under skolevalget\, Kommunalvalget og så meget mere. Til et opl
+ æg om lige nøjagtig det. \n\nVi glæder os til at se dig!\n\nNB: Horsens
+  Bibliotek\, "salen" på stueetagen \n\nhttps://www.facebook.com/events/83
+ 9973975723973/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/839973975723973/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:27279567984967003@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260417T170000Z
+DTEND:20260417T190000Z
+SUMMARY:Velkomst til nye LAU Medlemmer - LAU - Horsens
+DESCRIPTION:LAU Horsens\n\nHej\, \nDette arrangement er for dig. Der gerne 
+ vil møde LAU Horsens og blive en del af et fedt fælleskab. Vi byder på 
+ en god social aften og et hyggeligt fælleskab.\n\nVi glæder os til at m
+ øde dig!\n\nVh LAU - Horsens\n\nNB: arrangementet afholdes i Cafeen\, ved
+  Horsens Amatør Teater.\n\nhttps://www.facebook.com/events/27279567984967
+ 003/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Amatør Teater - www.hoat.dk\, Allégade 16B (Indgang fra 
+ Håndværkergården (Gratis P-plads))\, 8700 Horsens\, Denmark
+GEO:55.86552;9.84518
+URL:https://www.facebook.com/events/27279567984967003/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:950187654369831@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260428T170000Z
+DTEND:20260428T190000Z
+SUMMARY:[aflyst] LAU Tirsdag: Intro Oplæg med Ezekiel Rohde.
+DESCRIPTION:LAU Horsens\n\nDette arrangement er for dig\, der gerne vil vid
+ e mere om hvad LAU\, er for en størrelse. Vi for Ezekiel Rohde ud som er 
+ den nuværende Pu formand. Til at give jer et indblik i hvad LAU er.\n\nVi
+  håber at se dig!\n\nVh LAU Horsens.\n\nNB: arrangementet afholdes i "sal
+ en" på Horsens Bibliotek.\n\nhttps://www.facebook.com/events/950187654369
+ 831/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Bibliotek
+GEO:55.86512;9.8465399
+URL:https://www.facebook.com/events/950187654369831/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2144386516314090@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260527T173000Z
+DTEND:20260527T193000Z
+SUMMARY:Lau - Horsens: Åbent Bestyrelsesmøde(Online Møde)
+DESCRIPTION:LAU Horsens\n\nVi holder i Lau - Horsens er åbent bestyrelsesm
+ øde. Så har du nogle gode inputs eller vil du bare gerne se hvordan et b
+ estyrelsesmøde fungerer. Er dette arrangement lige noget for dig.\n\nVh L
+ au - Horsens \n\nNB: online møde klokken 19.30\n\nhttps://www.facebook.co
+ m/events/2144386516314090/
+CATEGORIES:LAU Horsens
+LOCATION:Online
+URL:https://www.facebook.com/events/2144386516314090/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:994501189628590@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260616T160000Z
+DTEND:20260616T180000Z
+SUMMARY:(Rykket til 18)LAU Tirsdag: Introoplæg med Ezekiel & Simone
+DESCRIPTION:LAU Horsens\n\nHej hej nye og gamle venner\,\n\nVi har fået en
+  masse nye medlemmer under valgkampene og vil derfor gerne tilbyde jer et 
+ Intro oplæg fra Ezekiel & Simone. Der er LAU's Formand og Næstformand. D
+ e kommer og fortæller os hvad LAU er for en størelse og de forskelige ti
+ ng du kan blive en del af. \n\nVi håber at se dig!!\n\nVh LAU - Horsens\n
+ \nNB: "salen" Horsens Bibliotek \n\nhttps://www.facebook.com/events/994501
+ 189628590/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker\, Tobaksgården 12\, 8700 Horsens\, D
+ enmark
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/994501189628590/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:857704187403115@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260622T170000Z
+DTEND:20260622T190000Z
+SUMMARY:Ekstraordinær Generalforsamling 2026
+DESCRIPTION:LAU Horsens\n\nHej Venner\,\n\nDen 22/06/2026\, holder vi ekstr
+ a ordinær generalforsamling i LAU - Horsens. Vil du være med til at væl
+ ge vores kommende Formænd og Bestyrelsesmedlemmer eller drømmer måske s
+ elv om en plads i bestyrelsen. Er dette lige noget for dig.\n\nVi glæder 
+ os til at se dig!\n\nVh LAU - Horsens Bestyrelse\,\n\nNB: Lokation "salen"
+  Horsens bibliotek.\n\nhttps://www.facebook.com/events/857704187403115/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker\, Tobaksgården 12\, 8700 Horsens\, D
+ enmark
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/857704187403115/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:4575688615983216@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260714T160000Z
+DTEND:20260714T180000Z
+SUMMARY:LAU Tirsdag: Oplæg med LAU Æresmedlem Mikki Klokkedal
+DESCRIPTION:LAU Horsens\n\nKom og hør nogle spændende historier om LAUs h
+ istorie (og måske endda nogle røverhistorier) fra LAU æresmedlem Mikki 
+ Klokkedal som også er LAU Horsens kasserer.\n\nVi giver første omgang dr
+ ikkevarer\, og så sælger vi resten.\n\nLokation og tid:\nHorsens Bibliot
+ ek klokken 18.\n\nhttps://www.facebook.com/events/4575688615983216/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker\, Tobaksgården 12\, 8700 Horsens\, D
+ enmark
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/4575688615983216/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2150364445543550@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260825T170000Z
+DTEND:20260825T190000Z
+SUMMARY:LAU Tirsdag: Oplæg med retsordfører Nicolai Melholt
+DESCRIPTION:LAU Horsens\n\n"Nummerpladescannere og "Jeg vil hellere voldtag
+ es i København end på Fyn." Hvad fanden sker der?"\n\nKom og hør LAUs r
+ etsordfører Nicolai Melholt snakke om den nuværende situation på retspo
+ litikken i landet. \nDer vil være sodavand og øl. \n\nLokation: Horsens 
+ Amatør Teater kl. 19.00\n\nhttps://www.facebook.com/events/21503644455435
+ 50/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Amatør Teater - www.hoat.dk\, Allégade 16B (Indgang fra 
+ Håndværkergården (Gratis P-plads))\, 8700 Horsens\, Denmark
+GEO:55.86552;9.84518
+URL:https://www.facebook.com/events/2150364445543550/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1232177549988971@lau-kort
+DTSTAMP:20260928T140419Z
+DTSTART:20260924T170000Z
+DTEND:20260924T190000Z
+SUMMARY:LAU Horsens oplæg med Ella Nellemann
+DESCRIPTION:LAU Horsens\n\nKom og hør LAUs kultur- og ligestillingsordfør
+ er Ella Nellemann.\nHun vil snakke om ligestilling og kultur i Danmark.\n\
+ nDer vil være drikkevarer til arrangementet\nEfter oplægget vil der ogs
+ å være mulighed for at blive og hygge socialt.\n\nTid og dato: Klokken 1
+ 9.00 d. 24/9 på Horsens Bibliotek.\nKom frisk!\n\nhttps://www.facebook.co
+ m/events/1232177549988971/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/1232177549988971/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1732151117902019@lau-kort
+DTSTAMP:20260928T092659Z
+DTSTART:20261017T220000Z
+DTEND:20261018T000000Z
+SUMMARY:Brætspils hygge på tværs af ungdomspartier i Horsens
+DESCRIPTION:LAU Horsens\n\nKom til arrangementet og mød andre politiske in
+ teresseret unge i Horsens. Til arrangementet vil der være ølsmagning\, s
+ amt brætspil. For deltagelse skal du være medlem af et ungdomsparti i Ho
+ rsens.\n\nhttps://www.facebook.com/events/1732151117902019/
+CATEGORIES:LAU Horsens
+LOCATION:Hestedamsgade 5\, 8700 Horsens\, Danmark
+GEO:55.86257;9.84509
+URL:https://www.facebook.com/events/1732151117902019/
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

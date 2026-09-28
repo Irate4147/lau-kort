@@ -190,6 +190,7 @@ const VISNINGER = [
   {id: 'kommunegraenser', gruppe: 'kort', label: 'Kommunegrænser'},
   {id: 'stednavne', gruppe: 'kort', label: 'Stednavne på grundkortet'},
   {id: 'tegnforklaring', gruppe: 'kort', label: 'Tegnforklaring'},
+  {id: 'kalender', gruppe: 'kort', label: 'Kalender', hint: 'Øverst til højre – vælg forening og tilføj til din egen kalender'},
 ];
 for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.standard !== false;
 /** Sektion i foreningspanelet: {id, titel, synlig?(f), render(f) -> html, efter?(el, f)}. */
@@ -408,6 +409,7 @@ function setVisning(id, on) {
 /** Anvender til/fra-tilstanden på grundlagene (lag, der ikke tegnes via registerLayer). */
 function applyVisning() {
   $('legend').hidden = !layerState.tegnforklaring;
+  visKalender();
   if (!MAP.ready) return;
   const vis = (id, on) => { if (MAP.map.getLayer(id)) MAP.map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none'); };
   vis('f-labels', layerState.foreningsnavne);
@@ -1427,6 +1429,7 @@ function opdater() {
   if (selected) renderForening(DATA.byName.get(selected));
   if (MAP.ready) setMode(selected, {fit: false});
   renderHB();
+  renderKalender();
   if (FANE === 'arrangementer') renderArrangementer();
 }
 
@@ -1690,6 +1693,123 @@ function arrForm(e) {
   return form;
 }
 
+// ------------------------------------------------------------------ kalender (øverst til højre på kortet)
+/*
+ * Månedskalender med arrangementerne, filtreret på de valgte foreninger (landsforeningen er altid med).
+ * Valget huskes i browseren. Abonnér: scripts/kalender.py skriver kalender/*.ics (se README.md).
+ */
+/** Filnavn for foreningens kalender – samme regel som slug() i scripts/kalender.py. */
+const kalenderSlug = navn => navn.toLowerCase().replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const KAL = {
+  maaned: monthKey(NOW), dag: null, vaelg: false, abonner: false,
+  valg: (() => { try { return JSON.parse(localStorage.getItem('lau-kalender')) || []; } catch (_) { return []; } })(),
+};
+const gemKalValg = () => { try { localStorage.setItem('lau-kalender', JSON.stringify(KAL.valg)); } catch (_) { /* fx privat vindue */ } };
+const fmtMaaned = new Intl.DateTimeFormat('da-DK', {month: 'long', year: 'numeric', timeZone: 'UTC'});
+// .ics-filerne læses fra repoet (som data/), så de er friske, selv før Pages er genudgivet.
+const kalUrl = fil => new URL(`kalender/${fil}`, CONFIG.dataBase || new URL(CONFIG.assetBase || '.', location.href)).href;
+
+const kalValgte = () => KAL.valg.filter(n => DATA.byName.has(n) && n !== NATIONAL);
+function kalEvents() {
+  const valg = kalValgte();
+  return DATA.events.filter(e => (!e.forsvundet || e.bekraeftet)
+    && (!valg.length || e.national || e.foreninger.some(n => valg.includes(n))));
+}
+/** Kalenderfilerne, der passer til valget: én fil ved ingen eller én forening, ellers landsforeningen + hver forening. */
+function kalFiler() {
+  const valg = kalValgte();
+  if (!valg.length) return [{navn: 'Alle foreninger', fil: 'alle.ics'}];
+  if (valg.length === 1) return [{navn: `LAU ${valg[0]} + Landsforeningen`, fil: `${kalenderSlug(valg[0])}.ics`}];
+  return [{navn: 'Landsforeningen', fil: 'landsforeningen.ics'}, ...valg.map(n => ({navn: `LAU ${n}`, fil: `${kalenderSlug(n)}-kun.ics`}))];
+}
+
+function visKalender() {
+  const el = $('kalender'), knap = $('kal-knap');
+  if (!el) return;
+  el.hidden = !layerState.kalender;
+  if (knap) knap.setAttribute('aria-pressed', String(!!layerState.kalender));
+  if (!el.hidden) placerKalender();
+}
+function placerKalender() {
+  const el = $('kalender'), top = $('map').offsetTop + 10;
+  el.style.top = `${top}px`;
+  el.style.maxHeight = `calc(100% - ${top + 10}px)`;
+}
+
+function renderKalender() {
+  const el = $('kalender');
+  if (!el || !DATA) return;
+  const events = kalEvents();
+  const perDag = new Map();
+  for (const e of events) { const k = dayKey(e.startD); perDag.set(k, [...(perDag.get(k) || []), e]); }
+  const [y, m] = KAL.maaned.split('-').map(Number);
+  const foerste = new Date(Date.UTC(y, m - 1, 1)), dage = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const offset = (foerste.getUTCDay() + 6) % 7, idag = dayKey(NOW);
+  const celler = [...Array(offset).fill('<span></span>'), ...Array.from({length: dage}, (_, i) => {
+    const k = `${KAL.maaned}-${String(i + 1).padStart(2, '0')}`, ev = perDag.get(k) || [];
+    const cls = ['kal-dag', k === idag && 'idag', k === KAL.dag && 'valgt', k < idag && 'fortid'].filter(Boolean).join(' ');
+    const prikker = ev.slice(0, 3).map(e => `<i class="${e.national ? 'nat' : ''}${e.aflyst ? ' afl' : ''}"></i>`).join('');
+    const tip = ev.map(e => `${fmtTime.format(e.startD)} ${e.navn}`).join('|');
+    return `<button type="button" class="${cls}" data-kal-dag="${k}"${ev.length ? ` data-tip="${esc(tip)}"` : ' disabled'}
+      aria-label="${i + 1}.${ev.length ? ` – ${ev.length} arrangement${ev.length > 1 ? 'er' : ''}` : ''}"><span>${i + 1}</span><span class="prikker">${prikker}</span></button>`;
+  })];
+  const liste = KAL.dag
+    ? {titel: fmtDay.format(new Date(KAL.dag + 'T12:00:00Z')), ev: perDag.get(KAL.dag) || []}
+    : {titel: 'Kommende', ev: events.filter(e => e.slutD >= NOW).sort((a, b) => a.startD - b.startD).slice(0, 5)};
+  const valg = kalValgte();
+  const filterTekst = !valg.length ? 'Alle foreninger' : valg.length === 1 ? `LAU ${valg[0]}` : `${valg.length} foreninger`;
+  const kopier = '<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M5 1h8a2 2 0 0 1 2 2v8h-2V3H5zM1 5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2zm2 0v8h6V5z"/></svg>';
+
+  el.innerHTML = `<div class="kal-head"><strong>Kalender</strong>
+      <button type="button" class="kal-filter" data-kal-vaelg aria-expanded="${KAL.vaelg}">${esc(filterTekst)} ▾</button>
+      <button type="button" class="kal-luk" data-kal-luk aria-label="Skjul kalender">×</button></div>
+    ${KAL.vaelg ? `<div class="kal-valg">
+      <label class="opt"><input type="checkbox" checked disabled><span>Landsforeningen<span class="hint">Altid med</span></span></label>
+      ${DATA.lokale.map(f => `<label class="opt"><input type="checkbox" data-kal-f="${esc(f.navn)}"${valg.includes(f.navn) ? ' checked' : ''}><span>LAU ${esc(f.navn)}</span></label>`).join('')}
+      <div class="kal-valg-knapper"><button type="button" class="linkbtn" data-kal-alle>Vis alle foreninger</button>
+        <button type="button" class="chip small" data-kal-vaelg>Færdig</button></div></div>` : ''}
+    <div class="kal-nav"><button type="button" data-kal-mdr="-1" aria-label="Forrige måned">‹</button>
+      <button type="button" class="kal-titel" data-kal-idag title="Gå til i dag">${esc(fmtMaaned.format(foerste))}</button>
+      <button type="button" data-kal-mdr="1" aria-label="Næste måned">›</button></div>
+    <div class="kal-grid">${UGEDAGE.map(d => `<span class="kal-ugedag">${d.slice(0, 1)}</span>`).join('')}${celler.join('')}</div>
+    <div class="kal-liste"><h3>${esc(liste.titel)}${KAL.dag ? ' <button type="button" class="linkbtn" data-kal-ryd>Vis kommende</button>' : ''}</h3>
+      ${evList(liste.ev, true, KAL.dag ? 'Ingen arrangementer.' : 'Ingen planlagte arrangementer.')}</div>
+    <div class="kal-abonner">
+      <button type="button" class="linkbtn" data-kal-abonner aria-expanded="${KAL.abonner}">＋ Tilføj til din kalender</button>
+      ${KAL.abonner ? `<p class="note">Abonnér – kalenderen opdateres automatisk${valg.length > 1 ? '. Ved flere foreninger: tilføj hver kalender (landsforeningen kun én gang)' : ''}.</p>
+        ${kalFiler().map(k => { const url = kalUrl(k.fil); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(url)}" target="_blank" rel="noopener">Google</a>
+          <a href="${esc(url.replace(/^https?:/, 'webcal:'))}">Apple/Outlook</a>
+          <button type="button" class="linkbtn" data-kal-kopier="${esc(url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>`; }).join('')}
+        <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>` : ''}
+    </div>`;
+
+  const q = s => el.querySelectorAll(s);
+  const igen = () => { renderKalender(); };
+  q('[data-kal-luk]').forEach(b => b.addEventListener('click', () => setVisning('kalender', false)));
+  q('[data-kal-vaelg]').forEach(b => b.addEventListener('click', () => { KAL.vaelg = !KAL.vaelg; igen(); }));
+  q('[data-kal-f]').forEach(i => i.addEventListener('change', () => {
+    KAL.valg = i.checked ? [...kalValgte(), i.dataset.kalF] : kalValgte().filter(n => n !== i.dataset.kalF);
+    gemKalValg(); igen();
+  }));
+  q('[data-kal-alle]').forEach(b => b.addEventListener('click', () => { KAL.valg = []; gemKalValg(); igen(); }));
+  q('[data-kal-mdr]').forEach(b => b.addEventListener('click', () => {
+    const d = new Date(Date.UTC(y, m - 1 + Number(b.dataset.kalMdr), 1));
+    KAL.maaned = d.toISOString().slice(0, 7); KAL.dag = null; igen();
+  }));
+  q('[data-kal-idag]').forEach(b => b.addEventListener('click', () => { KAL.maaned = monthKey(NOW); KAL.dag = null; igen(); }));
+  q('[data-kal-dag]').forEach(b => b.addEventListener('click', () => { hideTip(); KAL.dag = KAL.dag === b.dataset.kalDag ? null : b.dataset.kalDag; igen(); }));
+  q('[data-kal-ryd]').forEach(b => b.addEventListener('click', () => { KAL.dag = null; igen(); }));
+  q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => { KAL.abonner = !KAL.abonner; igen(); }));
+  q('[data-kal-kopier]').forEach(b => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.kalKopier); b.lastChild.textContent = ' Kopieret'; }
+    catch (_) { prompt('Kopiér linket:', b.dataset.kalKopier); }
+  }));
+  bindTips(el);
+  q('.kal-liste [data-f]').forEach(b => b.addEventListener('click', () => { closePopover(); openForening(b.dataset.f); }));
+}
+
 // ------------------------------------------------------------------ start
 
 window.LAU = {registerSection, registerLayer, openForening, closeForening, visFane, CONFIG, get data() { return DATA; }, get map() { return MAP.map; }};
@@ -1706,8 +1826,12 @@ async function main() {
   renderLegend();
   const nat = DATA.byName.get(NATIONAL);
   $('map-actions').innerHTML = (nat ? `<button class="chip" data-f="${NATIONAL}" aria-pressed="false">◆ Landsforeningen</button>` : '')
-    + '<button class="chip" id="zoom-reset" hidden>← Hele landet</button>';
+    + '<button class="chip" id="zoom-reset" hidden>← Hele landet</button>'
+    + '<button class="chip" id="kal-knap" aria-pressed="false" aria-controls="kalender">📅 Kalender</button>';
   bindForeningLinks($('map-actions'));
+  $('kal-knap').addEventListener('click', () => setVisning('kalender', !layerState.kalender));
+  addEventListener('resize', () => { if (layerState.kalender) placerKalender(); });
+  renderKalender();
   $('zoom-reset').addEventListener('click', closeForening);
   $('back').addEventListener('click', closeForening);
   $('rank-sort').addEventListener('change', renderRank);
