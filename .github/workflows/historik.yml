@@ -2,7 +2,7 @@ name: Hent historik
 
 # Engangskørsel: scraper foreningernes tidligere begivenheder ("past_hosted_events") på Apify
 # og gemmer dem, der er afholdt siden en given dato (standard 1. januar i år), i data/.
-# Koster Apify-kreditter (højst 60 begivenheder pr. side), så den startes kun manuelt.
+# Koster Apify-kreditter (højst 20 begivenheder pr. side), så den startes kun manuelt.
 on:
   workflow_dispatch:
     inputs:
