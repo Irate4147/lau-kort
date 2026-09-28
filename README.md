@@ -32,11 +32,29 @@ Linket er fx `https://raw.githubusercontent.com/Irate4147/lau-kort/main/kalender
 
 Sidepanelet har disse faner:
 
-- **Oversigt** – de næste 14 dage og alle foreninger (klik for foreningspanelet). Admins ser også statistik (aktive i kvartalet, afholdte, aktivitet pr. forening).
-- **Visninger** – farvning (aktivitet nu, ingen farve; for admins også afholdt i et kvartal) og til/fra for næsten alt på kortet: begivenhedsbokse, aktivitetspunkter, landsforeningens og aflyste aktiviteter, afholdte aktiviteter, foreningsnavne, grænser, kommunenavne, grundkortets stednavne og tegnforklaringen. Valgene huskes i browseren.
+- **Oversigt** – de næste 14 dage og alle foreninger (klik for foreningspanelet). Admins ser også statistik (aktive i kvartalet, afholdte, [momentum](#momentum), aktivitet pr. forening).
+- **Visninger** – farvning (aktivitet nu, ingen farve; for admins også momentum og afholdt i et kvartal) og til/fra for næsten alt på kortet: begivenhedsbokse, aktivitetspunkter, landsforeningens og aflyste aktiviteter, afholdte aktiviteter, foreningsnavne, grænser, kommunenavne, grundkortets stednavne og tegnforklaringen. Valgene huskes i browseren.
 - **HB** (kun admins) – alle HB-visninger (se nedenfor).
 - **Arrangementer** (kun admins) – alle arrangementer med filtre og redigering (se "Rettelser").
 - **🔒 Log ind / Admin** – adminlogin; efter login: GitHub-forbindelse og analyser (se "Adminlogin").
+
+## Momentum
+
+Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på vej med at afholde arrangementer – og et tidligt varsel om, at den har brug for hjælp. Den bygger på to tal:
+
+- **Bagud:** afholdte arrangementer de seneste 90 dage.
+- **Frem:** arrangementer i kalenderen de næste 60 dage.
+
+| Niveau | Regel |
+|---|---|
+| ↗ Godt i gang | begge > 0 og mindst 4 i alt (≈ én om måneden) |
+| → Stabil | begge > 0 |
+| ↘ Mister fart | enten intet afholdt eller intet i kalenderen |
+| ⚠ Brug for hjælp | hverken afholdt eller planlagt |
+
+(plus "historik mangler", når intet er afholdt, og data ikke dækker de seneste 90 dage.) Derudover vises advarsler: mange dage siden sidste arrangement (> 45), intet i kalenderen / næste først om > 30 dage, færre afholdt end de 90 dage før (når data dækker det) og aflyste arrangementer.
+
+Oversigten har antal pr. niveau, et punktdiagram (afholdt × planlagt) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_BAGUD`, `MOM_FREMAD` og `MOM_GODT` i `app.js`.
 
 ## Rettelser af arrangementer
 
@@ -73,7 +91,7 @@ Alt om HB er fortroligt og kun for admins.
 `app.js` er bygget op om registre, så nye funktioner kan tilføjes uden at ændre resten. Sektioner, lag og sorteringer med `admin: true` vises kun for admins:
 
 - **Panelsektioner** – `LAU.registerSection({id, titel, synlig(f), render(f), efter(el, f)}, {efter: 'kommende'})`.
-  Indbyggede: `kommende` og `stamdata` (offentlige) samt `hb`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage` og `noter` (admin).
+  Indbyggede: `kommende` og `stamdata` (offentlige) samt `momentum`, `hb`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage` og `noter` (admin).
 - **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, gruppe, hint, tilgaengelig(), synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
   Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin).
 - **Analyser** (fanen Admin, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening).
