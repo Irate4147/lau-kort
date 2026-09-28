@@ -38,7 +38,7 @@ API = "https://api.apify.com/v2"
 ACTOR = "apify~facebook-events-scraper"
 DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
-HISTORIK_MAX_PR_SIDE = 20   # loft pr. side: siden viser nyeste først, og 20 dækker 2026 for de fleste
+HISTORIK_MAX_PR_SIDE = 20   # loft pr. side: siden viser nyeste først, og 20 dækker 2026 for de fleste (ellers fordobles det)
 HISTORIK_SAMTIDIGE = 2
 
 
@@ -364,19 +364,24 @@ def historik(fra):
     kommuner = load_kommuner()
     events, meta = load_state()
     # Sider, hvis historik allerede er hentet, springes over, så en afbrudt kørsel kan genoptages billigt.
-    # Ældre kørsler uden "side" gjaldt foreningens hovedside.
-    ok = [k for k in (meta.get("historik") or {}).get("koersler", []) if k.get("status") == "SUCCEEDED"]
-    hentet = {side_key(k["side"]) for k in ok if k.get("side")} | {("hoved", k["forening"]) for k in ok if not k.get("side")}
+    # Ramte sidens seneste kørsel loftet, og lå alle hentede i perioden, mangler der ældre begivenheder:
+    # så hentes den igen med dobbelt loft. Ældre kørsler uden "side" gjaldt foreningens hovedside.
+    seneste = {}
+    for k in (meta.get("historik") or {}).get("koersler", []):
+        if k.get("status") == "SUCCEEDED":
+            seneste[side_key(k["side"]) if k.get("side") else ("hoved", k["forening"])] = k
     # historik_fra i foreninger.json: historikken er tjekket manuelt (fx ingen arrangementer), så den hentes ikke.
     mangler, sprunget = [], []
     for f in json.loads(FORENINGER.read_text(encoding="utf-8")):
         for i, u in enumerate(sider(f)):
-            if f.get("historik_fra") or side_key(u) in hentet or (i == 0 and ("hoved", f["navn"]) in hentet):
+            k = seneste.get(side_key(u)) or (seneste.get(("hoved", f["navn"])) if i == 0 else None)
+            loft = k.get("max", HISTORIK_MAX_PR_SIDE) if k else 0
+            if f.get("historik_fra") or (k and (k.get("udvalgte") or k["hentet"] < loft or k["begivenheder"] < k["hentet"])):
                 sprunget.append(u)
             else:
                 valgt = udvalgte(f, u)
                 mangler.append({"forening": f["navn"], "side": u, "start": valgt or [past_url(u)],
-                                "max": len(valgt) or HISTORIK_MAX_PR_SIDE, "udvalgte": bool(valgt)})
+                                "max": len(valgt) or 2 * loft or HISTORIK_MAX_PR_SIDE, "udvalgte": bool(valgt)})
     if sprunget:
         print(f"Springer over ({len(sprunget)} sider allerede hentet eller tjekket manuelt)")
     print("Henter: " + (", ".join(f"{j['forening']} ({j['side']}" + (f", kun {j['max']} udvalgte begivenheder" if j["udvalgte"] else "")
@@ -400,7 +405,7 @@ def historik(fra):
         # aeldste: den ældste hentede begivenhed – historikken dækker kun derfra, hvis kørslen ramte loftet.
         # udvalgte: kun de angivne begivenheder er hentet – de er hele sidens historik, så intet loft.
         koersler.append({"id": run["id"], "tid": seen, "forening": forening, "side": job["side"], "status": run["status"],
-                         "hentet": len(items), "begivenheder": tilfoejet,
+                         "hentet": len(items), "max": job["max"], "begivenheder": tilfoejet,
                          "aeldste": iso(min(starter)) if starter else None, **({"udvalgte": True} if job["udvalgte"] else {})})
         print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} siden {fra.date()}")
 

@@ -242,7 +242,7 @@ async function load() {
     if (k.status !== 'SUCCEEDED') continue;
     const aeldste = k.aeldste ? dayKey(new Date(k.aeldste))
       : events.filter(e => e.historisk && (e.foreninger || [e.forening]).includes(k.forening)).map(e => dayKey(new Date(e.start))).sort()[0];
-    const loft = k.hentet >= HISTORIK_LOFT && k.begivenheder >= k.hentet;
+    const loft = k.hentet >= (k.max || HISTORIK_LOFT) &&k.begivenheder >= k.hentet;
     prSide.set(`${k.forening}|${k.side || ''}`, loft && aeldste ? aeldste : HISTORIK.fra);
   }
   for (const f of foreninger) {
