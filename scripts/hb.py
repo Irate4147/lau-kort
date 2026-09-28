@@ -37,13 +37,28 @@ def kvartaler(aar):
     return [(q + 1, date(aar, 3 * q + 1, 1), date(aar + (q == 3), (3 * q + 3) % 12 + 1, 1)) for q in range(4)]
 
 
-def daekning(meta):
-    """Første dag med data: de ugentlige kørsler for alle, og historikken for foreninger, hvor den er hentet."""
+HISTORIK_LOFT = 20  # højst så mange begivenheder pr. side i historikken (HISTORIK_MAX_PR_SIDE i sync.py)
+
+
+def daekning(meta, events):
+    """Første dag med fuld data pr. forening: de ugentlige kørsler for alle, og historikken, hvor den er hentet.
+
+    Ramte historik-kørslen loftet, og lå alle hentede begivenheder i perioden, kan der mangle ældre
+    begivenheder; så dækker historikken kun fra den ældste hentede. Samme regel som daekketFra() i app.js.
+    """
     ugentlig = min((dansk_dag(k["tid"]) for k in meta.get("koersler", [])), default=None)
     hist = meta.get("historik") or {}
-    hentet = {k["forening"] for k in hist.get("koersler", []) if k.get("status") == "SUCCEEDED"}
-    hist_fra = dansk_dag(hist["fra"]) if hist.get("fra") else None
-    return lambda navn: min(d for d in (ugentlig, hist_fra if navn in hentet else None) if d) if ugentlig else None
+    hist_fra = dansk_dag(hist["fra"]) if hist.get("fra") else ugentlig
+    fra_for = {}
+    for k in hist.get("koersler", []):
+        if k.get("status") != "SUCCEEDED":
+            continue
+        navn = k["forening"]
+        aeldste = min((dansk_dag(e["start"]) for e in events
+                       if e.get("historisk") and navn in (e.get("foreninger") or [e["forening"]])), default=None)
+        loft = k.get("hentet", 0) >= HISTORIK_LOFT and k.get("begivenheder", 0) >= k.get("hentet", 0)
+        fra_for[navn] = aeldste if loft and aeldste else hist_fra  # seneste vellykkede kørsel vinder
+    return lambda navn: min(d for d in (ugentlig, fra_for.get(navn)) if d) if ugentlig else None
 
 
 def vurder(aar, idag=None):
@@ -53,7 +68,7 @@ def vurder(aar, idag=None):
     meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8"))
     hb = json.loads((DATA / "hb.json").read_text(encoding="utf-8"))
     hb_nu = hb.get(f"hb{aar}", {}).get("foreninger", {})
-    fra_for = daekning(meta)
+    fra_for = daekning(meta, events)
 
     resultat = {}
     for f in foreninger:

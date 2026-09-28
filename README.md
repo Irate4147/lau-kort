@@ -20,8 +20,8 @@ Over kortet kan "Farv efter" sættes til et af årets kvartaler (Q1, Q2, …): l
 
 - `data/hb.json`: kriterierne fra Organisationshåndbogen (8.2) og årets HB-status pr. forening (fra overblikket på Drive, og for de røde foreninger efter gennemgang af deres mappe). Indeholder kun status og mangler, ingen persondata.
 - `scripts/hb.py [ÅR]` sammenholder `data/events.json` med kvartalskravet (mindst ét afholdt arrangement pr. kvartal; om det er fagligt, vurderes ikke) og skriver `data/hb_<ÅR+1>.json` med status pr. kvartal (`ja`, `nej`, `ukendt`, `planlagt`, `mangler`), en prognose og begrundelser. Kører automatisk efter den ugentlige sync.
-  Et kvartal bliver kun `nej`, når data dækker hele kvartalet (se `data_fra`, pr. forening: historikken tæller kun for foreninger, hvor hentningen lykkedes), så manglende historik giver `ukendt` i stedet for et forkert nej.
-- På kortet: "Farv efter" → "HB-godkendelse <år>" farver foreningerne i lilla/magenta (på vej · mangler aktivitet i indeværende/kommende kvartal · kan ikke godkendes · historik mangler). Siden beregner det selv med samme regel, og foreningspanelet har en sektion med status pr. kvartal og årets HB-status fra `data/hb.json`.
+  Et kvartal bliver kun `nej`, når data dækker hele kvartalet (se `data_fra`, pr. forening: historikken tæller kun, hvor hentningen lykkedes, og ramte den loftet på 20 begivenheder, kun fra den ældste hentede), så manglende historik giver `ukendt` i stedet for et forkert nej.
+- På kortet: til/fra-knappen "Kan ikke HB-godkendes <år>" skraverer de foreninger magenta, der ikke kan godkendes – oven på den valgte farvning (fx et enkelt kvartal). Desuden farver "Farv efter" → "HB-godkendelse <år>" farver foreningerne i lilla/magenta (på vej · mangler aktivitet i indeværende/kommende kvartal · kan ikke godkendes · historik mangler). Siden beregner det selv med samme regel, og foreningspanelet har en sektion med status pr. kvartal og årets HB-status fra `data/hb.json`.
 
 ## Ændringer
 
