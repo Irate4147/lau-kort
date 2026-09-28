@@ -75,14 +75,24 @@ const KVARTALER = (() => {
   return Array.from({length: cur + 1}, (_, q) => ({id: `Q${q + 1}`, kort: `Q${q + 1}`, navn: `${q + 1}. kvartal ${y}`, fra: start(q), til: start(q + 1)}));
 })();
 const KVARTAL = KVARTALER[KVARTALER.length - 1];
-const KVARTAL_FILL = {ja: '#1f9d55', nej: '#e4572e', ingenfb: '#d9d7d0'};
+const KVARTAL_FILL = {ja: '#1f9d55', nej: '#e4572e', ukendt: '#9d9b94', ingenfb: '#d9d7d0'};
 const kvartalStatus = k => ({
   ja:      {label: `Afholdt aktivitet i ${k.kort}`},
   nej:     {label: `Ingen afholdt aktivitet i ${k.kort}`},
+  ukendt:  {label: 'Historik ikke hentet endnu'},
   ingenfb: {label: 'Ingen Facebook-side tilknyttet'},
 });
-/** 'ja' / 'nej' / 'ingenfb' for en forening i et kvartal. */
-const kvStatus = (f, k) => (f.kv[k.id] ? 'ja' : f.facebook ? 'nej' : 'ingenfb');
+// Foreninger, hvis tidligere begivenheder er hentet, og datoen, hvor de ugentlige kørsler startede (sættes i load()).
+const HISTORIK = {hentet: new Set(), ugentligFra: ''};
+/**
+ * 'ja' / 'nej' / 'ukendt' / 'ingenfb' for en forening i et kvartal. 'ukendt', når kvartalet ligger før de
+ * ugentlige kørsler, og foreningens historik ikke er hentet – så ser den ikke inaktiv ud uden grund.
+ */
+function kvStatus(f, k) {
+  if (f.kv[k.id]) return 'ja';
+  if (!f.facebook) return 'ingenfb';
+  return k.fra < HISTORIK.ugentligFra && !HISTORIK.hentet.has(f.navn) ? 'ukendt' : 'nej';
+}
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
@@ -138,7 +148,9 @@ async function load() {
     get(CONFIG.assetBase, 'geo/kommuner.topo.json')]);
   const firstRun = meta.koersler.length ? new Date(meta.koersler[0].tid) : NOW;
   // Afholdte aktiviteter kendes fra den første ugentlige kørsel, eller længere tilbage, hvis historikken er hentet.
-  const historik = meta.historik && meta.historik.fra && (meta.historik.koersler || []).some(k => k.status === 'SUCCEEDED');
+  HISTORIK.hentet = new Set(((meta.historik && meta.historik.koersler) || []).filter(k => k.status === 'SUCCEEDED').map(k => k.forening));
+  HISTORIK.ugentligFra = dayKey(firstRun);
+  const historik = !!(meta.historik && meta.historik.fra && HISTORIK.hentet.size);
   const dataFra = historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
 
   for (const e of events) {
@@ -224,8 +236,8 @@ const calloutsEnabled = () => { const el = $('map'); return el.clientWidth >= 42
 const mapPadding = () => (calloutsEnabled() ? 48 : 20);
 
 const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
-const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, KVARTAL_FILL.ingenfb];
-const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 0.25];
+const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
+const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 'ukendt', 0.35, 0.25];
 /** Foreningens farve og forklaring i den valgte farvning. */
 function farveFor(f) {
   const k = valgtKvartal();
@@ -974,7 +986,8 @@ function closeForening() {
 
 function renderLegend() {
   const kv = valgtKvartal();
-  const [labels, fills] = kv ? [kvartalStatus(kv), KVARTAL_FILL] : [STATUS, MAP_FILL];
+  let [labels, fills] = kv ? [kvartalStatus(kv), KVARTAL_FILL] : [STATUS, MAP_FILL];
+  if (kv && !DATA.foreninger.some(f => kvStatus(f, kv) === 'ukendt')) { labels = {...labels}; delete labels.ukendt; }
   // Advar, hvis dataindsamlingen ikke dækker hele kvartalet – ellers ser foreninger inaktive ud uden grund.
   let mangler = '';
   if (kv && DATA.dataFra >= new Date(kv.til + 'T00:00:00Z')) mangler = `Ingen data for ${kv.kort} endnu`;

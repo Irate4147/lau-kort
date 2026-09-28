@@ -38,7 +38,7 @@ API = "https://api.apify.com/v2"
 ACTOR = "apify~facebook-events-scraper"
 DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
-HISTORIK_MAX_PR_SIDE = 60   # loft pr. side, så en kørsel ikke henter hele sidens historik
+HISTORIK_MAX_PR_SIDE = 30   # loft pr. side: siden viser nyeste først, og 30 dækker et års aktivitet for de fleste
 HISTORIK_SAMTIDIGE = 2
 
 
@@ -298,8 +298,13 @@ def log_tail(run_id, n=15):
         return f"    (kunne ikke hente log: {e})"
 
 
+STOP = []  # sat, når Apify afviser nye kørsler (fx fordi månedens forbrug er brugt op)
+
+
 def run_actor(url):
     """Start én Apify-kørsel på en sides tidligere begivenheder og vent på den."""
+    if STOP:
+        return url, None, []
     try:
         run = api(f"/acts/{ACTOR}/runs", {"startUrls": [url], "maxEvents": HISTORIK_MAX_PR_SIDE})["data"]
         while run["status"] in ("READY", "RUNNING"):
@@ -309,6 +314,14 @@ def run_actor(url):
             print(f"{url}: {run['status']} – {run.get('statusMessage') or ''}\n{log_tail(run['id'])}", file=sys.stderr)
         items = api(f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json") or []
         return url, run, items
+    except urllib.error.HTTPError as e:
+        if e.code in (402, 403):
+            STOP.append(e.code)
+            print(f"{url}: Apify afviste kørslen ({e.code}) – sandsynligvis er månedens forbrug brugt op. "
+                  "Stopper; kør workflowet igen senere for at hente resten.", file=sys.stderr)
+        else:
+            print(f"{url}: fejlede ({e})", file=sys.stderr)
+        return url, None, []
     except (urllib.error.URLError, KeyError, TypeError) as e:
         print(f"{url}: fejlede ({e})", file=sys.stderr)
         return url, None, []
@@ -328,7 +341,13 @@ def historik(fra):
     foreninger = load_foreninger()
     kommuner = load_kommuner()
     events, meta = load_state()
-    urls = [past_url(f["facebook"]) for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook")]
+    # Foreninger, hvis historik allerede er hentet, springes over, så en afbrudt kørsel kan genoptages billigt.
+    hentet = {k["forening"] for k in (meta.get("historik") or {}).get("koersler", []) if k.get("status") == "SUCCEEDED"}
+    mangler = [f for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook") and f["navn"] not in hentet]
+    if hentet:
+        print(f"Springer over (allerede hentet): {', '.join(sorted(hentet))}")
+    print(f"Henter: {', '.join(f['navn'] for f in mangler) or '(ingen)'}")
+    urls = [past_url(f["facebook"]) for f in mangler]
 
     with ThreadPoolExecutor(HISTORIK_SAMTIDIGE) as pool:
         results = list(pool.map(run_actor, urls))
