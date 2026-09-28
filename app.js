@@ -153,6 +153,58 @@ function hbPrognose(f) {
   const naeste = f.planlagt.some(e => { const d = dayKey(e.startD); return d >= HB_NAESTE.fra && d < HB_NAESTE.til; });
   return naeste ? 'plus_naeste' : 'alle';
 }
+/*
+ * Momentum: en tidlig sundhedsindikator for, om foreningen er godt på vej med at afholde arrangementer.
+ * Bagud: afholdt de seneste MOM_BAGUD dage. Fremad: planlagt (i kalenderen) de næste MOM_FREMAD dage.
+ * Niveauer (bedst først): godt (begge > 0 og mindst MOM_GODT i alt ≈ én om måneden), stabil (begge > 0),
+ * fremad (intet afholdt, men noget planlagt – er ved at komme i gang), faldende (afholdt, men intet planlagt),
+ * hjaelp (hverken afholdt eller planlagt). 'ukendt', når intet er afholdt, og
+ * data ikke dækker hele perioden bagud; 'ingenfb' uden Facebook-side og uden arrangementer.
+ * Trend: seneste MOM_BAGUD dage mod de MOM_BAGUD dage før, når data dækker begge.
+ */
+const MOM_BAGUD = 60, MOM_FREMAD = 60, MOM_GODT = 4;
+const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
+const MOM_STATUS = {
+  godt:     {ikon: '↗', label: 'Godt i gang', hint: `Afholder og planlægger – mindst ${MOM_GODT} i alt (≈ én om måneden)`},
+  stabil:   {ikon: '→', label: 'Stabil', hint: 'Både afholdt og planlagt, men få arrangementer'},
+  fremad:   {ikon: '⤴', label: 'Går fremad', hint: `Intet afholdt de seneste ${MOM_BAGUD} dage, men noget i kalenderen de næste ${MOM_FREMAD}`},
+  faldende: {ikon: '↘', label: 'Mister fart', hint: `Har afholdt de seneste ${MOM_BAGUD} dage, men intet i kalenderen de næste ${MOM_FREMAD}`},
+  hjaelp:   {ikon: '⚠', label: 'Brug for hjælp', hint: `Intet afholdt de seneste ${MOM_BAGUD} dage og intet planlagt de næste ${MOM_FREMAD}`},
+  ukendt:   {ikon: '?', label: 'Historik mangler', hint: `Data dækker ikke de seneste ${MOM_BAGUD} dage`},
+  ingenfb:  {ikon: '–', label: 'Ingen Facebook-side', hint: 'Aktiviteter kan ikke hentes automatisk'},
+};
+const MOM_ORDEN = {hjaelp: 0, faldende: 1, fremad: 2, ukendt: 3, stabil: 4, godt: 5, ingenfb: 6}; // dem, der kræver handling, først
+/** Foreningens momentum: {niveau, bagud, fremad, forrige, sidsteDage, naesteDage, aflyst, signaler}. */
+function momentum(f) {
+  const fra = new Date(NOW.getTime() - MOM_BAGUD * DAY), fra2 = new Date(NOW.getTime() - 2 * MOM_BAGUD * DAY);
+  const til = new Date(NOW.getTime() + MOM_FREMAD * DAY);
+  const bagud = f.afholdt.filter(e => e.startD >= fra).length;
+  const fremad = f.planlagt.filter(e => e.startD <= til).length;
+  const daekket = daekketFra(f.navn);
+  const forrige = daekket <= dayKey(fra2) ? f.afholdt.filter(e => e.startD >= fra2 && e.startD < fra).length : null;
+  const aflyst = f.events.filter(e => e.aflyst && e.startD >= fra && e.startD < NOW).length;
+  const sidsteDage = f.sidste ? Math.floor((NOW - f.sidste) / DAY) : null;
+  const naesteDage = f.naeste ? Math.max(0, Math.floor((f.naeste.startD - NOW) / DAY)) : null;
+  const niveau = !f.facebook && !f.gyldige.length ? 'ingenfb'
+    : !bagud && fremad ? 'fremad'
+    : !bagud && daekket > dayKey(fra) ? 'ukendt'
+    : !bagud && !fremad ? 'hjaelp'
+    : !fremad ? 'faldende'
+    : bagud + fremad >= MOM_GODT ? 'godt' : 'stabil';
+  // Tidlige advarsler (−) og gode tegn (+), der forklarer niveauet.
+  const signaler = [];
+  if (niveau !== 'ingenfb') {
+    if (sidsteDage == null) signaler.push(['-', daekket <= dayKey(fra) ? `Intet afholdt siden ${fmtDate.format(new Date(daekket + 'T12:00:00Z'))}` : 'Intet afholdt registreret']);
+    else if (sidsteDage > 45) signaler.push(['-', `${sidsteDage} dage siden sidste arrangement`]);
+    if (!f.planlagt.length) signaler.push(['-', 'Intet i kalenderen']);
+    else if (naesteDage > 30) signaler.push(['-', `Næste arrangement først om ${naesteDage} dage`]);
+    else if (naesteDage <= 14) signaler.push(['+', naesteDage === 0 ? 'Arrangement i dag' : `Næste arrangement om ${naesteDage} dage`]);
+    if (forrige != null && bagud < forrige) signaler.push(['-', `Færre afholdt end de ${MOM_BAGUD} dage før (${forrige} → ${bagud})`]);
+    if (forrige != null && bagud > forrige) signaler.push(['+', `Flere afholdt end de ${MOM_BAGUD} dage før (${forrige} → ${bagud})`]);
+    if (aflyst) signaler.push(['-', `${aflyst} aflyst de seneste ${MOM_BAGUD} dage`]);
+  }
+  return {niveau, bagud, fremad, forrige, sidsteDage, naesteDage, aflyst, signaler};
+}
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 /** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
 const fbSider = f => [f.facebook, ...(f.facebook_ekstra || []).map(e => (typeof e === 'string' ? e : e.url))].filter(Boolean);
@@ -161,12 +213,12 @@ const $ = id => document.getElementById(id);
 
 let DATA = null;
 let selected = null;
-// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …), 'hb' (HB-godkendelse næste år) eller 'ingen'.
+// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …), 'momentum', 'hb' (HB-godkendelse næste år) eller 'ingen'.
 let farvning = (() => {
   let v = 'status';
   try { v = localStorage.getItem('lau-farvning') || v; } catch (_) { /* fx privat vindue */ }
   if (v === 'kvartal') v = KVARTAL.id; // ældre gemt værdi
-  return v === 'hb' || v === 'ingen' || KVARTALER.some(k => k.id === v) ? v : 'status';
+  return v === 'hb' || v === 'momentum' || v === 'ingen' || KVARTALER.some(k => k.id === v) ? v : 'status';
 })();
 /** Må aktiviteten vises? Offentligt kun kommende og afholdte det seneste år; admins ser alle. */
 const offentligTid = e => erAdmin() || e.slutD >= ET_AAR_SIDEN;
@@ -422,6 +474,7 @@ function beregn() {
       f.hbKv = Object.fromEntries(HB_KVARTALER.map(k => [k.id, hbKvartal(f, k)]));
       f.hb = hbPrognose(f);
       f.hbNu = hbNu[f.navn] || null; // årets HB-status og mangler fra data/hb.json
+      f.mom = momentum(f);
       if (!RAW.geom.has(f.navn)) {
         const merged = topojson.merge(topo, topo.objects.kom.geometries.filter(g => g.properties.forening === f.navn));
         RAW.geom.set(f.navn, {merged, bounds: d3.geoBounds(merged)});
@@ -434,6 +487,7 @@ function beregn() {
     const f = byName.get(feat.properties.forening);
     feat.properties.status = f.status;
     feat.properties.hb = f.hb;
+    feat.properties.mom = f.mom.niveau;
     for (const k of KVARTALER) feat.properties['kv_' + k.id] = kvStatus(f, k);
   }
   const lokale = foreninger.filter(f => !f.national);
@@ -486,10 +540,13 @@ const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'ne
 const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 'ukendt', 0.35, 0.25];
 const HB_COLOR = ['match', ['get', 'hb'], ...Object.entries(HB_FILL).flat(), HB_FILL.ukendt];
 const HB_OPACITY = ['match', ['get', 'hb'], 'ukendt', 0.35, 0.6];
+const MOM_COLOR = ['match', ['get', 'mom'], ...Object.entries(MOM_FILL).flat(), MOM_FILL.ingenfb];
+const MOM_OPACITY = ['match', ['get', 'mom'], 'ukendt', 0.35, 'ingenfb', 0.25, 0.6];
 /** Foreningens farve og forklaring i den valgte farvning. */
 function farveFor(f) {
   if (farvning === 'ingen') return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
   if (farvning === 'hb') return f.hb ? {farve: HB_FILL[f.hb], label: HB_STATUS[f.hb].label} : {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'};
+  if (farvning === 'momentum') return f.mom ? {farve: MOM_FILL[f.mom.niveau], label: MOM_STATUS[f.mom.niveau].label} : {farve: MAP_FILL.ingenfb, label: 'Landsforeningen'};
   const k = valgtKvartal();
   if (!k) return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
   const s = kvStatus(f, k);
@@ -500,11 +557,11 @@ function applyFill() {
   if (!MAP.ready) return;
   const f = selected && DATA.byName.get(selected);
   const local = f && !f.national ? f.navn : '';
-  const k = valgtKvartal(), hb = farvning === 'hb', ingen = farvning === 'ingen';
-  MAP.map.setPaintProperty('kom-fill', 'fill-color', hb ? HB_COLOR : k ? kvColor(k) : STATUS_COLOR);
+  const k = valgtKvartal(), hb = farvning === 'hb', mom = farvning === 'momentum', ingen = farvning === 'ingen';
+  MAP.map.setPaintProperty('kom-fill', 'fill-color', hb ? HB_COLOR : mom ? MOM_COLOR : k ? kvColor(k) : STATUS_COLOR);
   // Uden farvning er fladerne usynlige, men kan stadig klikkes på.
   MAP.map.setPaintProperty('kom-fill', 'fill-opacity', ingen ? (local ? ['case', ['==', ['get', 'forening'], local], 0.25, 0] : 0)
-    : local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
+    : local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : mom ? MOM_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
 }
 
 function setFarvning(mode) {
@@ -515,6 +572,7 @@ function setFarvning(mode) {
   renderRank();
   renderVisninger();
   renderHB();
+  if (erAdmin()) renderMomentum();
 }
 
 /** Slår et element under "Visninger" til eller fra. */
@@ -943,6 +1001,11 @@ function hoverForening(navn, ev) {
     const kv = HB_KVARTALER.map(q => `${q.kort}: ${HB_KV[f.hbKv[q.id]].label}`).join(' · ');
     return showTip(ev, [visningsnavn(f), HB_STATUS[f.hb].label, kv]);
   }
+  if (farvning === 'momentum' && f.mom) {
+    const m = f.mom;
+    return showTip(ev, [visningsnavn(f), `${MOM_STATUS[m.niveau].ikon} ${MOM_STATUS[m.niveau].label}`,
+      `Afholdt ${MOM_BAGUD} dage: ${m.bagud} · Planlagt ${MOM_FREMAD} dage: ${m.fremad}`, ...m.signaler.filter(s => s[0] === '-').slice(0, 2).map(s => s[1])]);
+  }
   const k = valgtKvartal();
   const linje = !k ? STATUS[f.status].label : f.kv[k.id] ? `Afholdt i ${k.kort}: ${f.kv[k.id]}` : kvartalStatus(k)[kvStatus(f, k)].label;
   showTip(ev, [visningsnavn(f), linje, next]);
@@ -1103,7 +1166,7 @@ function renderOverview() {
   renderRank();
 
   $('overview-admin').hidden = !erAdmin();
-  if (erAdmin()) renderAktivitetPrForening(foreninger);
+  if (erAdmin()) { renderMomentum(); renderAktivitetPrForening(foreninger); }
 
   const last = meta.koersler[meta.koersler.length - 1];
   $('updated').textContent = last ? `Sidst hentet fra Facebook: ${fmtStamp.format(new Date(last.tid))}` : '';
@@ -1114,6 +1177,60 @@ function renderOverview() {
       : `Facebook viser kun kommende begivenheder, så afholdte aktiviteter tælles fra ${fmtDate.format(dataFra)}, og historikken vokser uge for uge. `)
     + (erAdmin() ? '"Tilkendegivelser" er "deltager" + "interesseret" på Facebook ved seneste måling. Aktivitetstyper inddeles automatisk ud fra titel og beskrivelse. ' : '')
     + 'Kort: © OpenStreetMap-bidragydere, OpenFreeMap.';
+}
+
+/**
+ * Momentumoverblik: antal pr. niveau, et punktdiagram (afholdt bagud × planlagt frem) og de foreninger,
+ * der kræver handling. Foreninger med samme placering samles i ét punkt (større, med antal).
+ */
+function renderMomentum() {
+  const el = $('momentum-overblik');
+  const med = DATA.lokale.filter(f => f.mom && f.mom.niveau !== 'ingenfb' && f.mom.niveau !== 'ukendt');
+  const tael = k => DATA.lokale.filter(f => f.mom && f.mom.niveau === k).length;
+  const W = 308, H = 220, L = 40, B = 42, T = 26, R = 14;
+  const maxX = Math.max(4, ...med.map(f => f.mom.bagud)), maxY = Math.max(3, ...med.map(f => f.mom.fremad));
+  const x = v => L + v / maxX * (W - L - R), y = v => H - B - v / maxY * (H - B - T);
+  const grupper = new Map();
+  for (const f of med) {
+    const key = `${f.mom.bagud}|${f.mom.fremad}`;
+    if (!grupper.has(key)) grupper.set(key, []);
+    grupper.get(key).push(f);
+  }
+  let s = `<svg class="chart mom-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Momentum: afholdt de seneste ${MOM_BAGUD} dage mod planlagt de næste ${MOM_FREMAD} dage">`;
+  // Nulzonerne (intet afholdt / intet planlagt) markeres svagt – det er dér, foreningerne mister fart.
+  s += `<rect class="mom-zone" x="${L}" y="${y(0) - 7}" width="${W - L - R}" height="14"/><rect class="mom-zone" x="${x(0) - 7}" y="${T}" width="14" height="${H - B - T}"/>`;
+  for (let v = 0; v <= maxX; v++) s += `<text class="tick" x="${x(v)}" y="${H - B + 24}" text-anchor="middle">${v}</text>`;
+  for (let v = 0; v <= maxY; v++) s += `<text class="tick" x="${L - 18}" y="${y(v) + 3}" text-anchor="end">${v}</text>`;
+  s += `<line class="baseline" x1="${L - 14}" x2="${W - R}" y1="${H - B + 13}" y2="${H - B + 13}"/><line class="baseline" x1="${L - 14}" x2="${L - 14}" y1="${T - 8}" y2="${H - B + 13}"/>`;
+  s += `<text class="lbl" x="${W - R}" y="${H - 3}" text-anchor="end">Afholdt seneste ${MOM_BAGUD} dage →</text>`;
+  s += `<text class="lbl" x="${L - 14}" y="${T - 14}" dx="4">↑ Planlagt næste ${MOM_FREMAD} dage</text>`;
+  for (const fl of grupper.values()) {
+    const m = fl[0].mom, n = fl.length, r = n > 1 ? 6 + 2.2 * Math.sqrt(n) : 5;
+    const niveauer = new Set(fl.map(f => f.mom.niveau)), farve = MOM_FILL[fl[0].mom.niveau];
+    const tip = `${n > 1 ? `${n} foreninger` : visningsnavn(fl[0])}|${MOM_STATUS[fl[0].mom.niveau].label}|Afholdt: ${m.bagud} · Planlagt: ${m.fremad}${
+      n > 1 ? '|' + fl.map(f => f.navn).sort((a, b) => a.localeCompare(b, 'da')).join(', ') : ''}`;
+    s += `<circle class="mom-pt" cx="${x(m.bagud)}" cy="${y(m.fremad)}" r="${r}" fill="${niveauer.size === 1 ? farve : 'var(--muted)'}"/>`;
+    if (n > 1) s += `<text class="mom-n" x="${x(m.bagud)}" y="${y(m.fremad) + 3.5}" text-anchor="middle">${n}</text>`;
+    s += `<circle class="hit" cx="${x(m.bagud)}" cy="${y(m.fremad)}" r="${Math.max(r, 10)}" data-tip="${esc(tip)}"${n === 1 ? ` data-f="${esc(fl[0].navn)}"` : ''}/>`;
+  }
+  s += '</svg>';
+  const handling = DATA.lokale.filter(f => f.mom && (f.mom.niveau === 'hjaelp' || f.mom.niveau === 'faldende'))
+    .sort((a, b) => MOM_ORDEN[a.mom.niveau] - MOM_ORDEN[b.mom.niveau] || (b.mom.sidsteDage ?? 1e9) - (a.mom.sidsteDage ?? 1e9) || a.navn.localeCompare(b.navn, 'da'));
+  el.innerHTML = `<p class="note">Afholdt de seneste ${MOM_BAGUD} dage og planlagt de næste ${MOM_FREMAD} dage – en tidlig indikator for, om en forening har brug for hjælp.</p>
+    <ol class="hb-kat mom-kat">${['godt', 'stabil', 'fremad', 'faldende', 'hjaelp', 'ukendt', 'ingenfb'].filter(k => tael(k) || !['ukendt', 'ingenfb'].includes(k)).map(k =>
+      `<li class="uden-nr" title="${esc(MOM_STATUS[k].hint)}"><span class="dot-inline" style="background:${MOM_FILL[k]}"></span><span>${esc(MOM_STATUS[k].ikon)} ${esc(MOM_STATUS[k].label)}</span><b>${tael(k)}</b></li>`).join('')}</ol>
+    ${s}
+    ${handling.length ? `<h3 class="mom-h">Kræver opmærksomhed</h3><ul class="rank mom-liste">${handling.map(f => `<li tabindex="0" data-f="${esc(f.navn)}">
+      <span class="dot" style="background:${MOM_FILL[f.mom.niveau]}" title="${esc(MOM_STATUS[f.mom.niveau].label)}"></span>
+      <span class="name">${esc(f.navn)}</span><span class="val">${esc(MOM_STATUS[f.mom.niveau].label)}</span>
+      <span class="sub">${esc(f.mom.signaler.filter(x => x[0] === '-').map(x => x[1]).join(' · '))}</span></li>`).join('')}</ul>` : ''}
+    <button class="linkbtn" data-mom-farve>${farvning === 'momentum' ? 'Farv kortet efter aktivitet nu' : 'Farv kortet efter momentum'}</button>`;
+  bindTips(el);
+  el.querySelectorAll('[data-f]').forEach(n => {
+    n.addEventListener('click', () => openForening(n.dataset.f));
+    n.addEventListener('keydown', ev => { if (ev.key === 'Enter') openForening(n.dataset.f); });
+  });
+  el.querySelector('[data-mom-farve]').addEventListener('click', () => setFarvning(farvning === 'momentum' ? 'status' : 'momentum'));
 }
 
 function renderAktivitetPrForening(foreninger) {
@@ -1134,6 +1251,9 @@ const RANK = {
   afholdt90: {label: 'Afholdt seneste 90 dage', admin: true, val: f => f.afholdt90.length, dir: -1, vis: f => f.afholdt90.length},
   kvartal: {label: 'Afholdt i kvartalet (valgt under Visninger)', admin: true, val: f => f.kv[(valgtKvartal() || KVARTAL).id], dir: -1,
     vis: f => `${(valgtKvartal() || KVARTAL).kort}: ${f.kv[(valgtKvartal() || KVARTAL).id]}`},
+  momentum: {label: 'Momentum (kræver handling først)', admin: true,
+    val: f => (f.mom ? MOM_ORDEN[f.mom.niveau] * 1000 + f.mom.bagud + f.mom.fremad : 1e6), dir: 1,
+    vis: f => (f.mom ? `${MOM_STATUS[f.mom.niveau].ikon} ${f.mom.bagud} / ${f.mom.fremad}` : '')},
   svar: {label: 'Tilkendegivelser', admin: true, val: f => f.gnsSvar ?? -1, dir: -1, vis: f => num1(f.gnsSvar)},
 };
 
@@ -1194,6 +1314,23 @@ registerSection({
     return `<div class="hb-prognose"><span class="dot" style="background:${HB_FILL[f.hb]}"></span>${esc(HB_STATUS[f.hb].label)}</div>
       <div class="kvartaler">${kv}</div>
       <p class="note">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}.</p>${nuTekst}`;
+  },
+}, {efter: 'kommende'});
+registerSection({
+  // Momentum: tidlig advarsel om, at foreningen mister fart (se momentum()).
+  id: 'momentum', titel: 'Momentum', admin: true, synlig: f => !!f.mom,
+  render(f) {
+    const m = f.mom, st = MOM_STATUS[m.niveau];
+    const trend = m.forrige == null ? 'Trend kræver data for de ' + (2 * MOM_BAGUD) + ' seneste dage'
+      : m.bagud > m.forrige ? `↑ fra ${m.forrige} de ${MOM_BAGUD} dage før` : m.bagud < m.forrige ? `↓ fra ${m.forrige} de ${MOM_BAGUD} dage før` : `Som de ${MOM_BAGUD} dage før`;
+    return `<div class="hb-prognose"><span class="dot" style="background:${MOM_FILL[m.niveau]}"></span><b>${esc(st.ikon)} ${esc(st.label)}</b></div>
+      <p class="note">${esc(st.hint)}.</p>
+      <div class="tiles">
+        ${tile(`Afholdt, seneste ${MOM_BAGUD} dage`, String(m.bagud), trend)}
+        ${tile(`I kalenderen, næste ${MOM_FREMAD} dage`, String(m.fremad),
+          m.naesteDage == null ? 'Intet planlagt' : `Næste om ${m.naesteDage} dage`)}
+      </div>${m.signaler.length ? `<ul class="signaler">${m.signaler.map(([t, tekst]) =>
+        `<li class="${t === '+' ? 'plus' : 'minus'}"><span aria-hidden="true">${t === '+' ? '✓' : '!'}</span>${esc(tekst)}</li>`).join('')}</ul>` : ''}`;
   },
 }, {efter: 'kommende'});
 registerSection({
@@ -1387,6 +1524,7 @@ function visFane(fane) {
 
 const FARVNINGER = () => [
   {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
+  {id: 'momentum', admin: true, label: 'Momentum', hint: `Afholdt de seneste ${MOM_BAGUD} dage og planlagt de næste ${MOM_FREMAD} – tidlig advarsel`},
   ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
   {id: 'ingen', label: 'Ingen farve'},
 ].filter(tilladt);
@@ -1472,6 +1610,13 @@ function renderLegend() {
     $('legend').innerHTML = Object.entries(HB_STATUS).filter(([k]) => brugt.has(k))
       .map(([k, s]) => `<span><span class="swatch" style="background:${HB_FILL[k]};opacity:.8"></span>${esc(s.label)}</span>`).join('')
       + `<span class="muted">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}</span>` + tegnforklaring;
+    return;
+  }
+  if (farvning === 'momentum') {
+    const brugt = new Set(DATA.lokale.map(f => f.mom.niveau));
+    $('legend').innerHTML = Object.entries(MOM_STATUS).filter(([k]) => brugt.has(k))
+      .map(([k, s]) => `<span title="${esc(s.hint)}"><span class="swatch" style="background:${MOM_FILL[k]};opacity:.8"></span>${esc(s.ikon)} ${esc(s.label)}</span>`).join('')
+      + `<span class="muted">Afholdt ${MOM_BAGUD} dage bagud · planlagt ${MOM_FREMAD} dage frem</span>` + tegnforklaring;
     return;
   }
   const kv = valgtKvartal();
