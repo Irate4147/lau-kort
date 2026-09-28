@@ -77,38 +77,60 @@
   }
  ],
  "behandlet": [
+  "2aD627R4XKj7b8ur3",
   "2d1EwGVE67Pc5kbPZ",
   "3QDKrMPtIVn40UIMH",
+  "3TSEZgHXx04BJlRCn",
   "5ICk1UNQoI8Q2pbwx",
+  "8L5C4yyYakX9RTjtc",
   "AMwpRXv3R5JvuLnLh",
   "Be9ozReW1Ieju6aCR",
+  "D1vDLueDycTLzRXoI",
   "DIvabuXWh9JjSoGn2",
+  "Dm0IHlfTnYeijx1zY",
   "DyWP7OfRIlvtnY8uw",
+  "EA4RI4Aa7cJE6E1VC",
   "EdsesWE0oIYWCRXW3",
+  "GLbhwQgYPhiJChb8v",
   "GpotLrLXcmMiu2L7n",
   "IlwnA2PIR6tbEk8OZ",
+  "L3KatGGv1Jku96nWQ",
+  "LXRjQ3bSZm1F3ecuA",
   "LkbH7cXxevPJaaIAh",
   "NLM763IegaTv81Tjw",
   "PV13mhkKH02KRxo6P",
   "SqULYxXOcP75cGrhc",
   "TB21dOojuIhrr9HKl",
+  "UFIDP0ItsbgENkkqr",
   "WXImOV5qhATaVe8qG",
   "XmAs65Lh3PFcQJI0S",
+  "Yauxqs3OHJmHMDrTy",
+  "Z7AO10mZj1OfPD4Rt",
   "ZkMg5hTedgx3xypqj",
+  "cfxfRHu5KrBbpUsET",
+  "d3NhR8WQiOuhaWdV1",
+  "eH0gwNkB4I8ZOeaLO",
   "exGUtf3lO0hKU8nw5",
   "gBs8Y06cTR4bl2BTY",
+  "gfb9PuqpXPbmTlgAl",
+  "htsR0rzKsxCiNZE60",
+  "i9xecivYgCI9cCCfm",
   "k7iGcdUCJu4mBzg8w",
   "ku9Y8t3e2mI28JWsi",
   "kxNvUiMdJxxkpPKHP",
+  "lLmsXmmkJBscYWQT0",
+  "mt0kJsD53PraUYUAe",
+  "nCbk5Tnoh5pvhpeti",
   "oFI1bS8X815AzioQZ",
   "oHgQ7Urp2k7BocggL",
   "pD8XinWaEo2491rpz",
+  "pHYzYlU5H0ffk1jd0",
+  "rCgRYXBSmbju1XdoI",
   "ubS51fNCUueEjSaMf",
   "yOAaJ05g8KXM0hCHZ"
  ],
- "opdateret": "2026-09-28T13:25:00Z",
+ "opdateret": "2026-09-28T13:50:01Z",
  "historik": {
-  "fra": "2026-06-28T13:23:55Z",
   "koersler": [
    {
     "id": "kxNvUiMdJxxkpPKHP",
@@ -289,6 +311,190 @@
    {
     "id": "pD8XinWaEo2491rpz",
     "tid": "2026-09-28T13:24:49Z",
+    "forening": "Viborg",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "EA4RI4Aa7cJE6E1VC",
+    "tid": "2026-09-28T13:47:54Z",
+    "forening": "Landsforeningen",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "lLmsXmmkJBscYWQT0",
+    "tid": "2026-09-28T13:47:54Z",
+    "forening": "Aalborg",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "2aD627R4XKj7b8ur3",
+    "tid": "2026-09-28T13:48:05Z",
+    "forening": "Aarhus",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "GLbhwQgYPhiJChb8v",
+    "tid": "2026-09-28T13:48:05Z",
+    "forening": "Bornholm",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "UFIDP0ItsbgENkkqr",
+    "tid": "2026-09-28T13:48:16Z",
+    "forening": "Egedal-Furesø",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "D1vDLueDycTLzRXoI",
+    "tid": "2026-09-28T13:48:16Z",
+    "forening": "Frederiksberg",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "eH0gwNkB4I8ZOeaLO",
+    "tid": "2026-09-28T13:48:26Z",
+    "forening": "Fyn",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "Dm0IHlfTnYeijx1zY",
+    "tid": "2026-09-28T13:48:26Z",
+    "forening": "Herning",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "3TSEZgHXx04BJlRCn",
+    "tid": "2026-09-28T13:48:37Z",
+    "forening": "Horsens",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "htsR0rzKsxCiNZE60",
+    "tid": "2026-09-28T13:48:37Z",
+    "forening": "Kronjylland",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "Yauxqs3OHJmHMDrTy",
+    "tid": "2026-09-28T13:48:47Z",
+    "forening": "København",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "LXRjQ3bSZm1F3ecuA",
+    "tid": "2026-09-28T13:48:47Z",
+    "forening": "Køge Bugt",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "d3NhR8WQiOuhaWdV1",
+    "tid": "2026-09-28T13:48:58Z",
+    "forening": "Nordkøbenhavn",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "mt0kJsD53PraUYUAe",
+    "tid": "2026-09-28T13:48:58Z",
+    "forening": "Nordsjælland",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "8L5C4yyYakX9RTjtc",
+    "tid": "2026-09-28T13:49:09Z",
+    "forening": "Næstved",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "L3KatGGv1Jku96nWQ",
+    "tid": "2026-09-28T13:49:09Z",
+    "forening": "Roskilde",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "rCgRYXBSmbju1XdoI",
+    "tid": "2026-09-28T13:49:19Z",
+    "forening": "Silkeborg",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "pHYzYlU5H0ffk1jd0",
+    "tid": "2026-09-28T13:49:19Z",
+    "forening": "Sydvestjylland",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "nCbk5Tnoh5pvhpeti",
+    "tid": "2026-09-28T13:49:30Z",
+    "forening": "Sønderjylland",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "gfb9PuqpXPbmTlgAl",
+    "tid": "2026-09-28T13:49:30Z",
+    "forening": "Vejle",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "cfxfRHu5KrBbpUsET",
+    "tid": "2026-09-28T13:49:40Z",
+    "forening": "Vestegnen",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "i9xecivYgCI9cCCfm",
+    "tid": "2026-09-28T13:49:40Z",
+    "forening": "Vestsjælland",
+    "status": "FAILED",
+    "hentet": 0,
+    "begivenheder": 0
+   },
+   {
+    "id": "Z7AO10mZj1OfPD4Rt",
+    "tid": "2026-09-28T13:49:51Z",
     "forening": "Viborg",
     "status": "FAILED",
     "hentet": 0,
