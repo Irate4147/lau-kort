@@ -15,6 +15,7 @@ Andre scripts bruger laes(navn) og skriv(navn, data).
 """
 import base64
 import hashlib
+import hmac
 import json
 import os
 import secrets
@@ -28,6 +29,7 @@ NOEGLE = ADMIN / "noegle.json"
 PRIVAT = ROOT / "privat"  # lokale klartekstkopier (i .gitignore)
 ITERATIONER = 600_000
 TJEK = "LAU-admin"
+SKRIV = b"lau-skriv"
 
 # Felter i en rettelse, der er fortrolige. Resten (status, titel, dato, sted, forening) er offentligt i
 # data/rettelser.json, så det offentlige kort viser arrangementerne rigtigt.
@@ -71,11 +73,17 @@ def _dekrypter(noegle, navn, blob):
     return json.loads(tekst)
 
 
+def _skriv_hash(noegle):
+    """SHA-256 af skrivenøglen HMAC(nøgle, "lau-skriv"): kalender-server/worker.js lader kun den, der kender
+    skrivenøglen (dvs. adminkoden), gemme. Samme udledning som skriveNoegle() i app.js."""
+    return hashlib.sha256(hmac.new(noegle, SKRIV, hashlib.sha256).digest()).hexdigest()
+
+
 def _ny_noegle(kode):
     salt = secrets.token_bytes(16)
     noegle = _udled(kode, salt, ITERATIONER)
     return noegle, {"v": 1, "kdf": "PBKDF2-SHA256", "iterationer": ITERATIONER, "salt": _b64(salt),
-                    "tjek": _krypter(noegle, "tjek", TJEK)}
+                    "tjek": _krypter(noegle, "tjek", TJEK), "skriv": _skriv_hash(noegle)}
 
 
 _NOEGLE = None
@@ -162,7 +170,11 @@ def klargoer():
         _NOEGLE, n = _ny_noegle(kode)
         NOEGLE.write_text(json.dumps(n, indent=1) + "\n", encoding="utf-8")
         print(f"Oprettede {NOEGLE.relative_to(ROOT)}")
-    noegle()
+    n = json.loads(NOEGLE.read_text(encoding="utf-8"))
+    if n.get("skriv") != _skriv_hash(noegle()):
+        n["skriv"] = _skriv_hash(noegle())
+        NOEGLE.write_text(json.dumps(n, indent=1) + "\n", encoding="utf-8")
+        print(f"Skrev skrivenøglens hash i {NOEGLE.relative_to(ROOT)}")
     for navn, fil in GAMLE_FILER.items():
         if fil.exists():
             if not sti(navn).exists():

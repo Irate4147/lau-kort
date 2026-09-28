@@ -240,12 +240,10 @@ table.hb-tabel { width: 100%; border-collapse: collapse; font-size: 13px; }
 .lager .note { margin: 4px 0; }
 .lager .warn, .sidebar .warn { color: #b3261e; font-size: 12px; margin: 4px 0; }
 .lager code { font-size: 11px; }
-.gh-forbind { font-size: 13px; margin: 4px 0 8px; }
-.gh-forbind summary { cursor: pointer; color: var(--link); }
-.gh-forbind form { display: flex; gap: 6px; margin: 6px 0; }
+.lager label { display: block; }
 .arr-filtre { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
 .arr-filtre input { grid-column: 1 / -1; }
-.arr-filtre select, .arr-filtre input, .arr-form input, .arr-form select, .arr-form textarea, .gh-forbind input {
+.arr-filtre select, .arr-filtre input, .arr-form input, .arr-form select, .arr-form textarea, .lager input {
   font: inherit; font-size: 13px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--axis);
   background: var(--page); color: var(--text-primary); min-width: 0; width: 100%;
 }
