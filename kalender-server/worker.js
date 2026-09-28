@@ -59,13 +59,21 @@ const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, 
 
 function github(env, sti, init = {}) {
   return fetch(`https://api.github.com/repos/${REPO}/contents/${sti}`, {...init, headers: {
-    Accept: 'application/vnd.github+json', Authorization: `Bearer ${env.GITHUB_TOKEN}`, 'User-Agent': 'lau-kort-server'}});
+    Accept: 'application/vnd.github+json', Authorization: `Bearer ${env.GITHUB_TOKEN.trim()}`, 'User-Agent': 'lau-kort-server'}});
 }
-/** En fil i repoet: {tekst, sha} (tekst null, hvis den ikke findes). */
-async function hentFil(env, sti) {
+/** Forståelig fejl ud fra GitHubs svar (inkl. GitHubs egen besked). */
+async function githubFejl(r) {
+  const besked = await r.json().then(j => j.message).catch(() => '');
+  const hjaelp = r.status === 401 ? 'GITHUB_TOKEN på Cloudflare er forkert eller udløbet'
+    : r.status === 403 || r.status === 404 ? `GITHUB_TOKEN mangler adgang: kun ${REPO}, Contents: Read and write`
+    : 'GitHub-fejl';
+  return new Error(`${hjaelp} (GitHub ${r.status}${besked ? `: ${besked}` : ''})`);
+}
+/** En fil i repoet: {tekst, sha} (tekst null, hvis den ikke findes – eller en fejl, hvis den skal findes). */
+async function hentFil(env, sti, skalFindes = false) {
   const r = await github(env, `${sti}?ref=${GREN}`);
-  if (r.status === 404) return {tekst: null, sha: null};
-  if (!r.ok) throw new Error(`GitHub svarede ${r.status}`);
+  if (r.status === 404 && !skalFindes) return {tekst: null, sha: null};
+  if (!r.ok) throw await githubFejl(r);
   const j = await r.json();
   return {tekst: new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g, '')), c => c.charCodeAt(0))), sha: j.sha};
 }
@@ -73,7 +81,7 @@ async function hentFil(env, sti) {
 async function erAdmin(req, env) {
   const m = (req.headers.get('Authorization') || '').match(/^Bearer ([0-9a-f]{64})$/);
   if (!m) return false;
-  const {tekst} = await hentFil(env, 'data/admin/noegle.json');
+  const {tekst} = await hentFil(env, 'data/admin/noegle.json', true);
   const skriv = tekst && JSON.parse(tekst).skriv;
   if (!skriv) return false;
   const bytes = Uint8Array.from(m[1].match(/../g), x => parseInt(x, 16));
@@ -103,7 +111,7 @@ async function admin(req, env, navn) {
   const r = await github(env, sti, {method: 'PUT', body: JSON.stringify({
     message: String(besked || `Opdatér ${navn}`).replace(/[\x00-\x1f]+/g, ' ').slice(0, 200), branch: GREN, content: btoa(fil), ...(sha ? {sha} : {})})});
   if (r.status === 409 || r.status === 422) return svar({fejl: 'Filen er ændret samtidig'}, 409);
-  if (!r.ok) return svar({fejl: `GitHub svarede ${r.status}`}, 502);
+  if (!r.ok) return svar({fejl: (await githubFejl(r)).message}, 502);
   return svar({sha: (await r.json()).content.sha});
 }
 
