@@ -1,0 +1,48 @@
+name: Månedsrapport
+
+# Den 1. i måneden tidligt om morgenen: snapshot af tilstanden ved månedens start (momentum, HB-prognose, afholdt og
+# planlagt pr. forening) og rapporten for den foregående måned (data/admin/rapporter.krypt.json, krypteret – se
+# README: Månedsrapport). Kører kun scripts/rapport.py – ingen Apify-kald. Kræver secret ADMIN_KODE.
+# Manuelt: en bestemt måned (ÅÅÅÅ-MM) eller "alle" genberegnes; tom = som den 1.
+on:
+  schedule:
+    - cron: '17 3 1 * *'   # den 1. kl. 04.17/05.17 dansk tid
+  workflow_dispatch:
+    inputs:
+      maaned:
+        description: 'Måned der skal genberegnes (ÅÅÅÅ-MM eller "alle"; tom = sidste måned)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  rapport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installér kryptering (fortrolige admindata)
+        run: pip install cryptography
+
+      - name: Månedsrapport
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+          MAANED: ${{ inputs.maaned }}
+        run: python3 scripts/rapport.py ${MAANED:+"$MAANED"}
+
+      - name: Gem data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          git diff --cached --quiet || { git commit -m "Månedsrapport" && git pull --rebase -q && git push; }
