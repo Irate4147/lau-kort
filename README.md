@@ -7,8 +7,8 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 ## Sådan hænger det sammen
 
 1. Google Apps Scriptet i regnearket "LAU – begivenheder" kører Apifys Facebook Events Scraper hver mandag på foreningernes `upcoming_hosted_events`.
-2. GitHub Action (`.github/workflows/sync.yml`) kører to gange i døgnet: `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
-3. Siden (`index.html`, `app.js`) læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
+2. GitHub Action (`.github/workflows/sync.yml`) kører mandag formiddag (én gang om ugen): `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
+3. Siden (`index.html`, `app.js`) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
 Facebook viser kun kommende begivenheder, så afholdte aktiviteter registreres fra 28. sep. 2026 og frem.
 
@@ -24,7 +24,7 @@ Facebook viser kun kommende begivenheder, så afholdte aktiviteter registreres f
 
 - **Panelsektioner** – `LAU.registerSection({id, titel, synlig(f), render(f), efter(el, f)}, {efter: 'kommende'})`.
   Indbyggede: `kommende`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage`, `stamdata`, `noter`.
-- **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, synlig(ctx), tegn(g, ctx)})`, hvor `ctx = {k, selected, zoomed, proj}`.
+- **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
   Lag med `toggle: true` får automatisk en til/fra-knap over kortet. Indbyggede: `kommunenavne`, `afholdte`, `kommende`, `medlemmer`.
 
 **Stamdata** (formand, telefon osv.) kan lægges i `data/foreninger.json` som `"stamdata": {"Formand": "…", "Telefon": "…"}` –

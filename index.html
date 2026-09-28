@@ -4,59 +4,60 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LAU – foreningernes aktiviteter</title>
-<meta name="description" content="Kort over LAU's lokalforeninger med kommende aktiviteter og nøgletal.">
+<meta name="description" content="Kort over LAU's foreninger med kommende aktiviteter og nøgletal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
 <script src="app.js" defer></script>
 </head>
 <body>
-<div class="viz-root">
-  <header class="top">
-    <div>
-      <h1>LAU's lokalforeninger</h1>
-      <p class="sub">Kommende aktiviteter og aktivitetsniveau – klik på en lokalforening for detaljer.</p>
-    </div>
-    <p class="updated" id="updated"></p>
-  </header>
+<div class="app viz-root">
+  <aside class="sidebar" id="sidebar" aria-label="Oversigt">
+    <section class="side-view" id="side-overview">
+      <header class="side-head">
+        <h1>LAU's foreninger</h1>
+        <p class="updated" id="updated"></p>
+      </header>
+      <div class="tiles" id="tiles"></div>
+      <h2>De næste 14 dage</h2>
+      <div id="list-14"></div>
+      <h2>Alle foreninger</h2>
+      <label class="sort">Sortér efter
+        <select id="rank-sort">
+          <option value="naeste">Næste aktivitet</option>
+          <option value="navn">Navn</option>
+          <option value="planlagt">Planlagte aktiviteter</option>
+          <option value="afholdt90">Afholdt seneste 90 dage</option>
+          <option value="svar">Tilkendegivelser</option>
+        </select>
+      </label>
+      <ul class="rank" id="rank"></ul>
+      <h2>Aktivitet pr. forening</h2>
+      <p class="note">Afholdt de seneste 90 dage og planlagt.</p>
+      <div id="chart-activity"></div>
+      <p class="method" id="method"></p>
+    </section>
+    <section class="side-view" id="side-forening" hidden>
+      <button class="back" id="back">← Alle foreninger</button>
+      <div id="forening-body"></div>
+    </section>
+  </aside>
 
-  <section class="map-card" aria-label="Kort over lokalforeninger">
-    <div class="map-top">
+  <main class="map-wrap" aria-label="Kort over foreningerne">
+    <div class="toolbar">
       <div class="map-actions" id="map-actions"></div>
       <div class="layer-toggles" id="layer-toggles" aria-label="Kortlag"></div>
+      <div class="legend" id="legend"></div>
     </div>
-    <div class="legend" id="legend"></div>
-    <div id="upcoming-compact" class="upcoming-compact"></div>
     <div id="map" class="map"></div>
-  </section>
-
-  <section class="overview" aria-label="Landsoverblik">
-    <h2>Landsoverblik</h2>
-    <div class="tiles" id="tiles"></div>
-    <div class="grid2">
-      <div class="card">
-        <h3>Aktivitet pr. lokalforening</h3>
-        <p class="note">Afholdte aktiviteter de seneste 90 dage og planlagte aktiviteter.</p>
-        <div id="chart-activity"></div>
-      </div>
-      <div class="card">
-        <h3>De næste 14 dage</h3>
-        <div id="list-14"></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Alle lokalforeninger</h3>
-      <p class="note">Klik på en kolonne for at sortere og på en række for at se foreningen.</p>
-      <div class="table-wrap"><table class="rank" id="rank"></table></div>
-    </div>
-    <p class="method" id="method"></p>
-  </section>
+    <div class="popover" id="popover" role="dialog" hidden></div>
+  </main>
 </div>
-
-<aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawer-title">
-  <button class="close" id="drawer-close" aria-label="Luk">×</button>
-  <div id="drawer-body"></div>
-</aside>
 <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
 </body>
 </html>
