@@ -1927,8 +1927,9 @@ const KAL = {
 };
 const gemKalValg = () => { try { localStorage.setItem('lau-kalender', JSON.stringify(KAL.valg)); } catch (_) { /* fx privat vindue */ } };
 const fmtMaaned = new Intl.DateTimeFormat('da-DK', {month: 'long', year: 'numeric', timeZone: 'UTC'});
-// .ics-filerne læses fra repoet (som data/), så de er friske, selv før Pages er genudgivet.
-const kalUrl = fil => new URL(`kalender/${fil}`, CONFIG.dataBase || new URL(CONFIG.assetBase || '.', location.href)).href;
+// Skal hentes fra Pages (ikke raw.githubusercontent.com som data/): rå GitHub-URL'er sender
+// Content-Type: text/plain, som Google Kalender afviser ("kunne ikke indlæses") – Pages sender text/calendar.
+const kalUrl = fil => new URL(`kalender/${fil}`, new URL(CONFIG.assetBase || '.', location.href)).href;
 
 const kalValgte = () => KAL.valg.filter(n => DATA.byName.has(n) && n !== NATIONAL);
 function kalEvents() {
@@ -1998,9 +1999,9 @@ function renderKalender() {
     <div class="kal-abonner">
       <button type="button" class="linkbtn" data-kal-abonner aria-expanded="${KAL.abonner}">＋ Tilføj til din kalender</button>
       ${KAL.abonner ? `<p class="note">Abonnér – kalenderen opdateres automatisk${valg.length > 1 ? '. Ved flere foreninger: tilføj hver kalender (landsforeningen kun én gang)' : ''}.</p>
-        ${kalFiler().map(k => { const url = kalUrl(k.fil); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
-          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(url)}" target="_blank" rel="noopener">Google</a>
-          <a href="${esc(url.replace(/^https?:/, 'webcal:'))}">Apple/Outlook</a>
+        ${kalFiler().map(k => { const url = kalUrl(k.fil), webcal = url.replace(/^https?:/, 'webcal:'); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+          <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">Google</a>
+          <a href="${esc(webcal)}">Apple/Outlook</a>
           <button type="button" class="linkbtn" data-kal-kopier="${esc(url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>`; }).join('')}
         <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>` : ''}
     </div>`;
