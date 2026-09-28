@@ -40,7 +40,7 @@ DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
 HISTORIK_DAGE = 92
 HISTORIK_MAX_PR_SIDE = 25   # loft pr. side, så en kørsel ikke henter hele sidens historik
-HISTORIK_SAMTIDIGE = 4
+HISTORIK_SAMTIDIGE = 2
 
 
 # ---------------------------------------------------------------- apify
@@ -288,6 +288,17 @@ def past_url(fb):
     return fb.split("?")[0].rstrip("/") + "/past_hosted_events"
 
 
+def log_tail(run_id, n=15):
+    """De sidste linjer af en Apify-kørsels log, så fejl kan ses i GitHub Actions."""
+    req = urllib.request.Request(f"{API}/actor-runs/{run_id}/log", headers={"authorization": f"Bearer {token()}"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            lines = r.read().decode("utf-8", "replace").splitlines()
+        return "\n".join("    " + l for l in lines[-n:])
+    except urllib.error.URLError as e:
+        return f"    (kunne ikke hente log: {e})"
+
+
 def run_actor(url):
     """Start én Apify-kørsel på en sides tidligere begivenheder og vent på den."""
     try:
@@ -295,6 +306,8 @@ def run_actor(url):
         while run["status"] in ("READY", "RUNNING"):
             time.sleep(10)
             run = api(f"/actor-runs/{run['id']}")["data"]
+        if run["status"] != "SUCCEEDED":
+            print(f"{url}: {run['status']} – {run.get('statusMessage') or ''}\n{log_tail(run['id'])}", file=sys.stderr)
         items = api(f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json") or []
         return url, run, items
     except (urllib.error.URLError, KeyError, TypeError) as e:
@@ -326,9 +339,16 @@ def historik(dage):
                          "hentet": len(items), "begivenheder": tilfoejet})
         print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} inden for {dage} dage")
 
+    # "fra" sættes kun, når mindst én kørsel lykkedes – ellers ville siden påstå at have data, den ikke har.
     gammel = meta.get("historik") or {}
-    meta["historik"] = {"fra": min(filter(None, [gammel.get("fra"), iso(fra)])),
-                        "koersler": gammel.get("koersler", []) + koersler}
+    alle = gammel.get("koersler", []) + koersler
+    ok = any(k["status"] == "SUCCEEDED" for k in koersler)
+    meta["historik"] = {"koersler": alle}
+    gammel_ok = any(k.get("status") == "SUCCEEDED" for k in gammel.get("koersler", []))
+    if fra_ := [f for f in (gammel.get("fra") if gammel_ok else None, iso(fra) if ok else None) if f]:
+        meta["historik"]["fra"] = min(fra_)
+    if not ok:
+        print("Ingen kørsler lykkedes – se fejlene ovenfor.", file=sys.stderr)
     meta["opdateret"] = iso(datetime.now(timezone.utc))
     save_state(events, meta)
 

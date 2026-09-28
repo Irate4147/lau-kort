@@ -128,7 +128,8 @@ async function load() {
     get(CONFIG.assetBase, 'geo/kommuner.topo.json')]);
   const firstRun = meta.koersler.length ? new Date(meta.koersler[0].tid) : NOW;
   // Afholdte aktiviteter kendes fra den første ugentlige kørsel, eller længere tilbage, hvis historikken er hentet.
-  const dataFra = meta.historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
+  const historik = meta.historik && meta.historik.fra && (meta.historik.koersler || []).some(k => k.status === 'SUCCEEDED');
+  const dataFra = historik ? new Date(Math.min(firstRun, new Date(meta.historik.fra))) : firstRun;
 
   for (const e of events) {
     e.startD = new Date(e.start);
@@ -187,7 +188,7 @@ async function load() {
     events: {type: 'FeatureCollection', features: events.filter(e => e.lat != null && e.lng != null).map(e => ({
       type: 'Feature', properties: {id: e.id, national: e.national}, geometry: {type: 'Point', coordinates: [e.lng, e.lat]}}))},
   };
-  DATA = {foreninger, lokale, events, meta, topo, features, byName, firstRun, dataFra, geo, byId: new Map(events.map(e => [e.id, e]))};
+  DATA = {foreninger, lokale, events, meta, topo, features, byName, firstRun, dataFra, historik, geo, byId: new Map(events.map(e => [e.id, e]))};
 }
 
 function kategori(e) {
@@ -752,7 +753,7 @@ function renderOverview() {
   $('updated').textContent = last ? `Sidst hentet fra Facebook: ${fmtStamp.format(new Date(last.tid))}` : '';
   $('method').textContent =
     `Data hentes automatisk fra foreningernes offentlige Facebook-begivenheder én gang om ugen (${meta.koersler.length} kørsler indtil nu). `
-    + (meta.historik
+    + (DATA.historik
       ? `Afholdte aktiviteter fra ${fmtDate.format(dataFra)} er hentet bagudrettet fra foreningernes tidligere begivenheder; derefter vokser historikken uge for uge. `
       : `Facebook viser kun kommende begivenheder, så afholdte aktiviteter tælles fra ${fmtDate.format(dataFra)}, og historikken vokser uge for uge. `)
     + '"Tilkendegivelser" er "deltager" + "interesseret" på Facebook ved seneste måling. Aktivitetstyper inddeles automatisk ud fra titel og beskrivelse. '
