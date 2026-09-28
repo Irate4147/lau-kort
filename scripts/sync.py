@@ -38,7 +38,7 @@ API = "https://api.apify.com/v2"
 ACTOR = "apify~facebook-events-scraper"
 DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
-HISTORIK_MAX_PR_SIDE = 30   # loft pr. side: siden viser nyeste først, og 30 dækker et års aktivitet for de fleste
+HISTORIK_MAX_PR_SIDE = 20   # loft pr. side: siden viser nyeste først, og 20 dækker 2026 for de fleste
 HISTORIK_SAMTIDIGE = 2
 
 
