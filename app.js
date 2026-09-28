@@ -24,6 +24,8 @@ const TZ = 'Europe/Copenhagen';
 const DAY = 864e5;
 const NOW = new Date();
 const H14 = new Date(NOW.getTime() + 14 * DAY);
+// Tidligere aktiviteter vises offentligt højst et år tilbage (admins ser alle).
+const ET_AAR_SIDEN = new Date(NOW.getTime() - 365 * DAY);
 const NEW_DAYS = 7;
 const NATIONAL = 'Landsforeningen';
 const DK_BOUNDS = [[8.05, 54.55], [15.2, 57.76]];
@@ -165,6 +167,8 @@ let farvning = (() => {
   if (v === 'kvartal') v = KVARTAL.id; // ældre gemt værdi
   return v === 'hb' || v === 'ingen' || KVARTALER.some(k => k.id === v) ? v : 'status';
 })();
+/** Må aktiviteten vises? Offentligt kun kommende og afholdte det seneste år; admins ser alle. */
+const offentligTid = e => erAdmin() || e.slutD >= ET_AAR_SIDEN;
 const valgtKvartal = () => KVARTALER.find(k => k.id === farvning) || null;
 const MAP = {map: null, ready: false, items: [], cards: new Map()};
 
@@ -852,7 +856,8 @@ registerLayer({
 registerLayer({
   id: 'afholdte', label: 'Afholdte aktiviteter', gruppe: 'aktiviteter', hint: 'Hvide prikker', toggle: true, standard: false,
   tegn(api, ctx) {
-    const list = ctx.selected ? DATA.byName.get(ctx.selected).afholdt : DATA.events.filter(e => !e.forsvundet && !e.aflyst && e.slutD < NOW);
+    const list = (ctx.selected ? DATA.byName.get(ctx.selected).afholdt : DATA.events.filter(e => !e.forsvundet && !e.aflyst && e.slutD < NOW))
+      .filter(offentligTid);
     const src = api.source('pts', pointsFC(list));
     api.layer({id: 'dots', type: 'circle', source: src, paint: {
       'circle-radius': 4.5, 'circle-color': '#ffffff', 'circle-stroke-color': '#111827', 'circle-stroke-width': 1.8}});
@@ -1139,6 +1144,16 @@ registerSection({
   id: 'kommende', titel: 'Kommende aktiviteter',
   render: f => evList(f.upcoming, false),
 });
+registerSection({
+  // Afholdte aktiviteter det seneste år (offentligt), nyeste først. De 5 seneste vises, resten kan foldes ud.
+  id: 'tidligere', titel: 'Tidligere aktiviteter (seneste år)',
+  render(f) {
+    const list = f.afholdt.filter(e => e.slutD >= ET_AAR_SIDEN).reverse();
+    if (list.length <= 5) return evList(list, false, 'Ingen afholdte aktiviteter det seneste år.');
+    return evList(list.slice(0, 5), false)
+      + `<details class="flere"><summary>Vis alle ${list.length}</summary>${evList(list.slice(5), false)}</details>`;
+  },
+}, {efter: 'kommende'});
 registerSection({
   id: 'hb', titel: `HB-godkendelse ${HB_AAR}`, admin: true, synlig: f => !f.national,
   render(f) {
@@ -1916,7 +1931,7 @@ const kalUrl = fil => new URL(`kalender/${fil}`, CONFIG.dataBase || new URL(CONF
 const kalValgte = () => KAL.valg.filter(n => DATA.byName.has(n) && n !== NATIONAL);
 function kalEvents() {
   const valg = kalValgte();
-  return DATA.events.filter(e => (!e.forsvundet || e.bekraeftet)
+  return DATA.events.filter(e => (!e.forsvundet || e.bekraeftet) && offentligTid(e)
     && (!valg.length || e.national || e.foreninger.some(n => valg.includes(n))));
 }
 /** Kalenderfilerne, der passer til valget: én fil ved ingen eller én forening, ellers landsforeningen + hver forening. */

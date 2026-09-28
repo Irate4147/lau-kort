@@ -1,6 +1,6 @@
 # LAU – lokalforeningernes aktiviteter
 
-Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (de næste 14 dage vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens arrangementer. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
+Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (de næste 14 dage vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens kommende og tidligere arrangementer. Tidligere arrangementer vises offentligt (panel, kortlaget "Afholdte aktiviteter", kalenderen og .ics-filerne) højst et år tilbage; admins ser alle. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
 
 **Side:** https://irate4147.github.io/lau-kort/ – link direkte til en forening med `#Navn`, fx `#Næstved`.
 
