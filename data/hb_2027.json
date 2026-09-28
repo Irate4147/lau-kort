@@ -1,7 +1,7 @@
 {
  "aar": 2026,
  "hb_aar": 2027,
- "beregnet": "2026-09-28T15:23:54Z",
+ "beregnet": "2026-09-28T16:17:08Z",
  "idag": "2026-09-28",
  "data_fra": {
   "Aalborg": "2026-01-01",
@@ -9,17 +9,17 @@
   "Bornholm": "2026-01-01",
   "Egedal-Furesø": "2026-01-01",
   "Frederiksberg": "2026-01-01",
-  "Fyn": "2026-09-28",
+  "Fyn": "2026-01-01",
   "Herning": "2026-01-01",
   "Horsens": "2026-01-01",
   "Kolding": "2026-01-01",
   "Kronjylland": "2026-01-01",
-  "København": "2026-03-14",
+  "København": "2026-01-01",
   "Køge Bugt": "2026-01-01",
   "Nordkøbenhavn": "2026-01-01",
   "Nordsjælland": "2026-01-01",
   "Næstved": "2026-01-01",
-  "Roskilde": "2026-04-08",
+  "Roskilde": "2026-01-01",
   "Silkeborg": "2026-01-01",
   "Sydvestjylland": "2026-01-01",
   "Sønderjylland": "2026-01-01",
@@ -406,14 +406,25 @@
    }
   },
   "Fyn": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data"
-   ],
+   "prognose": "alle_plus_naeste",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-03-03",
+       "navn": "Intro til LAU v. Tobias Pagh & Loui Femhøj"
+      },
+      {
+       "dato": "2026-03-13",
+       "navn": "Generalforsamling og FT-Tour m. Tobias Pagh🔥"
+      },
+      {
+       "dato": "2026-03-24",
+       "navn": "LAU Fyn holder valgfest! 🤩"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
@@ -758,6 +769,46 @@
     "Q1": {
      "status": "ja",
      "afholdt": [
+      {
+       "dato": "2026-01-12",
+       "navn": "DEBATTRÆNING TIL SKOLEVALGET"
+      },
+      {
+       "dato": "2026-01-21",
+       "navn": "\"Grøn trepart\" v. klima- og miljøordfører Sagi Halevi"
+      },
+      {
+       "dato": "2026-01-23",
+       "navn": "Identitetspolitisk fredagsbar"
+      },
+      {
+       "dato": "2026-01-26",
+       "navn": "Åbent bestyrelsesmøde"
+      },
+      {
+       "dato": "2026-02-03",
+       "navn": "OPLÆG V. HIZB UT-TAHRIR"
+      },
+      {
+       "dato": "2026-02-04",
+       "navn": "\"Sådan er kapitalismen\" v. økonomi- og erhvervsordfører Lars Jørgensen"
+      },
+      {
+       "dato": "2026-02-11",
+       "navn": "\"Borgerlig feminisme\" v. kultur- og ligestillingsordfører Ida Bertelsen"
+      },
+      {
+       "dato": "2026-02-19",
+       "navn": "INTROARRANGEMENT 1 PÅ CHRISTIANSBORG"
+      },
+      {
+       "dato": "2026-02-23",
+       "navn": "Forslag til LM + åbent bestyrelsesmøde"
+      },
+      {
+       "dato": "2026-03-10",
+       "navn": "Besøg hos DI: den aktuelle politiske situation og arbejdet med politik og interessevaretagelse"
+      },
       {
        "dato": "2026-03-14",
        "navn": "MIDTVEJSFEST"
@@ -1191,19 +1242,78 @@
    }
   },
   "Roskilde": {
-   "prognose": "ukendt",
-   "grunde": [
-    "1. kvartal 2026: ingen data"
-   ],
+   "prognose": "alle_plus_naeste",
+   "grunde": [],
    "kvartaler": {
     "Q1": {
-     "status": "ukendt",
-     "afholdt": [],
+     "status": "ja",
+     "afholdt": [
+      {
+       "dato": "2026-01-07",
+       "navn": "Bestyrelsesmøde (januar 2026)"
+      },
+      {
+       "dato": "2026-01-24",
+       "navn": "Oplæg v/ Karoline Marsay"
+      },
+      {
+       "dato": "2026-02-04",
+       "navn": "Bestyrelsesmøde (februar 2026)"
+      },
+      {
+       "dato": "2026-03-03",
+       "navn": "Bestyrelsesmøde (marts 2026)"
+      },
+      {
+       "dato": "2026-03-09",
+       "navn": "Flyeruddeling på Roskilde Tekniske Skole 🗳️"
+      },
+      {
+       "dato": "2026-03-10",
+       "navn": "Flyeruddeling på Roskilde Station 🗳️"
+      },
+      {
+       "dato": "2026-03-12",
+       "navn": "Flyeruddeling på Roskilde Station 🗳️"
+      },
+      {
+       "dato": "2026-03-15",
+       "navn": "Flyeruddeling ved RO’s Torv Shoppingcenter 🗳️"
+      },
+      {
+       "dato": "2026-03-16",
+       "navn": "Flyeruddeling på Roskilde Handelsskole 🗳️"
+      },
+      {
+       "dato": "2026-03-17",
+       "navn": "Flyeruddeling på Roskilde Station 🗳️"
+      },
+      {
+       "dato": "2026-03-18",
+       "navn": "Ekstra uddelingen // FT 2026"
+      },
+      {
+       "dato": "2026-03-19",
+       "navn": "Flyeruddeling på Roskilde Station 🗳️"
+      },
+      {
+       "dato": "2026-03-23",
+       "navn": "Flyeruddeling på Roskilde Katedralskole 🗳️"
+      },
+      {
+       "dato": "2026-03-27",
+       "navn": "Ordinær Generalforsamling 2026"
+      }
+     ],
      "planlagt": []
     },
     "Q2": {
      "status": "ja",
      "afholdt": [
+      {
+       "dato": "2026-04-02",
+       "navn": "LAU Roskilde tager til Kandidatpræsentation hos LAU KBH"
+      },
       {
        "dato": "2026-04-08",
        "navn": "Bestyrelsesmøde April"

@@ -10,6 +10,26 @@ X-WR-TIMEZONE:Europe/Copenhagen
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
+UID:1235913564619124@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260107T180000Z
+DTEND:20260107T200000Z
+SUMMARY:Bestyrelsesmøde (januar 2026)
+DESCRIPTION:LAU Roskilde\n\nLokale: Verdensrummet\, Byens Hus 🩵\n\nDagso
+ rden er som følger:\n1. Velkommen og tjek af fremmødte\n2. Valg af ordst
+ yrer\n3. Valg af referent\n4. Kommende nationale arrangementer\n5. Kommend
+ e lokale arrangementer\n6. Opdatering fra Liberal Alliance Roskilde & Lejr
+ e\n7. Gentegning\n - status/udfald\n8. Status på HB\n9. Det kommende fore
+ ningsår:\n- kommende generalforsamling\n10. Dato for næste møde (d. 4/2
+ -2026)\n11. Eventuelt\n\nHar du et vigtigt punkt til dagsorden?\nKontakt f
+ ormand\, Simone\n\nhttps://www.facebook.com/events/1235913564619124/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1235913564619124/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2383366292116018@lau-kort
 DTSTAMP:20260928T135857Z
 DTSTART:20260111T100000Z
@@ -29,6 +49,44 @@ CATEGORIES:Landsforeningen
 LOCATION:Liberal Alliances Ungdom Århus
 GEO:56.158317619291;10.206310832734
 URL:https://www.facebook.com/events/2383366292116018/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2242158776194127@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260124T170000Z
+DTEND:20260124T190000Z
+SUMMARY:Oplæg v/ Karoline Marsay
+DESCRIPTION:LAU Roskilde\n\n📍Byens Hus: Forsamlingen\n\nLAU Roskilde få
+ r besøg af udlændinge- og integrationsordfører\, Karoline Marsay.\nOg v
+ i vil gerne have dig med til oplæg 🫵🏼\n\nKaroline vil holde et opl
+ æg om liberal udlændingepolitik og LAUs holdning.\n\nKig forbi til et go
+ dt oplæg\, god stemning og nogle hyggelige timer 🩵\n\nhttps://www.face
+ book.com/events/2242158776194127/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/2242158776194127/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:878314898312482@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260204T180000Z
+DTEND:20260204T200000Z
+SUMMARY:Bestyrelsesmøde (februar 2026)
+DESCRIPTION:LAU Roskilde\n\nLokale: Forsamlingen\, Byens Hus 🩵\n\nDagsor
+ den er som følger:\n1. Velkommen og tjek af fremmødte\n2. Valg af ordsty
+ rer\n3. Valg af referent\n4. Kommende nationale arrangementer\n5. Kommende
+  lokale arrangementer\n6. Opdatering fra HB\n7. Det kommende foreningsår:
+ \n- kommende generalforsamling\n8. LANDSMØDE 2026! \n9. Dato for næste m
+ øde (d. 4/3-2026)\n10. Eventuelt\n\nHar du et vigtigt punkt til dagsorden
+ ?\nKontakt formand\, Simone\n\nhttps://www.facebook.com/events/87831489831
+ 2482/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/878314898312482/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -75,6 +133,254 @@ URL:https://www.facebook.com/events/894759016385258/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1398653704582296@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260303T180000Z
+DTEND:20260303T200000Z
+SUMMARY:Bestyrelsesmøde (marts 2026)
+DESCRIPTION:LAU Roskilde\n\nLokale: Forsamlingen\, Byens Hus 🩵\n\nDagsor
+ den er som følger:\n1. Velkommen og tjek af fremmødte\n2. Valg af ordsty
+ rer\n3. Valg af referent\n4. Kommende nationale arrangementer\n5. Kommende
+  lokale arrangementer\n6. Opdatering fra HB/HB-ansøgning 2026\n7. Landsm
+ øde 2026\n8. Den kommende bestyrelse: generalforsamling 2026\n9. LAU Rosk
+ ildes FT-strategi\n10. Farvel og tak til denne bestyrelse!\n11. Dato for n
+ æste møde (d. 1/4-2026)\n12. Eventuelt\n\nHar du et vigtigt punkt til da
+ gsorden?\nKontakt formand\, Simone\n\nhttps://www.facebook.com/events/1398
+ 653704582296/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1398653704582296/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2088812958630132@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260309T063000Z
+DTEND:20260309T083000Z
+SUMMARY:Flyeruddeling på Roskilde Tekniske Skole 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig\, at LAU Roskilde gør sig ekstra synlige i gadebi
+ lledet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en h
+ ånd med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi m
+ ødes ved Roskilde Tekniske Skole\, klokken 07:30-09:30.\nVi sørger for a
+ t medbringe flyers - du skal blot medbringe det gode humør.\n\nSammen er 
+ vi stærkest.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-i
+ nformationer:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.face
+ book.com/events/2088812958630132/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Tekniske Skole
+GEO:55.62588;12.08862
+URL:https://www.facebook.com/events/2088812958630132/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1605387754039496@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260310T060000Z
+DTEND:20260310T080000Z
+SUMMARY:Flyeruddeling på Roskilde Station 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Station\, klokken 07:00-09:00.\nVi sørger for at medbringe
+  flyers - du skal blot medbringe det gode humør.\n\nSammen er vi stærkes
+ t.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-informatione
+ r:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.com/ev
+ ents/1605387754039496/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Station
+GEO:55.638884564643;12.088699212284
+URL:https://www.facebook.com/events/1605387754039496/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1977762349843557@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260312T140000Z
+DTEND:20260312T160000Z
+SUMMARY:Flyeruddeling på Roskilde Station 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Station\, klokken 15:00-17:00.\nVi sørger for at medbringe
+  flyers - du skal blot medbringe det gode humør.\n\nSammen er vi stærkes
+ t.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-informatione
+ r:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.com/ev
+ ents/1977762349843557/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Station
+GEO:55.638884564643;12.088699212284
+URL:https://www.facebook.com/events/1977762349843557/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1446507000440280@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260315T140000Z
+DTEND:20260315T160000Z
+SUMMARY:Flyeruddeling ved RO’s Torv Shoppingcenter 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved RO’s Torv Shoppingcenter (fodgængerovergangen ved busserne)\, klo
+ kken 15:00-17:00.\nVi sørger for at medbringe flyers - du skal blot medbr
+ inge det gode humør.\n\nSammen er vi stærkest.\nVi ses derude!\n\n- best
+ yrelsen i LAU Roskilde\n\nKontakt-informationer:\n71 72 47 37\nsimoneniels
+ en14@icloud.com\n\nhttps://www.facebook.com/events/1446507000440280/
+CATEGORIES:LAU Roskilde
+LOCATION:RO's Torv Shoppingcenter\, Københavnsvej 29\, 4000 Roskilde\, Den
+ mark
+GEO:55.641389042571;12.100179134375
+URL:https://www.facebook.com/events/1446507000440280/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:782001128314111@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260316T063000Z
+DTEND:20260316T083000Z
+SUMMARY:Flyeruddeling på Roskilde Handelsskole 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Handelsskole\, klokken 07:30-09:30.\nVi sørger for at medb
+ ringe flyers - du skal blot medbringe det gode humør.\n\nSammen er vi st
+ ærkest.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-inform
+ ationer:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.
+ com/events/782001128314111/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Handelsskole\, Bakkesvinget 67\, 4000 Roskilde\, Denmark
+GEO:55.62647;12.07554
+URL:https://www.facebook.com/events/782001128314111/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1415199440403019@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260317T140000Z
+DTEND:20260317T160000Z
+SUMMARY:Flyeruddeling på Roskilde Station 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Station\, klokken 15:00-17:00.\nVi sørger for at medbringe
+  flyers - du skal blot medbringe det gode humør.\n\nSammen er vi stærkes
+ t.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-informatione
+ r:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.com/ev
+ ents/1415199440403019/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Station
+GEO:55.638884564643;12.088699212284
+URL:https://www.facebook.com/events/1415199440403019/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1649698252872441@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260318T094500Z
+DTEND:20260318T103000Z
+SUMMARY:Ekstra uddelingen // FT 2026
+DESCRIPTION:LAU Roskilde\n\nKære alle\,\n\nD. 18/3 kører en bus rundt i l
+ andet\, fyldt med LAU og LA’ere.\nOg bussen ligger selvfølgelig et bes
+ øg fordi Roskilde og Lars-Christian Brask! 🤩\n\nDerfor ser vi det som 
+ en mulighed for ekstra hænder\, til en ekstra uddeling!\n\n\nSes vi? 🥳
+ \n\nhttps://www.facebook.com/events/1649698252872441/
+CATEGORIES:LAU Roskilde
+LOCATION:Stændertorvet
+GEO:55.63082245;12.04450562
+URL:https://www.facebook.com/events/1649698252872441/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1596877371552472@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260319T060000Z
+DTEND:20260319T080000Z
+SUMMARY:Flyeruddeling på Roskilde Station 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Station\, klokken 07:00-09:00.\nVi sørger for at medbringe
+  flyers - du skal blot medbringe det gode humør.\n\nSammen er vi stærkes
+ t.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-informatione
+ r:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.com/ev
+ ents/1596877371552472/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Station
+GEO:55.638884564643;12.088699212284
+URL:https://www.facebook.com/events/1596877371552472/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1361723542378827@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260323T063000Z
+DTEND:20260323T083000Z
+SUMMARY:Flyeruddeling på Roskilde Katedralskole 🗳️
+DESCRIPTION:LAU Roskilde\n\nFOLKETINGSVALGET ER UDSKREVET 🗳️\n…og de
+ t betyder selvfølgelig at LAU Roskilde gør sig ekstra synlige i gadebill
+ edet!\n\nVil du hjælpe Danmark i en borgerlig retning\, så gi’ en hån
+ d med\, når vi uddeler flyers for vores folketingskandidater!\n\nVi møde
+ s ved Roskilde Katedralskole\, klokken 07:30-09:30.\nVi sørger for at med
+ bringe flyers - du skal blot medbringe det gode humør.\n\nSammen er vi st
+ ærkest.\nVi ses derude!\n\n- bestyrelsen i LAU Roskilde\n\nKontakt-inform
+ ationer:\n71 72 47 37\nsimonenielsen14@icloud.com\n\nhttps://www.facebook.
+ com/events/1361723542378827/
+CATEGORIES:LAU Roskilde
+LOCATION:Roskilde Katedralskole\, Holbækvej 59\, 4000 Roskilde\, Denmark
+GEO:55.6342285563;12.058414685053
+URL:https://www.facebook.com/events/1361723542378827/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1317219806899268@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260327T173000Z
+DTEND:20260327T193000Z
+SUMMARY:Ordinær Generalforsamling 2026
+DESCRIPTION:LAU Roskilde\n\nKære alle\,\n\nVi indkalder hermed til den år
+ lige generalforsamling for 2026.\n\nDet vil foregå i Byens Bus\, Stænder
+ torvet\, Roskilde i lokalet: Forsamlingen kl. 18.30-21.00\n\nAlle som øns
+ ker at deltage\, er mere end velkommen.\nVi opfordrer alle\, som har den m
+ indste tanke om at stille op til bestyrelsen\, stiller op til hvilken som 
+ helst post de ønsker at påtage sig.\n\nDer vil blive serveret sodavand o
+ g pizza til arrangementet.\n\nDagsorden som følger:\n1. Valg af dirigent.
+ \n2. Valg af referent.\n3. Valg af stemmetællere.\n4. Bestyrelsens beretn
+ ing.\n5. Forelæggelse af regnskab til godkendelse.\n6. Behandling a\n\nht
+ tps://www.facebook.com/events/1317219806899268/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1317219806899268/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:933729319259890@lau-kort
+DTSTAMP:20260928T160631Z
+DTSTART:20260402T160000Z
+DTEND:20260402T180000Z
+SUMMARY:LAU Roskilde tager til Kandidatpræsentation hos LAU KBH
+DESCRIPTION:LAU Roskilde\n\nTag med ind og få præsenteret kandidaterne ti
+ l forretningsudvalget!\n\nLiberal Alliances Ungdom København har fået st
+ ablet et arrangement på benene der omhandler de kandidater der stiller op
+  til LAU's forretningsudvalg. \n\nDet bliver en aften hvor kandidaterne pr
+ æsentere deres kandidatur\, debattere med hinanden og hvor vi får lov ti
+ l at stille dem relevante spørgsmål.\n\nHåber så mange fra LAU Roskild
+ e vil deltage.\n\n\nhttps://www.facebook.com/events/933729319259890/
+CATEGORIES:LAU Roskilde
+LOCATION:Ungdommens Demokratihus
+GEO:55.668859212697;12.560164087318
+URL:https://www.facebook.com/events/933729319259890/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:955890770165036@lau-kort
 DTSTAMP:20260928T142101Z
 DTSTART:20260408T170000Z
@@ -111,7 +417,8 @@ DESCRIPTION:LAU Roskilde\n\nLAU Roskilde tager til LA’s Landsmøde\n\nLA
  så mange som muligt fra LAU Roskilde – det bliver en aften\, du ikke vi
  l\n\nhttps://www.facebook.com/events/1555933288835538/
 CATEGORIES:LAU Roskilde
-LOCATION:Tivoli Hotel & Congress Center
+LOCATION:Tivoli Hotel & Congress Center\, Arni Magnussons gade 2\, 1577 Cop
+ enhagen\, Denmark
 GEO:55.66589;12.56597
 URL:https://www.facebook.com/events/1555933288835538/
 STATUS:CONFIRMED
@@ -130,8 +437,7 @@ DESCRIPTION:LAU Roskilde\n\nEr du ny i Liberal Alliances Ungdom Roskilde\,
  g nysgerrig – vi glæder os til at se dig! 💙\n\nLokale: Verdensrummet
  \n\nhttps://www.facebook.com/events/1256859206425202/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
- k
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1256859206425202/
 STATUS:CONFIRMED
@@ -298,7 +604,8 @@ DESCRIPTION:LAU Roskilde\n\nBESTYRELSESMØDE JUNI:\n\nDagsorden:\n\nVelkomm
  ien i lokalforeningen\nHvad laver I til næste gang?\nEventuelt\n\nLokale:
   Tidsrummet\n\nhttps://www.facebook.com/events/834495009723403/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Mindesten for Danmarks Besaette\, Fondens B
+ ro\, 4000 Roskilde\, Danmark
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/834495009723403/
 STATUS:CONFIRMED
@@ -383,7 +690,8 @@ DESCRIPTION:LAU Roskilde\n\nLiberalisme\, Konservatisme & Borgerlighed\n\nK
  ndervejs.\n\n📅 Dato: 17. juni\n📍 Lokale: Verdensrummet \n🕒 Tid\n\
  nhttps://www.facebook.com/events/995357093356551/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/995357093356551/
 STATUS:CONFIRMED
@@ -459,7 +767,8 @@ DESCRIPTION:LAU Roskilde\n\nLokale: Forsamligen\n\nDagsorden:\nVelkommen og
  i lokalforeningen\nHvad laver I til næste gang?\nEventuelt\n\nhttps://www
  .facebook.com/events/1762770121530877/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1762770121530877/
 STATUS:CONFIRMED
