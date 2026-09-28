@@ -147,13 +147,14 @@
   "pHYzYlU5H0ffk1jd0",
   "phJvZajzGzrQ9edaS",
   "rCgRYXBSmbju1XdoI",
+  "s1MtBAqlJjjlNDUZ9",
   "sCqXpsUbKvIh6yT1j",
   "ubS51fNCUueEjSaMf",
   "yOAaJ05g8KXM0hCHZ",
   "zV457MIVjJYnjCYU1",
   "zz2FSQsbvQfUwolup"
  ],
- "opdateret": "2026-09-28T14:25:21Z",
+ "opdateret": "2026-09-28T15:25:58Z",
  "historik": {
   "koersler": [
    {
@@ -715,6 +716,17 @@
     "status": "SUCCEEDED",
     "hentet": 20,
     "begivenheder": 6
+   },
+   {
+    "id": "s1MtBAqlJjjlNDUZ9",
+    "tid": "2026-09-28T15:25:27Z",
+    "forening": "Fyn",
+    "side": "https://www.facebook.com/LiberalAlliancesUngdomOdense",
+    "status": "SUCCEEDED",
+    "hentet": 3,
+    "begivenheder": 3,
+    "aeldste": "2026-03-03T18:00:00Z",
+    "udvalgte": true
    }
   ],
   "fra": "2026-01-01T00:00:00Z"
