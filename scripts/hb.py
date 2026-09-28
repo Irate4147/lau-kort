@@ -3,9 +3,11 @@
 
 HB-kravet (Organisationshåndbogen 8.2) er mindst ét medlemsarrangement pr. kvartal i det
 foregående kalenderår. Scriptet tjekker kun, om der er afholdt et arrangement i hvert kvartal
-(ikke om det er fagligt), sammenholder data/events.json med data/hb.json (årets HB-status)
-og skriver data/hb_<år+1>.json. Rettelser i data/rettelser.json (fx bekræftet afholdt eller
-tilføjet manuelt) går forud for Facebook-data:
+(ikke om det er fagligt), sammenholder data/events.json med årets HB-status og skriver
+prognosen. HB-data er fortrolige og krypteres (se scripts/admin.py): årets status læses fra
+data/admin/hb.krypt.json, og prognosen skrives til data/admin/hb_<år+1>.krypt.json – derfor kræver
+scriptet miljøvariablen ADMIN_KODE. Rettelser (fx bekræftet afholdt eller tilføjet manuelt) går forud
+for Facebook-data:
 
     python3 scripts/hb.py [ÅR]      # standard: indeværende år
 
@@ -30,6 +32,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import admin
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 TZ = ZoneInfo("Europe/Copenhagen")
@@ -44,7 +48,7 @@ def kvartaler(aar):
 
 
 def anvend_rettelser(events, rettelser):
-    """Rettelser fra data/rettelser.json går forud for Facebook-data. Samme regler som anvendRettelser() i app.js."""
+    """Rettelser går forud for Facebook-data. Samme regler som anvendRettelser() i app.js."""
     events = [dict(e) for e in events]
     by_id = {e["id"]: e for e in events}
     for id_, r in (rettelser or {}).items():
@@ -140,12 +144,10 @@ def vurder(aar, idag=None):
     foreninger = json.loads((DATA / "foreninger.json").read_text(encoding="utf-8"))
     events = json.loads((DATA / "events.json").read_text(encoding="utf-8"))
     meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8"))
-    hb = json.loads((DATA / "hb.json").read_text(encoding="utf-8"))
+    hb = admin.laes("hb", {})
     hb_nu = hb.get(f"hb{aar}", {}).get("foreninger", {})
     fra_for = daekning(meta, events, foreninger)  # dækning ud fra de hentede data, før rettelser
-    rettelser_fil = DATA / "rettelser.json"
-    if rettelser_fil.exists():
-        events = anvend_rettelser(events, json.loads(rettelser_fil.read_text(encoding="utf-8")).get("rettelser"))
+    events = anvend_rettelser(events, admin.rettelser())
 
     resultat = {}
     for f in foreninger:
@@ -208,9 +210,15 @@ def vurder(aar, idag=None):
 
 def main():
     aar = int(sys.argv[1]) if len(sys.argv) > 1 else datetime.now(TZ).year
+    if not admin.har_noegle():
+        print("HB-prognosen er fortrolig og beregnes kun med ADMIN_KODE (se README: Adminlogin) – springes over.")
+        return
     res = vurder(aar)
-    ud = DATA / f"hb_{aar + 1}.json"
-    ud.write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    ud = admin.sti(f"hb_{aar + 1}")
+    # "beregnet" ændres hver gang; skriv kun, når selve vurderingen er ændret, så der ikke kommer tomme commits.
+    gammel = admin.laes(f"hb_{aar + 1}", {})
+    if {**gammel, "beregnet": None} != {**res, "beregnet": None}:
+        admin.skriv(f"hb_{aar + 1}", res)
 
     tegn = {"ja": "✓", "nej": "✗", "ukendt": "?", "planlagt": "…", "mangler": "!"}
     print(f"HB {aar + 1} – kvartalskrav i {aar} (i dag {res['idag']})")
@@ -218,7 +226,7 @@ def main():
     for navn, r in sorted(res["foreninger"].items(), key=lambda x: (x[1]["prognose"], x[0])):
         kv = "  ".join(tegn[r["kvartaler"][f"Q{q}"]["status"]] for q in range(1, 5))
         print(f"{navn:16} {r[f'hb{aar}'].get('status', '–'):14} {res['data_fra'][navn] or '–':11} {kv}   {r['prognose']}")
-    print(f"Skrevet til {ud.relative_to(ROOT)}")
+    print(f"Skrevet til {ud.relative_to(ROOT)} (krypteret)")
 
 
 if __name__ == "__main__":

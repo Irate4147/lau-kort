@@ -1,11 +1,12 @@
 name: Beregn HB-prognose
 
-# Når en rettelse af arrangementer gemmes (data/rettelser.json), beregnes data/hb_<år>.json og kalenderne
-# (kalender/*.ics) igen – også når foreningerne ændres. Kører kun hb.py og kalender.py – ingen Apify-kald.
+# Når en rettelse af arrangementer gemmes (data/admin/rettelser.krypt.json), skrives den offentlige del
+# (data/rettelser.json), og HB-prognosen (data/admin/hb_<år>.krypt.json) og kalenderne (kalender/*.ics) beregnes
+# igen – også når foreningerne eller HB-status ændres. Kører kun admin.py, hb.py og kalender.py – ingen Apify-kald.
 on:
   push:
     branches: [main]
-    paths: ['data/rettelser.json', 'data/foreninger.json']
+    paths: ['data/admin/rettelser.krypt.json', 'data/admin/hb.krypt.json', 'data/foreninger.json']
   workflow_dispatch:
 
 permissions:
@@ -25,7 +26,17 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Installér kryptering (fortrolige admindata)
+        run: pip install cryptography
+
+      - name: Fortrolige data (kryptér, offentlige rettelser)
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
+        run: python3 scripts/admin.py klargoer
+
       - name: Beregn HB-prognose (kvartalskrav)
+        env:
+          ADMIN_KODE: ${{ secrets.ADMIN_KODE }}
         run: python3 scripts/hb.py
 
       - name: Skriv kalendere (.ics)
@@ -35,5 +46,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data kalender
+          git add -A data kalender
           git diff --cached --quiet || { git commit -m "Beregn HB-prognose" && git pull --rebase -q && git push; }

@@ -9,7 +9,7 @@ Filer (kan abonneres på i fx Google Kalender, Apple Kalender og Outlook):
   kalender/landsforeningen.ics   kun landsforeningens arrangementer
   kalender/alle.ics              alle arrangementer
 
-Rettelser i data/rettelser.json anvendes (samme regler som siden og hb.py). Skjulte arrangementer og
+Rettelser i data/rettelser.json (den offentlige del, se scripts/admin.py) anvendes (samme regler som siden og hb.py). Skjulte arrangementer og
 arrangementer fjernet fra Facebook udelades; aflyste står som aflyst. Filnavnene laves med slug() –
 samme regel som kalenderSlug() i app.js.
 """
