@@ -1,15 +1,15 @@
 name: Hent historik
 
 # Engangskørsel: scraper foreningernes tidligere begivenheder ("past_hosted_events") på Apify
-# og gemmer dem, der er afholdt inden for de seneste N dage, i data/.
-# Koster Apify-kreditter (højst 25 begivenheder pr. side), så den startes kun manuelt.
+# og gemmer dem, der er afholdt siden en given dato (standard 1. januar i år), i data/.
+# Koster Apify-kreditter (højst 60 begivenheder pr. side), så den startes kun manuelt.
 on:
   workflow_dispatch:
     inputs:
-      dage:
-        description: 'Antal dage bagud'
-        default: '92'
-        required: true
+      fra:
+        description: 'Fra dato (ÅÅÅÅ-MM-DD) eller antal dage bagud – tom = 1. januar i år'
+        default: ''
+        required: false
 
 permissions:
   contents: write
@@ -32,11 +32,11 @@ jobs:
       - name: Scrape tidligere begivenheder
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-        run: python3 scripts/sync.py --historik "${{ inputs.dage }}"
+        run: python3 scripts/sync.py --historik "${{ inputs.fra }}"
 
       - name: Gem data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
-          git diff --cached --quiet || { git commit -m "Hent historik (${{ inputs.dage }} dage)" && git pull --rebase -q && git push; }
+          git diff --cached --quiet || { git commit -m "Hent historik" && git pull --rebase -q && git push; }

@@ -11,10 +11,10 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 3. Siden (`index.html`, `app.js`) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
 Facebook viser kun kommende begivenheder i de ugentlige kørsler. Afholdte aktiviteter før 28. sep. 2026 hentes med en engangskørsel på foreningernes `past_hosted_events`:
-Actions → "Hent historik" → *Run workflow* (standard 92 dage, dvs. ca. et kvartal; højst 25 begivenheder pr. side, så Apify-forbruget er begrænset).
-Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik 92`. Begivenheder hentet på den måde får `"historisk": true` og tæller ikke med i "varsel".
+Actions → "Hent historik" → *Run workflow* (standard fra 1. januar i år; højst 60 begivenheder pr. side, så Apify-forbruget er begrænset).
+Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik [ÅÅÅÅ-MM-DD]`. Begivenheder hentet på den måde får `"historisk": true` og tæller ikke med i "varsel".
 
-På kortet kan "Afholdt i Q…" slås til over kortet: lokalforeningerne farves grønne, hvis de har afholdt mindst én aktivitet i indeværende kvartal, og røde, hvis ikke.
+Over kortet kan "Farv efter" sættes til et af årets kvartaler (Q1, Q2, …): lokalforeningerne farves grønne, hvis de har afholdt mindst én aktivitet i kvartalet, og røde, hvis ikke.
 
 ## Ændringer
 

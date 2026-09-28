@@ -9,9 +9,9 @@ ind i en voksende database, så afholdte begivenheder bevares til analyserne.
     APIFY_TOKEN=... python3 scripts/sync.py
 
 Historik (engangskørsel): scraper foreningernes "past_hosted_events" og tilføjer de
-afholdte begivenheder fra de seneste DAGE (standard 92, dvs. ca. et kvartal):
+afholdte begivenheder siden FRA (ÅÅÅÅ-MM-DD eller antal dage; standard 1. januar i år):
 
-    APIFY_TOKEN=... python3 scripts/sync.py --historik [DAGE]
+    APIFY_TOKEN=... python3 scripts/sync.py --historik [FRA]
 
 Kører i GitHub Actions (.github/workflows/sync.yml og historik.yml); lokalt læses token
 også fra ../.apify_token, hvis miljøvariablen mangler.
@@ -38,8 +38,7 @@ API = "https://api.apify.com/v2"
 ACTOR = "apify~facebook-events-scraper"
 DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
-HISTORIK_DAGE = 92
-HISTORIK_MAX_PR_SIDE = 25   # loft pr. side, så en kørsel ikke henter hele sidens historik
+HISTORIK_MAX_PR_SIDE = 60   # loft pr. side, så en kørsel ikke henter hele sidens historik
 HISTORIK_SAMTIDIGE = 2
 
 
@@ -315,11 +314,20 @@ def run_actor(url):
         return url, None, []
 
 
-def historik(dage):
+def historik_fra(arg):
+    """Startdato for historikken: 'ÅÅÅÅ-MM-DD', et antal dage bagud eller (tom) 1. januar i år."""
+    now = datetime.now(timezone.utc)
+    if not arg:
+        return datetime(now.year, 1, 1, tzinfo=timezone.utc)
+    if re.fullmatch(r"\d+", arg):
+        return now - timedelta(days=int(arg))
+    return datetime.fromisoformat(arg).replace(tzinfo=timezone.utc)
+
+
+def historik(fra):
     foreninger = load_foreninger()
     kommuner = load_kommuner()
     events, meta = load_state()
-    fra = datetime.now(timezone.utc) - timedelta(days=dage)
     urls = [past_url(f["facebook"]) for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook")]
 
     with ThreadPoolExecutor(HISTORIK_SAMTIDIGE) as pool:
@@ -337,7 +345,7 @@ def historik(dage):
         meta["behandlet"] = sorted(set(meta["behandlet"]) | {run["id"]})
         koersler.append({"id": run["id"], "tid": seen, "forening": forening, "status": run["status"],
                          "hentet": len(items), "begivenheder": tilfoejet})
-        print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} inden for {dage} dage")
+        print(f"{forening}: {run['status']}, {len(items)} hentet, {tilfoejet} siden {fra.date()}")
 
     # "fra" sættes kun, når mindst én kørsel lykkedes – ellers ville siden påstå at have data, den ikke har.
     gammel = meta.get("historik") or {}
@@ -355,6 +363,6 @@ def historik(dage):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--historik":
-        historik(int(sys.argv[2]) if len(sys.argv) > 2 else HISTORIK_DAGE)
+        historik(historik_fra(sys.argv[2] if len(sys.argv) > 2 else ""))
     else:
         main()
