@@ -426,3 +426,31 @@ ul.advarsler { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
 @media (max-width: 760px) {
   .analyser { top: 10px; right: 6px; bottom: 6px; width: calc(100% - 12px); }
 }
+
+/* ---- udvidelse: hvide pletter ---- */
+.hp-knapper { margin: 10px 0 6px; }
+.hp-tabel td.hp-navne { white-space: normal; text-align: left; font-size: 12.5px; line-height: 1.4; padding-right: 8px; }
+.hp-tabel th:nth-child(5) { text-align: left; }
+.hp-tabel .hp-medl { color: #b45309; font-weight: 600; }
+.hp-tabel .hp-andet { display: block; color: var(--muted); font-size: 11px; }
+.hp-tabel .hp-af { color: var(--muted); font-size: 11px; }
+.hp-tabel .muted { color: var(--muted); }
+.hp-tabel .chip:disabled { visibility: hidden; }
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root .hp-tabel .hp-medl { color: #f0a54a; }
+}
+
+/* ---- udvidelse: hvad virker ---- */
+.hv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 0 24px; }
+.hv-chart .hv-ref { stroke: var(--text-secondary); stroke-width: 1; stroke-dasharray: 3 3; }
+.hv-chart .hv-bar { fill: var(--accent); }
+.hv-chart .hv-bar-faa { fill: var(--axis); }
+.hv-chart .hv-faa { fill: var(--muted); font-style: italic; }
+.hv-chart .val { paint-order: stroke; stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
+.hv-swatch-faa { background: var(--axis); }
+ul.hv-konklusioner, ul.hv-forbehold { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; }
+ul.hv-konklusioner li, ul.hv-forbehold li { margin-bottom: 4px; }
+ul.hv-forbehold { color: var(--text-secondary); font-size: 12.5px; }
+.hv-top td.hv-navn { white-space: normal; text-align: left; max-width: 320px; }
+.hv-top th:first-child { text-align: left; }
+.hv-top .hv-kat { display: block; color: var(--muted); font-size: 11px; }
