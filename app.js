@@ -161,7 +161,7 @@ function hbPrognose(f) {
  * data ikke dækker hele perioden bagud; 'ingenfb' uden Facebook-side og uden arrangementer.
  * Trend: seneste MOM_BAGUD dage mod de MOM_BAGUD dage før, når data dækker begge.
  */
-const MOM_BAGUD = 90, MOM_FREMAD = 60, MOM_GODT = 4;
+const MOM_BAGUD = 60, MOM_FREMAD = 60, MOM_GODT = 4;
 const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
 const MOM_STATUS = {
   godt:     {ikon: '↗', label: 'Godt i gang', hint: `Afholder og planlægger – mindst ${MOM_GODT} i alt (≈ én om måneden)`},

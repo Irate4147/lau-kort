@@ -42,7 +42,7 @@ Sidepanelet har disse faner:
 
 Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på vej med at afholde arrangementer – og et tidligt varsel om, at den har brug for hjælp. Den bygger på to tal:
 
-- **Bagud:** afholdte arrangementer de seneste 90 dage.
+- **Bagud:** afholdte arrangementer de seneste 60 dage.
 - **Frem:** arrangementer i kalenderen de næste 60 dage.
 
 | Niveau | Regel |
@@ -53,7 +53,7 @@ Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på
 | ↘ Mister fart | afholdt, men intet i kalenderen |
 | ⚠ Brug for hjælp | hverken afholdt eller planlagt |
 
-(plus "historik mangler", når intet er afholdt, og data ikke dækker de seneste 90 dage.) Derudover vises advarsler: mange dage siden sidste arrangement (> 45), intet i kalenderen / næste først om > 30 dage, færre afholdt end de 90 dage før (når data dækker det) og aflyste arrangementer.
+(plus "historik mangler", når intet er afholdt, og data ikke dækker de seneste 60 dage.) Derudover vises advarsler: mange dage siden sidste arrangement (> 45), intet i kalenderen / næste først om > 30 dage, færre afholdt end de 60 dage før (når data dækker det) og aflyste arrangementer.
 
 Oversigten har antal pr. niveau, et punktdiagram (afholdt × planlagt) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_BAGUD`, `MOM_FREMAD` og `MOM_GODT` i `app.js`.
 
