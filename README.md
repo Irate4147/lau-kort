@@ -25,8 +25,20 @@ Knappen **📅 Kalender** over kortet (eller *Kalender* under Visninger) viser/s
 **Tilføj til din kalender:** `scripts/kalender.py` skriver offentlige iCalendar-filer til `kalender/`, som man kan abonnere på (Google Kalender, Apple Kalender, Outlook – de opdateres automatisk):
 
 - `<forening>.ics` – foreningen + landsforeningen (fx `naestved.ics`; æ/ø/å → ae/oe/aa)
-- `<forening>-kun.ics` + `landsforeningen.ics` – til flere foreninger, så landsforeningen ikke kommer med flere gange
+- `<forening>-kun.ics` + `landsforeningen.ics` – byggesten til flere foreninger (flettes til én kalender, se nedenfor)
 - `alle.ics` – alle arrangementer
+
+Man får altid **én** kalender: ingen valgt → `alle.ics`, én forening → `<forening>.ics`, flere foreninger (vilkårlig kombination) → én flettet kalender med de valgte foreninger + landsforeningen, hvor fælles arrangementer kun kommer med én gang.
+
+### Én kalender for flere foreninger
+
+Pages kan kun levere faste filer, og 23 foreninger giver millioner af kombinationer. Derfor:
+
+- **Uden server** (standard): knappen *Hent som én kalenderfil (.ics)* fletter filerne i browseren og gemmer én fil. Den importeres i kalenderen, men opdateres ikke af sig selv.
+- **Med server** (anbefalet): `kalender-server/worker.js` er en lille Cloudflare Worker (gratis), der fletter filerne ved hvert opslag, fx `https://<worker>/aalborg+fyn.ics`. Så kan man abonnere på den ene kalender, og den opdateres automatisk.
+  1. Opret en gratis konto på [cloudflare.com](https://dash.cloudflare.com) → *Workers & Pages* → *Create* → *Create Worker* → *Deploy*.
+  2. *Edit code*: erstat koden med indholdet af `kalender-server/worker.js` → *Deploy*. Adressen er fx `https://lau-kalender.<konto>.workers.dev`.
+  3. Sæt `kalenderServer: 'https://lau-kalender.<konto>.workers.dev'` i `CONFIG` øverst i `app.js`.
 
 Linket er fx `https://irate4147.github.io/lau-kort/kalender/naestved.ics` (Pages, ikke raw.githubusercontent.com – den sender `Content-Type: text/plain`, som bl.a. Google Kalender afviser). Filerne skrives igen af alle tre workflows (også når rettelser eller `data/foreninger.json` ændres). Rettelser anvendes; skjulte og fra Facebook fjernede arrangementer udelades, aflyste markeres som aflyst.
 

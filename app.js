@@ -18,6 +18,8 @@ const CONFIG = Object.assign({
   dataBase: location.hostname.endsWith('github.io') ? 'https://raw.githubusercontent.com/Irate4147/lau-kort/main/' : '',
   assetBase: '',
   basemap: 'https://tiles.openfreemap.org/styles/liberty',
+  // Én abonnerbar kalender for flere foreninger: adressen på kalender-server/worker.js (se README.md). Tom = hent som fil.
+  kalenderServer: 'https://steep-fog-8fcd.emilskov.workers.dev',
 }, window.LAU_CONFIG || {});
 
 const TZ = 'Europe/Copenhagen';
@@ -2120,7 +2122,8 @@ registerAnalyse({
 // ------------------------------------------------------------------ kalender (øverst til højre på kortet)
 /*
  * Månedskalender med arrangementerne, filtreret på de valgte foreninger (landsforeningen er altid med).
- * Valget huskes i browseren. Abonnér: scripts/kalender.py skriver kalender/*.ics (se README.md).
+ * Valget huskes i browseren. Abonnér: scripts/kalender.py skriver kalender/*.ics, og ved flere foreninger fletter
+ * kalender-server/worker.js dem til én (se README.md).
  */
 /** Filnavn for foreningens kalender – samme regel som slug() i scripts/kalender.py. */
 const kalenderSlug = navn => navn.toLowerCase().replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa')
@@ -2141,12 +2144,58 @@ function kalEvents() {
   return DATA.events.filter(e => (!e.forsvundet || e.bekraeftet) && offentligTid(e)
     && (!valg.length || e.national || e.foreninger.some(n => valg.includes(n))));
 }
-/** Kalenderfilerne, der passer til valget: én fil ved ingen eller én forening, ellers landsforeningen + hver forening. */
-function kalFiler() {
+/**
+ * Den ene kalender, der passer til valget: alle.ics, <forening>.ics eller – ved flere foreninger – kalender-serveren,
+ * der fletter landsforeningen.ics og <forening>-kun.ics. Uden server (url: null) hentes den flettede kalender som fil.
+ */
+function kalFil() {
   const valg = kalValgte();
-  if (!valg.length) return [{navn: 'Alle foreninger', fil: 'alle.ics'}];
-  if (valg.length === 1) return [{navn: `LAU ${valg[0]} + Landsforeningen`, fil: `${kalenderSlug(valg[0])}.ics`}];
-  return [{navn: 'Landsforeningen', fil: 'landsforeningen.ics'}, ...valg.map(n => ({navn: `LAU ${n}`, fil: `${kalenderSlug(n)}-kun.ics`}))];
+  if (!valg.length) return {navn: 'Alle foreninger', url: kalUrl('alle.ics')};
+  if (valg.length === 1) return {navn: `LAU ${valg[0]} + Landsforeningen`, url: kalUrl(`${kalenderSlug(valg[0])}.ics`)};
+  const navn = `LAU ${[...valg].sort((a, b) => kalenderSlug(a).localeCompare(kalenderSlug(b))).join(', ')} + Landsforeningen`;
+  const server = CONFIG.kalenderServer.replace(/\/+$/, '');
+  return {navn, url: server ? `${server}/${valg.map(kalenderSlug).sort().join('+')}.ics` : null};
+}
+
+const icsTekst = s => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,');
+/** Linjer må højst være 75 oktetter (RFC 5545); fortsættelseslinjer starter med et mellemrum. */
+function icsFold(linje) {
+  const ud = [], enc = new TextEncoder(); let cur = '', n = 0;
+  for (const c of linje) {
+    const b = enc.encode(c).length;
+    if (n + b > (ud.length ? 74 : 75)) { ud.push(cur); cur = ''; n = 0; }
+    cur += c; n += b;
+  }
+  ud.push(cur);
+  return ud.join('\r\n ');
+}
+/** Fletter .ics-filer til én kalender (samme UID kun én gang) – samme regel som kalender-server/worker.js. */
+function flettIcs(tekster, navn) {
+  const set = new Set(), ev = [];
+  for (const t of tekster) for (const b of t.match(/BEGIN:VEVENT\r?\n[\s\S]*?END:VEVENT/g) || []) {
+    const ufoldet = b.replace(/\r?\n[ \t]/g, '');
+    const uid = (ufoldet.match(/^UID:(.*)$/m) || [])[1] || b;
+    if (set.has(uid)) continue;
+    set.add(uid);
+    ev.push({start: (ufoldet.match(/^DTSTART[^:]*:(.*)$/m) || [])[1] || '', uid, b: b.replace(/\r?\n/g, '\r\n')});
+  }
+  ev.sort((a, b) => a.start.localeCompare(b.start) || a.uid.localeCompare(b.uid));
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//LAU//lau-kort//DA', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    icsFold(`X-WR-CALNAME:${icsTekst(navn)}`), 'X-WR-TIMEZONE:Europe/Copenhagen', ...ev.map(e => e.b), 'END:VCALENDAR'].join('\r\n') + '\r\n';
+}
+/** Henter landsforeningen + de valgte foreningers kalendere og gemmer dem som én .ics-fil. */
+async function hentFlettetKalender(navn) {
+  const filer = ['landsforeningen.ics', ...kalValgte().map(n => `${kalenderSlug(n)}-kun.ics`)];
+  const tekster = await Promise.all(filer.map(async f => {
+    const r = await fetch(kalUrl(f));
+    if (!r.ok) throw new Error(`${f}: ${r.status}`);
+    return r.text();
+  }));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([flettIcs(tekster, navn)], {type: 'text/calendar;charset=utf-8'}));
+  a.download = `lau-${kalValgte().map(kalenderSlug).sort().join('+')}.ics`;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 function visKalender() {
@@ -2202,12 +2251,15 @@ function renderKalender() {
       ${evList(liste.ev, true, KAL.dag ? 'Ingen arrangementer.' : 'Ingen planlagte arrangementer.')}</div>
     <div class="kal-abonner">
       <button type="button" class="linkbtn" data-kal-abonner aria-expanded="${KAL.abonner}">＋ Tilføj til din kalender</button>
-      ${KAL.abonner ? `<p class="note">Abonnér – kalenderen opdateres automatisk${valg.length > 1 ? '. Ved flere foreninger: tilføj hver kalender (landsforeningen kun én gang)' : ''}.</p>
-        ${kalFiler().map(k => { const url = kalUrl(k.fil), webcal = url.replace(/^https?:/, 'webcal:'); return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+      ${KAL.abonner ? (() => { const k = kalFil(); if (!k.url) return `<div class="kal-fil"><span>${esc(k.navn)}</span>
+          <button type="button" class="linkbtn" data-kal-hent>⤓ Hent som én kalenderfil (.ics)</button></div>
+        <p class="note">Åbn filen for at lægge arrangementerne i din kalender (Google: Indstillinger → Importér). Filen opdateres ikke af sig selv – hent den igen for nye arrangementer.</p>`;
+        const webcal = k.url.replace(/^https?:/, 'webcal:'); return `<p class="note">Abonnér – kalenderen opdateres automatisk.</p>
+        <div class="kal-fil"><span>${esc(k.navn)}</span>
           <a href="https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">Google</a>
           <a href="${esc(webcal)}">Apple/Outlook</a>
-          <button type="button" class="linkbtn" data-kal-kopier="${esc(url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>`; }).join('')}
-        <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>` : ''}
+          <button type="button" class="linkbtn" data-kal-kopier="${esc(k.url)}" title="Kopiér link (til fx Outlook.com: Tilføj kalender → Abonnér fra internettet)">${kopier} Link</button></div>
+        <p class="note">Google: åbn linket og vælg "Tilføj". Andre: kopiér linket og tilføj det som kalender fra URL.</p>`; })() : ''}
     </div>`;
 
   const q = s => el.querySelectorAll(s);
@@ -2229,6 +2281,11 @@ function renderKalender() {
   q('[data-kal-abonner]').forEach(b => b.addEventListener('click', () => {
     KAL.abonner = !KAL.abonner; igen();
     if (KAL.abonner) el.querySelector('.kal-abonner')?.scrollIntoView({block: 'nearest'});
+  }));
+  q('[data-kal-hent]').forEach(b => b.addEventListener('click', async () => {
+    b.disabled = true;
+    try { await hentFlettetKalender(kalFil().navn); } catch (err) { alert(`Kunne ikke hente kalenderen (${err.message}).`); }
+    b.disabled = false;
   }));
   q('[data-kal-kopier]').forEach(b => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(b.dataset.kalKopier); b.lastChild.textContent = ' Kopieret'; }
