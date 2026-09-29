@@ -1,7 +1,7 @@
 // Enhedstests af kernen på et lille, fast datasæt.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {bygFraJson, koer, valider, boreNed, prObjekt, LAU, Ontologi, regler as R} from '../kerne/index.js';
+import {bygFraJson, koer, valider, boreNed, prObjekt, LAU, Ontologi, regler as R, rapport as RAP} from '../kerne/index.js';
 
 const NU = new Date('2026-09-29T10:00:00Z');
 const ev = (id, forening, start, ekstra = {}) => ({id, forening, foreninger: [forening], navn: `Arrangement ${id}`, start,
@@ -234,4 +234,47 @@ test('"Hvad virker?" som egenskaber i ontologien', () => {
   assert.deepEqual([a('1', 'starttid'), a('4', 'starttid')], ['kl19', 'kl12']);
   assert.deepEqual([f('Fyn', 'rekord'), f('Aarhus', 'rekord'), f('Landsforeningen', 'rekord')], [true, false, null]);
   assert.equal(f('Fyn', 'rekordDetaljer').e.id, '1');
+});
+
+// ---------------------------------------------------------------- månedsrapporten (kerne/rapport.js)
+
+test('månedsrapport: faldet eller forbedret (som scripts/rapport.py)', () => {
+  const s = (ma, mb, ha, hb, hbSamme = true, kvSamme = true) => RAP.sammenlign({momentum: {start: ma, slut: mb}, hb: {start: ha, slut: hb}}, hbSamme, kvSamme);
+  assert.deepEqual(s('godt', 'hjaelp', null, null), {ned: true, op: null, mom: ['godt', 'hjaelp'], hb: null});
+  assert.equal(s('hjaelp', 'godt', null, null).op, true);
+  assert.equal(s('ukendt', 'godt', null, null).mom, null, 'ukendt sammenlignes ikke');
+  assert.deepEqual(s(null, null, 'alle', 'mangler_nu', true, false).hb, null, 'nyt kvartal nulstiller HB-prognosen');
+  assert.deepEqual(s(null, null, 'alle', 'ikke', true, false).hb, ['alle', 'ikke'], '… men "ikke" tæller');
+  assert.equal(s(null, null, 'alle', 'ikke', false, true).hb, null, 'andet HB-år');
+});
+
+test('månedsrapport: denne måned indtil nu', () => {
+  const r = RAP.maanedIndtilNu(L);
+  assert.deepEqual([r.maaned, r.fra, r.til, r.start], ['2026-09', '2026-09-01', '2026-10-01', null]);
+  assert.deepEqual([r.total.afholdt, r.total.aflyst, r.total.aktive, r.total.lokale, r.total.uden_data], [2, 1, 1, 3, 1]);
+  assert.deepEqual(r.hoejdepunkter.uden_aktivitet.map(x => [x.forening, x.sidste]), [['Aarhus', '2026-05-01']]);
+  assert.deepEqual(r.foreninger.Fyn.afholdt.map(e => e.id), ['6', '1']);
+  // Med et snapshot fra månedens start: Fyn er gået fra "Brug for hjælp" til "Godt i gang", Aarhus' aflysning var kendt.
+  const snap = {tid: '2026-09-01T00:00:00Z', hb_aar: 2027, foreninger: {Fyn: {niveau: 'hjaelp', hb: 'ikke', aflyste: []}, Aarhus: {aflyste: ['5']}}};
+  const m = RAP.maanedIndtilNu(L, snap);
+  assert.deepEqual(m.hoejdepunkter.forbedret, [{forening: 'Fyn', momentum: ['hjaelp', 'godt'], hb: null}]);
+  assert.deepEqual([m.total.nye_aflysninger, m.fordeling.momentum.start.hjaelp], [0, 1]);
+});
+
+test('månedsrapport: fremad – risici i rækkefølge efter alvor', () => {
+  const byg = (nu, events) => bygFraJson({...DATA, foreninger: [{navn: 'X', facebook: 'x', kommuner: []}, {navn: 'Y', facebook: 'x', kommuner: []}],
+    events: [...['X', 'Y'].flatMap(f => [ev(`${f}1`, f, '2026-02-01T17:00:00Z'), ev(`${f}2`, f, '2026-05-01T17:00:00Z')]), ...events],
+    rettelser: {}, nu: new Date(nu)});
+  const fr = RAP.fremad(byg('2026-09-20T10:00:00Z', [ev('X3', 'X', '2026-10-05T17:00:00Z'), ev('Y3', 'Y', '2026-09-25T17:00:00Z')]));
+  assert.deepEqual([fr.fra, fr.til, fr.kvartal], ['2026-09-20', '2026-10-25', {navn: 'Q3', hb_aar: 2027, sidste_dag: '2026-09-30', dage: 10}]);
+  // Begge har noget i kalenderen de næste 30 dage, så momentum er "Noget på vej" (ingen risiko).
+  assert.deepEqual(fr.risici.map(x => [x.forening, x.niveau, x.type]), [['X', 'kritisk', 'hb'], ['Y', 'advarsel', 'hb_planlagt']]);
+  assert.equal(fr.risici[0].tekst, 'HB 2027 i fare – intet afholdt eller planlagt i Q3, 10 dage tilbage.');
+  assert.equal(fr.risici[1].tekst, 'Q3 hænger på ét planlagt arrangement: "Arrangement Y3" 25. sep. – 10 dage tilbage.');
+  assert.deepEqual([Object.keys(fr.kommende), fr.total.kritisk, fr.total.advarsel, fr.uden_planlagt.length], [['X', 'Y'], 1, 1, 0]);
+  // December: årsskiftet er fristen – X mangler stadig Q4.
+  const dec = RAP.fremad(byg('2026-12-01T10:00:00Z', [ev('X3', 'X', '2026-08-05T17:00:00Z'), ev('Y3', 'Y', '2026-08-05T17:00:00Z'),
+    ev('Y4', 'Y', '2026-11-05T17:00:00Z')]));
+  const aar = dec.risici.find(x => x.type === 'aarsskifte');
+  assert.deepEqual([aar.forening, aar.dage, /mangler stadig et afholdt arrangement i Q4 \(X\)/.test(aar.tekst)], [null, 30, true]);
 });

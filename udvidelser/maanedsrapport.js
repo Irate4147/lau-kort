@@ -10,178 +10,46 @@
  *            alvor, hver med en konkret handling. Gemt i rapporten som "fremad" (lav_fremad() i scripts/rapport.py).
  *   Bagud  – hvad der skete i måneden: afholdte, aflyste, nye og forsvundne arrangementer, fremmøde og ændringer i
  *            momentum og HB-prognose.
- * "Denne måned indtil nu" beregnes i browseren ud fra DATA med samme opbygning som rapporterne – momentum og
- * HB-prognose sammenlignes med månedens snapshot, hvis det findes (ellers vises kun, hvordan de er nu). HB-risikoen i
- * "Fremad" kommer fra LAU.hbRisiko(f) (udvidelser/hb-risiko.js), så reglerne kun står ét sted i browseren.
+ * "Denne måned indtil nu" beregnes i browseren af kernen (kerne/rapport.js: maanedIndtilNu og fremad) med samme
+ * opbygning og tekster som rapporterne – momentum og HB-prognose sammenlignes med månedens snapshot, hvis det findes
+ * (ellers vises kun, hvordan de er nu). HB-risikoen i "Fremad" er kernens hbRisiko; forklaringen til hver risiko er
+ * teksten fra LAU.hbRisiko(f) (udvidelser/hb-risiko.js). Filen her er brugerfladen.
  */
 (() => {
   const MR = {valgt: null}; // valgt måned ('ÅÅÅÅ-MM' eller 'nu'); null = den nyeste afsluttede
-  // Bedst først. HB som HB_ORDEN i scripts/rapport.py ('ukendt' sammenlignes ikke).
-  const MOM_RAEKKE = ['godt', 'stabil', 'fremad', 'faldende', 'hjaelp', 'ukendt', 'ingenfb'];
-  const HB_ORDEN = ['plus_naeste', 'alle', 'planlagt_nu', 'mangler_nu', 'ikke'];
+  // Bedst først (kerne/rapport.js, som i scripts/rapport.py).
+  const {MOM_RAEKKE, HB_ORDEN} = K.rapport;
   const HB_KORT = {plus_naeste: 'Alle + næste', alle: 'Alle kvartaler', planlagt_nu: 'Planlagt nu', mangler_nu: 'Mangler nu',
     ikke: 'Kan ikke godkendes', ukendt: 'Historik mangler'};
   const fmtKort = new Intl.DateTimeFormat('da-DK', {day: 'numeric', month: 'short', timeZone: TZ});
   const dagD = d => new Date(d + 'T12:00:00Z'); // 'ÅÅÅÅ-MM-DD' -> Date midt på dagen
-  const naesteMaaned = m => { const [y, mm] = m.split('-').map(Number); return `${y + (mm === 12)}-${String(mm % 12 + 1).padStart(2, '0')}`; };
   const maanedNavn = m => fmtMaaned.format(new Date(m + '-15T12:00:00Z'));
   const gemt = () => ADMIN.data.rapporter || null;
-  const kvartalAf = d => `${dayKey(d).slice(0, 4)}-${Math.floor((+dayKey(d).slice(5, 7) - 1) / 3)}`;
-  // Fremad: som FREMAD_DAGE, RISIKO_ORDEN og RISIKO_TYPE i scripts/rapport.py.
-  const FREMAD_DAGE = 35;
-  const RISIKO = {kritisk: {orden: 0, label: 'Kritisk'}, advarsel: {orden: 1, label: 'Advarsel'}, opmaerksom: {orden: 2, label: 'Hold øje'}};
-  const RISIKO_TYPE = ['aarsskifte', 'hb', 'hb_planlagt', 'hjaelp', 'faldende'];
-  const plusDage = (d, n) => { const x = dagD(d); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
-  const kalenderdage = (a, b) => Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / DAY);
+  // Risikoernes niveauer (rækkefølgen er RISIKO_ORDEN i kerne/rapport.js).
+  const RISIKO = {kritisk: {label: 'Kritisk'}, advarsel: {label: 'Advarsel'}, opmaerksom: {label: 'Hold øje'}};
+  const plusDage = K.tid.dagPlus;
   const dageTekst = d => (d <= 0 ? 'sidste dag i dag' : d === 1 ? '1 dag tilbage' : `${d} dage tilbage`);
-  const opremsning = a => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} og ${a[a.length - 1]}`);
   const kortDato = d => fmtKort.format(dagD(d)); // 'ÅÅÅÅ-MM-DD' -> "30. sep."
-  const punktum = t => (t.endsWith('.') ? t : t + '.');
 
-  /** Er foreningen faldet eller forbedret? Samme regel som lav_rapport() i scripts/rapport.py. */
-  function sammenlign(rf, hbSamme, kvSamme) {
-    const [a, b] = [rf.momentum.start, rf.momentum.slut], [ha, hb] = [rf.hb.start, rf.hb.slut];
-    const mom = a && b && a !== b && ![a, b].some(x => x === 'ukendt' || x === 'ingenfb') ? [a, b] : null;
-    // Et nyt kvartal nulstiller HB-prognosen: så tæller kun et skift til "ikke" (kan ikke godkendes).
-    const hbx = hbSamme && HB_ORDEN.includes(ha) && HB_ORDEN.includes(hb) && ha !== hb && (kvSamme || hb === 'ikke') ? [ha, hb] : null;
-    const ned = (mom && MOM_ORDEN[b] < MOM_ORDEN[a]) || (hbx && HB_ORDEN.indexOf(hb) > HB_ORDEN.indexOf(ha));
-    const op = (mom && MOM_ORDEN[b] > MOM_ORDEN[a]) || (hbx && HB_ORDEN.indexOf(hb) < HB_ORDEN.indexOf(ha));
-    return {ned, op, mom, hb: hbx};
-  }
-
-  /** Denne måned indtil nu – samme opbygning som rapporterne fra scripts/rapport.py, beregnet ud fra DATA. */
+  /** Denne måned indtil nu: kernens maanedIndtilNu (kerne/rapport.js), sammenlignet med månedens snapshot, hvis det findes. */
   function liveRapport() {
-    const m = monthKey(NOW), fra = `${m}-01`, til = `${naesteMaaned(m)}-01`;
-    const iMd = d => { const k = dayKey(d); return k >= fra && k < til; };
-    const snap = ((gemt() || {}).snapshots || {})[m] || null, s0 = n => (snap && snap.foreninger[n]) || {};
-    const hbSamme = !!snap && snap.hb_aar === HB_AAR, kvSamme = !!snap && kvartalAf(new Date(snap.tid)) === kvartalAf(NOW);
-    const kort = (e, x = {}) => ({id: e.id, dato: dayKey(e.startD), navn: e.navn || '', ...x});
-    const alle = {afholdt: new Map(), aflyst: new Map(), nye: new Map(), forsvundet: new Map()};
-    const hoejde = {faldet: [], forbedret: [], uden_aktivitet: [], nye_aflysninger: []};
-    const foreninger = {};
-    let udenData = 0;
-    for (const f of DATA.foreninger) {
-      const r = {
-        afholdt: f.afholdt.filter(e => iMd(e.startD)),
-        aflyst: f.events.filter(e => e.aflyst && iMd(e.startD)),
-        // Nye på Facebook i måneden – ikke hentet bagudrettet, manuelle eller fundet ved den første kørsel.
-        nye: f.events.filter(e => !e.historisk && !e.manuel && iMd(e.firstD) && e.firstD - DATA.firstRun > DAY),
-        forsvundet: f.events.filter(e => e.forsvundet && e.sidst_set && iMd(new Date(e.sidst_set))),
-      };
-      for (const [k, l] of Object.entries(r)) for (const e of l) alle[k].set(e.id, e);
-      const moedt = r.afholdt.filter(e => e.fremmoede != null).map(e => e.fremmoede);
-      const daekket = !!f.facebook && daekketFra(f.navn) <= fra;
-      const rf = {
-        afholdt: r.afholdt.map(e => kort(e, e.fremmoede != null ? {fremmoede: e.fremmoede} : {})),
-        aflyst: r.aflyst.map(e => kort(e)), nye: r.nye.map(e => kort(e, {oprettet: dayKey(e.firstD)})),
-        forsvundet: r.forsvundet.map(e => kort(e)), fremmoede: moedt.length ? moedt.reduce((a, b) => a + b, 0) : null, daekket,
-      };
-      if (snap) for (const e of f.events) if (e.aflyst && !(s0(f.navn).aflyste || []).includes(e.id)) hoejde.nye_aflysninger.push({forening: f.navn, ...kort(e)});
-      if (!f.national) {
-        rf.momentum = {start: s0(f.navn).niveau || null, slut: f.mom.niveau};
-        rf.hb = {start: s0(f.navn).hb || null, slut: f.hb};
-        const s = sammenlign(rf, hbSamme, kvSamme);
-        if (s.ned || s.op) hoejde[s.ned ? 'faldet' : 'forbedret'].push({forening: f.navn, momentum: s.mom, hb: s.hb});
-        if (!r.afholdt.length && daekket) {
-          const foer = f.afholdt.filter(e => dayKey(e.startD) < fra);
-          hoejde.uden_aktivitet.push({forening: f.navn, niveau: f.mom.niveau, sidste: foer.length ? dayKey(foer[foer.length - 1].startD) : null});
-        } else if (!r.afholdt.length) udenData++;
-      }
-      foreninger[f.navn] = rf;
-    }
-    const moedt = [...alle.afholdt.values()].filter(e => e.fremmoede != null).map(e => e.fremmoede);
-    const fordel = (keys, v) => Object.fromEntries(keys.map(k => [k, DATA.lokale.filter(f => v(f) === k).length]));
-    const iso = d => d.toISOString().replace(/\.\d+Z$/, 'Z');
-    return {
-      maaned: m, fra, til, foreloebig: true, live: true, beregnet: iso(NOW),
-      start: snap ? {tid: snap.tid, rekonstrueret: !!snap.rekonstrueret, hb_aar: snap.hb_aar} : null,
-      slut: {tid: iso(NOW), rekonstrueret: false, hb_aar: HB_AAR},
-      total: {
-        afholdt: alle.afholdt.size, aflyst: alle.aflyst.size, nye: alle.nye.size, forsvundet: alle.forsvundet.size,
-        fremmoede: moedt.length ? moedt.reduce((a, b) => a + b, 0) : null, med_fremmoede: moedt.length,
-        lokale: DATA.lokale.length, aktive: DATA.lokale.filter(f => foreninger[f.navn].afholdt.length).length,
-        uden_aktivitet: hoejde.uden_aktivitet.length, uden_data: udenData,
-        faldet: hoejde.faldet.length, forbedret: hoejde.forbedret.length, nye_aflysninger: snap ? hoejde.nye_aflysninger.length : null,
-      },
-      fordeling: {
-        momentum: {start: snap ? fordel(MOM_RAEKKE, f => s0(f.navn).niveau) : null, slut: fordel(MOM_RAEKKE, f => f.mom.niveau)},
-        hb: {start: snap ? fordel([...HB_ORDEN, 'ukendt'], f => s0(f.navn).hb) : null, slut: fordel([...HB_ORDEN, 'ukendt'], f => f.hb)},
-      },
-      hoejdepunkter: hoejde, foreninger,
-    };
+    const snap = ((gemt() || {}).snapshots || {})[monthKey(NOW)] || null;
+    return {...K.rapport.maanedIndtilNu(DATA.lager, snap), live: true};
   }
 
   /**
-   * Fremad fra i dag – samme opbygning og tekster som lav_fremad() i scripts/rapport.py. HB-risikoen kommer fra
-   * LAU.hbRisiko(f) (niveau, dage, forklaring); mangler den, er kun kvartaler, der hænger på planlagte, med.
+   * Fremad fra i dag: kernens fremad() (kerne/rapport.js). Forklaringen på HB-risiciene (vises, når musen holdes over)
+   * er teksten fra LAU.hbRisiko(f) i udvidelser/hb-risiko.js.
    */
   function liveFremad() {
-    const fra = dayKey(NOW), til = plusDage(fra, FREMAD_DAGE); // til: første dag efter perioden
-    const iPeriode = e => { const d = dayKey(e.startD); return d >= fra && d < til; };
-    const KV = HB_KVARTALER[HB_NU], sidste = plusDage(KV.til, -1), kvDage = kalenderdage(fra, sidste);
-    const iKv = e => { const d = dayKey(e.startD); return d >= KV.fra && d < KV.til; };
+    const fr = K.rapport.fremad(DATA.lager);
     const hbRisiko = window.LAU && typeof window.LAU.hbRisiko === 'function' ? window.LAU.hbRisiko : null;
-    const kort = e => ({id: e.id, dato: dayKey(e.startD), navn: e.navn || ''});
-    const kommende = {}, udenPlanlagt = [], risici = [], alle = new Set(), manglerQ4 = [];
-    let hbFejl = !hbRisiko;
-    for (const f of DATA.foreninger) {
-      const mine = f.planlagt.filter(iPeriode);
-      if (mine.length) { kommende[f.navn] = mine.map(kort); mine.forEach(e => alle.add(e.id)); }
-      if (f.national) continue;
-      const m = f.mom, status = f.hbKv[KV.id];
-      if (!mine.length) {
-        const efter = f.planlagt.find(e => dayKey(e.startD) >= til);
-        udenPlanlagt.push({forening: f.navn, niveau: m.niveau, facebook: !!f.facebook,
-          sidste: f.sidste ? dayKey(f.sidste) : null, naeste: efter ? dayKey(efter.startD) : null});
-      }
-      let r = null;
-      if (hbRisiko) { try { r = hbRisiko(f); } catch (err) { console.error('LAU.hbRisiko:', err); hbFejl = true; } }
-      const dage = r && Number.isFinite(r.dage) ? r.dage : kvDage;
-      if (r && status === 'mangler' && (r.niveau === 'kritisk' || r.niveau === 'advarsel')) {
-        risici.push({forening: f.navn, niveau: r.niveau, type: 'hb', dage,
-          tekst: `HB ${HB_AAR} i fare – intet afholdt eller planlagt i ${KV.kort}, ${dageTekst(dage)}.`,
-          handling: punktum(`Afhold et arrangement senest ${kortDato(sidste)}`),
-          forklaring: r.forklaring || ''});
-      }
-      // Teksterne er de samme som i lav_fremad() i scripts/rapport.py.
-      const planlagt = f.planlagt.filter(iKv);
-      const niveau = r ? r.niveau : 'opmaerksom';
-      if (status === 'planlagt' && planlagt.length && (niveau === 'advarsel' || niveau === 'opmaerksom') && dage < FREMAD_DAGE) {
-        const e = planlagt[0];
-        const hvad = planlagt.length === 1 ? `ét planlagt arrangement: "${trunc(e.navn || 'uden titel', 50)}" ${kortDato(dayKey(e.startD))}`
-          : `${planlagt.length} planlagte arrangementer (det første ${kortDato(dayKey(e.startD))})`;
-        risici.push({forening: f.navn, niveau, type: 'hb_planlagt', dage,
-          tekst: `${KV.kort} hænger på ${hvad} – ${dageTekst(dage)}.`,
-          handling: 'Sørg for, at det bliver afholdt, og bekræft det bagefter (✓ Afholdt).',
-          forklaring: r ? r.forklaring || '' : ''});
-      }
-      // Q4 er ikke i hus (og ikke tabt): mangler til årsskiftet.
-      if (KV.id === 'Q4' && (status === 'mangler' || status === 'planlagt') && f.hb !== 'ikke') manglerQ4.push(f.navn);
-      if (m.niveau === 'hjaelp' || m.niveau === 'faldende') {
-        const hjaelp = m.niveau === 'hjaelp';
-        const siden = m.sidsteDage != null ? `${m.sidsteDage} dage siden sidste arrangement` : `intet afholdt siden ${kortDato(daekketFra(f.navn))}`;
-        const faerre = m.trend === 'ned' ? ', færre end normalt' : '';
-        risici.push({forening: f.navn, niveau: hjaelp ? 'advarsel' : 'opmaerksom', type: m.niveau,
-          tekst: `${hjaelp ? 'Brug for hjælp' : 'Mister fart'} – ${siden}${faerre}, intet i kalenderen.`,
-          handling: hjaelp ? 'Kontakt foreningen, og hjælp med at planlægge næste arrangement.' : 'Spørg til næste arrangement, før foreningen går i stå.'});
-      }
+    for (const x of fr.risici) {
+      if (x.type !== 'hb' && x.type !== 'hb_planlagt') continue;
+      x.forklaring = '';
+      if (hbRisiko) { try { x.forklaring = hbRisiko(DATA.byName.get(x.forening)).forklaring || ''; } catch (err) { console.error('LAU.hbRisiko:', err); } }
     }
-    const aarFrist = `${fra.slice(0, 4)}-12-31`;
-    if (fra <= aarFrist && aarFrist < til && manglerQ4.length) {
-      risici.push({forening: null, niveau: 'advarsel', type: 'aarsskifte', dage: kalenderdage(fra, aarFrist),
-        tekst: `Årsskiftet: 31. dec. er fristen for HB-godkendelse ${HB_AAR} – ${manglerQ4.length} ${manglerQ4.length === 1 ? 'lokalforening' : 'lokalforeninger'} mangler stadig et afholdt arrangement i Q4 (${opremsning(manglerQ4)}).`,
-        handling: 'Sørg for, at de afholder et arrangement før jul, og at arrangementer uden for Facebook er tilføjet under Arrangementer.'});
-    }
-    risici.sort((a, b) => RISIKO[a.niveau].orden - RISIKO[b.niveau].orden || RISIKO_TYPE.indexOf(a.type) - RISIKO_TYPE.indexOf(b.type)
-      || (a.dage ?? 999) - (b.dage ?? 999) || (a.forening || '').localeCompare(b.forening || '', 'da'));
-    const iso = d => d.toISOString().replace(/\.\d+Z$/, 'Z');
-    return {
-      tid: iso(NOW), fra, til, dage: FREMAD_DAGE, rekonstrueret: false, ufuldstaendig: false, kendt_fra: dayKey(DATA.firstRun),
-      kvartal: {navn: KV.kort, hb_aar: HB_AAR, sidste_dag: sidste, dage: kvDage}, live: true, hbMangler: hbFejl,
-      total: {arrangementer: alle.size, foreninger_med: DATA.lokale.filter(f => kommende[f.navn]).length, lokale: DATA.lokale.length,
-        uden_planlagt: udenPlanlagt.length, ...Object.fromEntries(Object.keys(RISIKO).map(k => [k, risici.filter(x => x.niveau === k).length]))},
-      risici, kommende, uden_planlagt: udenPlanlagt,
-    };
+    return {...fr, live: true};
   }
 
   // ---------------------------------------------------------------- små byggesten
@@ -244,7 +112,6 @@
       kv && `<b>${esc(kv.navn)} slutter ${esc(fmtDate.format(dagD(kv.sidste_dag)))}</b> (${esc(dageTekst(kv.dage))}) – HB ${esc(kv.hb_aar)} kræver et afholdt arrangement i hvert kvartal.`,
       fr.rekonstrueret && `Som man vidste det ${esc(fmtDate.format(dagD(fr.fra)))}: kun arrangementer, der da lå på Facebook, tæller som planlagte.`,
       fr.ufuldstaendig && `<b>Ufuldstændigt:</b> indsamlingen af kommende arrangementer startede først ${esc(fmtDate.format(dagD(fr.kendt_fra)))}, så planlagte arrangementer var ukendte – listerne og risiciene herunder undervurderer, hvad der var planlagt.`,
-      fr.hbMangler && '<b>HB-risikoen kunne ikke beregnes</b> (udvidelsen HB-risiko er ikke indlæst) – kun kvartaler, der hænger på planlagte arrangementer, er med.',
     ].filter(Boolean);
 
     // Risici pr. forening i rækkefølge efter den alvorligste (listen er sorteret efter alvor).
