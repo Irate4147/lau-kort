@@ -28,6 +28,7 @@ da som planlagte; senere aflysninger fra Facebook og forsvundne begivenheder reg
 """
 import json
 import math
+import os
 import re
 import sys
 from datetime import date, datetime, time, timedelta, timezone
@@ -512,6 +513,9 @@ def lav_fremad(data, idag, rekonstruer):
 # ------------------------------------------------------------------ udskrift
 
 def udskriv(r):
+    if os.environ.get("GITHUB_ACTIONS"):  # Actions-logs er offentlige i et offentligt repo – ingen fortrolige tal dér
+        print(f"Månedsrapport for {r['maaned']} beregnet (detaljer vises kun ved kørsel lokalt)")
+        return
     t = r["total"]
     fra, til = date.fromisoformat(r["fra"]), date.fromisoformat(r["til"])
     slut = "i dag" if r["foreloebig"] else kort_dato(til)

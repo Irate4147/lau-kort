@@ -375,6 +375,7 @@ async function logInd(kode, husk) {
 }
 function logUd() {
   glemLogin();
+  try { localStorage.removeItem('lau-rettelser'); } catch (_) { /* ignorer */ } // fortrolige rettelser må ikke blive liggende
   location.reload();
 }
 /** Genopretter et gemt login (kaldes fra load()). */
@@ -1775,17 +1776,20 @@ async function hentRettelser() {
 const lagerType = () => (kanGemme() ? 'server' : 'lokal');
 
 /** Gemmer rettelser ({id: rettelse | null}) og tegner alt igen. */
-async function gemRettelser(aendringer, besked) {
+async function gemRettelser(aendringer, besked, medLokale = false) {
   const type = lagerType();
   if (type === 'lokal') {
     RET.lokal = {...RET.lokal, ...aendringer};
     localStorage.setItem('lau-rettelser', JSON.stringify(RET.lokal));
   } else {
-    const alle = {...RET.lokal, ...aendringer}; // lokale rettelser kommer med op ved første fælles gem
+    // Lokale rettelser i browseren er ikke godkendt af den loggede ind admin; de kommer kun med, når admin selv vælger "Gem for alle nu".
+    const alle = medLokale ? {...RET.lokal, ...aendringer} : aendringer;
     // Findes den krypterede fil ikke endnu, bygges den videre på de offentlige rettelser (RET.repo).
     RET.repo = await gemAdmin('rettelser', data => sorter(flet(data || RET.repo, alle)), besked);
-    RET.lokal = {};
-    try { localStorage.removeItem('lau-rettelser'); } catch (_) { /* ignorer */ }
+    if (medLokale) {
+      RET.lokal = {};
+      try { localStorage.removeItem('lau-rettelser'); } catch (_) { /* ignorer */ }
+    }
   }
   RET.data = flet(RET.repo, RET.lokal);
   opdater();
@@ -1898,7 +1902,7 @@ function renderLager(el = $('lager')) {
   const up = el.querySelector('[data-upload]');
   if (up) up.addEventListener('click', async () => {
     up.disabled = true;
-    try { await gemRettelser({}, 'Rettelser af arrangementer'); } catch (err) { up.disabled = false; alert(err.message); }
+    try { await gemRettelser({}, 'Rettelser af arrangementer', true); } catch (err) { up.disabled = false; alert(err.message); }
   });
   const navn = el.querySelector('[data-navn]');
   if (navn) navn.addEventListener('change', () => { try { localStorage.setItem('lau-navn', navn.value.trim()); } catch (_) { /* ignorer */ } });
