@@ -2001,7 +2001,7 @@ function arrForm(e) {
       <label>Kl.<input type="time" name="tid" value="${start ? fmtHM.format(start) : '19:00'}"></label></div>
     <label>Sted<input name="sted" value="${esc(e ? e.sted || '' : '')}"></label>
     <label>Status<select name="status">${statusOpt.map(([v, t]) => `<option value="${v}"${valgt === v ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>
-    <label>Faktisk fremmøde<input type="number" min="0" name="deltagere" value="${r.deltagere ?? ''}" placeholder="Antal"></label>
+    <label>Faktisk fremmøde<input type="number" min="0" name="deltagere" value="${esc(r.deltagere ?? '')}" placeholder="Antal"></label>
     <label>Note<textarea name="note" rows="2" placeholder="Fortrolig – kun admins kan se den">${esc(r.note || '')}</textarea></label>
     ${orig ? `<p class="note">Facebook: ${esc(orig.navn)} · ${esc(fmtDate.format(new Date(orig.start)))} kl. ${esc(fmtTime.format(new Date(orig.start)))} · ${esc(orig.sted || 'intet sted')} · ${esc(orig.forening)}</p>` : ''}
     <div class="form-actions"><button class="chip primary" type="submit">Gem</button>
