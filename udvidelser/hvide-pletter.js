@@ -2,14 +2,17 @@
 /*
  * Kommuner uden aktivitet ("hvide pletter") – kun for admins.
  * For hver kommune i en lokalforenings område tælles foreningens gyldige arrangementer de seneste 12 måneder plus de
- * planlagte (via e.kommune). Kendes medlemstallene (data/admin/medlemmer.krypt.json), placeres hver by i den kommune,
- * den ligger i (punkt-i-polygon), og medlemmerne summeres pr. kommune. Samme beregning bruges af kortlaget og analysen.
- * Kun lokalforeninger med Facebook-side er med – uden den ved vi ikke, hvor foreningen er aktiv.
+ * planlagte (via e.kommune). Kun lokalforeninger med Facebook-side er med – uden den ved vi ikke, hvor foreningen er
+ * aktiv. Reglen står i kernen: kommuneAktivitet() i kerne/regler.js, og i ontologien (kerne/lau.js) som egenskaberne
+ * hvidPlet, egneAfholdt og egnePlanlagte på Kommune og hvidePletter på Forening – så den også kan bruges i filtre,
+ * grupperinger og analysebyggeren. Filen her er kortlaget og analysen, og den placerer medlemmerne: kendes
+ * medlemstallene (data/admin/medlemmer.krypt.json), placeres hver by i den kommune, den ligger i (punkt-i-polygon), og
+ * medlemmerne summeres pr. kommune. Samme beregning bruges af kortlaget og analysen.
  * Filen er pakket ind i en funktion, så dens navne ikke støder sammen med app.js eller andre udvidelser.
  */
 (() => {
   // Okker/brændt orange: forveksles ikke med HB-magenta, aktivitetsfarverne (blå/grå) eller momentum (grøn/gul/rød fyld).
-  const HP = {farve: '#d97706', staerk: '#b45309', dage: 365};
+  const HP = {farve: '#d97706', staerk: '#b45309', dage: K.regler.HVIDE_PLETTER.DAGE};
   const cache = {data: null, medl: null, res: null};
 
   /** Finder kommunen, et punkt ligger i. Ligger punktet lige uden for den forenklede kystlinje, prøves punkter i nærheden. */
@@ -42,18 +45,17 @@
         if (k) k.medlemmer += +r.antal || 0; else uplaceret += +r.antal || 0;
       }
     }
-    const foreninger = [];
+    const foreninger = [], L = DATA.lager;
     for (const f of DATA.lokale) {
-      if (!f.facebook) continue;
-      let ukendt = 0, udenfor = 0;
-      for (const e of f.gyldige) {
-        if (e.slutD < fra) continue;
-        const k = e.kommune && f.kommuner.includes(e.kommune) ? kommuner.get(e.kommune) : null;
-        if (!k) { if (e.kommune) udenfor++; else ukendt++; continue; }
-        if (e.slutD < NOW) k.afholdt++; else k.planlagt++;
-      }
+      // Kernen: kommuneAktivitet på foreningen (null uden Facebook-side) og egneAfholdt/egnePlanlagte/hvidPlet på kommunen.
+      const d = L.vaerdi(L.hent('Forening', f.navn), 'kommuneAktivitet');
+      if (!d) continue;
+      const {ukendt, udenfor} = d;
       const ks = f.kommuner.map(n => kommuner.get(n)).filter(Boolean);
-      for (const k of ks) k.aktiv = k.afholdt + k.planlagt > 0;
+      for (const k of ks) {
+        const o = L.hent('Kommune', k.navn);
+        Object.assign(k, {afholdt: L.vaerdi(o, 'egneAfholdt'), planlagt: L.vaerdi(o, 'egnePlanlagte'), aktiv: L.vaerdi(o, 'hvidPlet') === false});
+      }
       const uden = ks.filter(k => !k.aktiv).sort((a, b) => (b.medlemmer || 0) - (a.medlemmer || 0) || a.navn.localeCompare(b.navn, 'da'));
       foreninger.push({f, navn: f.navn, kommuner: ks, med: ks.filter(k => k.aktiv), uden, ukendt, udenfor,
         medlemmerUden: medl ? uden.reduce((s, k) => s + k.medlemmer, 0) : null,

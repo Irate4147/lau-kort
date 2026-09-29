@@ -6,8 +6,9 @@
 // adgang pr. række, så en lokal bestyrelse kun ser sin egen forening). Se docs/arkitektur.md.
 
 import {Ontologi} from './ontologi.js';
-import {aktivitet, aktivitetsStatus, arrStatus, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose, hbRisiko, kategori, momentum,
-  MOMENTUM_NIVEAUER, varsel} from './regler.js';
+import {afholdteMed, aktivitet, aktivitetsStatus, arrStatus, DELTAGER_MAAL, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose,
+  hbRisiko, kategori, kommuneAktivitet, median, momentum, MOMENTUM_NIVEAUER, normalniveau, rekord, starttid, STARTTID, varsel,
+  varselDage, varselGruppe, VARSEL_GRUPPER} from './regler.js';
 import {DAG, time, ugedag} from './tid.js';
 
 /** @typedef {import('./ontologi.js').Objekt} Objekt @typedef {import('./lager.js').Lager} Lager */
@@ -39,6 +40,10 @@ const akt = (f, L) => L.vaerdi(f, 'aktivitet');
 /** @param {Objekt} f */
 const harFb = f => !!f.v.facebook;
 const lokal = f => !f.v.national;
+/** Lokalforeningernes navne (til afholdteMed: hvert arrangement tæller hos sin første lokalforening). @param {Lager} L */
+const lokaleNavne = L => new Set(L.alle('Forening').filter(lokal).map(f => f.id));
+/** "Hvad virker?": foreningens afholdte med et tal for målet. @param {Objekt} f @param {Lager} L @param {string} maal */
+const medMaal = (f, L, maal) => afholdteMed(akt(f, L), f.v.navn, !!f.v.national, maal, lokaleNavne(L));
 
 export const LAU = new Ontologi({
   typer: {
@@ -62,12 +67,8 @@ export const LAU = new Ontologi({
           beregn: (f, L) => { const s = akt(f, L).sidste; return s ? Math.floor((+L.nu - +s) / DAG) : null; }},
         tilkendegivelser: {label: 'Tilkendegivelser pr. arrangement (gns.)', type: 'tal', adgang: 'admin',
           beregn: (f, L) => { const xs = akt(f, L).gyldige.filter(e => e.svar != null).map(e => e.svar); return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; }},
-        varsel: {label: 'Varsel (median, dage)', type: 'tal', adgang: 'admin', beregn: (f, L) => {
-          const xs = akt(f, L).gyldige.map(e => varsel(e, L.kontekst.daekning.forsteKoersel)).filter(v => v != null).sort((a, b) => a - b);
-          if (!xs.length) return null;
-          const m = xs.length >> 1;
-          return xs.length % 2 ? xs[m] : (xs[m - 1] + xs[m]) / 2;
-        }},
+        varsel: {label: 'Varsel (median, dage)', type: 'tal', adgang: 'admin',
+          beregn: (f, L) => median(akt(f, L).gyldige.map(e => varsel(e, L.kontekst.daekning.forsteKoersel)).filter(v => v != null))},
         fremmoede: {label: 'Registreret fremmøde i alt', type: 'tal', adgang: 'admin', beregn: (f, L) => {
           const xs = akt(f, L).afholdt.filter(e => e.fremmoede != null);
           return xs.length ? xs.reduce((s, e) => s + e.fremmoede, 0) : null;
@@ -91,6 +92,23 @@ export const LAU = new Ontologi({
         hbRisikoSpand: {label: 'HB-risiko: hvad skal der gøres', type: 'kat', adgang: 'admin', vaerdier: HB_RISIKO_SPANDE,
           beregn: (f, L) => L.vaerdi(f, 'hbRisikoDetaljer')?.spand ?? null},
         antalKommuner: {label: 'Kommuner i området', type: 'tal', beregn: (f, L) => L.linkede(f, 'kommuner').length},
+        // Hvide pletter: kun lokalforeninger med Facebook-side – uden den ved vi ikke, hvor foreningen er aktiv.
+        kommuneAktivitet: {label: 'Aktivitet pr. kommune (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
+          beregn: (f, L) => (lokal(f) && harFb(f) ? kommuneAktivitet(akt(f, L), L.linkede(f, 'kommuner').map(k => k.v.navn), L.nu) : null)},
+        hvidePletter: {label: 'Kommuner uden aktivitet (12 mdr.)', type: 'tal', adgang: 'admin',
+          hint: 'Kommuner i området uden afholdte eller planlagte arrangementer det seneste år. Se README: Kommuner uden aktivitet',
+          beregn: (f, L) => { const d = L.vaerdi(f, 'kommuneAktivitet'); return d ? [...d.kommuner.values()].filter(k => !k.afholdt && !k.planlagt).length : null; }},
+        // "Hvad virker?": foreningens normale niveau pr. mål (deltager, svar, fremmoede) og arrangementernes indeks.
+        normalniveau: {label: 'Normalt niveau (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
+          beregn: (f, L) => Object.fromEntries(Object.keys(DELTAGER_MAAL).map(m => [m, normalniveau(medMaal(f, L, m), m)]))},
+        normaltDeltagere: {label: 'Deltagere pr. arrangement (median)', type: 'tal', adgang: 'admin',
+          hint: 'Foreningens normale antal deltagere på Facebook – kræver mindst 3 afholdte med deltagere. Se README: Hvad virker?',
+          beregn: (f, L) => L.vaerdi(f, 'normalniveau').deltager.median},
+        rekordDetaljer: {label: 'Markant flere deltagere (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
+          beregn: (f, L) => (lokal(f) ? rekord(akt(f, L), m => medMaal(f, L, m), L.nu) : null)},
+        rekord: {label: 'Markant flere deltagere end normalt', type: 'bool', adgang: 'admin',
+          hint: 'Et arrangement de seneste 30 dage (eller planlagt de næste 14) med markant flere deltagere end normalt. Se README: Hvad virker?',
+          beregn: (f, L) => (lokal(f) ? !!L.vaerdi(f, 'rekordDetaljer') : null)},
       },
     },
 
@@ -116,6 +134,18 @@ export const LAU = new Ontologi({
         svar: {label: 'Tilkendegivelser', type: 'tal'},
         fremmoede: {label: 'Fremmøde (registreret)', type: 'tal', adgang: 'admin'},
         varsel: {label: 'Varsel (dage)', type: 'tal', adgang: 'admin', beregn: (a, L) => varsel(a.v.raw, L.kontekst.daekning.forsteKoersel)},
+        // "Hvad virker?"s opdelinger og indeks.
+        starttid: {label: 'Starttidspunkt', type: 'kat', vaerdier: STARTTID, beregn: a => starttid(a.v.start)},
+        varselGruppe: {label: 'Varsel', type: 'kat', adgang: 'admin', vaerdier: VARSEL_GRUPPER,
+          hint: 'Dage fra arrangementet dukkede op på Facebook, til det fandt sted (kun for dem, der er opdaget efter indsamlingens start)',
+          beregn: (a, L) => varselGruppe(varselDage(a.v.raw, L.kontekst.daekning.forsteKoersel))},
+        deltagerIndeks: {label: 'Deltagere i forhold til det normale (indeks)', type: 'tal', adgang: 'admin',
+          hint: 'Deltagere ÷ arrangørens normale antal (median). 1 = som normalt. Afholdte, målt hos den første lokalforening blandt arrangørerne',
+          beregn: (a, L) => {
+            const lok = lokaleNavne(L), fs = L.linkede(a, 'arrangeretAf');
+            const navn = a.v.raw.foreninger.find(n => lok.has(n)), f = fs.find(x => x.id === navn) || fs.find(x => x.v.national);
+            return f ? L.vaerdi(f, 'normalniveau').deltager.arrangementer.find(x => x.e === a.v.raw)?.indeks ?? null : null;
+          }},
         note: {label: 'Note', type: 'tekst', adgang: 'admin'},
         url: {label: 'Link', type: 'tekst', intern: true},
         raw: {label: 'Kildedata', type: 'objekt', intern: true},
@@ -128,6 +158,18 @@ export const LAU = new Ontologi({
         navn: {label: 'Navn', type: 'tekst'},
         aktivitetSenesteAar: {label: 'Arrangementer seneste år + planlagte', type: 'tal', hint: 'Hverken aflyste eller fjernede',
           beregn: (k, L) => L.linkede(k, 'arrangementer').filter(a => !a.v.aflyst && !a.v.forsvundet && a.v.slut >= new Date(+L.nu - 365 * DAG)).length},
+        // Områdets egen lokalforening (kommuneAktivitet på Forening): null, hvis den ikke er med (fx uden Facebook-side).
+        egenAktivitet: {label: 'Egen forenings aktivitet (detaljer)', type: 'objekt', adgang: 'admin', intern: true, beregn: (k, L) => {
+          const f = L.linkede(k, 'forening')[0], d = f ? L.vaerdi(f, 'kommuneAktivitet') : null;
+          return d ? d.kommuner.get(k.v.navn) ?? null : null;
+        }},
+        egneAfholdt: {label: 'Afholdt af områdets forening (12 mdr.)', type: 'tal', adgang: 'admin',
+          beregn: (k, L) => L.vaerdi(k, 'egenAktivitet')?.afholdt ?? null},
+        egnePlanlagte: {label: 'Planlagt af områdets forening', type: 'tal', adgang: 'admin',
+          beregn: (k, L) => L.vaerdi(k, 'egenAktivitet')?.planlagt ?? null},
+        hvidPlet: {label: 'Hvid plet (ingen aktivitet i 12 mdr.)', type: 'bool', adgang: 'admin',
+          hint: 'Områdets lokalforening har hverken afholdt (seneste 12 mdr.) eller planlagt noget i kommunen. Kun foreninger med Facebook-side',
+          beregn: (k, L) => { const a = L.vaerdi(k, 'egenAktivitet'); return a ? !a.afholdt && !a.planlagt : null; }},
       },
     },
 

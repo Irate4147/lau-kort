@@ -164,3 +164,74 @@ test('HB-risiko som egenskab i ontologien', () => {
   const g = koer(O, {type: 'Forening', filtre: [{egenskab: 'niveau', er: ['lokal']}], gruppering: {egenskab: 'hbRisiko'}});
   assert.deepEqual(g.grupper.map(x => [x.noegle, x.vaerdi]), [['sikret', 1], ['tabt', 1], ['ukendt', 1]]);
 });
+
+test('hvide pletter: aktivitet pr. kommune i foreningens område (12 mdr.)', () => {
+  const k = (O, navn, e) => O.vaerdi(O.hent('Kommune', navn), e), f = (O, navn, e) => O.vaerdi(O.hent('Forening', navn), e);
+  // 29. sep. 2026: Odense har to afholdte, Svendborg ét planlagt; Landsmødet (uden kommune) tælles for sig.
+  assert.deepEqual([k(L, 'Odense', 'egneAfholdt'), k(L, 'Odense', 'egnePlanlagte'), k(L, 'Svendborg', 'egnePlanlagte')], [2, 0, 1]);
+  assert.deepEqual([k(L, 'Odense', 'hvidPlet'), k(L, 'Svendborg', 'hvidPlet'), k(L, 'Aarhus', 'hvidPlet')], [false, false, false]);
+  const d = f(L, 'Fyn', 'kommuneAktivitet');
+  assert.deepEqual([d.ukendt, d.udenfor, f(L, 'Fyn', 'hvidePletter')], [1, 0, 0]);
+  // Uden Facebook-side eller for landsforeningen: ikke med.
+  assert.deepEqual([k(L, 'Bornholm', 'hvidPlet'), f(L, 'Bornholm', 'hvidePletter'), f(L, 'Landsforeningen', 'hvidePletter')], [null, null, null]);
+  // Et år senere: Aarhus' arrangement fra maj 2026 er for gammelt, og det aflyste tæller ikke.
+  const O = bygFraJson({...DATA, nu: new Date('2027-09-15T10:00:00Z')});
+  assert.deepEqual([k(O, 'Odense', 'egneAfholdt'), k(O, 'Svendborg', 'egneAfholdt'), k(O, 'Aarhus', 'hvidPlet'), f(O, 'Aarhus', 'hvidePletter')], [1, 1, true, 1]);
+  assert.deepEqual(ids(koer(O, {type: 'Kommune', filtre: [{egenskab: 'hvidPlet', er: [true]}]})), ['Aarhus']);
+  // Et arrangement i en kommune uden for området.
+  const u = R.kommuneAktivitet(R.aktivitet([arr('2026-09-01T17:00:00Z', {kommune: 'Aalborg'})], 'X', DK, NU), ['Odense'], NU);
+  assert.deepEqual([u.udenfor, u.ukendt, u.kommuner.get('Odense')], [1, 0, {afholdt: 0, planlagt: 0}]);
+});
+
+test('"Hvad virker?": median, starttid og varsel', () => {
+  assert.deepEqual([R.median([3, 1, 2]), R.median([4, 1, 3, 2]), R.median([])], [2, 2.5, null]);
+  // Dansk tid: sommertid (UTC+2) og vintertid (UTC+1).
+  assert.deepEqual(['2026-09-20T09:59:00Z', '2026-09-20T10:00:00Z', '2026-09-20T15:00:00Z', '2026-09-20T17:00:00Z', '2026-12-01T17:30:00Z']
+    .map(t => R.starttid(new Date(t))), ['foer12', 'kl12', 'kl17', 'kl19', 'kl17']);
+  const fk = DK.forsteKoersel, ny = {historisk: false, manuel: false, firstD: new Date('2026-03-01T12:00:00Z')};
+  assert.equal(R.varselDage(arr('2026-03-10T12:00:00Z', ny), fk), 9);
+  assert.equal(R.varselGruppe(R.varselDage(arr('2026-03-10T12:00:00Z', ny), fk)), 'd7');
+  assert.equal(R.varselDage(arr('2026-02-20T12:00:00Z', ny), fk), null, 'opdaget efter, det fandt sted');
+  assert.equal(R.varselDage(arr('2026-03-10T12:00:00Z', {...ny, historisk: true}), fk), null, 'hentet bagudrettet');
+  assert.deepEqual([0, 6.9, 7, 13.9, 14, 27.9, 28, null].map(R.varselGruppe), ['u7', 'u7', 'd7', 'd7', 'd14', 'd14', 'd28', null]);
+});
+
+test('"Hvad virker?": normalt niveau, indeks og markant flere deltagere', () => {
+  const lokale = new Set(['X', 'Y']);
+  const a = R.aktivitet([arr('2026-06-01T17:00:00Z', {deltager: 10}), arr('2026-07-01T17:00:00Z', {deltager: 20, foreninger: ['Landsforeningen', 'X']}),
+    arr('2026-08-01T17:00:00Z', {deltager: 30, foreninger: ['Y', 'X']}), arr('2026-08-15T17:00:00Z', {deltager: null})], 'X', DK, NU);
+  // Hvert arrangement tæller kun hos den første lokalforening blandt arrangørerne; landsforeningen får alle sine.
+  assert.equal(R.afholdteMed(a, 'X', false, 'deltager', lokale).length, 2);
+  assert.equal(R.afholdteMed(a, 'X', true, 'deltager', lokale).length, 3);
+  const n2 = R.normalniveau(R.afholdteMed(a, 'X', false, 'deltager', lokale), 'deltager');
+  assert.deepEqual([n2.n, n2.median, n2.arrangementer.length], [2, null, 0], 'færre end MIN_FORENING');
+  const n3 = R.normalniveau(R.afholdteMed(a, 'X', true, 'deltager', lokale), 'deltager');
+  assert.deepEqual([n3.median, n3.arrangementer.map(x => x.indeks)], [20, [0.5, 1, 1.5]]);
+  assert.equal(R.normalniveau([arr('1', {deltager: 0}), arr('2', {deltager: 0}), arr('3', {deltager: 0})], 'deltager').median, null, 'median 0');
+
+  // Markant flere: 30 mod normalt 10 (tre andre); et planlagt med 40 på Facebook er større; fremmøde går forud.
+  const tre = ['2026-05-01', '2026-06-01', '2026-07-01'].map(d => arr(`${d}T17:00:00Z`, {deltager: 10, fremmoede: 8}));
+  const med = (evs, nu = NU) => { const x = R.aktivitet(evs, 'X', DK, nu); return R.rekord(x, m => R.afholdteMed(x, 'X', false, m, lokale), nu); };
+  const r1 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 30})]);
+  assert.deepEqual([r1.maal, r1.x, r1.m, r1.gange, r1.afholdt], ['deltager', 30, 10, 3, true]);
+  const r2 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 30}), arr('2026-10-10T17:00:00Z', {deltager: 40})]);
+  assert.deepEqual([r2.x, r2.afholdt], [40, false]);
+  assert.equal(med([...tre, arr('2026-10-20T17:00:00Z', {deltager: 40})]), null, 'planlagt mere end 14 dage frem');
+  assert.equal(med([...tre, arr('2026-08-20T17:00:00Z', {deltager: 30})]), null, 'afholdt for mere end 30 dage siden');
+  assert.equal(med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 14})]), null, 'under 1,5 ×');
+  const r3 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 30, fremmoede: 12})]);
+  assert.equal(r3, null, 'fremmøde (12 mod 8) går forud for Facebook – og er ikke markant');
+  const r4 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 11, fremmoede: 20})]);
+  assert.deepEqual([r4.maal, r4.x, r4.m], ['fremmoede', 20, 8]);
+});
+
+test('"Hvad virker?" som egenskaber i ontologien', () => {
+  const O = bygFraJson({...DATA, events: [...DATA.events, ev('10', 'Fyn', '2026-07-01T17:00:00Z', {deltager: 8})]});
+  const f = (navn, e) => O.vaerdi(O.hent('Forening', navn), e), a = (id, e) => O.vaerdi(O.hent('Arrangement', id), e);
+  // Fyn: 1 (30), 2 (10), 6 (10 – landsforeningen og Fyn) og 10 (8). Landsforeningen har kun 6.
+  assert.deepEqual([f('Fyn', 'normaltDeltagere'), f('Landsforeningen', 'normaltDeltagere')], [10, null]);
+  assert.deepEqual([a('1', 'deltagerIndeks'), a('6', 'deltagerIndeks'), a('3', 'deltagerIndeks')], [3, 1, null], 'planlagte har intet indeks');
+  assert.deepEqual([a('1', 'starttid'), a('4', 'starttid')], ['kl19', 'kl12']);
+  assert.deepEqual([f('Fyn', 'rekord'), f('Aarhus', 'rekord'), f('Landsforeningen', 'rekord')], [true, false, null]);
+  assert.equal(f('Fyn', 'rekordDetaljer').e.id, '1');
+});

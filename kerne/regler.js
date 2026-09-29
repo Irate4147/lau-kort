@@ -1,7 +1,9 @@
-// Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse og momentum.
-// Ported fra app.js, der indtil videre har sin egen kopi. test/paritet.test.js sikrer, at de to giver samme resultat.
+// Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse og momentum – og analysernes regler
+// (HB-risiko, hvide pletter og "Hvad virker?"), så de kun står ét sted. Rene funktioner: "nu" gives altid med.
+// app.js og udvidelserne har ingen egne kopier; test/app.test.js og test/analyser.test.js sikrer, at flytningen hertil
+// ikke ændrede noget.
 
-import {DAG, dagNoegle, dagPlus, dageMellem, fmtDato, hbAar, kalenderdage, omEtKvartal} from './tid.js';
+import {DAG, dagNoegle, dagPlus, dageMellem, fmtDato, hbAar, kalenderdage, omEtKvartal, time} from './tid.js';
 
 // ---------------------------------------------------------------- kategori og status for et arrangement
 
@@ -259,6 +261,125 @@ export function hbRisiko(a, hb, nu) {
   } else niveau = spand = 'ukendt';
   return {niveau, spand, kvartal: kv.id, status, sidsteDag, dage, afholdt: a.afholdt.filter(i(kv)), planlagt: a.planlagt.filter(i(kv)),
     naesteKv: naeste ? a.planlagt.filter(i(naeste)) : [], tabte, ukendte};
+}
+
+// ---------------------------------------------------------------- hvide pletter: kommuner uden aktivitet
+
+export const HVIDE_PLETTER = {DAGE: 365};
+
+/**
+ * Foreningens aktivitet pr. kommune i dens område ("hvide pletter" er kommunerne uden nogen): gyldige arrangementer, der
+ * er slut inden for de seneste HVIDE_PLETTER.DAGE dage eller er planlagt, fordelt efter arrangementets kommune
+ * (e.kommune). Arrangementer uden kendt kommune (fx online) og uden for området tælles for sig.
+ * @param {Aktivitet} a @param {string[]} kommuner foreningens kommuner @param {Date} nu
+ * @returns {{kommuner: Map<string, {afholdt: number, planlagt: number}>, ukendt: number, udenfor: number}}
+ */
+export function kommuneAktivitet(a, kommuner, nu) {
+  const fra = new Date(+nu - HVIDE_PLETTER.DAGE * DAG);
+  const ud = new Map(kommuner.map(k => [k, {afholdt: 0, planlagt: 0}]));
+  let ukendt = 0, udenfor = 0;
+  for (const e of a.gyldige) {
+    if (e.slutD < fra) continue;
+    const k = e.kommune ? ud.get(e.kommune) : null;
+    if (!k) { if (e.kommune) udenfor++; else ukendt++; continue; }
+    if (e.slutD < nu) k.afholdt++; else k.planlagt++;
+  }
+  return {kommuner: ud, ukendt, udenfor};
+}
+
+// ---------------------------------------------------------------- "Hvad virker?": deltagere målt mod det normale
+
+// MIN_FORENING: færre afholdte med et tal, og foreningens normale niveau kan ikke bestemmes. MIN_N: grupper med færre
+// arrangementer bruges ikke i konklusionerne. FORSKEL: mindste forskel i medianindeks, der kaldes en forskel.
+export const HVAD_VIRKER = {MIN_FORENING: 3, MIN_N: 5, FORSKEL: 0.2};
+// "Markant flere deltagere end normalt": mindst GANGE × foreningens median og mindst PLUS flere, målt mod mindst
+// MIN_ANDRE andre afholdte. Afholdt de seneste BAGUD dage eller planlagt de næste FREMAD dage. Se rekord().
+export const REKORD = {GANGE: 1.5, PLUS: 5, MIN_ANDRE: 3, BAGUD: 30, FREMAD: 14};
+// Målene: deltagere på Facebook, tilkendegivelser ("deltager" + "interesseret") og registreret fremmøde.
+/** @type {Record<string, (e: any) => number|null>} */
+export const DELTAGER_MAAL = {deltager: e => e.deltager, svar: e => e.svar, fremmoede: e => e.fremmoede};
+// Starttidspunkt og varsel i grupper (til "Hvad virker?" og analysebyggeren).
+export const STARTTID = {foer12: 'Før kl. 12', kl12: 'Kl. 12–17', kl17: 'Kl. 17–19', kl19: 'Kl. 19 eller senere'};
+export const VARSEL_GRUPPER = {u7: 'Under 7 dage', d7: '7–13 dage', d14: '14–27 dage', d28: '28 dage eller mere'};
+
+/** Medianen (null for ingen). @param {number[]} xs */
+export function median(xs) {
+  if (!xs.length) return null;
+  const s = [...xs].sort((a, b) => a - b), m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+/** Starttidspunktets gruppe (dansk tid). @param {Date} d */
+export function starttid(d) {
+  const h = time(d);
+  return h < 12 ? 'foer12' : h < 17 ? 'kl12' : h < 19 ? 'kl17' : 'kl19';
+}
+
+/**
+ * Varsel i dage, som "Hvad virker?" måler det: som varsel(), men kun når arrangementet blev opdaget, før det fandt sted.
+ * @param {any} e @param {Date} forsteKoersel
+ */
+export function varselDage(e, forsteKoersel) {
+  const v = varsel(e, forsteKoersel);
+  return v != null && e.startD >= e.firstD ? v : null;
+}
+/** @param {number|null} d varselDage() */
+export const varselGruppe = d => (d == null ? null : d < 7 ? 'u7' : d < 14 ? 'd7' : d < 28 ? 'd14' : 'd28');
+
+/**
+ * Foreningens afholdte arrangementer med et tal for målet – hvert arrangement kun én gang: hos den første af
+ * arrangørerne, der er en lokalforening. Landsforeningen får alle sine (den måles for sig).
+ * @param {Aktivitet} a @param {string} navn @param {boolean} national @param {string} maal DELTAGER_MAAL
+ * @param {Set<string>} lokale lokalforeningernes navne
+ */
+export function afholdteMed(a, navn, national, maal, lokale) {
+  const v = DELTAGER_MAAL[maal];
+  return a.afholdt.filter(e => v(e) != null && (national || e.foreninger.find(n => lokale.has(n)) === navn));
+}
+
+/**
+ * @typedef {object} Normalniveau
+ * @property {number} n                antal afholdte med et tal for målet
+ * @property {number|null} median      foreningens normale niveau; null, hvis det ikke kan bestemmes
+ * @property {{e: any, vaerdi: number, indeks: number}[]} arrangementer  med indeks = tal ÷ median (tom uden median)
+ */
+
+/**
+ * Foreningens normale niveau: medianen af dens afholdte med et tal for målet – kun med mindst HVAD_VIRKER.MIN_FORENING
+ * og en median over 0. Hvert arrangement måles mod det (indeks), så store foreninger ikke dominerer.
+ * @param {any[]} liste afholdteMed() @param {string} maal @returns {Normalniveau}
+ */
+export function normalniveau(liste, maal) {
+  const v = DELTAGER_MAAL[maal], m = median(liste.map(v));
+  const ok = liste.length >= HVAD_VIRKER.MIN_FORENING && !!m;
+  return {n: liste.length, median: ok ? m : null, arrangementer: ok ? liste.map(e => ({e, vaerdi: v(e), indeks: v(e) / m})) : []};
+}
+
+/**
+ * Markant flere deltagere end normalt: foreningens arrangement – afholdt de seneste REKORD.BAGUD dage eller planlagt de
+ * næste REKORD.FREMAD dage – med mindst REKORD.GANGE × og REKORD.PLUS flere end medianen af foreningens andre afholdte
+ * med samme mål (mindst REKORD.MIN_ANDRE). Registreret fremmøde går forud for deltagere på Facebook, når det kan
+ * sammenlignes; planlagte måles på Facebook-deltagere. Højst ét (det største) pr. forening; null, hvis der ikke er noget.
+ * @param {Aktivitet} a @param {(maal: string) => any[]} afholdteMedMaal foreningens afholdteMed() for et mål @param {Date} nu
+ * @returns {{e: any, maal: string, x: number, m: number, gange: number, afholdt: boolean}|null}  gange: Infinity, når m er 0
+ */
+export function rekord(a, afholdteMedMaal, nu) {
+  const R = REKORD, fra = new Date(nu.getTime() - R.BAGUD * DAG), til = new Date(nu.getTime() + R.FREMAD * DAG);
+  let bedst = null;
+  for (const e of a.gyldige) {
+    const afholdt = e.slutD < nu;
+    if (afholdt ? e.slutD < fra : e.startD > til) continue;
+    for (const maal of afholdt ? ['fremmoede', 'deltager'] : ['deltager']) {
+      const v = DELTAGER_MAAL[maal], x = v(e);
+      if (x == null) continue;
+      const andre = afholdteMedMaal(maal).filter(o => o !== e).map(v);
+      if (andre.length < R.MIN_ANDRE) continue;
+      const m = median(andre);
+      if (x >= R.GANGE * m && x - m >= R.PLUS && (!bedst || x / m > bedst.gange)) bedst = {e, maal, x, m, gange: m ? x / m : Infinity, afholdt};
+      break; // fremmøde går forud for Facebook, når det kan sammenlignes
+    }
+  }
+  return bedst;
 }
 
 // ---------------------------------------------------------------- momentum
