@@ -161,83 +161,71 @@ function hbPrognose(f) {
   return naeste ? 'plus_naeste' : 'alle';
 }
 /*
- * Momentum: en tidlig sundhedsindikator for, om foreningen er godt på vej med at afholde arrangementer.
- * Hver forening måles mod sin egen rytme: det forventede antal dage mellem arrangementer. Rytmen er foreningens
- * gennemsnitlige afstand mellem afholdte arrangementer det seneste år (så godt som data dækker), men mindst
- * MOM_RYTME_MIN (en stor forening skal holde mindst ét om måneden) og højst MOM_RYTME_MAX (en lille kan nøjes med
- * hver anden måned). Kan sættes fast med "momentum_rytme": <dage> i data/foreninger.json.
- * Niveauer, ud fra dage siden sidste arrangement (d), rytmen (R) og kalenderen de næste MOM_FREMAD dage:
- *   godt      d ≤ R og noget i kalenderen          stabil    d ≤ R, intet i kalenderen endnu (oprettes ofte sent)
- *   fremad    d > R, men noget i kalenderen         faldende  R < d ≤ 2R og intet i kalenderen
- *   hjaelp    d > 2R og intet i kalenderen
- * 'ukendt', når intet er afholdt, og data dækker højst R dage; 'ingenfb' uden Facebook-side og uden arrangementer.
- * Trend: afholdt de seneste MOM_BAGUD dage mod de MOM_BAGUD dage før, når data dækker begge.
+ * Momentum: en tidlig sundhedsindikator for, om foreningen holder gang i arrangementerne.
+ * Målet er det samme for alle lokalforeninger uanset størrelse: mindst ét arrangement om måneden, dvs. MOM_MAAL
+ * afholdte de seneste MOM_VINDUE dage. Desuden måles foreningen mod sig selv: flere afholdte i vinduet end normalt
+ * (snittet pr. MOM_VINDUE dage i året før vinduet) er et godt tegn, færre er et tegn på, at den er ved at tabe pusten.
+ * Niveauer, ud fra dage siden sidste arrangement (d), afholdte i vinduet (a) og kalenderen de næste MOM_FREMAD dage:
+ *   hjaelp    d > MOM_HJAELP og intet i kalenderen        faldende  MOM_MAANED < d ≤ MOM_HJAELP og intet i kalenderen
+ *   fremad    d > MOM_MAANED, men noget i kalenderen
+ *   godt      d ≤ MOM_MAANED og a ≥ MOM_MAAL               faldende  d ≤ MOM_MAANED, færre end normalt og tom kalender
+ *   stabil    ellers (d ≤ MOM_MAANED, men under målet)
+ * 'ukendt', når intet er afholdt, og data dækker højst MOM_HJAELP dage; 'ingenfb' uden Facebook-side og arrangementer.
  */
-const MOM_BAGUD = 60, MOM_FREMAD = 60, MOM_RYTME_MIN = 31, MOM_RYTME_MAX = 61;
+const MOM_VINDUE = 90, MOM_MAAL = 3, MOM_MAANED = 31, MOM_HJAELP = 45, MOM_FREMAD = 30, MOM_NORMAL = 365;
 const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
 const MOM_STATUS = {
-  godt:     {ikon: '↗', label: 'Godt i gang', hint: 'Afholder i sin rytme og har noget i kalenderen'},
-  stabil:   {ikon: '→', label: 'Stabil', hint: 'Afholder i sin rytme – intet i kalenderen endnu'},
-  fremad:   {ikon: '⤴', label: 'Går fremad', hint: `Længere end sin rytme siden sidste arrangement, men noget i kalenderen de næste ${MOM_FREMAD} dage`},
-  faldende: {ikon: '↘', label: 'Mister fart', hint: 'Længere end sin rytme siden sidste arrangement og intet i kalenderen'},
-  hjaelp:   {ikon: '⚠', label: 'Brug for hjælp', hint: 'Mere end to gange sin rytme siden sidste arrangement og intet i kalenderen'},
-  ukendt:   {ikon: '?', label: 'Historik mangler', hint: 'Intet afholdt, og data dækker ikke længere end rytmen'},
+  godt:     {ikon: '↗', label: 'Godt i gang', hint: `Mindst ét arrangement om måneden (${MOM_MAAL} eller flere de seneste 3 måneder)`},
+  stabil:   {ikon: '→', label: 'På sporet', hint: `Arrangement inden for den seneste måned, men færre end ${MOM_MAAL} de seneste 3 måneder`},
+  fremad:   {ikon: '⤴', label: 'Noget på vej', hint: `Over en måned siden sidste arrangement, men noget i kalenderen de næste ${MOM_FREMAD} dage`},
+  faldende: {ikon: '↘', label: 'Mister fart', hint: `Over en måned siden sidste arrangement og intet i kalenderen – eller færre arrangementer end normalt`},
+  hjaelp:   {ikon: '⚠', label: 'Brug for hjælp', hint: `Over ${MOM_HJAELP} dage siden sidste arrangement og intet i kalenderen`},
+  ukendt:   {ikon: '?', label: 'Historik mangler', hint: `Intet afholdt, og data dækker højst ${MOM_HJAELP} dage`},
   ingenfb:  {ikon: '–', label: 'Ingen Facebook-side', hint: 'Aktiviteter kan ikke hentes automatisk'},
 };
 const MOM_ORDEN = {hjaelp: 0, faldende: 1, fremad: 2, ukendt: 3, stabil: 4, godt: 5, ingenfb: 6}; // dem, der kræver handling, først
 const dageMellem = (a, b) => Math.floor((b - a) / DAY);
-/** Foreningens rytme: {dage, kilde, antal, type} – se momentum-kommentaren ovenfor. */
-function rytme(f) {
-  const type = d => (d <= MOM_RYTME_MIN + 4 ? 'stor' : d >= MOM_RYTME_MAX - 6 ? 'lille' : 'mellem');
-  if (f.momentum_rytme) return {dage: f.momentum_rytme, kilde: 'fast', antal: null, type: type(f.momentum_rytme)};
-  const fra = new Date(Math.max(new Date(daekketFra(f.navn) + 'T00:00:00Z'), NOW - 365 * DAY));
-  const periode = dageMellem(fra, NOW), antal = f.afholdt.filter(e => e.startD >= fra).length;
-  // For lidt historik til at kende rytmen: den milde grænse.
-  if (periode < 120) return {dage: MOM_RYTME_MAX, kilde: 'standard', antal, periode, type: 'ukendt'};
-  const dage = Math.min(MOM_RYTME_MAX, Math.max(MOM_RYTME_MIN, Math.round(antal ? periode / antal : Infinity)));
-  return {dage, kilde: 'historik', antal, periode, type: type(dage)};
-}
-/** Foreningens momentum: {niveau, rytme, sidsteDage, naesteDage, bagud, fremad, forrige, aflyst, signaler}. */
+/** "2 af 3 de seneste 3 måneder" – eller hvorfor det ikke kan måles. */
+const momMaalTekst = m => (m.daekket ? `${m.afholdt} af ${MOM_MAAL} de seneste 3 måneder` : 'Data dækker ikke de seneste 3 måneder');
+const momTal = v => v.toLocaleString('da-DK', {maximumFractionDigits: 1});
+/** Foreningens momentum: {niveau, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler}. */
 function momentum(f) {
-  const fra = new Date(NOW.getTime() - MOM_BAGUD * DAY), fra2 = new Date(NOW.getTime() - 2 * MOM_BAGUD * DAY);
-  const til = new Date(NOW.getTime() + MOM_FREMAD * DAY);
-  const bagud = f.afholdt.filter(e => e.startD >= fra).length;
+  const fra = new Date(NOW.getTime() - MOM_VINDUE * DAY), til = new Date(NOW.getTime() + MOM_FREMAD * DAY);
+  const daekketD = new Date(daekketFra(f.navn) + 'T00:00:00Z');
+  const afholdt = f.afholdt.filter(e => e.startD >= fra).length;
   const fremad = f.planlagt.filter(e => e.startD <= til).length;
-  const daekket = daekketFra(f.navn), daekketD = new Date(daekket + 'T00:00:00Z');
-  const forrige = daekket <= dayKey(fra2) ? f.afholdt.filter(e => e.startD >= fra2 && e.startD < fra).length : null;
+  const daekket = daekketD <= fra; // dækker data hele vinduet?
+  // Normalt: afholdte pr. MOM_VINDUE dage i året før vinduet (kræver mindst MOM_VINDUE dages data dér).
+  const nFra = new Date(Math.max(daekketD, fra - MOM_NORMAL * DAY)), nDage = dageMellem(nFra, fra);
+  const normalt = nDage >= MOM_VINDUE
+    ? Math.round(f.afholdt.filter(e => e.startD >= nFra && e.startD < fra).length / nDage * MOM_VINDUE * 10) / 10 : null;
+  const trend = normalt == null ? null : afholdt >= normalt + 1 ? 'op' : afholdt <= normalt - 1 ? 'ned' : 'som';
   const aflyst = f.events.filter(e => e.aflyst && e.startD >= fra && e.startD < NOW).length;
   const sidsteDage = f.sidste ? dageMellem(f.sidste, NOW) : null;
   const naesteDage = f.naeste ? Math.max(0, dageMellem(NOW, f.naeste.startD)) : null;
-  const r = rytme(f), R = r.dage;
   // Uden afholdte arrangementer er dagene siden dækningens start en nedre grænse.
   const d = sidsteDage ?? dageMellem(daekketD, NOW);
   const niveau = !f.facebook && !f.gyldige.length ? 'ingenfb'
-    : d <= R && sidsteDage != null ? (fremad ? 'godt' : 'stabil')
-    : fremad ? 'fremad'
-    : sidsteDage == null && d <= R ? 'ukendt'
-    : d <= 2 * R ? 'faldende' : 'hjaelp';
+    : sidsteDage == null && d <= MOM_HJAELP ? 'ukendt'
+    : d > MOM_MAANED ? (fremad ? 'fremad' : d > MOM_HJAELP ? 'hjaelp' : 'faldende')
+    : afholdt >= MOM_MAAL ? 'godt'
+    : trend === 'ned' && !fremad ? 'faldende' : 'stabil';
   // Tidlige advarsler (−), gode tegn (+) og oplysninger (i), der forklarer niveauet.
   const signaler = [];
   if (niveau !== 'ingenfb') {
     if (sidsteDage == null) signaler.push(['-', `Intet afholdt siden ${fmtDate.format(daekketD)}`]);
-    else if (sidsteDage > R) signaler.push(['-', `${sidsteDage} dage siden sidste arrangement (rytme: ${R} dage)`]);
-    else signaler.push(['+', `Sidste arrangement for ${sidsteDage} dage siden (rytme: ${R} dage)`]);
-    if (!f.planlagt.length) signaler.push([niveau === 'stabil' ? 'i' : '-', 'Intet i kalenderen endnu']);
+    else if (sidsteDage > MOM_MAANED) signaler.push(['-', `${sidsteDage} dage siden sidste arrangement – over en måned`]);
+    else signaler.push(['+', `Sidste arrangement for ${sidsteDage} dage siden`]);
+    if (!daekket) signaler.push(['i', `Data dækker kun ${dageMellem(daekketD, NOW)} af de seneste ${MOM_VINDUE} dage`]);
+    else signaler.push([afholdt >= MOM_MAAL ? '+' : '-', `${afholdt} af ${MOM_MAAL} arrangementer de seneste 3 måneder`]);
+    if (!f.planlagt.length) signaler.push(['-', 'Intet i kalenderen endnu']);
     else if (naesteDage > MOM_FREMAD) signaler.push(['-', `Næste arrangement først om ${naesteDage} dage`]);
     else signaler.push(['+', naesteDage === 0 ? 'Arrangement i dag' : `Næste arrangement om ${naesteDage} dage`]);
-    if (forrige != null && bagud < forrige) signaler.push(['-', `Færre afholdt end de ${MOM_BAGUD} dage før (${forrige} → ${bagud})`]);
-    if (forrige != null && bagud > forrige) signaler.push(['+', `Flere afholdt end de ${MOM_BAGUD} dage før (${forrige} → ${bagud})`]);
-    if (aflyst) signaler.push(['-', `${aflyst} aflyst de seneste ${MOM_BAGUD} dage`]);
+    if (trend === 'ned') signaler.push(['-', `Færre end normalt (normalt ${momTal(normalt)} pr. 3 måneder)`]);
+    if (trend === 'op') signaler.push(['+', `Flere end normalt (normalt ${momTal(normalt)} pr. 3 måneder)`]);
+    if (aflyst) signaler.push(['-', `${aflyst} aflyst de seneste 3 måneder`]);
   }
-  return {niveau, rytme: r, sidsteDage, naesteDage, bagud, fremad, forrige, aflyst, signaler};
-}
-/** Rytmen i ord, fx "hver 31. dag – stor forening (14 arrangementer det seneste år)". */
-function rytmeTekst(r) {
-  const type = {stor: 'stor forening – mindst én om måneden', mellem: 'mellemstor forening', lille: 'lille forening – hver anden måned'}[r.type];
-  const kilde = r.kilde === 'fast' ? 'sat fast i foreninger.json'
-    : r.kilde === 'standard' ? 'for lidt historik – den milde grænse bruges'
-    : `${r.antal} afholdt på ${r.periode} dage`;
-  return `Hver ${r.dage}. dag${type ? ` – ${type}` : ''} (${kilde})`;
+  return {niveau, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler};
 }
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 /** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
@@ -1079,7 +1067,7 @@ function hoverForening(navn, ev) {
   if (farvning === 'momentum' && f.mom) {
     const m = f.mom;
     return showTip(ev, [visningsnavn(f), `${MOM_STATUS[m.niveau].ikon} ${MOM_STATUS[m.niveau].label}`,
-      `Rytme: hver ${m.rytme.dage}. dag`, ...m.signaler.slice(0, 2).map(s => s[1])]);
+      momMaalTekst(m), ...m.signaler.slice(0, 2).map(s => s[1])]);
   }
   const k = valgtKvartal();
   const linje = !k ? STATUS[f.status].label : f.kv[k.id] ? `Afholdt i ${k.kort}: ${f.kv[k.id]}` : kvartalStatus(k)[kvStatus(f, k)].label;
@@ -1252,23 +1240,23 @@ function renderOverview() {
 
 /**
  * Tidslinje pr. forening: prik ved sidste afholdte arrangement (til venstre for i dag) og ring ved det næste
- * (til højre). Baggrunden viser foreningens rytme: grøn = inden for rytmen, gul = op til to gange rytmen.
+ * (til højre). Baggrunden viser målet om ét arrangement om måneden: grøn = inden for en måned, gul = op til MOM_HJAELP dage.
  */
 function momTidslinje(list, {aksetekst = true} = {}) {
   const W = 308, labelW = list.length > 1 ? 88 : 0, rowH = 20, top = aksetekst ? 16 : 4, bottom = 18;
-  const MIN = -150, MAX = MOM_FREMAD, x0 = labelW + 14, x1 = W - 14;
+  const MIN = -150, MAX = 60, x0 = labelW + 14, x1 = W - 14;
   const x = v => x0 + (Math.max(MIN, Math.min(MAX, v)) - MIN) / (MAX - MIN) * (x1 - x0);
   const H = top + list.length * rowH + bottom;
-  let s = `<svg class="chart mom-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dage siden sidste og til næste arrangement, målt mod foreningens rytme">`;
+  let s = `<svg class="chart mom-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dage siden sidste og til næste arrangement, målt mod målet om ét om måneden">`;
   for (const v of [-150, -120, -90, -60, -30, 0, 30, 60]) {
     s += `<line class="mom-grid" x1="${x(v)}" x2="${x(v)}" y1="${top - 2}" y2="${H - bottom + 2}"/>`;
     s += `<text class="tick" x="${x(v)}" y="${H - 5}" text-anchor="middle">${v ? (v > 0 ? '+' : '') + v : 'i dag'}</text>`;
   }
   if (aksetekst) s += `<text class="lbl" x="${x(0) - 4}" y="10" text-anchor="end">← dage siden sidste</text><text class="lbl" x="${x(0) + 4}" y="10">næste →</text>`;
   list.forEach((f, i) => {
-    const m = f.mom, R = m.rytme.dage, y = top + i * rowH + rowH / 2, farve = MOM_FILL[m.niveau];
-    s += `<rect class="mom-ok" x="${x(-R)}" y="${y - 7}" width="${x(0) - x(-R)}" height="14"/>`;
-    s += `<rect class="mom-warn" x="${x(-2 * R)}" y="${y - 7}" width="${x(-R) - x(-2 * R)}" height="14"/>`;
+    const m = f.mom, y = top + i * rowH + rowH / 2, farve = MOM_FILL[m.niveau];
+    s += `<rect class="mom-ok" x="${x(-MOM_MAANED)}" y="${y - 7}" width="${x(0) - x(-MOM_MAANED)}" height="14"/>`;
+    s += `<rect class="mom-warn" x="${x(-MOM_HJAELP)}" y="${y - 7}" width="${x(-MOM_MAANED) - x(-MOM_HJAELP)}" height="14"/>`;
     if (labelW) s += `<text class="lbl" x="${labelW}" y="${y + 4}" text-anchor="end">${esc(trunc(f.navn, 15))}</text>`;
     const fra = m.sidsteDage == null ? MIN : -m.sidsteDage, til = m.naesteDage == null ? 0 : Math.min(MAX, m.naesteDage);
     s += `<line class="mom-linje" x1="${x(fra)}" x2="${x(til)}" y1="${y}" y2="${y}" stroke="${farve}"/>`;
@@ -1277,7 +1265,7 @@ function momTidslinje(list, {aksetekst = true} = {}) {
     if (m.naesteDage != null && m.naesteDage <= MAX) s += `<circle class="mom-naeste" cx="${x(til)}" cy="${y}" r="4" stroke="${farve}"/>`;
     const tip = [visningsnavn(f), `${MOM_STATUS[m.niveau].ikon} ${MOM_STATUS[m.niveau].label}`,
       m.sidsteDage == null ? 'Intet afholdt registreret' : `Sidste: for ${m.sidsteDage} dage siden (${fmtDate.format(f.sidste)})`,
-      m.naesteDage == null ? 'Intet i kalenderen' : `Næste: om ${m.naesteDage} dage – ${f.naeste.navn}`, `Rytme: hver ${R}. dag`].join('|');
+      m.naesteDage == null ? 'Intet i kalenderen' : `Næste: om ${m.naesteDage} dage – ${f.naeste.navn}`, momMaalTekst(m)].join('|');
     s += `<rect class="hit" x="0" y="${y - rowH / 2}" width="${W}" height="${rowH}" data-tip="${esc(tip)}"${labelW ? ` data-f="${esc(f.navn)}"` : ''}/>`;
   });
   return s + '</svg>';
@@ -1291,11 +1279,11 @@ function renderMomentum() {
   const alle = DATA.lokale.filter(f => f.mom && f.mom.niveau !== 'ingenfb')
     .sort((a, b) => orden(a) - orden(b) || (b.mom.sidsteDage ?? 1e9) - (a.mom.sidsteDage ?? 1e9) || a.navn.localeCompare(b.navn, 'da'));
   const handling = alle.filter(f => f.mom.niveau === 'hjaelp' || f.mom.niveau === 'faldende');
-  el.innerHTML = `<p class="note">Dage siden sidste arrangement målt mod foreningens egen rytme (en stor forening mindst én om måneden, en lille mindst hver anden måned) og hvad der er i kalenderen – en tidlig indikator for, om en forening har brug for hjælp.</p>
+  el.innerHTML = `<p class="note">Målet er mindst ét arrangement om måneden for alle lokalforeninger. Momentum ser på dage siden sidste arrangement, antal de seneste 3 måneder (mod målet og mod foreningens normale niveau) og hvad der er i kalenderen – så man kan gribe ind, før en forening går i stå.</p>
     <ol class="hb-kat mom-kat">${['godt', 'stabil', 'fremad', 'faldende', 'hjaelp', 'ukendt', 'ingenfb'].filter(k => tael(k) || !['ukendt', 'ingenfb'].includes(k)).map(k =>
       `<li class="uden-nr" title="${esc(MOM_STATUS[k].hint)}"><span class="dot-inline" style="background:${MOM_FILL[k]}"></span><span>${esc(MOM_STATUS[k].ikon)} ${esc(MOM_STATUS[k].label)}</span><b>${tael(k)}</b></li>`).join('')}</ol>
     ${momTidslinje(alle)}
-    <div class="chart-legend"><span><span class="swatch mom-ok-swatch"></span>Inden for rytmen</span><span><span class="swatch mom-warn-swatch"></span>Op til 2 × rytmen</span><span>● sidste · ○ næste</span></div>
+    <div class="chart-legend"><span><span class="swatch mom-ok-swatch"></span>Inden for en måned</span><span><span class="swatch mom-warn-swatch"></span>${MOM_MAANED + 1}–${MOM_HJAELP} dage</span><span>● sidste · ○ næste</span></div>
     ${handling.length ? `<h3 class="mom-h">Kræver opmærksomhed</h3><ul class="rank mom-liste">${handling.map(f => `<li tabindex="0" data-f="${esc(f.navn)}">
       <span class="dot" style="background:${MOM_FILL[f.mom.niveau]}" title="${esc(MOM_STATUS[f.mom.niveau].label)}"></span>
       <span class="name">${esc(f.navn)}</span><span class="val">${esc(MOM_STATUS[f.mom.niveau].label)}</span>
@@ -1397,15 +1385,15 @@ registerSection({
   id: 'momentum', titel: 'Momentum', admin: true, synlig: f => !!f.mom,
   render(f) {
     const m = f.mom, st = MOM_STATUS[m.niveau];
-    const trend = m.forrige == null ? `Trend kræver data for de ${2 * MOM_BAGUD} seneste dage`
-      : m.bagud > m.forrige ? `↑ fra ${m.forrige} de ${MOM_BAGUD} dage før` : m.bagud < m.forrige ? `↓ fra ${m.forrige} de ${MOM_BAGUD} dage før` : `Som de ${MOM_BAGUD} dage før`;
+    const trend = m.trend == null ? 'Normalt niveau kræver mere historik'
+      : `${{op: '↑ flere end', ned: '↓ færre end', som: 'Som'}[m.trend]} normalt (${momTal(m.normalt)})`;
     return `<div class="hb-prognose"><span class="dot" style="background:${MOM_FILL[m.niveau]}"></span><b>${esc(st.ikon)} ${esc(st.label)}</b></div>
-      <p class="note">${esc(st.hint)}.<br>Rytme: ${esc(rytmeTekst(m.rytme))}.</p>
+      <p class="note">${esc(st.hint)}.<br>Mål: mindst ét arrangement om måneden.</p>
       ${momTidslinje([f], {aksetekst: false})}
       <div class="tiles">
-        ${tile('Dage siden sidste', m.sidsteDage == null ? '–' : String(m.sidsteDage), `Rytme: ${m.rytme.dage} dage`)}
+        ${tile('Dage siden sidste', m.sidsteDage == null ? '–' : String(m.sidsteDage), `Mål: højst ${MOM_MAANED}`)}
         ${tile('Næste arrangement', m.naesteDage == null ? '–' : `om ${m.naesteDage} d`, m.naesteDage == null ? 'Intet i kalenderen' : fmtDate.format(f.naeste.startD))}
-        ${tile(`Afholdt, seneste ${MOM_BAGUD} dage`, String(m.bagud), trend)}
+        ${tile('Afholdt, seneste 3 måneder', m.daekket ? `${m.afholdt} af ${MOM_MAAL}` : String(m.afholdt), m.daekket ? trend : 'Data dækker ikke hele perioden')}
         ${tile(`I kalenderen, næste ${MOM_FREMAD} dage`, String(m.fremad), null)}
       </div>${m.signaler.length ? `<ul class="signaler">${m.signaler.map(([t, tekst]) =>
         `<li class="${{'+': 'plus', '-': 'minus', i: 'info'}[t]}"><span aria-hidden="true">${{'+': '✓', '-': '!', i: 'i'}[t]}</span>${esc(tekst)}</li>`).join('')}</ul>` : ''}`;
@@ -1616,7 +1604,7 @@ function visFane(fane) {
 
 const FARVNINGER = () => [
   {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
-  {id: 'momentum', admin: true, label: 'Momentum', hint: 'Dage siden sidste arrangement målt mod foreningens egen rytme, og hvad der er i kalenderen – tidlig advarsel'},
+  {id: 'momentum', admin: true, label: 'Momentum', hint: 'Mindst ét arrangement om måneden? Dage siden sidste, antal de seneste 3 måneder og kalenderen – tidlig advarsel'},
   ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
   {id: 'hb', admin: true, label: `HB-godkendelse ${HB_AAR}`, hint: `Mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1} (Organisationshåndbogen 8.2)`},
   {id: 'ingen', label: 'Ingen farve'},
@@ -1709,7 +1697,7 @@ function renderLegend() {
     const brugt = new Set(DATA.lokale.map(f => f.mom.niveau));
     $('legend').innerHTML = Object.entries(MOM_STATUS).filter(([k]) => brugt.has(k))
       .map(([k, s]) => `<span title="${esc(s.hint)}"><span class="swatch" style="background:${MOM_FILL[k]};opacity:.8"></span>${esc(s.ikon)} ${esc(s.label)}</span>`).join('')
-      + `<span class="muted">Målt mod foreningens egen rytme (${MOM_RYTME_MIN}–${MOM_RYTME_MAX} dage mellem arrangementer)</span>` + tegnforklaring;
+      + `<span class="muted">Mål: mindst ét arrangement om måneden</span>` + tegnforklaring;
     return;
   }
   const kv = valgtKvartal();

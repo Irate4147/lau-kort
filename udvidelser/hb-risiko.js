@@ -2,12 +2,11 @@
 /*
  * HB-risiko (kun admins): hvem skal gøre noget – hvad og hvornår – for at lokalforeningerne kan blive HB-godkendt
  * næste år? Kravet er mindst ét afholdt arrangement i hvert kvartal. Én beregning (hbRisiko) bruges af både advarslen
- * øverst i sidepanelet ("Kræver handling nu") og analysen "HB-risiko". Bygger på hbKvartal()/f.hbKv og rytme() i app.js.
+ * øverst i sidepanelet ("Kræver handling nu") og analysen "HB-risiko". Bygger på hbKvartal()/f.hbKv i app.js.
  *
- * Niveauer for det indeværende HB-kvartal (d = dage tilbage til kvartalets sidste dag, R = foreningens rytme, dvs.
- * dens normale antal dage mellem arrangementer):
- *   kritisk     intet afholdt eller planlagt, og d ≤ 14 eller d ≤ R/2
- *   advarsel    intet afholdt eller planlagt, og d ≤ max(45, R) – eller kvartalet reddes kun af planlagte
+ * Niveauer for det indeværende HB-kvartal (d = dage tilbage til kvartalets sidste dag):
+ *   kritisk     intet afholdt eller planlagt, og d ≤ 14
+ *   advarsel    intet afholdt eller planlagt, og d ≤ 45 – eller kvartalet reddes kun af planlagte
  *               arrangementer, og d ≤ 21
  *   opmaerksom  som ovenfor, men der er god tid endnu
  *   ukendt      data dækker ikke hele kvartalet (historik mangler)
@@ -56,19 +55,19 @@
 
   /**
    * Risikoen for, at foreningen mister HB-godkendelsen på grund af det indeværende kvartal:
-   * {niveau, spand, rytme, dage, frist, status, afholdt, planlagt, naeste, naesteKv, tabte, ukendte, forklaring,
+   * {niveau, spand, dage, frist, status, afholdt, planlagt, naeste, naesteKv, tabte, ukendte, forklaring,
    *  advarsel: {niveau, titel, tekst} | null}
    * (afholdt/planlagt: foreningens arrangementer i kvartalet; naesteKv: planlagte i det næste kvartal samme år;
    * tabte/ukendte: afsluttede kvartaler uden afholdt arrangement / uden data; forklaring: én kort sætning med,
    * hvad der skal gøres; spand: gruppen i analysen).
    */
   function hbRisiko(f) {
-    const R = rytme(f).dage, status = f.hbKv[KV.id];
+    const status = f.hbKv[KV.id];
     const tabte = HB_KVARTALER.slice(0, HB_NU).filter(k => f.hbKv[k.id] === 'nej').map(k => k.kort);
     const ukendte = HB_KVARTALER.slice(0, HB_NU).filter(k => f.hbKv[k.id] === 'ukendt').map(k => k.kort);
     const afholdt = f.afholdt.filter(e => iKvartal(e, KV)), planlagt = f.planlagt.filter(e => iKvartal(e, KV));
     const naesteKv = KV_NAESTE ? f.planlagt.filter(e => iKvartal(e, KV_NAESTE)) : [];
-    const ud = {niveau: 'sikret', spand: 'sikret', rytme: R, dage: DAGE, frist: FRIST, status, afholdt, planlagt, naeste: f.naeste,
+    const ud = {niveau: 'sikret', spand: 'sikret', dage: DAGE, frist: FRIST, status, afholdt, planlagt, naeste: f.naeste,
       naesteKv, tabte, ukendte, forklaring: '', advarsel: null};
     const tidligere = ukendte.length ? ` (${opremsning(ukendte)}: ingen data.)` : '';
 
@@ -98,10 +97,10 @@
             : `Bliver ingen af dem afholdt (det første er ${fmtDay.format(e.startD)}), mister foreningen HB-godkendelsen ${HB_AAR}. Bekræft det under Arrangementer (✓ Afholdt), når det er holdt.`};
       }
     } else if (status === 'mangler') {
-      ud.niveau = DAGE <= GRAENSE.kritiskDage || DAGE <= R / 2 ? 'kritisk'
-        : DAGE <= Math.max(GRAENSE.advarselMinDage, R) ? 'advarsel' : 'opmaerksom';
+      ud.niveau = DAGE <= GRAENSE.kritiskDage ? 'kritisk'
+        : DAGE <= GRAENSE.advarselMinDage ? 'advarsel' : 'opmaerksom';
       ud.spand = ud.niveau === 'opmaerksom' ? 'hold' : 'handle';
-      const normalt = DAGE > GRAENSE.kritiskDage ? ` Foreningen holder normalt et arrangement hver ${R}. dag.` : '';
+      const normalt = DAGE > GRAENSE.kritiskDage ? ' Målet er mindst ét arrangement om måneden.' : '';
       ud.forklaring = ud.niveau === 'opmaerksom'
         ? `Intet afholdt eller planlagt i ${KV.kort} endnu – ${DAGE} dage tilbage. Planlæg et arrangement i god tid.${tidligere}`
         : `Intet afholdt eller planlagt i ${KV.kort} – afhold et arrangement senest ${FRIST_I_TEKST} (${omDage(DAGE)}).${normalt}${tidligere}`;
@@ -202,10 +201,9 @@
       <ul>
         <li>HB-godkendelse ${HB_AAR} kræver mindst ét <b>afholdt</b> arrangement i hvert af de fire kvartaler ${HB_AAR - 1} (Organisationshåndbogen 8.2). Om det er fagligt, vurderes ikke.</li>
         <li>For hver lokalforening ser vi på det indeværende kvartal (${esc(KV.kort)}): er der afholdt noget, er der kun noget planlagt, eller er der intet?</li>
-        <li><b>Intet afholdt eller planlagt</b> er <b>kritisk</b>, når der er ${dageIOrd(G.kritiskDage)} eller mindre tilbage, eller under halvdelen af foreningens normale tid mellem arrangementer.
-          Det er en <b>advarsel</b>, når der er ${dageIOrd(G.advarselMinDage)} eller mindre tilbage, eller mindre end foreningens normale tid mellem arrangementer. Ellers er der god tid (hold øje).</li>
+        <li><b>Intet afholdt eller planlagt</b> er <b>kritisk</b>, når der er ${dageIOrd(G.kritiskDage)} eller mindre tilbage.
+          Det er en <b>advarsel</b>, når der er ${dageIOrd(G.advarselMinDage)} eller mindre tilbage. Ellers er der god tid (hold øje).</li>
         <li><b>Kun planlagt</b> er en advarsel de sidste ${dageIOrd(G.planlagtDage)} af kvartalet – ellers hold øje.</li>
-        <li>Foreningens normale tid mellem arrangementer er gennemsnittet det seneste år, dog mindst ${MOM_RYTME_MIN} og højst ${MOM_RYTME_MAX} dage (samme som i Momentum).</li>
         <li>Har foreningen et <b>afsluttet kvartal uden afholdt arrangement</b>, kan den ikke godkendes i ${HB_AAR} – det giver ingen advarsel, for der er intet at nå.</li>
         <li>Mangler data for en del af kvartalet (historikken er ikke hentet, eller foreningen har ingen Facebook-side), kan det ikke vurderes.</li>
         <li>Kritiske og advarsler står også i "Kræver handling nu" i oversigten og i foreningens panel – højst én pr. forening.</li>

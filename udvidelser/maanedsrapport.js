@@ -160,8 +160,9 @@
       if (m.niveau === 'hjaelp' || m.niveau === 'faldende') {
         const hjaelp = m.niveau === 'hjaelp';
         const siden = m.sidsteDage != null ? `${m.sidsteDage} dage siden sidste arrangement` : `intet afholdt siden ${kortDato(daekketFra(f.navn))}`;
+        const faerre = m.trend === 'ned' ? ', færre end normalt' : '';
         risici.push({forening: f.navn, niveau: hjaelp ? 'advarsel' : 'opmaerksom', type: m.niveau,
-          tekst: `${hjaelp ? 'Brug for hjælp' : 'Mister fart'} – ${siden} (rytme ${m.rytme.dage}), intet i kalenderen.`,
+          tekst: `${hjaelp ? 'Brug for hjælp' : 'Mister fart'} – ${siden}${faerre}, intet i kalenderen.`,
           handling: hjaelp ? 'Kontakt foreningen, og hjælp med at planlægge næste arrangement.' : 'Spørg til næste arrangement, før foreningen går i stå.'});
       }
     }

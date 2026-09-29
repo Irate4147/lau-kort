@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Månedsrapport over ændringer i foreningerne (kun admins).
 
-Ved den første kørsel i en måned tages et snapshot af tilstanden ved månedens start: momentum-niveau, rytme,
+Ved den første kørsel i en måned tages et snapshot af tilstanden ved månedens start: momentum-niveau,
 HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Rapporten for en måned sammenligner månedens
 snapshot med den næste måneds og lister, hvad der skete i måneden: afholdte, aflyste, nye og fra Facebook
 forsvundne arrangementer, registreret fremmøde og ændringer i momentum og HB-prognose – plus højdepunkterne
@@ -21,7 +21,7 @@ noget planlagt og risici sorteret efter alvor – HB-kvartalet (samme regler som
 momentum "Brug for hjælp"/"Mister fart", kvartaler, der kun hænger på planlagte arrangementer, og årsskiftet. Den
 rekonstrueres som snapshots, så en gammel rapport viser, hvad man vidste dengang.
 
-Momentum og HB-prognose beregnes med samme regler og konstanter som rytme(), momentum() og hbPrognose() i app.js.
+Momentum og HB-prognose beregnes med samme regler og konstanter som momentum() og hbPrognose() i app.js.
 Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), rekonstrueres det ud fra data pr. den
 1. i måneden og markeres "rekonstrueret": true. Kun begivenheder, der var set på Facebook den dag (foerst_set), tæller
 da som planlagte; senere aflysninger fra Facebook og forsvundne begivenheder regnes som ikke sket endnu.
@@ -38,7 +38,7 @@ import hb
 TZ = hb.TZ
 DAG = timedelta(days=1)
 # Samme grænser som app.js (se "Momentum" i README).
-MOM_BAGUD, MOM_FREMAD, MOM_RYTME_MIN, MOM_RYTME_MAX = 60, 60, 31, 61
+MOM_VINDUE, MOM_MAAL, MOM_MAANED, MOM_HJAELP, MOM_FREMAD, MOM_NORMAL = 90, 3, 31, 45, 30, 365
 MOM_ORDEN = {"hjaelp": 0, "faldende": 1, "fremad": 2, "ukendt": 3, "stabil": 4, "godt": 5, "ingenfb": 6}
 MOM_IKON = {"godt": "↗", "stabil": "→", "fremad": "⤴", "faldende": "↘", "hjaelp": "⚠", "ukendt": "?", "ingenfb": "–"}
 # HB-kategorierne med samme nøgler som HB_STATUS i app.js, bedst først ('ukendt' sammenlignes ikke).
@@ -190,46 +190,34 @@ def forening_ved(f, events, idag):
 
 # ------------------------------------------------------------------ momentum og HB (port af app.js)
 
-def rytme(f, idag, daekket):
-    """Foreningens rytme: {dage, kilde, antal, periode, type}. Som rytme() i app.js."""
-    def type_(d):
-        return "stor" if d <= MOM_RYTME_MIN + 4 else "lille" if d >= MOM_RYTME_MAX - 6 else "mellem"
-    if f.get("momentum_rytme"):
-        return {"dage": f["momentum_rytme"], "kilde": "fast", "antal": None, "type": type_(f["momentum_rytme"])}
-    fra = max(midnat_utc(daekket), idag - 365 * DAG)
-    periode, antal = dage_mellem(fra, idag), sum(1 for e in f["afholdt"] if e["_start"] >= fra)
-    if periode < 120:  # for lidt historik til at kende rytmen: den milde grænse
-        return {"dage": MOM_RYTME_MAX, "kilde": "standard", "antal": antal, "periode": periode, "type": "ukendt"}
-    # Math.round() i JavaScript runder halve op; uden afholdte er rytmen den milde grænse.
-    dage = min(MOM_RYTME_MAX, max(MOM_RYTME_MIN, math.floor(periode / antal + 0.5) if antal else MOM_RYTME_MAX))
-    return {"dage": dage, "kilde": "historik", "antal": antal, "periode": periode, "type": type_(dage)}
-
-
 def momentum(f, idag, daekket):
     """Foreningens momentum på tidspunktet idag (datetime). Samme niveauer som momentum() i app.js."""
-    fra, fra2, til = idag - MOM_BAGUD * DAG, idag - 2 * MOM_BAGUD * DAG, idag + MOM_FREMAD * DAG
-    bagud = sum(1 for e in f["afholdt"] if e["_start"] >= fra)
+    fra, til, dk = idag - MOM_VINDUE * DAG, idag + MOM_FREMAD * DAG, midnat_utc(daekket)
+    afholdt = sum(1 for e in f["afholdt"] if e["_start"] >= fra)
     fremad = sum(1 for e in f["planlagt"] if e["_start"] <= til)
-    forrige = sum(1 for e in f["afholdt"] if fra2 <= e["_start"] < fra) if daekket <= dansk(fra2) else None
+    # Normalt: afholdte pr. MOM_VINDUE dage i året før vinduet (kræver mindst MOM_VINDUE dages data dér).
+    n_fra = max(dk, fra - MOM_NORMAL * DAG)
+    n_dage = dage_mellem(n_fra, fra)
+    normalt = math.floor(sum(1 for e in f["afholdt"] if n_fra <= e["_start"] < fra) / n_dage * MOM_VINDUE * 10 + 0.5) / 10 \
+        if n_dage >= MOM_VINDUE else None
+    trend = None if normalt is None else "op" if afholdt >= normalt + 1 else "ned" if afholdt <= normalt - 1 else "som"
     aflyst = sum(1 for e in f["events"] if e.get("aflyst") and fra <= e["_start"] < idag)
     sidste_dage = dage_mellem(f["sidste"], idag) if f["sidste"] else None
     naeste_dage = max(0, dage_mellem(idag, f["naeste"]["_start"])) if f["naeste"] else None
-    r = rytme(f, idag, daekket)
-    R = r["dage"]
     # Uden afholdte arrangementer er dagene siden dækningens start en nedre grænse.
-    d = sidste_dage if sidste_dage is not None else dage_mellem(midnat_utc(daekket), idag)
+    d = sidste_dage if sidste_dage is not None else dage_mellem(dk, idag)
     if not f.get("facebook") and not f["gyldige"]:
         niveau = "ingenfb"
-    elif d <= R and sidste_dage is not None:
-        niveau = "godt" if fremad else "stabil"
-    elif fremad:
-        niveau = "fremad"
-    elif sidste_dage is None and d <= R:
+    elif sidste_dage is None and d <= MOM_HJAELP:
         niveau = "ukendt"
+    elif d > MOM_MAANED:
+        niveau = "fremad" if fremad else "hjaelp" if d > MOM_HJAELP else "faldende"
+    elif afholdt >= MOM_MAAL:
+        niveau = "godt"
     else:
-        niveau = "faldende" if d <= 2 * R else "hjaelp"
-    return {"niveau": niveau, "rytme": r, "sidste_dage": sidste_dage, "naeste_dage": naeste_dage,
-            "bagud": bagud, "fremad": fremad, "forrige": forrige, "aflyst": aflyst}
+        niveau = "faldende" if trend == "ned" and not fremad else "stabil"
+    return {"niveau": niveau, "sidste_dage": sidste_dage, "naeste_dage": naeste_dage, "afholdt": afholdt,
+            "daekket": dk <= fra, "normalt": normalt, "trend": trend, "fremad": fremad, "aflyst": aflyst}
 
 
 def hb_kvartaler(f, idag, daekket):
@@ -270,13 +258,13 @@ def hb_prognose(f, idag, daekket):
 def hb_risiko(f, idag, daekket):
     """Risikoen for, at foreningen mister HB-godkendelsen på grund af det indeværende kvartal, på tidspunktet idag.
     Samme niveauer og grænser (HB_GRAENSE) som hbRisiko() i udvidelser/hb-risiko.js:
-    {niveau: kritisk | advarsel | opmaerksom | ukendt | tabt | sikret, kvartal, dage, frist, status, rytme, planlagt,
+    {niveau: kritisk | advarsel | opmaerksom | ukendt | tabt | sikret, kvartal, dage, frist, status, planlagt,
     forklaring}, hvor dage er kalenderdage til kvartalets sidste dag (frist) og planlagt kvartalets planlagte."""
     dag = dansk(idag)
     kv, i = hb_kvartaler(f, idag, daekket)
     navn, start, slut, status = kv[i]
     sidste = slut - timedelta(days=1)
-    dage, R, aar = (sidste - dag).days, rytme(f, idag, daekket)["dage"], dag.year + 1
+    dage, aar = (sidste - dag).days, dag.year + 1
     tabte = [k[0] for k in kv[:i] if k[3] == "nej"]
     planlagt = [e for e in f["planlagt"] if start <= dansk(e["_start"]) < slut]
     frist = f" {navn} er årets sidste kvartal: {kort_dato(sidste)} er også fristen for HB-godkendelsen." if i == 3 else ""
@@ -291,12 +279,12 @@ def hb_risiko(f, idag, daekket):
             else f"{len(planlagt)} planlagte arrangementer (det første {kort_dato(dansk(e['_start']))})"
         tekst = f"Intet afholdt i {navn} endnu – kvartalet afhænger af {hvad}." + frist
     elif status == "mangler":
-        niveau = "kritisk" if dage <= HB_GRAENSE["kritisk_dage"] or dage <= R / 2 \
-            else "advarsel" if dage <= max(HB_GRAENSE["advarsel_min_dage"], R) else "opmaerksom"
-        tekst = f"Intet afholdt eller planlagt i {navn} – {dage_tekst(dage)} (rytme: hver {R}. dag)." + frist
+        niveau = "kritisk" if dage <= HB_GRAENSE["kritisk_dage"] \
+            else "advarsel" if dage <= HB_GRAENSE["advarsel_min_dage"] else "opmaerksom"
+        tekst = f"Intet afholdt eller planlagt i {navn} – {dage_tekst(dage)}." + frist
     else:
         niveau, tekst = "ukendt", f"Data dækker ikke hele {navn}."
-    return {"niveau": niveau, "kvartal": navn, "dage": dage, "frist": sidste, "status": status, "rytme": R,
+    return {"niveau": niveau, "kvartal": navn, "dage": dage, "frist": sidste, "status": status,
             "planlagt": planlagt, "forklaring": tekst}
 
 
@@ -313,8 +301,8 @@ def tilstand(data, idag, rekonstruer):
         if not f.get("national"):
             dk = data.daekket(f["navn"])
             m = momentum(f, idag, dk)
-            s.update(niveau=m["niveau"], rytme=m["rytme"]["dage"], sidste_dage=m["sidste_dage"],
-                     naeste_dage=m["naeste_dage"], bagud=m["bagud"], fremad=m["fremad"], hb=hb_prognose(f, idag, dk))
+            s.update(niveau=m["niveau"], sidste_dage=m["sidste_dage"], naeste_dage=m["naeste_dage"], afholdt_3md=m["afholdt"],
+                     normalt=m["normalt"], fremad=m["fremad"], hb=hb_prognose(f, idag, dk))
         ud[f["navn"]] = s
     return {"tid": iso(idag), "hb_aar": dansk(idag).year + 1, "foreninger": ud}
 
@@ -487,10 +475,11 @@ def lav_fremad(data, idag, rekonstruer):
         if m["niveau"] in ("hjaelp", "faldende"):
             siden = f"{m['sidste_dage']} dage siden sidste arrangement" if m["sidste_dage"] is not None \
                 else f"intet afholdt siden {kort_dato(dk)}"
+            faerre = ", færre end normalt" if m["trend"] == "ned" else ""
             hjaelp = m["niveau"] == "hjaelp"
             risici.append({"forening": navn, "niveau": "advarsel" if hjaelp else "opmaerksom", "type": m["niveau"],
-                           "tekst": f"{'Brug for hjælp' if hjaelp else 'Mister fart'} – {siden}"
-                                    f" (rytme {m['rytme']['dage']}), intet i kalenderen.",
+                           "tekst": f"{'Brug for hjælp' if hjaelp else 'Mister fart'} – {siden}{faerre},"
+                                    f" intet i kalenderen.",
                            "handling": "Kontakt foreningen, og hjælp med at planlægge næste arrangement." if hjaelp
                            else "Spørg til næste arrangement, før foreningen går i stå."})
     if fra <= aar_frist < til and mangler_q4:
