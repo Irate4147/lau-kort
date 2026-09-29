@@ -32,7 +32,8 @@ jobs:
       - name: Scrape tidligere begivenheder
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-        run: python3 scripts/sync.py --historik "${{ inputs.fra }}"
+          FRA: ${{ inputs.fra }}
+        run: python3 scripts/sync.py --historik "$FRA"
 
       - name: Skriv kalendere (.ics)
         run: python3 scripts/kalender.py

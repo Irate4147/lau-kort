@@ -27,6 +27,7 @@ Prognosen er en af disse kategorier (bedst først):
   ukendt            historik mangler for et kvartal
 """
 import json
+import os
 import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -220,6 +221,9 @@ def main():
     if {**gammel, "beregnet": None} != {**res, "beregnet": None}:
         admin.skriv(f"hb_{aar + 1}", res)
 
+    if os.environ.get("GITHUB_ACTIONS"):  # Actions-logs er offentlige i et offentligt repo – ingen fortrolige tal dér
+        print(f"HB {aar + 1} beregnet – skrevet til {ud.relative_to(ROOT)} (krypteret)")
+        return
     tegn = {"ja": "✓", "nej": "✗", "ukendt": "?", "planlagt": "…", "mangler": "!"}
     print(f"HB {aar + 1} – kvartalskrav i {aar} (i dag {res['idag']})")
     print(f"{'Forening':16} {'HB ' + str(aar):14} {'Data fra':11} Q1 Q2 Q3 Q4  Prognose")
