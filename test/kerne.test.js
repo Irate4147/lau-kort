@@ -1,7 +1,7 @@
 // Enhedstests af kernen på et lille, fast datasæt.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {bygFraJson, koer, valider, boreNed, prObjekt, LAU, Ontologi, regler as R, rapport as RAP} from '../kerne/index.js';
+import {bygFraJson, koer, valider, boreNed, prObjekt, LAU, Ontologi, regler, regler as R, tid, rapport as RAP} from '../kerne/index.js';
 
 const NU = new Date('2026-09-29T10:00:00Z');
 const ev = (id, forening, start, ekstra = {}) => ({id, forening, foreninger: [forening], navn: `Arrangement ${id}`, start,
@@ -108,29 +108,95 @@ test('ontologien afviser dobbelte navne og ukendte typer', () => {
     links: {x: {fra: 'A', til: 'A', label: 'l', omvendt: {id: 'y', label: 'y'}}}}), /to gange/);
 });
 
+// ---------------------------------------------------------------- regler, som scripts/hb.py og rapport.py bruger via scripts/kerne.js
+
+const X = [{navn: 'X', facebook: 'x'}];
+const DK = regler.beregnDaekning({koersler: [{tid: '2026-01-01T00:00:00Z'}]}, [], X, NU);
+const forb = (id, start, slut = start, ekstra = {}) => ({id, start, slut, startD: new Date(start), slutD: new Date(slut), foreninger: ['X'], ...ekstra});
+const aktX = (nu, evs) => regler.aktivitet(evs, 'X', DK, new Date(nu));
+const Q12 = [forb('a', '2026-02-10T17:00:00Z'), forb('b', '2026-05-10T17:00:00Z')];
+
+test('tid: kalenderdage og dagPlus (også hen over sommertid og årsskifte)', () => {
+  assert.equal(tid.dagPlus('2026-10-01', -1), '2026-09-30');
+  assert.equal(tid.dagPlus('2026-12-31', 1), '2027-01-01');
+  assert.equal(tid.kalenderdage('2026-03-28', '2026-03-30'), 2);
+  assert.equal(tid.kalenderdage('2026-09-30', '2026-09-29'), -1);
+});
+
+test('HB-risiko: grænserne for niveauerne', () => {
+  const n = regler.hbRisikoNiveau;
+  assert.deepEqual([n('mangler', 14, false), n('mangler', 15, false), n('mangler', 45, false), n('mangler', 46, false)],
+    ['kritisk', 'advarsel', 'advarsel', 'opmaerksom']);
+  assert.deepEqual([n('planlagt', 21, false), n('planlagt', 22, false)], ['advarsel', 'opmaerksom']);
+  assert.deepEqual([n('ja', 0, false), n('ja', 0, true), n('ukendt', 3, false)], ['sikret', 'tabt', 'ukendt']);
+});
+
+test('HB-risiko: indeværende kvartal, dage tilbage og tabte kvartaler', () => {
+  const planlagt = [...Q12, forb('c', '2026-09-25T17:00:00Z')];
+  const r = regler.hbRisiko(aktX('2026-09-10T10:00:00Z', planlagt), true, new Date('2026-09-10T10:00:00Z'));
+  assert.deepEqual({...r, planlagt: r.planlagt.map(e => e.id)},
+    {niveau: 'advarsel', kvartal: 'Q3', sidsteDag: '2026-09-30', dage: 20, status: 'planlagt', tabte: [], afholdt: [], planlagt: ['c']});
+  assert.equal(regler.hbRisiko(aktX('2026-09-05T10:00:00Z', planlagt), true, new Date('2026-09-05T10:00:00Z')).niveau, 'opmaerksom');
+  const intet = regler.hbRisiko(aktX('2026-09-16T21:30:00Z', Q12), true, new Date('2026-09-16T21:30:00Z'));
+  assert.deepEqual([intet.niveau, intet.dage, intet.status], ['kritisk', 14, 'mangler']);
+  const tabt = regler.hbRisiko(aktX('2026-09-16T10:00:00Z', [Q12[1]]), true, new Date('2026-09-16T10:00:00Z'));
+  assert.deepEqual([tabt.niveau, tabt.tabte], ['tabt', ['Q1']]);
+});
+
+test('HB-prognose: afholdt er slut – og et andet år regnes som afsluttet (scripts/hb.py ÅR)', () => {
+  // Et arrangement, der er begyndt, men ikke slut, er planlagt (som på siden).
+  const lang = [...Q12, forb('c', '2026-09-29T08:00:00Z', '2026-10-02T12:00:00Z')];
+  const nu = new Date('2026-09-30T21:30:00Z');
+  assert.equal(regler.hbPrognose(aktX(nu, lang), true, nu).status, 'planlagt_nu');
+  assert.equal(regler.iKvartal(lang[2], {fra: '2026-07-01', til: '2026-10-01'}), true);
+  const senere = new Date('2027-01-10T10:00:00Z');
+  const aaret = regler.hbPrognose(aktX(senere, lang), true, senere, 2026);
+  assert.deepEqual(aaret, {status: 'ikke', aar: 2027, kvartaler: {Q1: 'ja', Q2: 'ja', Q3: 'ja', Q4: 'nej'}});
+  const fire = [...lang, forb('d', '2026-11-10T17:00:00Z')];
+  assert.equal(regler.hbPrognose(aktX(senere, fire), true, senere, 2026).status, 'alle');
+  assert.equal(regler.hbPrognose(aktX(senere, fire), true, senere).aar, 2028, 'standard: året for nu');
+});
+
+test('snapshots: tilstandVed viser kun, hvad man vidste dengang', () => {
+  const t = new Date('2026-06-01T00:00:00Z');
+  const e = forb('e', '2026-06-20T17:00:00Z', '2026-06-20T19:00:00Z', {foerst_set: '2026-05-01T00:00:00Z', aflyst: true, forsvundet: false});
+  assert.equal(regler.tilstandVed({...e, foerst_set: '2026-06-02T00:00:00Z'}, t), null, 'ikke set endnu');
+  assert.equal(regler.tilstandVed(e, t).aflyst, false, 'aflysningen fra Facebook kom senere');
+  const rettet = {...e, rettelse: {status: 'ikke_afholdt', rettet: '2026-05-15T00:00:00Z'}};
+  assert.equal(regler.tilstandVed(rettet, t).aflyst, true, 'rettet som ikke afholdt før tidspunktet');
+  assert.equal(regler.tilstandVed({...rettet, rettelse: {status: 'ikke_afholdt'}}, t).aflyst, true, 'uden tidsstempel: altid kendt');
+  const vaek = {...e, aflyst: false, forsvundet: true};
+  assert.equal(regler.tilstandVed({...vaek, sidst_set: '2026-05-20T00:00:00Z'}, t).forsvundet, true);
+  assert.equal(regler.tilstandVed({...vaek, sidst_set: '2026-06-10T00:00:00Z'}, t).forsvundet, false);
+  const afholdt = forb('f', '2026-05-01T17:00:00Z', '2026-05-01T19:00:00Z', {foerst_set: '2026-05-30T00:00:00Z', aflyst: true});
+  assert.equal(regler.tilstandVed(afholdt, t), afholdt, 'afholdte er, som vi kender dem nu');
+  assert.equal(+regler.kendtFra({start: '2026-02-10T17:00:00Z', manuel: true, rettelse: {rettet: '2026-03-01T00:00:00Z'}}),
+    +new Date('2026-03-01T00:00:00Z'));
+});
+
 // ---------------------------------------------------------------- analysernes regler på faste datoer
 
 // Et lille datasæt direkte på reglerne: data dækker fra 1. jan. 2026.
-const DK = {ugentligFra: '2026-01-01', fra: '2026-01-01', fraFor: new Map(), hentet: new Set(), forsteKoersel: new Date('2026-01-01T00:00:00Z')};
+const DKF = {ugentligFra: '2026-01-01', fra: '2026-01-01', fraFor: new Map(), hentet: new Set(), forsteKoersel: new Date('2026-01-01T00:00:00Z')};
 const arr = (start, ekstra = {}) => ({id: start, navn: `Arr. ${start}`, foreninger: ['X'], startD: new Date(start), slutD: new Date(start),
   firstD: new Date('2026-01-01T00:00:00Z'), aflyst: false, forsvundet: false, ...ekstra});
-const Q12 = [arr('2026-02-01T18:00:00Z'), arr('2026-05-01T18:00:00Z')];
+const HALVAAR = [arr('2026-02-01T18:00:00Z'), arr('2026-05-01T18:00:00Z')];
 /** @param {any[]} events @param {string} nu */
-const risiko = (events, nu, {facebook = true, daekning = DK} = {}) => {
+const risiko = (events, nu, {facebook = true, daekning = DKF} = {}) => {
   const d = new Date(nu), a = R.aktivitet(events, 'X', daekning, d);
-  return R.hbRisiko(a, R.hbPrognose(a, facebook, d), d);
+  return R.hbRisikoDetaljer(a, facebook, d);
 };
 
 test('HB-risiko: niveau og spand efter dage tilbage af kvartalet', () => {
   const kort = r => [r.niveau, r.spand, r.dage];
   // Intet afholdt eller planlagt i Q3 (sidste dag 30. sep.).
-  assert.deepEqual(kort(risiko(Q12, '2026-09-16T10:00:00Z')), ['kritisk', 'handle', 14]);
-  assert.deepEqual(kort(risiko(Q12, '2026-09-15T22:30:00Z')), ['kritisk', 'handle', 14], 'dansk tid: allerede 16. sep.');
-  assert.deepEqual(kort(risiko(Q12, '2026-09-15T10:00:00Z')), ['advarsel', 'handle', 15]);
-  assert.deepEqual(kort(risiko(Q12, '2026-08-16T10:00:00Z')), ['advarsel', 'handle', 45]);
-  assert.deepEqual(kort(risiko(Q12, '2026-08-15T10:00:00Z')), ['opmaerksom', 'hold', 46]);
+  assert.deepEqual(kort(risiko(HALVAAR, '2026-09-16T10:00:00Z')), ['kritisk', 'handle', 14]);
+  assert.deepEqual(kort(risiko(HALVAAR, '2026-09-15T22:30:00Z')), ['kritisk', 'handle', 14], 'dansk tid: allerede 16. sep.');
+  assert.deepEqual(kort(risiko(HALVAAR, '2026-09-15T10:00:00Z')), ['advarsel', 'handle', 15]);
+  assert.deepEqual(kort(risiko(HALVAAR, '2026-08-16T10:00:00Z')), ['advarsel', 'handle', 45]);
+  assert.deepEqual(kort(risiko(HALVAAR, '2026-08-15T10:00:00Z')), ['opmaerksom', 'hold', 46]);
   // Kun reddet af et planlagt arrangement.
-  const plan = [...Q12, arr('2026-09-25T17:00:00Z')];
+  const plan = [...HALVAAR, arr('2026-09-25T17:00:00Z')];
   assert.deepEqual(kort(risiko(plan, '2026-09-09T10:00:00Z')), ['advarsel', 'planlagt', 21]);
   assert.deepEqual(kort(risiko(plan, '2026-09-08T10:00:00Z')), ['opmaerksom', 'hold', 22]);
   const r = risiko(plan, '2026-09-20T10:00:00Z');
@@ -140,18 +206,18 @@ test('HB-risiko: niveau og spand efter dage tilbage af kvartalet', () => {
 });
 
 test('HB-risiko: i hus, tabt, ukendt og det næste kvartal', () => {
-  const s = risiko([...Q12, arr('2026-09-01T17:00:00Z'), arr('2026-10-10T17:00:00Z'), arr('2027-01-10T17:00:00Z')], '2026-09-20T10:00:00Z');
+  const s = risiko([...HALVAAR, arr('2026-09-01T17:00:00Z'), arr('2026-10-10T17:00:00Z'), arr('2027-01-10T17:00:00Z')], '2026-09-20T10:00:00Z');
   assert.deepEqual([s.niveau, s.spand, s.afholdt.length, s.naesteKv.length], ['sikret', 'sikret', 1, 1]);
   // Q4: intet næste kvartal samme år.
-  const q4 = risiko([...Q12, arr('2026-08-01T17:00:00Z'), arr('2027-01-10T17:00:00Z')], '2026-12-20T10:00:00Z');
+  const q4 = risiko([...HALVAAR, arr('2026-08-01T17:00:00Z'), arr('2027-01-10T17:00:00Z')], '2026-12-20T10:00:00Z');
   assert.deepEqual([q4.kvartal, q4.niveau, q4.dage, q4.naesteKv.length], ['Q4', 'kritisk', 11, 0]);
   // Et afsluttet kvartal uden afholdt arrangement: tabt, også selvom det indeværende er i hus.
-  const t = risiko([Q12[0], arr('2026-09-01T17:00:00Z')], '2026-09-20T10:00:00Z');
+  const t = risiko([HALVAAR[0], arr('2026-09-01T17:00:00Z')], '2026-09-20T10:00:00Z');
   assert.deepEqual([t.niveau, t.spand, t.tabte], ['tabt', 'tabt', ['Q2']]);
   // Uden Facebook-side og intet i kvartalet: kan ikke vurderes.
-  assert.equal(risiko(Q12, '2026-09-20T10:00:00Z', {facebook: false}).niveau, 'ukendt');
+  assert.equal(risiko(HALVAAR, '2026-09-20T10:00:00Z', {facebook: false}).niveau, 'ukendt');
   // Data dækker først fra maj: Q1 er ukendt, men Q3 i hus.
-  const u = risiko([Q12[1], arr('2026-09-01T17:00:00Z')], '2026-09-20T10:00:00Z', {daekning: {...DK, ugentligFra: '2026-05-01'}});
+  const u = risiko([HALVAAR[1], arr('2026-09-01T17:00:00Z')], '2026-09-20T10:00:00Z', {daekning: {...DKF, ugentligFra: '2026-05-01'}});
   assert.deepEqual([u.niveau, u.ukendte], ['sikret', ['Q1']]);
 });
 
@@ -179,7 +245,7 @@ test('hvide pletter: aktivitet pr. kommune i foreningens område (12 mdr.)', () 
   assert.deepEqual([k(O, 'Odense', 'egneAfholdt'), k(O, 'Svendborg', 'egneAfholdt'), k(O, 'Aarhus', 'hvidPlet'), f(O, 'Aarhus', 'hvidePletter')], [1, 1, true, 1]);
   assert.deepEqual(ids(koer(O, {type: 'Kommune', filtre: [{egenskab: 'hvidPlet', er: [true]}]})), ['Aarhus']);
   // Et arrangement i en kommune uden for området.
-  const u = R.kommuneAktivitet(R.aktivitet([arr('2026-09-01T17:00:00Z', {kommune: 'Aalborg'})], 'X', DK, NU), ['Odense'], NU);
+  const u = R.kommuneAktivitet(R.aktivitet([arr('2026-09-01T17:00:00Z', {kommune: 'Aalborg'})], 'X', DKF, NU), ['Odense'], NU);
   assert.deepEqual([u.udenfor, u.ukendt, u.kommuner.get('Odense')], [1, 0, {afholdt: 0, planlagt: 0}]);
 });
 
@@ -188,7 +254,7 @@ test('"Hvad virker?": median, starttid og varsel', () => {
   // Dansk tid: sommertid (UTC+2) og vintertid (UTC+1).
   assert.deepEqual(['2026-09-20T09:59:00Z', '2026-09-20T10:00:00Z', '2026-09-20T15:00:00Z', '2026-09-20T17:00:00Z', '2026-12-01T17:30:00Z']
     .map(t => R.starttid(new Date(t))), ['foer12', 'kl12', 'kl17', 'kl19', 'kl17']);
-  const fk = DK.forsteKoersel, ny = {historisk: false, manuel: false, firstD: new Date('2026-03-01T12:00:00Z')};
+  const fk = DKF.forsteKoersel, ny = {historisk: false, manuel: false, firstD: new Date('2026-03-01T12:00:00Z')};
   assert.equal(R.varselDage(arr('2026-03-10T12:00:00Z', ny), fk), 9);
   assert.equal(R.varselGruppe(R.varselDage(arr('2026-03-10T12:00:00Z', ny), fk)), 'd7');
   assert.equal(R.varselDage(arr('2026-02-20T12:00:00Z', ny), fk), null, 'opdaget efter, det fandt sted');
@@ -199,7 +265,7 @@ test('"Hvad virker?": median, starttid og varsel', () => {
 test('"Hvad virker?": normalt niveau, indeks og markant flere deltagere', () => {
   const lokale = new Set(['X', 'Y']);
   const a = R.aktivitet([arr('2026-06-01T17:00:00Z', {deltager: 10}), arr('2026-07-01T17:00:00Z', {deltager: 20, foreninger: ['Landsforeningen', 'X']}),
-    arr('2026-08-01T17:00:00Z', {deltager: 30, foreninger: ['Y', 'X']}), arr('2026-08-15T17:00:00Z', {deltager: null})], 'X', DK, NU);
+    arr('2026-08-01T17:00:00Z', {deltager: 30, foreninger: ['Y', 'X']}), arr('2026-08-15T17:00:00Z', {deltager: null})], 'X', DKF, NU);
   // Hvert arrangement tæller kun hos den første lokalforening blandt arrangørerne; landsforeningen får alle sine.
   assert.equal(R.afholdteMed(a, 'X', false, 'deltager', lokale).length, 2);
   assert.equal(R.afholdteMed(a, 'X', true, 'deltager', lokale).length, 3);
@@ -211,7 +277,7 @@ test('"Hvad virker?": normalt niveau, indeks og markant flere deltagere', () => 
 
   // Markant flere: 30 mod normalt 10 (tre andre); et planlagt med 40 på Facebook er større; fremmøde går forud.
   const tre = ['2026-05-01', '2026-06-01', '2026-07-01'].map(d => arr(`${d}T17:00:00Z`, {deltager: 10, fremmoede: 8}));
-  const med = (evs, nu = NU) => { const x = R.aktivitet(evs, 'X', DK, nu); return R.rekord(x, m => R.afholdteMed(x, 'X', false, m, lokale), nu); };
+  const med = (evs, nu = NU) => { const x = R.aktivitet(evs, 'X', DKF, nu); return R.rekord(x, m => R.afholdteMed(x, 'X', false, m, lokale), nu); };
   const r1 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 30})]);
   assert.deepEqual([r1.maal, r1.x, r1.m, r1.gange, r1.afholdt], ['deltager', 30, 10, 3, true]);
   const r2 = med([...tre, arr('2026-09-20T17:00:00Z', {deltager: 30}), arr('2026-10-10T17:00:00Z', {deltager: 40})]);

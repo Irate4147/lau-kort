@@ -1596,7 +1596,7 @@ function renderLegend() {
  *   'afholdt'       bekræftet afholdt (eller finder sted), også selvom Facebook siger aflyst/fjernet
  *   'ikke_afholdt'  blev ikke til noget (tælles som aflyst)
  *   'skjult'        ikke et LAU-arrangement / dublet – fjernes helt
- * manuel: true er et arrangement, der ikke ligger på Facebook (id 'm-…'). scripts/hb.py anvender samme regler.
+ * manuel: true er et arrangement, der ikke ligger på Facebook (id 'm-…'). scripts/hb.py, rapport.py og kalender.py bruger samme regel via kernen (scripts/kerne.js).
  * Lagring: krypteret i repoet via adminserveren (ses af alle admins), ellers kun i denne browser.
  */
 const RET = {repo: {}, lokal: {}, data: {}};

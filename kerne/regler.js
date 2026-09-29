@@ -1,9 +1,8 @@
-// Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse og momentum – og analysernes regler
-// (HB-risiko, hvide pletter og "Hvad virker?"), så de kun står ét sted. Rene funktioner: "nu" gives altid med.
-// app.js og udvidelserne har ingen egne kopier; test/app.test.js og test/analyser.test.js sikrer, at flytningen hertil
-// ikke ændrede noget.
+// Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse, HB-risiko og momentum – og analysernes
+// regler (hvide pletter og "Hvad virker?"). Reglerne findes kun her: siden og udvidelserne bruger dem via lau.js og
+// objektlageret, og scripts/hb.py, rapport.py og kalender.py via scripts/kerne.js. Rene funktioner: "nu" gives altid med.
 
-import {DAG, dagNoegle, dagPlus, dageMellem, fmtDato, hbAar, kalenderdage, omEtKvartal, time} from './tid.js';
+import {DAG, dagNoegle, dagPlus, dageMellem, fmtDato, hbAar, kalenderdage, kvartaler, omEtKvartal, time} from './tid.js';
 
 // ---------------------------------------------------------------- kategori og status for et arrangement
 
@@ -38,7 +37,7 @@ export function arrStatus(e, nu) {
 // ---------------------------------------------------------------- rettelser
 
 /**
- * Anvender brugernes rettelser på de hentede arrangementer (samme regler som app.js og scripts/hb.py).
+ * Anvender brugernes rettelser på de hentede arrangementer (siden og scripts/kerne.js).
  * Rettelser: {"<id>": {status?, navn?, forening?, start?, slut?, sted?, deltagere?, note?, manuel?, rettet}}.
  * @param {any[]} events kopier – ændres
  * @param {Record<string, any>} rettelser
@@ -83,7 +82,7 @@ export const HISTORIK_LOFT = 20;
 export const fbSider = f => [f.facebook, ...(f.facebook_ekstra || []).map(e => (typeof e === 'string' ? e : e.url))].filter(Boolean);
 
 /**
- * Beregnes på de hentede data uden rettelser – som load() i app.js og scripts/hb.py.
+ * Beregnes på de hentede data uden rettelser (i app.js og scripts/kerne.js).
  * @param {any} meta data/meta.json @param {any[]} events data/events.json @param {any[]} foreninger data/foreninger.json
  * @param {Date} nu
  * @returns {Daekning}
@@ -170,12 +169,18 @@ export function kvartalStatus(antal, facebook, k, daekketFraDag) {
 
 // ---------------------------------------------------------------- HB-godkendelse
 
+/** Ligger arrangementet (dets startdag i dansk tid) i kvartalet? @param {any} e @param {{fra: string, til: string}} k */
+export function iKvartal(e, k) {
+  const d = dagNoegle(e.startD);
+  return d >= k.fra && d < k.til;
+}
+
 /**
  * Kvartalets status for HB-kravet: ja / planlagt / mangler (kvartalet er ikke slut) / nej / ukendt (ingen data).
  * @param {Aktivitet} a @param {boolean} facebook @param {{fra: string, til: string}} k @param {Date} nu
  */
 export function hbKvartal(a, facebook, k, nu) {
-  const i = e => { const d = dagNoegle(e.startD); return d >= k.fra && d < k.til; };
+  const i = e => iKvartal(e, k);
   if (a.afholdt.some(i)) return 'ja';
   if (a.planlagt.some(i)) return 'planlagt';
   if (!facebook || k.fra < a.daekketFra) return 'ukendt';
@@ -184,12 +189,15 @@ export function hbKvartal(a, facebook, k, nu) {
 
 /**
  * HB-prognosen: plus_naeste / alle / planlagt_nu / mangler_nu / ikke / ukendt – og status pr. kvartal.
- * @param {Aktivitet} a @param {boolean} facebook @param {Date} nu
+ * aar er det kalenderår, hvis kvartaler vurderes (standard: året for nu). Et andet år regnes som afsluttet: alle fire
+ * kvartaler er "tidligere" (scripts/hb.py ÅR).
+ * @param {Aktivitet} a @param {boolean} facebook @param {Date} nu @param {number} [aar]
  */
-export function hbPrognose(a, facebook, nu) {
-  const hb = hbAar(nu);
-  const s = hb.kvartaler.map(k => hbKvartal(a, facebook, k, nu)), foer = s.slice(0, hb.nuIndeks), nuS = s[hb.nuIndeks];
-  const kvartaler = Object.fromEntries(hb.kvartaler.map((k, i) => [k.id, s[i]]));
+export function hbPrognose(a, facebook, nu, aar) {
+  const hb = hbAar(nu), detteAar = aar == null || aar === hb.aar - 1;
+  const ks = detteAar ? hb.kvartaler : kvartaler(aar), nuIndeks = detteAar ? hb.nuIndeks : ks.length;
+  const s = ks.map(k => hbKvartal(a, facebook, k, nu)), foer = s.slice(0, nuIndeks), nuS = s[nuIndeks] ?? 'ja';
+  const kvartalerS = Object.fromEntries(ks.map((k, i) => [k.id, s[i]]));
   let status;
   if (foer.includes('nej')) status = 'ikke';
   else if (foer.includes('ukendt') || nuS === 'ukendt') status = 'ukendt';
@@ -199,14 +207,45 @@ export function hbPrognose(a, facebook, nu) {
     const naeste = a.planlagt.some(e => { const d = dagNoegle(e.startD); return d >= hb.naeste.fra && d < hb.naeste.til; });
     status = naeste ? 'plus_naeste' : 'alle';
   }
-  return {status, kvartaler, aar: hb.aar};
+  return {status, kvartaler: kvartalerS, aar: detteAar ? hb.aar : aar + 1};
 }
 
-// ---------------------------------------------------------------- HB-risiko: hvem skal handle i det indeværende kvartal?
+// ---------------------------------------------------------------- HB-risiko: skal foreningen gøre noget i dette kvartal?
 
-// Dage tilbage af kvartalet (d), hvor intet afholdt eller planlagt er kritisk / en advarsel, og hvor et kvartal, der
-// kun reddes af planlagte arrangementer, er en advarsel. Se README: HB-risiko.
-export const HB_RISIKO = {KRITISK_DAGE: 14, ADVARSEL_DAGE: 45, PLANLAGT_DAGE: 21};
+// Grænserne for HB-risikoen (dage tilbage til kvartalets sidste dag). Se README: Analyser og advarsler.
+export const HB_RISIKO_GRAENSE = {kritiskDage: 14, advarselMinDage: 45, planlagtDage: 21};
+
+/**
+ * Risikoniveau for det indeværende HB-kvartal: kritisk / advarsel / opmaerksom / ukendt / tabt / sikret.
+ * Intet afholdt eller planlagt: kritisk (≤ 14 dage tilbage), advarsel (≤ 45) ellers opmaerksom. Kun planlagt: advarsel
+ * (≤ 21), ellers opmaerksom. tabt: et afsluttet kvartal er uden afholdt arrangement (kan ikke godkendes).
+ * @param {string} status kvartalets hbKvartal()-status @param {number} dage kalenderdage til kvartalets sidste dag
+ * @param {boolean} tabt
+ */
+export function hbRisikoNiveau(status, dage, tabt) {
+  const G = HB_RISIKO_GRAENSE;
+  if (tabt) return 'tabt';
+  if (status === 'ja') return 'sikret';
+  if (status === 'planlagt') return dage <= G.planlagtDage ? 'advarsel' : 'opmaerksom';
+  if (status === 'mangler') return dage <= G.kritiskDage ? 'kritisk' : dage <= G.advarselMinDage ? 'advarsel' : 'opmaerksom';
+  return 'ukendt';
+}
+
+/**
+ * HB-risikoen for det indeværende kvartal: niveau, kvartal ('Q1' …), sidsteDag (YYYY-MM-DD), dage (kalenderdage dertil),
+ * kvartalets status, tabte (afsluttede kvartaler med 'nej') og kvartalets afholdte og planlagte arrangementer.
+ * @param {Aktivitet} a @param {boolean} facebook @param {Date} nu
+ */
+export function hbRisiko(a, facebook, nu) {
+  const hb = hbAar(nu), k = hb.kvartaler[hb.nuIndeks];
+  const s = hb.kvartaler.map(q => hbKvartal(a, facebook, q, nu)), status = s[hb.nuIndeks];
+  const sidsteDag = dagPlus(k.til, -1), dage = kalenderdage(dagNoegle(nu), sidsteDag);
+  const tabte = hb.kvartaler.slice(0, hb.nuIndeks).filter((_, i) => s[i] === 'nej').map(q => q.id);
+  return {niveau: hbRisikoNiveau(status, dage, tabte.length > 0), kvartal: k.id, sidsteDag, dage, status, tabte,
+    afholdt: a.afholdt.filter(e => iKvartal(e, k)), planlagt: a.planlagt.filter(e => iKvartal(e, k))};
+}
+
+// Visningsnavne til ontologien (kerne/lau.js): niveauet og grupperne i analysen "HB-risiko" i den rækkefølge, man skal handle.
 export const HB_RISIKO_NIVEAUER = {
   kritisk: 'Kritisk – intet afholdt eller planlagt, og kvartalet slutter snart',
   advarsel: 'Advarsel – intet afholdt, og kort tid tilbage',
@@ -215,52 +254,32 @@ export const HB_RISIKO_NIVEAUER = {
   tabt: 'Kan ikke HB-godkendes (et afsluttet kvartal uden afholdt arrangement)',
   ukendt: 'Mangler data for kvartalet',
 };
-// Grupperne i analysen "HB-risiko", i den rækkefølge man skal handle.
 export const HB_RISIKO_SPANDE = {
   handle: 'Skal afholde et arrangement', planlagt: 'Afhænger af et planlagt arrangement', hold: 'Hold øje – god tid endnu',
   sikret: 'I hus for kvartalet', tabt: 'Kan ikke godkendes', ukendt: 'Mangler data',
 };
 
 /**
- * @typedef {object} HbRisiko
- * @property {string} niveau    kritisk / advarsel / opmaerksom / sikret / tabt / ukendt (HB_RISIKO_NIVEAUER)
- * @property {string} spand     handle / planlagt / hold / sikret / tabt / ukendt (HB_RISIKO_SPANDE)
- * @property {string} kvartal   det indeværende kvartal ('Q1' … 'Q4')
- * @property {string} status    kvartalets HB-status (hbKvartal): ja / planlagt / mangler / nej / ukendt
- * @property {string} sidsteDag kvartalets sidste dag (YYYY-MM-DD) – fristen
- * @property {number} dage      kalenderdage fra i dag til kvartalets sidste dag
- * @property {any[]} afholdt    afholdte i kvartalet
- * @property {any[]} planlagt   planlagte i kvartalet
- * @property {any[]} naesteKv   planlagte i det næste kvartal samme år (tomt i Q4)
- * @property {string[]} tabte   afsluttede kvartaler uden afholdt arrangement
- * @property {string[]} ukendte afsluttede kvartaler uden data
+ * Gruppen i analysen "HB-risiko": handle (kritisk/advarsel uden noget i kalenderen), planlagt (advarsel, kvartalet
+ * reddes kun af planlagte), hold (opmaerksom), sikret, tabt eller ukendt.
+ * @param {string} niveau hbRisikoNiveau() @param {string} status kvartalets hbKvartal()-status
  */
+export function hbRisikoSpand(niveau, status) {
+  if (niveau === 'kritisk') return 'handle';
+  if (niveau === 'advarsel') return status === 'planlagt' ? 'planlagt' : 'handle';
+  if (niveau === 'opmaerksom') return 'hold';
+  return niveau;
+}
 
 /**
- * Risikoen for, at foreningen mister HB-godkendelsen på grund af det indeværende kvartal. Bruges af analysen og
- * advarslerne (udvidelser/hb-risiko.js) og månedsrapportens "Fremad".
- * @param {Aktivitet} a @param {{kvartaler: Record<string, string>}} hb hbPrognose() @param {Date} nu @returns {HbRisiko}
+ * hbRisiko() med det, analysen og advarslerne (udvidelser/hb-risiko.js) også bruger: spand (hbRisikoSpand), ukendte
+ * (afsluttede kvartaler uden data) og naesteKv (planlagte i det næste kvartal samme år – tomt i Q4).
+ * @param {Aktivitet} a @param {boolean} facebook @param {Date} nu
  */
-export function hbRisiko(a, hb, nu) {
-  const aar = hbAar(nu), kv = aar.kvartaler[aar.nuIndeks], naeste = aar.kvartaler[aar.nuIndeks + 1] || null;
-  const i = k => e => { const d = dagNoegle(e.startD); return d >= k.fra && d < k.til; };
-  const sidsteDag = dagPlus(kv.til, -1), dage = kalenderdage(dagNoegle(nu), sidsteDag), status = hb.kvartaler[kv.id];
-  const foer = aar.kvartaler.slice(0, aar.nuIndeks);
-  const tabte = foer.filter(k => hb.kvartaler[k.id] === 'nej').map(k => k.id);
-  const ukendte = foer.filter(k => hb.kvartaler[k.id] === 'ukendt').map(k => k.id);
-  const R = HB_RISIKO;
-  let niveau, spand;
-  if (tabte.length) niveau = spand = 'tabt';
-  else if (status === 'ja') niveau = spand = 'sikret';
-  else if (status === 'planlagt') {
-    niveau = dage <= R.PLANLAGT_DAGE ? 'advarsel' : 'opmaerksom';
-    spand = niveau === 'advarsel' ? 'planlagt' : 'hold';
-  } else if (status === 'mangler') {
-    niveau = dage <= R.KRITISK_DAGE ? 'kritisk' : dage <= R.ADVARSEL_DAGE ? 'advarsel' : 'opmaerksom';
-    spand = niveau === 'opmaerksom' ? 'hold' : 'handle';
-  } else niveau = spand = 'ukendt';
-  return {niveau, spand, kvartal: kv.id, status, sidsteDag, dage, afholdt: a.afholdt.filter(i(kv)), planlagt: a.planlagt.filter(i(kv)),
-    naesteKv: naeste ? a.planlagt.filter(i(naeste)) : [], tabte, ukendte};
+export function hbRisikoDetaljer(a, facebook, nu) {
+  const r = hbRisiko(a, facebook, nu), hb = hbAar(nu), naeste = hb.kvartaler[hb.nuIndeks + 1] || null;
+  const ukendte = hb.kvartaler.slice(0, hb.nuIndeks).filter(k => hbKvartal(a, facebook, k, nu) === 'ukendt').map(k => k.id);
+  return {...r, spand: hbRisikoSpand(r.niveau, r.status), ukendte, naesteKv: naeste ? a.planlagt.filter(e => iKvartal(e, naeste)) : []};
 }
 
 // ---------------------------------------------------------------- hvide pletter: kommuner uden aktivitet
@@ -439,6 +458,28 @@ export function momentum(a, facebook, nu) {
     if (aflyst) signaler.push(['-', `${aflyst} aflyst de seneste 3 måneder`]);
   }
   return {niveau, grund, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler};
+}
+
+// ---------------------------------------------------------------- hvad vidste vi dengang? (månedsrapportens snapshots)
+
+/** Hvornår arrangementet blev kendt: set på Facebook første gang – for manuelle, da rettelsen blev lavet. @param {any} e */
+export const kendtFra = e => new Date(e.foerst_set || (e.rettelse && e.rettelse.rettet) || e.start);
+
+/**
+ * Arrangementet, som det så ud på tidspunktet tid (til rekonstruerede snapshots) – null, hvis det ikke var kendt endnu.
+ * Afholdte (slut før tid) er, som vi kender dem nu. Kommende tæller kun, hvis de var set på Facebook (foerst_set);
+ * aflysninger fra Facebook og forsvundne arrangementer regnes som sket efter tid, medmindre en rettelse ("ikke afholdt",
+ * rettet senest tid) eller sidst_set siger andet.
+ * @param {any} e forberedt arrangement (startD, slutD og rettelse sat) @param {Date} tid
+ */
+export function tilstandVed(e, tid) {
+  if (e.slutD < tid) return e;
+  if (kendtFra(e) > tid) return null;
+  const r = e.rettelse;
+  // En rettelse "ikke afholdt" uden tidsstempel regnes som altid kendt.
+  const aflystRettet = r && r.status === 'ikke_afholdt' ? (r.rettet ? new Date(r.rettet) : new Date(-8.64e15)) : null;
+  return {...e, aflyst: !!e.aflyst && !!aflystRettet && aflystRettet <= tid,
+    forsvundet: !!e.forsvundet && !!e.sidst_set && new Date(e.sidst_set) < tid};
 }
 
 /**

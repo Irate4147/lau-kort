@@ -7,7 +7,7 @@
 
 import {Ontologi} from './ontologi.js';
 import {afholdteMed, aktivitet, aktivitetsStatus, arrStatus, DELTAGER_MAAL, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose,
-  hbRisiko, kategori, kommuneAktivitet, median, momentum, MOMENTUM_NIVEAUER, normalniveau, rekord, starttid, STARTTID, varsel,
+  hbRisikoDetaljer, kategori, kommuneAktivitet, median, momentum, MOMENTUM_NIVEAUER, normalniveau, rekord, starttid, STARTTID, varsel,
   varselDage, varselGruppe, VARSEL_GRUPPER} from './regler.js';
 import {DAG, time, ugedag} from './tid.js';
 
@@ -85,7 +85,7 @@ export const LAU = new Ontologi({
           hint: 'Mindst ét afholdt arrangement i hvert kvartal (Organisationshåndbogen 8.2)',
           beregn: (f, L) => L.vaerdi(f, 'hbDetaljer')?.status ?? null},
         hbRisikoDetaljer: {label: 'HB-risiko (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
-          beregn: (f, L) => { const hb = L.vaerdi(f, 'hbDetaljer'); return hb ? hbRisiko(akt(f, L), hb, L.nu) : null; }},
+          beregn: (f, L) => (lokal(f) ? hbRisikoDetaljer(akt(f, L), harFb(f), L.nu) : null)},
         hbRisiko: {label: 'HB-risiko (indeværende kvartal)', type: 'kat', adgang: 'admin', vaerdier: HB_RISIKO_NIVEAUER,
           hint: 'Mangler et afholdt arrangement i kvartalet – og hvor lidt tid er der tilbage? Se README: HB-risiko',
           beregn: (f, L) => L.vaerdi(f, 'hbRisikoDetaljer')?.niveau ?? null},

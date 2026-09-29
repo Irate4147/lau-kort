@@ -8,12 +8,12 @@ TypeScript via JSDoc (`npm run typetjek`).
 |---|---|
 | `ontologi.js` | Frameworket: objekttyper, egenskaber, links, stier gennem links og adgang. Ved intet om LAU. |
 | `lau.js` | **LAU's ontologi**: Forening, Arrangement, Kommune, Person, Rolle og deres links. Her tilføjes nye egenskaber og typer. |
-| `regler.js` | Forretningsreglerne: kategorier, status, dækning, HB-godkendelse og momentum – og analysernes regler: HB-risiko, hvide pletter og "Hvad virker?". |
+| `regler.js` | Forretningsreglerne: kategorier, status, rettelser, dækning, HB-godkendelse, HB-risiko, momentum og "hvad vidste vi dengang" (månedsrapportens snapshots) – og analysernes regler (hvide pletter og "Hvad virker?"). Den eneste kopi – siden, udvidelserne og Python-scripts bruger den. |
 | `rapport.js` | Månedsrapporten for den indeværende måned: Bagud (`maanedIndtilNu`) og Fremad (`fremad`) – samme opbygning og tekster som `scripts/rapport.py`. |
 | `lager.js` | Objektlageret: objekter, links og beregnede egenskaber. Håndhæver adgang. |
 | `objektsaet.js` | Forespørgselssproget: filtrér, følg links (search around), gruppér, mål, bor ned. |
 | `kilder/json.js` | Adapter fra de nuværende JSON-filer. Fase 2: en Supabase-adapter med samme resultat. |
-| `tid.js` | Dansk tid, kvartaler og HB-året. |
+| `tid.js` | Dansk tid, kalenderdage, kvartaler og HB-året. |
 
 ## Sådan bruges den
 
@@ -36,6 +36,22 @@ I browseren ligger kernen på `window.LAU_KERNE` (indlæses i `index.html`). `ap
 objektlageret). Husk at hæve `?v=` i `index.html`, når kernen ændres: det gælder `kerne/index.js`, og de filer, den
 importerer, caches højst 10 minutter af GitHub Pages.
 
+### Fra Python (GitHub Actions)
+
+`scripts/hb.py`, `scripts/rapport.py` og `scripts/kalender.py` har ingen egne regler. De kalder `scripts/kerne.js` (via
+`scripts/kerne.py`) med data, rettelser og de tidspunkter, der skal beregnes, og får JSON tilbage:
+
+```sh
+echo '{"foreninger": […], "events": […], "meta": {…}, "rettelser": {…}, "nu": "2026-10-01T04:17:00Z",
+       "tidspunkter": [{"tid": "2026-09-01T00:00:00Z", "rekonstruer": true}]}' | node scripts/kerne.js
+# {"daekketFra": {…}, "arrangementer": [… med rettelser …],
+#  "tidspunkter": [{"foreninger": {"Fyn": {"afholdt": [id…], "planlagt": [id…], "momentum": {…}, "hb": {…}, "hbRisiko": {…}}}}]}
+```
+
+`rekonstruer: true` bruger `tilstandVed()`: kun det, der var kendt på tidspunktet (månedsrapportens snapshots). `hbAar`
+vurderer et andet års kvartaler (`hb.py ÅR`). Formatet står øverst i `scripts/kerne.js`. Workflowene sætter Node 22 op
+og kører `npm ci`, før scriptene kører.
+
 ## Analysernes egenskaber
 
 Analyserne i `udvidelser/` læser deres regler herfra (`DATA.lager.vaerdi(o, id)`), så de samme værdier også kan bruges i
@@ -44,9 +60,9 @@ analysebyggeren, filtre, grupperinger og på kortet. Alle er `adgang: 'admin'`. 
 
 | Type | Egenskab | Indhold | Regel (`regler.js`) |
 |---|---|---|---|
-| Forening | `hbRisiko` (kat) | HB-risiko i det indeværende kvartal: kritisk, advarsel, opmaerksom, sikret, tabt, ukendt (kun lokalforeninger) | `hbRisiko`, `HB_RISIKO` |
-| Forening | `hbRisikoSpand` (kat) | Hvad der skal gøres: handle, planlagt, hold, sikret, tabt, ukendt | `hbRisiko` |
-| Forening | `hbRisikoDetaljer` (objekt) | `{niveau, spand, kvartal, status, sidsteDag, dage, afholdt, planlagt, naesteKv, tabte, ukendte}` | `hbRisiko` |
+| Forening | `hbRisiko` (kat) | HB-risiko i det indeværende kvartal: kritisk, advarsel, opmaerksom, sikret, tabt, ukendt (kun lokalforeninger) | `hbRisiko`, `hbRisikoNiveau`, `HB_RISIKO_GRAENSE` |
+| Forening | `hbRisikoSpand` (kat) | Hvad der skal gøres: handle, planlagt, hold, sikret, tabt, ukendt | `hbRisikoSpand` |
+| Forening | `hbRisikoDetaljer` (objekt) | `{niveau, spand, kvartal, status, sidsteDag, dage, afholdt, planlagt, naesteKv, tabte, ukendte}` | `hbRisikoDetaljer` |
 | Forening | `hvidePletter` (tal) | Kommuner i området uden aktivitet de seneste 12 mdr. (kun lokalforeninger med Facebook-side) | `kommuneAktivitet` |
 | Forening | `kommuneAktivitet` (objekt) | `{kommuner: Map(navn → {afholdt, planlagt}), ukendt, udenfor}` | `kommuneAktivitet`, `HVIDE_PLETTER` |
 | Kommune | `hvidPlet` (bool) | Områdets lokalforening har hverken afholdt (12 mdr.) eller planlagt noget i kommunen; null, hvis foreningen ikke er med | `kommuneAktivitet` |
@@ -59,7 +75,7 @@ analysebyggeren, filtre, grupperinger og på kortet. Alle er `adgang: 'admin'`. 
 | Arrangement | `varselGruppe` (kat) | Varsel under 7, 7–13, 14–27 eller 28+ dage (kun opdaget før afholdelse) | `varselDage`, `varselGruppe` |
 
 Fx lokalforeninger, der skal afholde et arrangement nu: `{type: 'Forening', filtre: [{egenskab: 'hbRisikoSpand', er: ['handle']}]}`;
-hvide pletter i Jylland: `{type: 'Kommune', filtre: [{egenskab: 'hvidPlet', er: [true]}], gruppering: {egenskab: 'forening.navn'}}`.
+hvide pletter pr. forening: `{type: 'Kommune', filtre: [{egenskab: 'hvidPlet', er: [true]}], gruppering: {egenskab: 'forening.navn'}}`.
 
 ## Tilføj en egenskab
 
@@ -79,6 +95,8 @@ på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `d
 `npm run tjek` kører typetjek og tests (også i GitHub Actions ved hver pull request):
 
 - `test/kerne.test.js` – kernen på et lille, fast datasæt, også analysernes regler på faste datoer.
+- `test/scripts.test.js` – `scripts/kerne.js` skal give det samme som facit (siden) på alle datoer, og `scripts/hb.py` og
+  `scripts/rapport.py` (køres uden `ADMIN_KODE`) skal bruge kernens resultat uændret (springes over uden `python3`).
 - `test/app.test.js` – hele `app.js` (der bruger kernen) køres på frosne data (`test/fixtures/data/`) på seks datoer og
   skal give præcis det samme som facit (`test/fixtures/golden.json`). Facit blev lavet med `app.js`, før reglerne blev
   flyttet til kernen, så det beviser, at flytningen ikke ændrede noget. Ændres en regel **bevidst**, laves nyt facit med

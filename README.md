@@ -71,13 +71,13 @@ Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på
 
 (plus "historik mangler", når intet er afholdt, og data højst dækker 45 dage.) Advarslerne forklarer niveauet: dage siden sidste, antal af 3 de seneste 3 måneder, kalenderen, flere/færre end normalt og aflyste arrangementer.
 
-Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næste arrangement; grøn baggrund = inden for en måned, gul = 32–45 dage) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_VINDUE`, `MOM_MAAL`, `MOM_MAANED`, `MOM_HJAELP`, `MOM_FREMAD` og `MOM_NORMAL` i `app.js` (og samme konstanter i `scripts/rapport.py`).
+Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næste arrangement; grøn baggrund = inden for en måned, gul = 32–45 dage) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOMENTUM` i `kerne/regler.js` (`VINDUE`, `MAAL`, `MAANED`, `HJAELP`, `FREMAD` og `NORMAL`) – samme regel for siden og `scripts/rapport.py`.
 
 ## Rettelser af arrangementer
 
 Under fanen **Arrangementer** kan man rette det, Facebook ikke ved: bekræfte at et arrangement blev afholdt (✓ Afholdt), markere det som ikke afholdt, skjule dubletter/ikke-LAU-arrangementer, rette titel, dato, sted og forening, notere faktisk fremmøde – og tilføje arrangementer, der aldrig lå på Facebook.
 
-- Kun admins kan rette. Alle rettelser (`{"<id>": {status, navn, forening, start, slut, sted, deltagere, note, manuel, rettet}}`) ligger krypteret i `data/admin/rettelser.krypt.json` og går forud for de hentede data. `data/rettelser.json` er den offentlige del **uden `note` og `deltagere`** (skrives af `scripts/admin.py`), så det offentlige kort og kalenderne viser aflyste, skjulte, flyttede og manuelle arrangementer rigtigt. `scripts/sync.py` rører aldrig filerne; siden og `scripts/hb.py` anvender dem med samme regler.
+- Kun admins kan rette. Alle rettelser (`{"<id>": {status, navn, forening, start, slut, sted, deltagere, note, manuel, rettet}}`) ligger krypteret i `data/admin/rettelser.krypt.json` og går forud for de hentede data. `data/rettelser.json` er den offentlige del **uden `note` og `deltagere`** (skrives af `scripts/admin.py`), så det offentlige kort og kalenderne viser aflyste, skjulte, flyttede og manuelle arrangementer rigtigt. `scripts/sync.py` rører aldrig filerne; siden og scriptene (`hb.py`, `rapport.py`, `kalender.py`) anvender dem med kernens regel (`anvendRettelser()` i `kerne/regler.js`).
 - **Gem for alle:** går gennem LAU-serveren (`kalender-server/worker.js`, samme Cloudflare Worker som kalenderen), så admins hverken skal have en GitHub-konto eller et token – adminlogin'et er nok. Hver rettelse krypteres i browseren og committes af serveren direkte til `main`, og en push af filen starter "Beregn HB-prognose" (`.github/workflows/hb.yml`, ingen Apify), der skriver den offentlige del og beregner HB-prognosen igen. Er serveren ikke sat op, gemmes rettelserne kun i browseren.
 - **Sådan virker adgangen:** af adminkoden udledes en skrivenøgle (HMAC af nøglen); `data/admin/noegle.json` indeholder kun dens SHA-256 (`skriv`, skrevet af `scripts/admin.py klargoer`). Serveren committer kun for den, der kender skrivenøglen, og kun krypterede filer i `data/admin/` – GitHub-tokenet ligger alene som secret i Cloudflare. Skiftes adminkoden, virker den gamle skrivenøgle ikke længere.
 - **Opsætning (én gang):**
@@ -93,7 +93,7 @@ Under fanen **Arrangementer** kan man rette det, Facebook ikke ved: bekræfte at
 Alt om HB er fortroligt og kun for admins.
 
 - `data/admin/hb.krypt.json` (krypteret): kriterierne fra Organisationshåndbogen (8.2) og årets HB-status pr. forening (fra overblikket på Drive, og for de røde foreninger efter gennemgang af deres mappe). Ret den med `scripts/admin.py dekrypter hb` → ret `privat/hb.json` → `scripts/admin.py krypter hb` (se "Adminlogin").
-- `scripts/hb.py [ÅR]` (kræver `ADMIN_KODE`) sammenholder `data/events.json` med kvartalskravet (mindst ét afholdt arrangement pr. kvartal; om det er fagligt, vurderes ikke) og skriver `data/admin/hb_<ÅR+1>.krypt.json` med status pr. kvartal (`ja`, `nej`, `ukendt`, `planlagt`, `mangler`), en prognose og begrundelser. Kører automatisk efter den ugentlige sync.
+- `scripts/hb.py [ÅR]` (kræver `ADMIN_KODE`) sammenholder `data/events.json` med kvartalskravet (mindst ét afholdt arrangement pr. kvartal; om det er fagligt, vurderes ikke) og skriver `data/admin/hb_<ÅR+1>.krypt.json` med status pr. kvartal (`ja`, `nej`, `ukendt`, `planlagt`, `mangler`), en prognose og begrundelser. Kører automatisk efter den ugentlige sync. Reglerne er kernens (`hbKvartal()`/`hbPrognose()` i `kerne/regler.js`, de samme som siden): scriptet læser og krypterer filerne og kalder kernen med Node (`scripts/kerne.js`, se [Python-scripts og kernen](#python-scripts-og-kernen)). Et arrangement tæller som afholdt, når det er slut. I filen hedder prognoserne `alle_plus_naeste` og `ikke_godkendt` (på siden `plus_naeste` og `ikke`).
   Et kvartal bliver kun `nej`, når data dækker hele kvartalet (se `data_fra`, pr. forening: historikken tæller kun, hvor hentningen lykkedes, og ramte den loftet på 20 begivenheder, kun fra den ældste hentede), så manglende historik giver `ukendt` i stedet for et forkert nej.
 - Fanen **HB**: farv kortet efter HB-godkendelse, skravér de foreninger magenta, der ikke kan godkendes (oven på enhver farvning), antal pr. kategori og en tabel med status pr. kvartal for hver forening. Kategorierne (bedst først):
   1. aktivitet i alle kvartaler indtil nu inkl. det indeværende + planlagt arrangement i næste kvartal
@@ -102,7 +102,7 @@ Alt om HB er fortroligt og kun for admins.
   4. aktivitet i alle tidligere kvartaler; intet planlagt i det indeværende endnu
   5. mangler aktivitet i et afsluttet kvartal – kan ikke godkendes
   
-  (plus "historik mangler", når data ikke dækker et kvartal). Siden beregner det selv med samme regel som `hb.py`, og foreningspanelet har en sektion med status pr. kvartal og årets HB-status.
+  (plus "historik mangler", når data ikke dækker et kvartal). Siden og `hb.py` bruger samme regel (kernen), og foreningspanelet har en sektion med status pr. kvartal og årets HB-status.
 
 ## Analyser og advarsler
 
@@ -131,7 +131,7 @@ Analyserne ligger i `udvidelser/` (se [Udvidelser](#udvidelser)). Deres **regler
   | Hold øje | som ovenfor, men der er god tid |
   | Tabt | et afsluttet kvartal er uden afholdt arrangement – kan ikke HB-godkendes (ingen advarsel) |
 
-  (plus "mangler data" og "i hus".) Kritiske og advarsler står i "Kræver handling nu" med korte titler som "Afhold et arrangement senest 30. sep." og "Q3 hviler på ét arrangement tirs. 29. sep." (højst én pr. forening, med kvartalets sidste dag som frist; i 4. kvartal er det også HB-fristen). Reglen er `hbRisiko()` i `kerne/regler.js` med grænserne i `HB_RISIKO`; i ontologien er den egenskaberne `hbRisiko` (niveauet) og `hbRisikoSpand` på Forening. Med teksterne kan den genbruges som `LAU.hbRisiko(f)` (`{niveau, spand, dage, frist, forklaring, advarsel, …}`, hvor `forklaring` er den korte sætning med handlingen).
+  (plus "mangler data" og "i hus".) Kritiske og advarsler står i "Kræver handling nu" med korte titler som "Afhold et arrangement senest 30. sep." og "Q3 hviler på ét arrangement tirs. 29. sep." (højst én pr. forening, med kvartalets sidste dag som frist; i 4. kvartal er det også HB-fristen). Reglen står i kernen: `hbRisiko()`/`hbRisikoDetaljer()` i `kerne/regler.js` med niveauet i `hbRisikoNiveau()` og grænserne i `HB_RISIKO_GRAENSE` (som `scripts/rapport.py` også bruger); i ontologien er den egenskaberne `hbRisiko` (niveauet) og `hbRisikoSpand` på Forening. Med teksterne kan den genbruges som `LAU.hbRisiko(f)` (`{niveau, spand, dage, frist, forklaring, advarsel, …}`, hvor `forklaring` er den korte sætning med handlingen).
 - **Kommuner uden aktivitet** (`udvidelser/hvide-pletter.js`) – kortlaget "Kommuner uden aktivitet (12 mdr.)" (Visninger → Kortet) skraverer okker de kommuner i en lokalforenings område, hvor foreningen hverken har afholdt arrangementer det seneste år eller har noget planlagt (via arrangementets kommune; aflyste og fjernede tæller ikke, landsforeningens heller ikke). Kendes medlemstallene (`medlemmer.krypt.json`), placeres hver by i sin kommune (punkt-i-polygon), og kommuner med medlemmer skraveres tættere med antallet. Analysen viser pr. forening kommunerne med og uden aktivitet og medlemmerne i dem uden, sorteret efter mest at hente; "Vis på kortet" slår laget til og zoomer ind på foreningen. Kun foreninger med Facebook-side er med. Arrangementer uden kendt sted (fx online) tæller ikke, men vises som "+ N uden kendt sted". Reglen er `kommuneAktivitet()` i `kerne/regler.js`; i ontologien er den `hvidPlet`, `egneAfholdt` og `egnePlanlagte` på Kommune og `hvidePletter` (antal) på Forening.
 - **Hvad virker?** (`udvidelser/hvad-virker.js`) – sammenligner afholdte arrangementer pr. type, ugedag, starttidspunkt (dansk tid) og varsel. Vælg målet øverst: **deltagere** på Facebook ("deltager", standard), **tilkendegivelser** ("deltager" + "interesseret") eller registreret **fremmøde** (noteret under Arrangementer). Lokalforeningerne og landsforeningen beregnes hver for sig. For at store foreninger ikke dominerer, måles hvert arrangement mod sin forenings median (indeks = tal ÷ median; kun foreninger med mindst 3 arrangementer), og hver gruppe vises med sit medianindeks og n. Grupper med under 5 arrangementer nedtones og indgår ikke i konklusionerne. Varsel måles kun for arrangementer, der er opdaget efter indsamlingens start (som "Varsel" i nøgletallene). Datagrundlaget er lille – brug det som pejlemærke, ikke facit. Reglerne står i `kerne/regler.js` (`HVAD_VIRKER`, `normalniveau`, `starttid`, `varselGruppe` …); i ontologien er de `normaltDeltagere` på Forening og `starttid`, `varselGruppe` og `deltagerIndeks` på Arrangement.
   **Markant flere deltagere end normalt** vises øverst i analysen og i den grønne boks **Godt gået** i oversigten og foreningspanelet: et arrangement i en lokalforening med mindst 1,5 × og 5 flere deltagere end medianen af foreningens andre afholdte arrangementer (mindst 3), afholdt de seneste 30 dage – eller planlagt de næste 14 dage med så mange tilmeldte på Facebook allerede ("På vej"). Registreret fremmøde går forud for Facebook, når det kan sammenlignes. Højst ét pr. forening; reglen er `rekord()` i `kerne/regler.js` med grænserne i `REKORD` (egenskaben `rekord` på Forening).
@@ -150,7 +150,7 @@ Hvad skal vi handle på nu – og hvad skete der i måneden? Rapporten for en m�
 **Fremad** – set fra rapportens tidspunkt: for en afsluttet måned den 1. i måneden efter, for "Denne måned indtil nu" i dag. Den ser 35 dage frem (`FREMAD_DAGE`):
 
 - **Risici – det skal der handles på**, sorteret efter alvor (kritisk, advarsel, hold øje) og samlet pr. forening, hver med en konkret handling:
-  - HB-kvartalet uden afholdt eller planlagt arrangement med dage tilbage – kritisk eller advarsel efter samme regler og grænser som [HB-risiko](#analyser-og-advarsler) (`HB_RISIKO` i `kerne/regler.js`);
+  - HB-kvartalet uden afholdt eller planlagt arrangement med dage tilbage – kritisk eller advarsel efter samme regler og grænser som [HB-risiko](#analyser-og-advarsler) (`hbRisiko()` i kernen);
   - kvartaler, der kun hænger på planlagte arrangementer, når kvartalet slutter inden for perioden (advarsel de sidste 21 dage, ellers hold øje);
   - [momentum](#momentum) "Brug for hjælp" (advarsel) og "Mister fart" (hold øje);
   - årsskiftet, når perioden rammer 31. december: hvor mange lokalforeninger der stadig mangler et afholdt arrangement i Q4 før HB-fristen.
@@ -160,17 +160,18 @@ For afsluttede måneder gemmes "Fremad" i rapporten (`"fremad"`) og **rekonstrue
 
 **Bagud** – hvad der skete i måneden: afholdte, aflyste/ikke afholdte, nye og fra Facebook forsvundne arrangementer, registreret fremmøde (fra rettelserne), højdepunkterne (faldet i momentum eller HB, uden afholdt aktivitet og nye aflysninger til venstre; forbedret til højre), fordelingen af momentum og HB-prognose ved start og slut og en tabel pr. forening med månedens arrangementer. Ved et nyt kvartal starter HB-prognosen forfra, så der tæller kun et skift til "kan ikke godkendes" som et fald.
 
-- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, afholdt de seneste 3 måneder og normalt niveau, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum, HB-prognose og HB-risiko beregnes med samme regler og konstanter som siden (`MOM_*`, `GRAENSE`, dækning og rettelser).
+- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, afholdt de seneste 3 måneder og normalt niveau, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum, HB-prognose, HB-risiko, dækning og rettelser beregnes af kernen (`kerne/regler.js`) – samme regler og grænser som siden; scriptet kalder den med Node (`scripts/kerne.js`) og samler kun rapporten.
 - **Rapporten** for en måned sammenligner månedens snapshot med den næste måneds (Bagud) og beregner Fremad pr. den 1. i måneden efter.
 - Alt ligger krypteret i `data/admin/rapporter.krypt.json` (`{"snapshots": {"ÅÅÅÅ-MM": …}, "rapporter": {"ÅÅÅÅ-MM": {"fremad": …, …}}}`). Filen skrives kun, når indholdet er ændret. Rapporter fra før "Fremad" fandtes, vises med en note; `python3 scripts/rapport.py alle` genberegner dem.
 - **Automatisk:** "Månedsrapport" (`.github/workflows/rapport.yml`) kører den 1. i måneden tidligt om morgenen; `sync.yml` og `hb.yml` kører også `rapport.py`, så rapporten for sidste måned kommer med nye rettelser og fremmøde. Manuelt: Actions → "Månedsrapport" → *Run workflow* med en måned (`ÅÅÅÅ-MM`) eller `alle`.
-- Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), **rekonstrueres** det ud fra data pr. den 1. og markeres `"rekonstrueret": true`: kun begivenheder, der var set på Facebook den dag (`foerst_set`), tæller som planlagte, og senere aflysninger og forsvundne begivenheder regnes som ikke sket endnu.
+- Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), **rekonstrueres** det ud fra data pr. den 1. og markeres `"rekonstrueret": true`: kun begivenheder, der var set på Facebook den dag (`foerst_set`), tæller som planlagte, og senere aflysninger og forsvundne begivenheder regnes som ikke sket endnu (`tilstandVed()` i kernen).
 - Analysen **Månedsrapport**: vælg måned (nyeste først) eller "Denne måned indtil nu", der beregnes i browseren og sammenlignes med månedens snapshot. Klik på en forening for at åbne den.
 
 Lokalt:
 
 ```sh
 export ADMIN_KODE='…'
+npm ci                                # én gang: scriptene kører kernens regler med Node 22
 python3 scripts/rapport.py            # snapshot af denne måned + rapport for sidste måned
 python3 scripts/rapport.py 2026-08    # genberegn en bestemt måned (indeværende måned: foreløbig)
 python3 scripts/rapport.py alle       # genberegn alle måneder, data dækker
@@ -182,6 +183,10 @@ python3 scripts/admin.py vis rapporter
 - **Foreninger, Facebook-sider og kommuner:** `data/foreninger.json`. Nye Facebook-sider skal også tilføjes i fanen "Foreninger" i regnearket, ellers bliver de ikke scrapet.
 - **Kort:** `geo/kommuner.topo.json` er DAWA's kommunegrænser, forenklet med mapshaper og påført en `forening`-egenskab.
 - Secrets `APIFY_TOKEN` og `ADMIN_KODE` (se "Adminlogin") skal være sat i repoets indstillinger.
+
+### Python-scripts og kernen
+
+Forretningsreglerne findes kun ét sted: i kernen (`kerne/regler.js`). `scripts/hb.py`, `scripts/rapport.py` og `scripts/kalender.py` læser og skriver selv filerne (og krypterer), men alle regler – rettelser, dækning, momentum, HB-prognose, HB-risiko og rekonstruktion af "hvad vi vidste dengang" – beregnes af `scripts/kerne.js` (Node 22, kaldt via `scripts/kerne.py`: JSON ind på stdin, JSON ud på stdout). Derfor sætter workflowene Node op og kører `npm ci`, før scriptene kører; lokalt skal `node` findes. `test/scripts.test.js` tjekker, at `scripts/kerne.js`, `hb.py` og `rapport.py` giver det samme som siden (facit) på de frosne data.
 
 ## Udvidelser
 
