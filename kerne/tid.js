@@ -19,6 +19,10 @@ export const ugedag = d => (new Date(dagNoegle(d) + 'T12:00:00Z').getUTCDay() + 
 export const time = d => +fmtTime.format(d);
 /** @param {Date} nu @param {number} dage */
 export const plusDage = (nu, dage) => new Date(+nu + dage * DAG);
+/** Dagen n dage efter (før, hvis negativ) en dag. @param {string} dag YYYY-MM-DD @param {number} n */
+export const dagPlus = (dag, n) => { const d = new Date(dag + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+/** Kalenderdage fra dag a til dag b (YYYY-MM-DD). @param {string} a @param {string} b */
+export const kalenderdage = (a, b) => Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / DAG);
 
 /**
  * @typedef {object} Kvartal

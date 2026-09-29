@@ -6,7 +6,8 @@
 // adgang pr. række, så en lokal bestyrelse kun ser sin egen forening). Se docs/arkitektur.md.
 
 import {Ontologi} from './ontologi.js';
-import {aktivitet, aktivitetsStatus, arrStatus, hbPrognose, kategori, momentum, MOMENTUM_NIVEAUER, varsel} from './regler.js';
+import {aktivitet, aktivitetsStatus, arrStatus, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose, hbRisiko, kategori, momentum,
+  MOMENTUM_NIVEAUER, varsel} from './regler.js';
 import {DAG, time, ugedag} from './tid.js';
 
 /** @typedef {import('./ontologi.js').Objekt} Objekt @typedef {import('./lager.js').Lager} Lager */
@@ -82,6 +83,13 @@ export const LAU = new Ontologi({
         hb: {label: 'HB-prognose (næste år)', type: 'kat', adgang: 'admin', vaerdier: HB_STATUS,
           hint: 'Mindst ét afholdt arrangement i hvert kvartal (Organisationshåndbogen 8.2)',
           beregn: (f, L) => L.vaerdi(f, 'hbDetaljer')?.status ?? null},
+        hbRisikoDetaljer: {label: 'HB-risiko (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
+          beregn: (f, L) => { const hb = L.vaerdi(f, 'hbDetaljer'); return hb ? hbRisiko(akt(f, L), hb, L.nu) : null; }},
+        hbRisiko: {label: 'HB-risiko (indeværende kvartal)', type: 'kat', adgang: 'admin', vaerdier: HB_RISIKO_NIVEAUER,
+          hint: 'Mangler et afholdt arrangement i kvartalet – og hvor lidt tid er der tilbage? Se README: HB-risiko',
+          beregn: (f, L) => L.vaerdi(f, 'hbRisikoDetaljer')?.niveau ?? null},
+        hbRisikoSpand: {label: 'HB-risiko: hvad skal der gøres', type: 'kat', adgang: 'admin', vaerdier: HB_RISIKO_SPANDE,
+          beregn: (f, L) => L.vaerdi(f, 'hbRisikoDetaljer')?.spand ?? null},
         antalKommuner: {label: 'Kommuner i området', type: 'tal', beregn: (f, L) => L.linkede(f, 'kommuner').length},
       },
     },

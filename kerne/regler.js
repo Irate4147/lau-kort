@@ -1,7 +1,7 @@
 // Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse og momentum.
 // Ported fra app.js, der indtil videre har sin egen kopi. test/paritet.test.js sikrer, at de to giver samme resultat.
 
-import {DAG, dagNoegle, dageMellem, fmtDato, hbAar, omEtKvartal} from './tid.js';
+import {DAG, dagNoegle, dagPlus, dageMellem, fmtDato, hbAar, kalenderdage, omEtKvartal} from './tid.js';
 
 // ---------------------------------------------------------------- kategori og status for et arrangement
 
@@ -198,6 +198,67 @@ export function hbPrognose(a, facebook, nu) {
     status = naeste ? 'plus_naeste' : 'alle';
   }
   return {status, kvartaler, aar: hb.aar};
+}
+
+// ---------------------------------------------------------------- HB-risiko: hvem skal handle i det indeværende kvartal?
+
+// Dage tilbage af kvartalet (d), hvor intet afholdt eller planlagt er kritisk / en advarsel, og hvor et kvartal, der
+// kun reddes af planlagte arrangementer, er en advarsel. Se README: HB-risiko.
+export const HB_RISIKO = {KRITISK_DAGE: 14, ADVARSEL_DAGE: 45, PLANLAGT_DAGE: 21};
+export const HB_RISIKO_NIVEAUER = {
+  kritisk: 'Kritisk – intet afholdt eller planlagt, og kvartalet slutter snart',
+  advarsel: 'Advarsel – intet afholdt, og kort tid tilbage',
+  opmaerksom: 'Hold øje – intet afholdt endnu, men god tid',
+  sikret: 'Kvartalet er i hus',
+  tabt: 'Kan ikke HB-godkendes (et afsluttet kvartal uden afholdt arrangement)',
+  ukendt: 'Mangler data for kvartalet',
+};
+// Grupperne i analysen "HB-risiko", i den rækkefølge man skal handle.
+export const HB_RISIKO_SPANDE = {
+  handle: 'Skal afholde et arrangement', planlagt: 'Afhænger af et planlagt arrangement', hold: 'Hold øje – god tid endnu',
+  sikret: 'I hus for kvartalet', tabt: 'Kan ikke godkendes', ukendt: 'Mangler data',
+};
+
+/**
+ * @typedef {object} HbRisiko
+ * @property {string} niveau    kritisk / advarsel / opmaerksom / sikret / tabt / ukendt (HB_RISIKO_NIVEAUER)
+ * @property {string} spand     handle / planlagt / hold / sikret / tabt / ukendt (HB_RISIKO_SPANDE)
+ * @property {string} kvartal   det indeværende kvartal ('Q1' … 'Q4')
+ * @property {string} status    kvartalets HB-status (hbKvartal): ja / planlagt / mangler / nej / ukendt
+ * @property {string} sidsteDag kvartalets sidste dag (YYYY-MM-DD) – fristen
+ * @property {number} dage      kalenderdage fra i dag til kvartalets sidste dag
+ * @property {any[]} afholdt    afholdte i kvartalet
+ * @property {any[]} planlagt   planlagte i kvartalet
+ * @property {any[]} naesteKv   planlagte i det næste kvartal samme år (tomt i Q4)
+ * @property {string[]} tabte   afsluttede kvartaler uden afholdt arrangement
+ * @property {string[]} ukendte afsluttede kvartaler uden data
+ */
+
+/**
+ * Risikoen for, at foreningen mister HB-godkendelsen på grund af det indeværende kvartal. Bruges af analysen og
+ * advarslerne (udvidelser/hb-risiko.js) og månedsrapportens "Fremad".
+ * @param {Aktivitet} a @param {{kvartaler: Record<string, string>}} hb hbPrognose() @param {Date} nu @returns {HbRisiko}
+ */
+export function hbRisiko(a, hb, nu) {
+  const aar = hbAar(nu), kv = aar.kvartaler[aar.nuIndeks], naeste = aar.kvartaler[aar.nuIndeks + 1] || null;
+  const i = k => e => { const d = dagNoegle(e.startD); return d >= k.fra && d < k.til; };
+  const sidsteDag = dagPlus(kv.til, -1), dage = kalenderdage(dagNoegle(nu), sidsteDag), status = hb.kvartaler[kv.id];
+  const foer = aar.kvartaler.slice(0, aar.nuIndeks);
+  const tabte = foer.filter(k => hb.kvartaler[k.id] === 'nej').map(k => k.id);
+  const ukendte = foer.filter(k => hb.kvartaler[k.id] === 'ukendt').map(k => k.id);
+  const R = HB_RISIKO;
+  let niveau, spand;
+  if (tabte.length) niveau = spand = 'tabt';
+  else if (status === 'ja') niveau = spand = 'sikret';
+  else if (status === 'planlagt') {
+    niveau = dage <= R.PLANLAGT_DAGE ? 'advarsel' : 'opmaerksom';
+    spand = niveau === 'advarsel' ? 'planlagt' : 'hold';
+  } else if (status === 'mangler') {
+    niveau = dage <= R.KRITISK_DAGE ? 'kritisk' : dage <= R.ADVARSEL_DAGE ? 'advarsel' : 'opmaerksom';
+    spand = niveau === 'opmaerksom' ? 'hold' : 'handle';
+  } else niveau = spand = 'ukendt';
+  return {niveau, spand, kvartal: kv.id, status, sidsteDag, dage, afholdt: a.afholdt.filter(i(kv)), planlagt: a.planlagt.filter(i(kv)),
+    naesteKv: naeste ? a.planlagt.filter(i(naeste)) : [], tabte, ukendte};
 }
 
 // ---------------------------------------------------------------- momentum
