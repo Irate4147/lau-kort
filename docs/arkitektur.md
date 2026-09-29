@@ -1,6 +1,6 @@
 # Arkitektur: fra kort til foreningens operativsystem
 
-Status: **forslag** – beslutning 1 og 2 er truffet, 3 er åben (se sidst).
+Status: **besluttet** – byg selv på Supabase. Fase 1 er i gang (se sidst).
 
 ## Kort fortalt
 
@@ -88,14 +88,18 @@ Alt, der står i ontologien, dukker automatisk op i analysebyggeren, på kortet,
 ```json
 {
   "type": "Arrangement",
-  "filtre": [{"egenskab": "dato", "periode": "seneste365"}],
-  "searchAround": [{"link": "arrangeretAf", "filtre": [{"egenskab": "momentum", "er": ["Mister fart"]}]}],
-  "gruppering": {"egenskab": "dato", "pr": "maaned"},
-  "maal": {"funktion": "median", "egenskab": "deltagere"}
+  "filtre": [
+    {"egenskab": "start", "periode": "seneste365"},
+    {"egenskab": "arrangeretAf.momentum", "er": ["faldende", "hjaelp"]}
+  ],
+  "gruppering": {"egenskab": "start", "pr": "maaned"},
+  "maal": {"funktion": "median", "egenskab": "deltager"}
 }
 ```
 
-Den samme beskrivelse kan vises som søjlediagram, tabel eller kort, gemmes som view, bruges som betingelse i en regel ("hvis sættet ikke er tomt, opret en opgave") eller deles som link. Analysebyggeren i denne PR er en første, simpel udgave af netop det.
+("Median af deltagere pr. måned det seneste år, for arrangementer i foreninger, der mister fart eller har brug for hjælp.")
+
+Den samme beskrivelse kan vises som søjlediagram, tabel eller kort, gemmes som view, bruges som betingelse i en regel ("hvis sættet ikke er tomt, opret en opgave") eller deles som link. Formatet er implementeret i `kerne/objektsaet.js`.
 
 ### 4. Widgets og views – brugerne bygger selv
 
@@ -120,7 +124,7 @@ En udvidelse registrerer **objekttyper, beregninger, handlinger, widgets og conn
 |---|---|---|
 | Objektlager, login, rettigheder | **Postgres hos Supabase (EU-region)** | Rigtige personlige logins, rettigheder pr. række (en lokalformand ser kun sin egen forening), handlingslog, gratis til jeres størrelse. Links er bare tabeller – ingen grafdatabase nødvendig. |
 | Datamodel i databasen | Generisk: `objekter(id, type, egenskaber jsonb)`, `links(fra, til, type)`, `handlinger(...)` + validering ud fra ontologien | Nye objekttyper kræver ingen databasemigrering. Ved jeres datamængde er ydelsen ikke et problem. |
-| Ontologi, beregninger, objektsæt-motor | **TypeScript**, delt mellem browser og server | Én implementering af hver regel. Typerne genereres ud fra ontologien, så fejl fanges tidligt. |
+| Ontologi, beregninger, objektsæt-motor | **JavaScript-moduler med typetjek** (JSDoc + TypeScript), delt mellem browser, Node og server | Én implementering af hver regel. Ingen build-trin: samme filer kører overalt, og der er mindre at vedligeholde. Typetjek og tests i CI fanger fejl tidligt. |
 | Analyse | I browseren på det sæt, brugeren har adgang til (evt. DuckDB-WASM senere) | Hurtigt og enkelt ved hundreder–tusinder af objekter. Serveren håndhæver adgangen. |
 | Brugerflade | Vite + TypeScript, MapLibre som i dag, lille UI-framework (fx Svelte) | Kan bygges gradvist ved siden af det nuværende. |
 | Connectors | De nuværende Python-scripts, men de skriver via handlings-API'et (kilde: "facebook") i stedet for til filer | Genbrug af det, der virker. |
@@ -144,7 +148,7 @@ Hver fase kan tages i brug, før den næste starter.
 
 | Fase | Indhold | Resultat |
 |---|---|---|
-| **0. Beslut** | Beslutning 3 nedenfor. Skriv ontologien for det, der findes i dag (Forening, Kommune, Arrangement, rettelser, HB, momentum). | Et fælles sprog |
+| **0. Beslut** ✅ | Beslutningerne nedenfor. Skriv ontologien for det, der findes i dag (Forening, Kommune, Arrangement, rettelser, HB, momentum). | Et fælles sprog |
 | **1. Kerne i browseren** | Ontologi + objektsæt-motor i TypeScript oven på de nuværende JSON-filer (en adapter). Momentum og HB flyttes ind som beregnede egenskaber. Kort, panel og analysebyggeren bygges om til at bruge motoren. | Én implementering af hver regel. Alle egenskaber virker overalt. Ingen ny server. |
 | **2. Rigtigt objektlager** | Supabase, migrering af foreninger, arrangementer og rettelser (rettelser → handlingslog). Personlige logins og roller. Python-sync skriver via API. | Sikker adgang, historik, klar til persondata |
 | **3. Views** | Generiske widgets, gemte views med delte variabler, konfigurerbare objektsider. | Brugerne bygger selv |
@@ -157,7 +161,7 @@ Fase 1 er den vigtigste og kan laves uden at vælge backend. Den giver den grund
 
 1. **Personer (medlemmer, frivillige, bestyrelser) skal ind i systemet.** ✅ Besluttet. En rigtig backend med personlige logins er derfor et krav.
 2. **Lokale bestyrelser skal være brugere med adgang til deres egen forening.** ✅ Besluttet. Det kræver **adgang pr. række**: en bestyrelse ser kun sine egne medlemmer. Det bliver det afgørende kriterium i valget nedenfor.
-3. **Bygge selv eller bygge på et færdigt værktøj?** Åben. Se sammenligningen.
+3. **Bygge selv på Supabase.** ✅ Besluttet. Se sammenligningen nedenfor.
 
 ### Bygge selv eller købe? (sammenligning, september 2026)
 
@@ -181,6 +185,19 @@ Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–12
 
 **Vælg Baserow i stedet**, hvis ingen realistisk kan vedligeholde kode om to år, og I kan leve med, at kortet og analyserne er en separat app. NocoDB anbefales ikke på grund af licensskiftet og prisen på rækkeadgang.
 
-## Forholdet til analysebyggeren i denne PR
+## Status for fase 1
 
-`udvidelser/egne-analyser.js` er en **spike**: en hurtig afprøvning af objektsæt-idéen på det nuværende system. Dens `spec` (type, filtre, gruppering, mål) er et første udkast til objektsæt-sproget ovenfor. I fase 1 flyttes den ind i kernen, og dens hårdkodede feltliste (`TYPER`) erstattes af ontologien.
+**Gjort:**
+
+- `kerne/`: ontologien (Forening, Arrangement, Kommune, Person, Rolle og links), objektlageret, objektsæt-motoren og reglerne (momentum, HB, status, kategori, dækning, rettelser). Se [kerne/README.md](../kerne/README.md).
+- Adapter fra de nuværende JSON-filer (`kerne/kilder/json.js`). Supabase-adapteren i fase 2 skal give samme resultat.
+- Adgang pr. type, egenskab og række er en del af modellen (offentlig/forening/admin) og håndhæves i lageret.
+- Tests: enhedstests og en **paritetstest**, der kører `app.js` og kernen side om side på seks datoer (inkl. kvartals- og årsskifte) og kræver samme resultat. CI kører dem ved hver pull request.
+- Analysebyggeren (`udvidelser/egne-analyser.js`) er bygget om oven på kernen: alle typer, egenskaber og links kommer fra ontologien. Den kan filtrere gennem links, finde objekter, der **ikke** har noget ("lokalforeninger uden arrangementer de næste 30 dage"), og følge links (search around).
+
+**Tilbage i fase 1:**
+
+1. `app.js` skal hente momentum, HB og status fra kernen i stedet for sin egen kopi (paritetstesten gør det sikkert). Derefter fjernes kopien og paritetstesten.
+2. Kortets farvninger og foreningspanelet skal bygges på objektsæt.
+3. `scripts/hb.py` og `scripts/rapport.py` skal bruge kernen (via Node i GitHub Actions) i stedet for deres egne kopier af reglerne.
+4. De øvrige analyser (HB-risiko, hvide pletter, "Hvad virker?", månedsrapport) flyttes over på kernen én ad gangen.

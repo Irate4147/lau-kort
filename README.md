@@ -136,12 +136,12 @@ Analyserne ligger i `udvidelser/` (se [Udvidelser](#udvidelser)):
 - **Hvad virker?** (`udvidelser/hvad-virker.js`) – sammenligner afholdte arrangementer pr. type, ugedag, starttidspunkt (dansk tid) og varsel. Vælg målet øverst: **deltagere** på Facebook ("deltager", standard), **tilkendegivelser** ("deltager" + "interesseret") eller registreret **fremmøde** (noteret under Arrangementer). Lokalforeningerne og landsforeningen beregnes hver for sig. For at store foreninger ikke dominerer, måles hvert arrangement mod sin forenings median (indeks = tal ÷ median; kun foreninger med mindst 3 arrangementer), og hver gruppe vises med sit medianindeks og n. Grupper med under 5 arrangementer nedtones og indgår ikke i konklusionerne. Varsel måles kun for arrangementer, der er opdaget efter indsamlingens start (som "Varsel" i nøgletallene). Datagrundlaget er lille – brug det som pejlemærke, ikke facit.
   **Markant flere deltagere end normalt** vises øverst i analysen og i den grønne boks **Godt gået** i oversigten og foreningspanelet: et arrangement i en lokalforening med mindst 1,5 × og 5 flere deltagere end medianen af foreningens andre afholdte arrangementer (mindst 3), afholdt de seneste 30 dage – eller planlagt de næste 14 dage med så mange tilmeldte på Facebook allerede ("På vej"). Registreret fremmøde går forud for Facebook, når det kan sammenlignes. Højst ét pr. forening; grænserne ligger i `REKORD` i filen.
 
-- **Egen analyse (byg selv)** (`udvidelser/egne-analyser.js`) – en analysebygger inspireret af Palantirs Object Explorer, så admins selv kan stille spørgsmål til data uden at skrive kode. Tre trin:
-  1. **Hvad vil du se på?** – arrangementer eller foreninger (objekttyperne).
-  2. **Filtrér** – tilføj filtre på enhver egenskab: forening, type, status, dato (fx "seneste 90 dage", "i år" eller en egen periode), ugedag, tidspunkt, kommune, deltagere, fremmøde, varsel, foreningens momentum, HB-prognose, medlemmer … Et filter på en kategori viser antallet for hver værdi.
+- **Egen analyse (byg selv)** (`udvidelser/egne-analyser.js`, bygget på [kernen](kerne/README.md)) – en analysebygger inspireret af Palantirs Object Explorer, så admins selv kan stille spørgsmål til data uden at skrive kode. Tre trin:
+  1. **Hvad vil du se på?** – foreninger, arrangementer eller kommuner (objekttyperne i ontologien).
+  2. **Filtrér – og følg links** – filtre på enhver egenskab, også gennem links (fx arrangementer, hvis forening mister fart): type, status, dato (fx "seneste 90 dage", "i år" eller en egen periode), ugedag, tidspunkt, kommune, deltagere, fremmøde, varsel, momentum, HB-prognose … Et filter på en kategori viser antallet for hver værdi. "Har / har ingen … der" finder fx lokalforeninger **uden** arrangementer de næste 30 dage.
   3. **Gruppér og mål** – gruppér efter en egenskab (datoer pr. måned, kvartal eller år) og mål antal eller sum/gennemsnit/median/højeste af en talegenskab.
 
-  Klik på en søjle for at **bore ned** (gruppen bliver et filter; år → kvartal → måned). **→ Deres arrangementer / Arrangørernes foreninger** ("search around") skifter mellem foreningerne og deres arrangementer med det nuværende sæt som filter. **Vis på kortet** tegner målet pr. forening på kortet (petrol, mørkere = højere; lag "Egen analyse" under Visninger → Kortet) og arrangementerne som punkter. **Hent som CSV** giver hele sættet med alle egenskaber (til Excel/Sheets). Analyser gemmes som en opskrift – i browseren eller **for alle admins** (krypteret i `data/admin/analyser.krypt.json`) – og står derefter i listen under Analyser. De regnes altid på de nyeste data. Nye egenskaber tilføjes i `TYPER` øverst i filen.
+  Klik på en søjle for at **bore ned** (gruppen bliver et filter; år → kvartal → måned). **Search around** følger et link fra hele sættet (fx fra foreningerne til deres kommuner) og kan filtreres igen. **Vis på kortet** tegner målet pr. forening på kortet (petrol, mørkere = højere; lag "Egen analyse" under Visninger → Kortet) og arrangementerne som punkter. **Hent som CSV** giver hele sættet med alle egenskaber (til Excel/Sheets). Analyser gemmes som en opskrift – i browseren eller **for alle admins** (krypteret i `data/admin/analyser.krypt.json`) – og står derefter i listen under Analyser. De regnes altid på de nyeste data. Nye egenskaber og objekttyper tilføjes i ontologien (`kerne/lau.js`) og dukker automatisk op i byggeren.
 
 ### Månedsrapport
 
@@ -184,6 +184,8 @@ python3 scripts/admin.py vis rapporter
 - Secrets `APIFY_TOKEN` og `ADMIN_KODE` (se "Adminlogin") skal være sat i repoets indstillinger.
 
 ## Udvidelser
+
+**Kernen** (`kerne/`, se [kerne/README.md](kerne/README.md) og [docs/arkitektur.md](docs/arkitektur.md)) er det nye fundament: en ontologi over foreningens objekter (foreninger, arrangementer, kommuner – og i fase 2 personer og roller), et objektlager og ét forespørgselssprog (objektsæt). Nye funktioner bør bygges på den. `npm install && npm run tjek` kører typetjek og tests (også i GitHub Actions).
 
 `app.js` er bygget op om registre, så nye funktioner kan tilføjes uden at ændre resten. Sektioner, lag og sorteringer med `admin: true` vises kun for admins:
 
