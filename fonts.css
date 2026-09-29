@@ -1,0 +1,19 @@
+/* Skrifttyper: Space Grotesk til overskrifter, JetBrains Mono til den lille tekst.
+   Indlæses efter style.css og overstyrer kun font-family. */
+:root {
+  --font-head: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+h1, h2, h3, h4, .popover .pop-title, .kal-head strong, .kal-nav .kal-titel, .hbr-frist, .tile .value, .hb-prognose {
+  font-family: var(--font-head);
+}
+
+.updated, .note, .method, .note-status, .form-status, .kommuner, .tile .label, .tile .delta,
+.evlist .date, .evlist .meta, .arr-row .date, .arr-row .meta, .arr-status, .badge, .adv-antal, .hbr-antal, .mr-antal,
+.callout .when, .popover .pop-meta, .opt .hint, .ana-liste span, .stamdata dt, .status, .sort,
+ul.rank .val, ul.rank .sub, .chart .lbl, .chart .val, .chart .tick, .chart-legend, .kal-ugedag,
+.mr-sub, .mr-pil, .hp-andet, .hp-af, .hbr-aar-under, .hbr-forklaring, .hbr-q, .hb-tabel th, .hb-tabel td.muted,
+.adv-frist, .more-note, .legend, .tooltip .muted {
+  font-family: var(--font-mono);
+}
