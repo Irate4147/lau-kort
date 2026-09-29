@@ -12,7 +12,8 @@
  *   ukendt      data dækker ikke hele kvartalet (historik mangler)
  *   tabt        et afsluttet kvartal er uden afholdt arrangement – kan ikke HB-godkendes (ingen advarsel)
  *   sikret      kvartalet er i hus (mindst ét afholdt)
- * Kritisk og advarsel giver højst én advarsel pr. forening. Grænserne står i GRAENSE nedenfor.
+ * Kritisk og advarsel giver højst én advarsel pr. forening. Niveauet og grænserne er kernens (hbRisikoNiveau() og
+ * HB_RISIKO_GRAENSE i kerne/regler.js), så scripts/rapport.py bruger de samme.
  *
  * Analysen grupperer foreningerne i "spande" i den rækkefølge, man skal handle (SPANDE): skal afholde et arrangement
  * (kritisk/advarsel uden noget i kalenderen), afhænger af et planlagt arrangement (advarsel), hold øje (opmaerksom),
@@ -21,7 +22,8 @@
  * Tilgængelig for andre udvidelser som LAU.hbRisiko(f).
  */
 (() => {
-  const GRAENSE = {kritiskDage: 14, advarselMinDage: 45, planlagtDage: 21};
+  const REGLER = window.LAU_KERNE.regler;
+  const GRAENSE = REGLER.HB_RISIKO_GRAENSE; // {kritiskDage, advarselMinDage, planlagtDage}
   const FREMADBLIK_DAGE = 21; // vis det næste kvartal, når der er så få dage tilbage af det indeværende
   const KV = HB_KVARTALER[HB_NU];
   const SIDST_I_AARET = HB_NU === HB_KVARTALER.length - 1; // Q4: kvartalsslut = årsskiftet = HB-fristen
@@ -70,6 +72,7 @@
     const ud = {niveau: 'sikret', spand: 'sikret', dage: DAGE, frist: FRIST, status, afholdt, planlagt, naeste: f.naeste,
       naesteKv, tabte, ukendte, forklaring: '', advarsel: null};
     const tidligere = ukendte.length ? ` (${opremsning(ukendte)}: ingen data.)` : '';
+    const niveau = REGLER.hbRisikoNiveau(status, DAGE, tabte.length > 0);
 
     if (tabte.length) {
       ud.niveau = ud.spand = 'tabt';
@@ -83,7 +86,7 @@
         : `${i} Intet planlagt i ${KV_NAESTE.kort} endnu.${tidligere}`;
     } else if (status === 'planlagt') {
       const e = planlagt[0], buffer = kalenderdage(dayKey(e.startD), SIDSTE_DAG);
-      ud.niveau = DAGE <= GRAENSE.planlagtDage ? 'advarsel' : 'opmaerksom';
+      ud.niveau = niveau;
       ud.spand = ud.niveau === 'advarsel' ? 'planlagt' : 'hold';
       const hvad = planlagt.length === 1 ? arrTekst(e) : `${planlagt.length} planlagte arrangementer, det første ${arrTekst(e)}`;
       ud.forklaring = `${KV.kort} hviler på ${hvad} – sørg for, at ${planlagt.length === 1 ? 'det' : 'mindst ét'} bliver afholdt, og bekræft det bagefter.`
@@ -97,8 +100,7 @@
             : `Bliver ingen af dem afholdt (det første er ${fmtDay.format(e.startD)}), mister foreningen HB-godkendelsen ${HB_AAR}. Bekræft det under Arrangementer (✓ Afholdt), når det er holdt.`};
       }
     } else if (status === 'mangler') {
-      ud.niveau = DAGE <= GRAENSE.kritiskDage ? 'kritisk'
-        : DAGE <= GRAENSE.advarselMinDage ? 'advarsel' : 'opmaerksom';
+      ud.niveau = niveau;
       ud.spand = ud.niveau === 'opmaerksom' ? 'hold' : 'handle';
       const normalt = DAGE > GRAENSE.kritiskDage ? ' Målet er mindst ét arrangement om måneden.' : '';
       ud.forklaring = ud.niveau === 'opmaerksom'

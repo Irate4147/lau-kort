@@ -21,30 +21,26 @@ noget planlagt og risici sorteret efter alvor – HB-kvartalet (samme regler som
 momentum "Brug for hjælp"/"Mister fart", kvartaler, der kun hænger på planlagte arrangementer, og årsskiftet. Den
 rekonstrueres som snapshots, så en gammel rapport viser, hvad man vidste dengang.
 
-Momentum og HB-prognose beregnes med samme regler og konstanter som momentum() og hbPrognose() i app.js.
-Mangler et snapshot (fx fordi den første kørsel i måneden ikke var den 1.), rekonstrueres det ud fra data pr. den
-1. i måneden og markeres "rekonstrueret": true. Kun begivenheder, der var set på Facebook den dag (foerst_set), tæller
-da som planlagte; senere aflysninger fra Facebook og forsvundne begivenheder regnes som ikke sket endnu.
+Reglerne er kernens (kerne/regler.js), de samme som siden bruger: rettelser, dækning, momentum(), hbPrognose() og
+hbRisiko(). De køres med Node via scripts/kerne.py; her samles kun rapporten. Mangler et snapshot (fx fordi den første
+kørsel i måneden ikke var den 1.), rekonstrueres det ud fra data pr. den 1. i måneden og markeres "rekonstrueret": true.
+Kun begivenheder, der var set på Facebook den dag (foerst_set), tæller da som planlagte; senere aflysninger fra Facebook
+og forsvundne begivenheder regnes som ikke sket endnu (tilstandVed() i kernen).
 """
 import json
-import math
 import re
 import sys
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import admin
 import hb
+import kerne
 
 TZ = hb.TZ
-DAG = timedelta(days=1)
-# Samme grænser som app.js (se "Momentum" i README).
-MOM_VINDUE, MOM_MAAL, MOM_MAANED, MOM_HJAELP, MOM_FREMAD, MOM_NORMAL = 90, 3, 31, 45, 30, 365
 MOM_ORDEN = {"hjaelp": 0, "faldende": 1, "fremad": 2, "ukendt": 3, "stabil": 4, "godt": 5, "ingenfb": 6}
 MOM_IKON = {"godt": "↗", "stabil": "→", "fremad": "⤴", "faldende": "↘", "hjaelp": "⚠", "ukendt": "?", "ingenfb": "–"}
 # HB-kategorierne med samme nøgler som HB_STATUS i app.js, bedst først ('ukendt' sammenlignes ikke).
 HB_ORDEN = ["plus_naeste", "alle", "planlagt_nu", "mangler_nu", "ikke"]
-# HB-risiko: samme grænser som GRAENSE i udvidelser/hb-risiko.js (se "Analyser og advarsler" i README).
-HB_GRAENSE = {"kritisk_dage": 14, "advarsel_min_dage": 45, "planlagt_dage": 21}
 # Den fremadskuende del ser så mange dage frem fra rapportens tidspunkt (5 uger ≈ den næste måned).
 FREMAD_DAGE = 35
 RISIKO_ORDEN = {"kritisk": 0, "advarsel": 1, "opmaerksom": 2}
@@ -65,16 +61,6 @@ def iso(t):
 
 def dansk(t):
     return t.astimezone(TZ).date()
-
-
-def dage_mellem(a, b):
-    """Som dageMellem() i app.js: hele døgn (à 24 timer) fra a til b."""
-    return math.floor((b - a) / DAG)
-
-
-def midnat_utc(d):
-    """Som new Date('ÅÅÅÅ-MM-DD' + 'T00:00:00Z') i app.js."""
-    return datetime.combine(d, time(), timezone.utc)
 
 
 def maaned_af(t):
@@ -126,164 +112,76 @@ def dage_tekst(d):
 # ------------------------------------------------------------------ data
 
 class Data:
-    """Alle data til rapporten: foreninger, begivenheder (med rettelser og fremmøde) og dækning. Som load()/beregn()."""
+    """Alle data til rapporten: foreninger og begivenheder (med rettelser og fremmøde) og dækning – fra kernen."""
 
     def __init__(self, nu):
         self.nu = nu
         self.foreninger = json.loads((hb.DATA / "foreninger.json").read_text(encoding="utf-8"))
-        raa = json.loads((hb.DATA / "events.json").read_text(encoding="utf-8"))
-        meta = json.loads((hb.DATA / "meta.json").read_text(encoding="utf-8"))
-        rettelser = admin.rettelser()
-        fra_for = hb.daekning(meta, raa, self.foreninger)  # ud fra de hentede data, før rettelser (som app.js)
-        # Første dag med fuld data pr. forening (daekketFra() i app.js); uden kørsler: i dag.
-        self.daekket = lambda navn: fra_for(navn) or dansk(nu)
-        koersler = [tid(k["tid"]) for k in meta.get("koersler", [])]
-        self.foerste_koersel = min(koersler) if koersler else nu
-        self.events = []
-        for e in hb.anvend_rettelser(raa, rettelser):  # skjulte er fjernet
-            if not e.get("start"):
-                continue
-            r = rettelser.get(e["id"]) or {}
-            e["foreninger"] = e.get("foreninger") or [e["forening"]]
+        self.kilder = {
+            "foreninger": self.foreninger,
+            "events": json.loads((hb.DATA / "events.json").read_text(encoding="utf-8")),
+            "meta": json.loads((hb.DATA / "meta.json").read_text(encoding="utf-8")),
+            "rettelser": admin.rettelser(),
+        }
+        k = kerne.beregn(**self.kilder, nu=nu)
+        # Første dag med fuld data pr. forening (daekketFra() i kernen; uden kørsler: i dag).
+        daekket = {navn: date.fromisoformat(d) for navn, d in k["daekketFra"].items()}
+        self.daekket = lambda navn: daekket[navn]
+        self.foerste_koersel = tid(k["foersteKoersel"])
+        self.events = k["arrangementer"]  # med rettelser (også fremmøde), skjulte er fjernet
+        for e in self.events:
             e["_start"] = tid(e["start"])
             e["_slut"] = tid(e.get("slut") or e["start"])
-            # Manuelle arrangementer har ingen foerst_set: de kendes fra rettelsen (som anvendRettelser() i app.js).
-            e["_foerst"] = tid(e.get("foerst_set") or r.get("rettet") or e["start"])
+            e["_kendt"] = tid(e["kendt"])  # set på Facebook første gang (manuelle: da de blev tilføjet)
             e["_sidst"] = tid(e.get("sidst_set"))
-            # Hvornår en rettelse markerede arrangementet som ikke afholdt (til rekonstruktion af snapshots).
-            e["_aflyst_rettet"] = (tid(r.get("rettet")) or datetime.min.replace(tzinfo=timezone.utc)) \
-                if r.get("status") == "ikke_afholdt" else None
-            if r.get("deltagere") is not None:
-                e["fremmoede"] = r["deltagere"]
-            self.events.append(e)
         self.by_id = {e["id"]: e for e in self.events}
+        self._ved = {}
 
     def lokale(self):
         return [f for f in self.foreninger if not f.get("national")]
 
-
-def tilstand_ved(e, idag):
-    """Begivenheden, som den så ud på tidspunktet idag (til rekonstruerede snapshots) – None, hvis den var ukendt.
-
-    Afholdte (slut før idag) er, som vi kender dem nu. Kommende tæller kun, hvis de var set på Facebook (foerst_set);
-    aflysninger fra Facebook og forsvundne begivenheder regnes som sket efter idag, medmindre en rettelse eller
-    sidst_set siger andet.
-    """
-    if e["_slut"] < idag:
-        return e
-    if e["_foerst"] > idag:
-        return None
-    aflyst = bool(e.get("aflyst")) and e["_aflyst_rettet"] is not None and e["_aflyst_rettet"] <= idag
-    forsvundet = bool(e.get("forsvundet")) and e["_sidst"] is not None and e["_sidst"] < idag
-    return {**e, "aflyst": aflyst, "forsvundet": forsvundet}
+    def ved(self, idag, rekonstruer):
+        """Alle foreninger på tidspunktet idag, beregnet af kernen: {navn: {afholdt, planlagt, momentum, hb, …}}.
+        rekonstruer: kun det, man vidste på tidspunktet (til rekonstruerede snapshots og fremad)."""
+        noegle = (idag, rekonstruer)
+        if noegle not in self._ved:
+            k = kerne.beregn(**self.kilder, nu=self.nu, tidspunkter=[{"tid": idag, "rekonstruer": rekonstruer}])
+            self._ved[noegle] = k["tidspunkter"][0]["foreninger"]
+        return self._ved[noegle]
 
 
-def forening_ved(f, events, idag):
-    """Foreningens arrangementer på tidspunktet idag, delt op som i beregn() i app.js."""
-    ev = sorted((e for e in events if f["navn"] in e["foreninger"]), key=lambda e: e["_start"])
-    gyldige = [e for e in ev if not e.get("forsvundet") and not e.get("aflyst")]
-    afholdt = [e for e in gyldige if e["_slut"] < idag]
-    planlagt = [e for e in gyldige if e["_slut"] >= idag]
-    return {**f, "events": ev, "gyldige": gyldige, "afholdt": afholdt, "planlagt": planlagt,
-            "sidste": afholdt[-1]["_start"] if afholdt else None, "naeste": planlagt[0] if planlagt else None}
+def forening_ved(data, f, idag, rekonstruer):
+    """Foreningen på tidspunktet idag: arrangementerne delt op som i kernens aktivitet() og (for lokalforeninger)
+    momentum, HB-prognose og HB-risiko."""
+    k = data.ved(idag, rekonstruer)[f["navn"]]
+    ev = lambda ids: [data.by_id[i] for i in ids]  # noqa: E731
+    return {**f, **k, "events": ev(k["arrangementer"]), "afholdt": ev(k["afholdt"]), "planlagt": ev(k["planlagt"]),
+            "sidste": tid(k["sidste"])}
 
 
-# ------------------------------------------------------------------ momentum og HB (port af app.js)
-
-def momentum(f, idag, daekket):
-    """Foreningens momentum på tidspunktet idag (datetime). Samme niveauer som momentum() i app.js."""
-    fra, til, dk = idag - MOM_VINDUE * DAG, idag + MOM_FREMAD * DAG, midnat_utc(daekket)
-    afholdt = sum(1 for e in f["afholdt"] if e["_start"] >= fra)
-    fremad = sum(1 for e in f["planlagt"] if e["_start"] <= til)
-    # Normalt: afholdte pr. MOM_VINDUE dage i året før vinduet (kræver mindst MOM_VINDUE dages data dér).
-    n_fra = max(dk, fra - MOM_NORMAL * DAG)
-    n_dage = dage_mellem(n_fra, fra)
-    normalt = math.floor(sum(1 for e in f["afholdt"] if n_fra <= e["_start"] < fra) / n_dage * MOM_VINDUE * 10 + 0.5) / 10 \
-        if n_dage >= MOM_VINDUE else None
-    trend = None if normalt is None else "op" if afholdt >= normalt + 1 else "ned" if afholdt <= normalt - 1 else "som"
-    aflyst = sum(1 for e in f["events"] if e.get("aflyst") and fra <= e["_start"] < idag)
-    sidste_dage = dage_mellem(f["sidste"], idag) if f["sidste"] else None
-    naeste_dage = max(0, dage_mellem(idag, f["naeste"]["_start"])) if f["naeste"] else None
-    # Uden afholdte arrangementer er dagene siden dækningens start en nedre grænse.
-    d = sidste_dage if sidste_dage is not None else dage_mellem(dk, idag)
-    if not f.get("facebook") and not f["gyldige"]:
-        niveau = "ingenfb"
-    elif sidste_dage is None and d <= MOM_HJAELP:
-        niveau = "ukendt"
-    elif d > MOM_MAANED:
-        niveau = "fremad" if fremad else "hjaelp" if d > MOM_HJAELP else "faldende"
-    elif afholdt >= MOM_MAAL:
-        niveau = "godt"
-    else:
-        niveau = "faldende" if trend == "ned" and not fremad else "stabil"
-    return {"niveau": niveau, "sidste_dage": sidste_dage, "naeste_dage": naeste_dage, "afholdt": afholdt,
-            "daekket": dk <= fra, "normalt": normalt, "trend": trend, "fremad": fremad, "aflyst": aflyst}
-
-
-def hb_kvartaler(f, idag, daekket):
-    """HB-årets kvartaler [(navn, start, slut, status)] og indekset for det indeværende på tidspunktet idag.
-    Status som hbKvartal() i app.js: 'ja', 'planlagt', 'mangler' (kvartalet er ikke slut), 'nej' eller 'ukendt'."""
-    dag = dansk(idag)
-
-    def status(start, slut):
-        if any(start <= dansk(e["_start"]) < slut for e in f["afholdt"]):
-            return "ja"
-        if any(start <= dansk(e["_start"]) < slut for e in f["planlagt"]):
-            return "planlagt"
-        if not f.get("facebook") or start < daekket:
-            return "ukendt"
-        return "mangler" if dag < slut else "nej"
-
-    kv = [(f"Q{q}", start, slut, status(start, slut)) for q, start, slut in hb.kvartaler(dag.year)]
-    return kv, next(i for i, k in enumerate(kv) if k[1] <= dag < k[2])
-
-
-def hb_prognose(f, idag, daekket):
-    """HB-kategori (nøgle i HB_STATUS i app.js) for næste år på tidspunktet idag. Som hbKvartal()/hbPrognose()."""
-    kv, nu_i = hb_kvartaler(f, idag, daekket)
-    s = [k[3] for k in kv]
-    foer, nu = s[:nu_i], s[nu_i]
-    if "nej" in foer:
-        return "ikke"
-    if "ukendt" in foer or nu == "ukendt":
-        return "ukendt"
-    if nu == "planlagt":
-        return "planlagt_nu"
-    if nu != "ja":
-        return "mangler_nu"
-    start, slut = hb.naeste_kvartal(dansk(idag))
-    return "plus_naeste" if any(start <= dansk(e["_start"]) < slut for e in f["planlagt"]) else "alle"
-
-
-def hb_risiko(f, idag, daekket):
-    """Risikoen for, at foreningen mister HB-godkendelsen på grund af det indeværende kvartal, på tidspunktet idag.
-    Samme niveauer og grænser (HB_GRAENSE) som hbRisiko() i udvidelser/hb-risiko.js:
+def hb_risiko(f, idag):
+    """HB-risikoen (kernens hbRisiko(), samme som udvidelser/hb-risiko.js) med rapportens forklaring:
     {niveau: kritisk | advarsel | opmaerksom | ukendt | tabt | sikret, kvartal, dage, frist, status, planlagt,
     forklaring}, hvor dage er kalenderdage til kvartalets sidste dag (frist) og planlagt kvartalets planlagte."""
-    dag = dansk(idag)
-    kv, i = hb_kvartaler(f, idag, daekket)
-    navn, start, slut, status = kv[i]
-    sidste = slut - timedelta(days=1)
-    dage, aar = (sidste - dag).days, dag.year + 1
-    tabte = [k[0] for k in kv[:i] if k[3] == "nej"]
-    planlagt = [e for e in f["planlagt"] if start <= dansk(e["_start"]) < slut]
-    frist = f" {navn} er årets sidste kvartal: {kort_dato(sidste)} er også fristen for HB-godkendelsen." if i == 3 else ""
-    if tabte:
-        niveau, tekst = "tabt", f"{opremsning(tabte)} uden afholdt arrangement – kan ikke HB-godkendes i {aar}."
-    elif status == "ja":
-        niveau, tekst = "sikret", f"{navn} er i hus."
+    r = f["hbRisiko"]
+    navn, niveau, dage, status = r["kvartal"], r["niveau"], r["dage"], r["status"]
+    sidste, aar = date.fromisoformat(r["sidsteDag"]), dansk(idag).year + 1
+    planlagt = [e for e in f["planlagt"] if e["id"] in r["planlagt"]]
+    frist = f" {navn} er årets sidste kvartal: {kort_dato(sidste)} er også fristen for HB-godkendelsen." \
+        if navn == "Q4" else ""
+    if niveau == "tabt":
+        tekst = f"{opremsning(r['tabte'])} uden afholdt arrangement – kan ikke HB-godkendes i {aar}."
+    elif niveau == "sikret":
+        tekst = f"{navn} er i hus."
     elif status == "planlagt":
         e = planlagt[0]
-        niveau = "advarsel" if dage <= HB_GRAENSE["planlagt_dage"] else "opmaerksom"
         hvad = f"\"{e.get('navn') or ''}\" ({kort_dato(dansk(e['_start']))})" if len(planlagt) == 1 \
             else f"{len(planlagt)} planlagte arrangementer (det første {kort_dato(dansk(e['_start']))})"
         tekst = f"Intet afholdt i {navn} endnu – kvartalet afhænger af {hvad}." + frist
     elif status == "mangler":
-        niveau = "kritisk" if dage <= HB_GRAENSE["kritisk_dage"] \
-            else "advarsel" if dage <= HB_GRAENSE["advarsel_min_dage"] else "opmaerksom"
         tekst = f"Intet afholdt eller planlagt i {navn} – {dage_tekst(dage)}." + frist
     else:
-        niveau, tekst = "ukendt", f"Data dækker ikke hele {navn}."
+        tekst = f"Data dækker ikke hele {navn}."
     return {"niveau": niveau, "kvartal": navn, "dage": dage, "frist": sidste, "status": status,
             "planlagt": planlagt, "forklaring": tekst}
 
@@ -292,17 +190,15 @@ def hb_risiko(f, idag, daekket):
 
 def tilstand(data, idag, rekonstruer):
     """Tilstanden for alle foreninger på tidspunktet idag."""
-    events = [x for e in data.events if (x := tilstand_ved(e, idag) if rekonstruer else e)]
     ud = {}
     for f0 in data.foreninger:
-        f = forening_ved(f0, events, idag)
-        s = {"afholdt": len(f["afholdt"]), "planlagt": len(f["planlagt"]),
-             "aflyste": sorted(e["id"] for e in f["events"] if e.get("aflyst"))}
+        f = forening_ved(data, f0, idag, rekonstruer)
+        s = {"afholdt": len(f["afholdt"]), "planlagt": len(f["planlagt"]), "aflyste": sorted(f["aflyste"])}
         if not f.get("national"):
-            dk = data.daekket(f["navn"])
-            m = momentum(f, idag, dk)
-            s.update(niveau=m["niveau"], sidste_dage=m["sidste_dage"], naeste_dage=m["naeste_dage"], afholdt_3md=m["afholdt"],
-                     normalt=m["normalt"], fremad=m["fremad"], hb=hb_prognose(f, idag, dk))
+            m = f["momentum"]
+            # normalt er et decimaltal (1.0, ikke 1), som snapshots altid har været gemt.
+            s.update(niveau=m["niveau"], sidste_dage=m["sidsteDage"], naeste_dage=m["naesteDage"], afholdt_3md=m["afholdt"],
+                     normalt=None if m["normalt"] is None else float(m["normalt"]), fremad=m["fremad"], hb=f["hb"]["status"])
         ud[f["navn"]] = s
     return {"tid": iso(idag), "hb_aar": dansk(idag).year + 1, "foreninger": ud}
 
@@ -347,9 +243,9 @@ def lav_rapport(data, m, start, slut, foreloebig):
         r = {
             "afholdt": [e for e in mine if i_md(e["_start"]) and gyldig(e) and e["_slut"] < data.nu],
             "aflyst": [e for e in mine if i_md(e["_start"]) and e.get("aflyst")],
-            # Nye på Facebook i måneden – ikke hentet bagudrettet, manuelle eller fundet ved den første kørsel.
-            "nye": [e for e in mine if not e.get("historisk") and not e.get("manuel") and i_md(e["_foerst"])
-                    and e["_foerst"] - data.foerste_koersel > DAG],
+            # Nye på Facebook i måneden – ikke hentet bagudrettet, manuelle eller fundet ved den første kørsel (de har
+            # intet varsel, se varsel() i kernen).
+            "nye": [e for e in mine if e["varsel"] is not None and i_md(e["_kendt"])],
             "forsvundet": [e for e in mine if e.get("forsvundet") and i_md(e["_sidst"])],
         }
         for k, lst in r.items():
@@ -362,7 +258,7 @@ def lav_rapport(data, m, start, slut, foreloebig):
             "afholdt": [ev_kort(e, **({"fremmoede": e["fremmoede"]} if e.get("fremmoede") is not None else {}))
                         for e in r["afholdt"]],
             "aflyst": [ev_kort(e) for e in r["aflyst"]],
-            "nye": [ev_kort(e, oprettet=dansk(e["_foerst"]).isoformat()) for e in r["nye"]],
+            "nye": [ev_kort(e, oprettet=dansk(e["_kendt"]).isoformat()) for e in r["nye"]],
             "forsvundet": [ev_kort(e) for e in r["forsvundet"]],
             "fremmoede": sum(moedt) if moedt else None,
             "daekket": daekket,
@@ -425,19 +321,18 @@ def lav_rapport(data, m, start, slut, foreloebig):
 def lav_fremad(data, idag, rekonstruer):
     """Den fremadskuende del af rapporten, set fra tidspunktet idag (for en afsluttet måned: den 1. i måneden efter).
 
-    Med rekonstruer=True bruges de samme regler som for rekonstruerede snapshots (tilstand_ved): kun begivenheder, der
+    Med rekonstruer=True bruges de samme regler som for rekonstruerede snapshots (tilstandVed): kun begivenheder, der
     var set på Facebook på tidspunktet, tæller som planlagte – så en gammel rapport viser, hvad man vidste dengang.
     Indeholder kommende arrangementer de næste FREMAD_DAGE dage pr. forening, lokalforeninger uden noget planlagt i
     perioden og risici sorteret efter alvor (HB-kvartalet, momentum og årsskiftet), hver med en konkret handling.
     """
-    events = [x for e in data.events if (x := tilstand_ved(e, idag) if rekonstruer else e)]
     fra, til = dansk(idag), dansk(idag) + timedelta(days=FREMAD_DAGE)  # til: første dag efter perioden
     i_periode = lambda e: fra <= dansk(e["_start"]) < til  # noqa: E731
     kommende, uden_planlagt, risici, alle = {}, [], [], {}
     aar_frist, mangler_q4 = date(fra.year, 12, 31), []
     kvartal = None
     for f0 in data.foreninger:
-        f = forening_ved(f0, events, idag)
+        f = forening_ved(data, f0, idag, rekonstruer)
         navn, mine = f["navn"], [e for e in f["planlagt"] if i_periode(e)]
         if mine:
             kommende[navn] = [ev_kort(e) for e in mine]
@@ -445,7 +340,7 @@ def lav_fremad(data, idag, rekonstruer):
         if f.get("national"):
             continue
         dk = data.daekket(navn)
-        m, r = momentum(f, idag, dk), hb_risiko(f, idag, dk)
+        m, r = f["momentum"], hb_risiko(f, idag)
         kvartal = kvartal or {"navn": r["kvartal"], "hb_aar": fra.year + 1, "sidste_dag": r["frist"].isoformat(),
                               "dage": r["dage"]}
         if not mine:
@@ -473,7 +368,7 @@ def lav_fremad(data, idag, rekonstruer):
         if r["kvartal"] == "Q4" and r["niveau"] in ("kritisk", "advarsel", "opmaerksom"):
             mangler_q4.append(navn)
         if m["niveau"] in ("hjaelp", "faldende"):
-            siden = f"{m['sidste_dage']} dage siden sidste arrangement" if m["sidste_dage"] is not None \
+            siden = f"{m['sidsteDage']} dage siden sidste arrangement" if m["sidsteDage"] is not None \
                 else f"intet afholdt siden {kort_dato(dk)}"
             faerre = ", færre end normalt" if m["trend"] == "ned" else ""
             hjaelp = m["niveau"] == "hjaelp"
