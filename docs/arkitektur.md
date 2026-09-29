@@ -1,6 +1,6 @@
 # Arkitektur: fra kort til foreningens operativsystem
 
-Status: **forslag** – kræver tre beslutninger (se sidst).
+Status: **forslag** – beslutning 1 og 2 er truffet, 3 er åben (se sidst).
 
 ## Kort fortalt
 
@@ -144,7 +144,7 @@ Hver fase kan tages i brug, før den næste starter.
 
 | Fase | Indhold | Resultat |
 |---|---|---|
-| **0. Beslut** | De tre beslutninger nedenfor. Skriv ontologien for det, der findes i dag (Forening, Kommune, Arrangement, rettelser, HB, momentum). | Et fælles sprog |
+| **0. Beslut** | Beslutning 3 nedenfor. Skriv ontologien for det, der findes i dag (Forening, Kommune, Arrangement, rettelser, HB, momentum). | Et fælles sprog |
 | **1. Kerne i browseren** | Ontologi + objektsæt-motor i TypeScript oven på de nuværende JSON-filer (en adapter). Momentum og HB flyttes ind som beregnede egenskaber. Kort, panel og analysebyggeren bygges om til at bruge motoren. | Én implementering af hver regel. Alle egenskaber virker overalt. Ingen ny server. |
 | **2. Rigtigt objektlager** | Supabase, migrering af foreninger, arrangementer og rettelser (rettelser → handlingslog). Personlige logins og roller. Python-sync skriver via API. | Sikker adgang, historik, klar til persondata |
 | **3. Views** | Generiske widgets, gemte views med delte variabler, konfigurerbare objektsider. | Brugerne bygger selv |
@@ -153,11 +153,33 @@ Hver fase kan tages i brug, før den næste starter.
 
 Fase 1 er den vigtigste og kan laves uden at vælge backend. Den giver den grundlæggende struktur, som resten hviler på.
 
-## Beslutninger, der skal træffes
+## Beslutninger
 
-1. **Skal personer (medlemmer, frivillige, bestyrelser) ind i systemet?** Hvis ja, er en rigtig backend med personlige logins et krav, ikke et valg.
-2. **Hvem er brugerne?** Kun landsledelsen/admins, eller også lokale bestyrelser med adgang til egen forening? Det afgør rollemodellen.
-3. **Bygge selv eller bygge på NocoDB/Baserow?** Anbefalingen er at bygge selv på Postgres (Supabase), fordi kortet og ét samlet interface er kernen i jeres idé.
+1. **Personer (medlemmer, frivillige, bestyrelser) skal ind i systemet.** ✅ Besluttet. En rigtig backend med personlige logins er derfor et krav.
+2. **Lokale bestyrelser skal være brugere med adgang til deres egen forening.** ✅ Besluttet. Det kræver **adgang pr. række**: en bestyrelse ser kun sine egne medlemmer. Det bliver det afgørende kriterium i valget nedenfor.
+3. **Bygge selv eller bygge på et færdigt værktøj?** Åben. Se sammenligningen.
+
+### Bygge selv eller købe? (sammenligning, september 2026)
+
+Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–120 brugere plus landsledelsen.
+
+| | **Bygge selv på Supabase (Postgres)** | **Baserow** | **NocoDB** |
+|---|---|---|---|
+| Hvad det er | Database, login og rettigheder som byggeklodser. Brugerfladen bygger I selv. | "Airtable i open source": tabeller, links, views, formularer, automatiseringer, app-bygger. Hollandsk, EU-hosting. | Samme idé som Baserow. Kan også lægges oven på en eksisterende Postgres. |
+| Adgang pr. række (bestyrelse ser kun egen forening) | ✅ Indbygget og gratis (Row Level Security) | ⚠️ Rettigheder går kun ned til tabelniveau (Advanced-planen). Omvej: en portal bygget i deres app-bygger (op til 500 app-brugere gratis). | ⚠️ Kun i den dyreste selvbetjente plan (Scale) |
+| Pris ved ~120 brugere | ca. 0–175 kr./md. (gratis → Pro $25) | Fulde brugere: $18/bruger/md. → ca. 15.000 kr./md. Billigt kun, hvis bestyrelserne bruger portalen, og få er fulde brugere. | Afhænger af antal redaktører; rækkeadgang kræver Scale |
+| Licens | Open source (Apache 2.0); data i almindelig Postgres | Kernen er open source (MIT); rettigheder er betalt | **Ikke længere open source** (Sustainable Use License siden 2026) |
+| Kort og ét samlet interface | ✅ Det er det, I bygger | ❌ Kortet og analyserne bliver en separat app oven på deres API | ❌ Samme |
+| Tid til noget brugbart | Måneder | Dage–uger | Dage–uger |
+| Største risiko | **Nøgleperson-afhængighed:** hvem vedligeholder koden, når du ikke gør? | Pris og begrænsninger låser jer fast; to brugerflader | Licens og pris kan ændre sig igen (er lige sket) |
+
+**Anbefaling: byg selv på Supabase**, men gør det bevidst for at mindske nøgleperson-risikoen:
+
+- Data ligger i **almindelig Postgres** med et dokumenteret skema. Hvis den hjemmebyggede brugerflade en dag står stille, kan et færdigt værktøj sættes oven på de samme data, uden at noget skal flyttes. Vejen tilbage er åben.
+- Standardteknologi (TypeScript, Postgres), ingen eksotiske valg, og ontologien som ét dokument, andre kan læse.
+- Fase 1 (kernen i browseren) giver værdi, før der er brugt tid på backend.
+
+**Vælg Baserow i stedet**, hvis ingen realistisk kan vedligeholde kode om to år, og I kan leve med, at kortet og analyserne er en separat app. NocoDB anbefales ikke på grund af licensskiftet og prisen på rækkeadgang.
 
 ## Forholdet til analysebyggeren i denne PR
 
