@@ -55,19 +55,23 @@ Sidepanelet har disse faner:
 
 Kun for admins. En tidlig sundhedsindikator for, om en lokalforening er godt på vej med at afholde arrangementer – og et tidligt varsel om, at den har brug for hjælp.
 
-Hver forening måles mod **sin egen rytme**: hvor mange dage der normalt går mellem dens arrangementer. Rytmen er den gennemsnitlige afstand mellem afholdte arrangementer det seneste år (så langt data dækker), men mindst 31 dage (en stor forening skal holde mindst ét om måneden) og højst 61 dage (en lille kan nøjes med hver anden måned). Med under 120 dages historik bruges 61 dage. Rytmen kan sættes fast med `"momentum_rytme": 31` i `data/foreninger.json`.
+**Målet er det samme for alle lokalforeninger uanset størrelse: mindst ét arrangement om måneden.** Momentum ser på tre ting:
 
-| Niveau | Regel (d = dage siden sidste arrangement, R = rytmen) |
+- **Dage siden sidste arrangement** – over 31 dage (en måned) er et varsel, over 45 dage er alvorligt.
+- **Afholdt de seneste 3 måneder (90 dage)** – målet er 3. Fx "2 af 3".
+- **Mod foreningens normale niveau** – snittet pr. 3 måneder i året før. Mindst 1 flere end normalt er et godt tegn (↑), mindst 1 færre er et tegn på, at foreningen er ved at tabe pusten (↓). Kræver mindst 3 måneders data før perioden.
+
+| Niveau | Regel (d = dage siden sidste arrangement, kalender = noget planlagt de næste 30 dage) |
 |---|---|
-| ↗ Godt i gang | d ≤ R og noget i kalenderen de næste 60 dage |
-| → Stabil | d ≤ R, intet i kalenderen endnu (begivenheder oprettes ofte sent) |
-| ⤴ Går fremad | d > R, men noget i kalenderen |
-| ↘ Mister fart | R < d ≤ 2R og intet i kalenderen |
-| ⚠ Brug for hjælp | d > 2R og intet i kalenderen |
+| ↗ Godt i gang | d ≤ 31 og mindst 3 afholdt de seneste 3 måneder |
+| → På sporet | d ≤ 31, men under 3 afholdt de seneste 3 måneder |
+| ⤴ Noget på vej | d > 31, men noget i kalenderen |
+| ↘ Mister fart | 31 < d ≤ 45 og intet i kalenderen – eller d ≤ 31, under målet, færre end normalt og intet i kalenderen |
+| ⚠ Brug for hjælp | d > 45 og intet i kalenderen |
 
-(plus "historik mangler", når intet er afholdt, og data højst dækker R dage.) Advarslerne forklarer niveauet: dage siden sidste mod rytmen, intet i kalenderen, færre afholdt end de 60 dage før og aflyste arrangementer.
+(plus "historik mangler", når intet er afholdt, og data højst dækker 45 dage.) Advarslerne forklarer niveauet: dage siden sidste, antal af 3 de seneste 3 måneder, kalenderen, flere/færre end normalt og aflyste arrangementer.
 
-Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næste arrangement, med rytmen i baggrunden) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, `MOM_BAGUD` og `MOM_FREMAD` i `app.js`.
+Oversigten har antal pr. niveau, en tidslinje for alle foreninger (sidste og næste arrangement; grøn baggrund = inden for en måned, gul = 32–45 dage) og listen "Kræver opmærksomhed"; foreningspanelet har en Momentum-sektion; kortet kan farves efter momentum (Visninger), og foreningslisten kan sorteres efter det. Grænserne ligger i `MOM_VINDUE`, `MOM_MAAL`, `MOM_MAANED`, `MOM_HJAELP`, `MOM_FREMAD` og `MOM_NORMAL` i `app.js` (og samme konstanter i `scripts/rapport.py`).
 
 ## Rettelser af arrangementer
 
@@ -120,10 +124,10 @@ Analyserne ligger i `udvidelser/` (se [Udvidelser](#udvidelser)):
 
   Hver forening står på én linje med kvartalerne som små felter (afholdt, planlagt, intet endnu, intet afholdt, ingen data) og én konkret sætning om, hvad der skal gøres; klik åbner foreningen. Tomme spande skjules (de to første vises som en kort linje). De sidste tre uger af kvartalet vises også et fremadblik: hvem der allerede har noget planlagt i næste kvartal. "Sådan beregnes det" nederst forklarer reglerne i almindeligt sprog:
 
-  | Niveau | Regel (d = dage tilbage til kvartalets sidste dag, R = foreningens [rytme](#momentum), dvs. dens normale tid mellem arrangementer) |
+  | Niveau | Regel (d = dage tilbage til kvartalets sidste dag) |
   |---|---|
-  | ! Kritisk | intet afholdt eller planlagt, og d ≤ 14 (to uger) eller d ≤ halvdelen af R |
-  | ⏱ Advarsel | intet afholdt eller planlagt, og d ≤ 45 eller d ≤ R – eller kvartalet afhænger af planlagte arrangementer, og d ≤ 21 |
+  | ! Kritisk | intet afholdt eller planlagt, og d ≤ 14 (to uger) |
+  | ⏱ Advarsel | intet afholdt eller planlagt, og d ≤ 45 – eller kvartalet afhænger af planlagte arrangementer, og d ≤ 21 |
   | Hold øje | som ovenfor, men der er god tid |
   | Tabt | et afsluttet kvartal er uden afholdt arrangement – kan ikke HB-godkendes (ingen advarsel) |
 
@@ -149,7 +153,7 @@ For afsluttede måneder gemmes "Fremad" i rapporten (`"fremad"`) og **rekonstrue
 
 **Bagud** – hvad der skete i måneden: afholdte, aflyste/ikke afholdte, nye og fra Facebook forsvundne arrangementer, registreret fremmøde (fra rettelserne), højdepunkterne (faldet i momentum eller HB, uden afholdt aktivitet og nye aflysninger til venstre; forbedret til højre), fordelingen af momentum og HB-prognose ved start og slut og en tabel pr. forening med månedens arrangementer. Ved et nyt kvartal starter HB-prognosen forfra, så der tæller kun et skift til "kan ikke godkendes" som et fald.
 
-- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, rytme, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum, HB-prognose og HB-risiko beregnes med samme regler og konstanter som siden (`MOM_BAGUD`, `MOM_FREMAD`, `MOM_RYTME_MIN`, `MOM_RYTME_MAX`, `GRAENSE`, dækning og rettelser).
+- `scripts/rapport.py` (kræver `ADMIN_KODE`) tager ved den første kørsel i måneden et **snapshot** af tilstanden ved månedens start: [momentum](#momentum)-niveau, afholdt de seneste 3 måneder og normalt niveau, HB-prognose og antal afholdte/planlagte arrangementer pr. forening. Momentum, HB-prognose og HB-risiko beregnes med samme regler og konstanter som siden (`MOM_*`, `GRAENSE`, dækning og rettelser).
 - **Rapporten** for en måned sammenligner månedens snapshot med den næste måneds (Bagud) og beregner Fremad pr. den 1. i måneden efter.
 - Alt ligger krypteret i `data/admin/rapporter.krypt.json` (`{"snapshots": {"ÅÅÅÅ-MM": …}, "rapporter": {"ÅÅÅÅ-MM": {"fremad": …, …}}}`). Filen skrives kun, når indholdet er ændret. Rapporter fra før "Fremad" fandtes, vises med en note; `python3 scripts/rapport.py alle` genberegner dem.
 - **Automatisk:** "Månedsrapport" (`.github/workflows/rapport.yml`) kører den 1. i måneden tidligt om morgenen; `sync.yml` og `hb.yml` kører også `rapport.py`, så rapporten for sidste måned kommer med nye rettelser og fremmøde. Manuelt: Actions → "Månedsrapport" → *Run workflow* med en måned (`ÅÅÅÅ-MM`) eller `alle`.
