@@ -31,7 +31,9 @@ const res = koer(lager, {
 // res.objekter: lokalforeninger uden noget de næste 30 dage; res.grupper: fordelt på momentum
 ```
 
-I browseren ligger kernen på `window.LAU_KERNE` (indlæses i `index.html`).
+I browseren ligger kernen på `window.LAU_KERNE` (indlæses i `index.html`). `app.js` bruger den til alle regler (`DATA.lager` er
+objektlageret). Husk at hæve `?v=` i `index.html`, når kernen ændres: det gælder `kerne/index.js`, og de filer, den
+importerer, caches højst 10 minutter af GitHub Pages.
 
 ## Tilføj en egenskab
 
@@ -48,6 +50,10 @@ på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `d
 
 ## Test
 
-`npm run tjek` kører typetjek og tests (også i GitHub Actions ved hver pull request). `test/paritet.test.js` kører
-`app.js` og kernen side om side på flere datoer og kræver samme resultat, så reglerne ikke glider fra hinanden, mens
-`app.js` stadig har sin egen kopi.
+`npm run tjek` kører typetjek og tests (også i GitHub Actions ved hver pull request):
+
+- `test/kerne.test.js` – kernen på et lille, fast datasæt.
+- `test/app.test.js` – hele `app.js` (der bruger kernen) køres på frosne data (`test/fixtures/data/`) på seks datoer og
+  skal give præcis det samme som facit (`test/fixtures/golden.json`). Facit blev lavet med `app.js`, før reglerne blev
+  flyttet til kernen, så det beviser, at flytningen ikke ændrede noget. Ændres en regel **bevidst**, laves nyt facit med
+  `node test/lav-golden.js` – og ændringen i `golden.json` viser præcis, hvad reglen ændrede.

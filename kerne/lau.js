@@ -52,7 +52,7 @@ export const LAU = new Ontologi({
           beregn: (f, L) => aktivitet(L.linkede(f, 'arrangementer').map(a => a.v.raw), f.v.navn, L.kontekst.daekning, L.nu)},
         status: {label: 'Aktivitet nu', type: 'kat', vaerdier: AKTIVITET_STATUS, beregn: (f, L) => aktivitetsStatus(akt(f, L), harFb(f))},
         afholdt90: {label: 'Afholdt de seneste 90 dage', type: 'tal', adgang: 'admin',
-          beregn: (f, L) => akt(f, L).afholdt.filter(e => +L.nu - +e.startD <= 90 * DAG).length},
+          beregn: (f, L) => akt(f, L).afholdt90.length},
         afholdtIAlt: {label: 'Afholdt i alt', type: 'tal', adgang: 'admin', beregn: (f, L) => akt(f, L).afholdt.length},
         planlagte: {label: 'Planlagte arrangementer', type: 'tal', beregn: (f, L) => akt(f, L).planlagt.length},
         sidsteArrangement: {label: 'Sidste afholdte arrangement', type: 'dato', beregn: (f, L) => akt(f, L).sidste},

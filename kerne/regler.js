@@ -1,7 +1,7 @@
 // Foreningens forretningsregler: kategorier, status, dækning, HB-godkendelse og momentum.
 // Ported fra app.js, der indtil videre har sin egen kopi. test/paritet.test.js sikrer, at de to giver samme resultat.
 
-import {DAG, dagNoegle, dageMellem, fmtDato, hbAar} from './tid.js';
+import {DAG, dagNoegle, dageMellem, fmtDato, hbAar, omEtKvartal} from './tid.js';
 
 // ---------------------------------------------------------------- kategori og status for et arrangement
 
@@ -73,6 +73,7 @@ export const HISTORIK_LOFT = 20;
  * @property {string} ugentligFra  første ugentlige kørsel (YYYY-MM-DD)
  * @property {string} fra          historikkens startdato (eller ugentligFra)
  * @property {Map<string, string>} fraFor  pr. forening den første dag, historikken dækker helt
+ * @property {Set<string>} hentet   foreninger, hvis historik er hentet (mindst én vellykket kørsel)
  * @property {Date} forsteKoersel
  */
 
@@ -104,7 +105,8 @@ export function beregnDaekning(meta, events, foreninger, nu) {
     if (s.length && s.every(Boolean)) fraFor.set(f.navn, s.sort()[s.length - 1]);
   }
   for (const f of foreninger) if (f.historik_fra) fraFor.set(f.navn, f.historik_fra);
-  return {ugentligFra, fra, fraFor, forsteKoersel};
+  const hentet = new Set(((meta.historik && meta.historik.koersler) || []).filter(k => k.status === 'SUCCEEDED').map(k => k.forening));
+  return {ugentligFra, fra, fraFor, forsteKoersel, hentet};
 }
 
 /** Første dag (YYYY-MM-DD), hvor foreningens afholdte arrangementer kendes fuldt ud. @param {Daekning} d @param {string} navn */
@@ -121,7 +123,9 @@ export function daekketFra(d, navn) {
  * @property {any[]} gyldige     hverken aflyst eller fjernet
  * @property {any[]} planlagt    gyldige, der ikke er slut
  * @property {any[]} afholdt     gyldige, der er slut
- * @property {any[]} naesteKvartal  kommende (ikke fjernede) inden for et kvartal
+ * @property {any[]} afholdt90   afholdte de seneste 90 dage
+ * @property {any[]} kommende    ikke fjernede, der ikke er slut (også aflyste – de vises som aflyst)
+ * @property {any[]} naesteKvartal  kommende inden for et kvartal
  * @property {Date|null} sidste  start på sidste afholdte
  * @property {any|null} naeste   første planlagte
  * @property {string} daekketFra
@@ -133,9 +137,9 @@ export function aktivitet(events, navn, daekning, nu) {
   const gyldige = ev.filter(e => !e.forsvundet && !e.aflyst);
   const planlagt = gyldige.filter(e => e.slutD >= nu);
   const afholdt = gyldige.filter(e => e.slutD < nu);
-  const hKvartal = new Date(nu); hKvartal.setUTCMonth(hKvartal.getUTCMonth() + 3);
-  return {events: ev, gyldige, planlagt, afholdt,
-    naesteKvartal: ev.filter(e => !e.forsvundet && e.slutD >= nu && e.startD <= hKvartal),
+  const kommende = ev.filter(e => !e.forsvundet && e.slutD >= nu), hKvartal = omEtKvartal(nu);
+  return {events: ev, gyldige, planlagt, afholdt, afholdt90: afholdt.filter(e => +nu - +e.startD <= 90 * DAG),
+    kommende, naesteKvartal: kommende.filter(e => e.startD <= hKvartal),
     sidste: afholdt.length ? afholdt[afholdt.length - 1].startD : null, naeste: planlagt[0] || null,
     daekketFra: daekketFra(daekning, navn)};
 }
@@ -144,6 +148,22 @@ export function aktivitet(events, navn, daekning, nu) {
 export function aktivitetsStatus(a, facebook) {
   if (!facebook) return 'ingenfb';
   return a.naesteKvartal.some(e => !e.aflyst) ? 'snart' : a.planlagt.length ? 'planlagt' : 'ingen';
+}
+
+/** Antal afholdte i et kvartal. @param {Aktivitet} a @param {{fra: string, til: string}} k */
+export function afholdtI(a, k) {
+  return a.afholdt.filter(e => { const d = dagNoegle(e.startD); return d >= k.fra && d < k.til; }).length;
+}
+
+/**
+ * Kvartalets status for kortets farvning "Afholdt i Qx": ja / nej / ukendt / ingenfb. 'ukendt', når kvartalet
+ * ligger før den dag, foreningens data dækker fra – så ser den ikke inaktiv ud uden grund.
+ * @param {number} antal afholdte i kvartalet @param {boolean} facebook @param {{fra: string}} k @param {string} daekketFraDag
+ */
+export function kvartalStatus(antal, facebook, k, daekketFraDag) {
+  if (antal) return 'ja';
+  if (!facebook) return 'ingenfb';
+  return k.fra < daekketFraDag ? 'ukendt' : 'nej';
 }
 
 // ---------------------------------------------------------------- HB-godkendelse

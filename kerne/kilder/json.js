@@ -19,7 +19,9 @@ import {anvendRettelser, beregnDaekning} from '../regler.js';
 export function bygFraJson({foreninger, events, meta, rettelser = {}, topo = null, nu = new Date(), rolle = 'admin'}) {
   nu = new Date(+nu);
   const daekning = beregnDaekning(meta, events, foreninger, nu);
-  const L = new Lager(LAU, {nu, rolle, daekning});
+  // alleArrangementer: kildedata med rettelser, også skjulte (bruges af rettelsesfanen i app.js, der skal kunne vise dem).
+  const alle = anvendRettelser(events.map(e => ({...e})), rettelser);
+  const L = new Lager(LAU, {nu, rolle, daekning, alleArrangementer: alle});
 
   const kommune = new Map();
   const hentKommune = (navn, kode = null) => {
@@ -36,7 +38,6 @@ export function bygFraJson({foreninger, events, meta, rettelser = {}, topo = nul
   }
 
   // Samme forberedelse som beregn() i app.js. Skjulte (dubletter, ikke-LAU) kommer ikke med.
-  const alle = anvendRettelser(events.map(e => ({...e})), rettelser);
   for (const e of alle) {
     e.startD = new Date(e.start);
     e.slutD = new Date(e.slut || e.start);

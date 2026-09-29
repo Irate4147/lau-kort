@@ -19,19 +19,13 @@
   const MAKS_RAEKKER = 150, MAKS_LISTE = 40;
   const K = () => window.LAU_KERNE;
 
-  // ---------------------------------------------------------------- lageret (bygges igen, når data ændres)
+  // ---------------------------------------------------------------- lageret
 
-  const CACHE = {data: null, admin: null, lager: null};
-  /** Kernens objektlager for de data, app.js har indlæst (med rettelser). Nyt, når DATA skifter (fx efter en rettelse). */
-  function lager() {
-    if (!K()) throw new Error('Kernen er ikke indlæst');
-    if (CACHE.data !== DATA || CACHE.admin !== erAdmin()) {
-      CACHE.lager = K().bygFraJson({foreninger: RAW.foreninger, events: RAW.events, meta: RAW.meta, rettelser: RET.data,
-        topo: RAW.topo, nu: NOW, rolle: erAdmin() ? 'admin' : 'offentlig'});
-      Object.assign(CACHE, {data: DATA, admin: erAdmin()});
-    }
-    return CACHE.lager;
-  }
+  /** Kernens objektlager for de data, app.js har indlæst (bygges i beregn() og igen efter en rettelse). */
+  const lager = () => {
+    if (!K() || !DATA || !DATA.lager) throw new Error('Kernen er ikke indlæst');
+    return DATA.lager;
+  };
   const ont = () => K().LAU;
   const typer = () => [...ont().typer.values()].filter(t => lager().alle(t.id).length);
   const flertal = id => ont().type(id).flertal;

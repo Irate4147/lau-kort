@@ -1,0 +1,18 @@
+{
+ "rettelser": {
+  "1074649548438746": {
+   "status": "ikke_afholdt",
+   "rettet": "2026-09-28T19:33:15Z"
+  },
+  "m-muleq7fcr52s": {
+   "manuel": true,
+   "status": "afholdt",
+   "navn": "Oplæg V. Retsordfører Nicolai Melholt",
+   "sted": "Ved Brandstationen 1, 2600 Glostrup, Danmark",
+   "forening": "Vestegnen",
+   "start": "2026-09-22T16:00:00Z",
+   "slut": "2026-09-22T18:00:00Z",
+   "rettet": "2026-09-28T15:33:27Z"
+  }
+ }
+}

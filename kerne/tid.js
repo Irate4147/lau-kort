@@ -33,6 +33,19 @@ export function kvartaler(aar) {
   return Array.from({length: 4}, (_, q) => ({id: `Q${q + 1}`, fra: start(q), til: start(q + 1)}));
 }
 
+/** Årets kvartaler til og med det indeværende. @param {Date} nu @returns {Kvartal[]} */
+export function kvartalerIndtilNu(nu) {
+  const aar = +maanedNoegle(nu).slice(0, 4), d = dagNoegle(nu), ks = kvartaler(aar);
+  return ks.slice(0, ks.findIndex(k => d >= k.fra && d < k.til) + 1);
+}
+
+/** Samme tidspunkt tre måneder frem ("inden for det næste kvartal"). @param {Date} nu */
+export function omEtKvartal(nu) {
+  const d = new Date(+nu);
+  d.setUTCMonth(d.getUTCMonth() + 3);
+  return d;
+}
+
 /**
  * HB-året set fra "nu": godkendelsen næste år kræver aktivitet i hvert af årets fire kvartaler.
  * @param {Date} nu
