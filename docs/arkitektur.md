@@ -195,9 +195,9 @@ Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–12
 - **`app.js` bruger kernen.** Dens egne kopier af reglerne (momentum, HB, kvartaler, dækning, kategorier, rettelser) er fjernet; `DATA.lager` er kernens objektlager. Udvidelserne bruger de samme navne som før og er uændrede.
 - Tests: enhedstests af kernen og en **facit-test**: hele `app.js` køres på frosne data på seks datoer (inkl. kvartals- og årsskifte) og skal give præcis det samme som den gamle `app.js` gjorde. CI kører dem ved hver pull request.
 - Analysebyggeren (`udvidelser/egne-analyser.js`) er bygget om oven på kernen: alle typer, egenskaber og links kommer fra ontologien. Den kan filtrere gennem links, finde objekter, der **ikke** har noget ("lokalforeninger uden arrangementer de næste 30 dage"), og følge links (search around).
+- **Analyserne er flyttet over på kernen.** Reglerne for HB-risiko, hvide pletter og "Hvad virker?" står i `kerne/regler.js` og er egenskaber i ontologien (fx `hbRisiko` og `rekord` på Forening, `hvidPlet` på Kommune, `deltagerIndeks`, `starttid` og `varselGruppe` på Arrangement), så de også kan bruges i analysebyggeren, filtre og på kortet. Månedsrapportens "Denne måned indtil nu" (Bagud og Fremad) beregnes af `kerne/rapport.js` med samme opbygning og tekster som `lav_rapport()`/`lav_fremad()` i `scripts/rapport.py` – et udgangspunkt, når `rapport.py` skal bruge kernen. Udvidelserne læser værdierne fra `DATA.lager` og er kun brugerflade. En facit-test (`test/analyser.test.js`) beviser, at analysernes HTML, advarsler og kortlag er uændrede på seks datoer.
 
 **Tilbage i fase 1:**
 
 1. `scripts/hb.py` og `scripts/rapport.py` skal bruge kernen (via Node i GitHub Actions) i stedet for deres egne kopier af reglerne. **Vigtigst**, da de er de sidste kopier.
 2. Kortets farvninger og foreningspanelet skal bygges på objektsæt og ontologien (så en ny egenskab også kan farve kortet).
-3. De øvrige analyser (HB-risiko, hvide pletter, "Hvad virker?", månedsrapport) flyttes over på kernen én ad gangen.
