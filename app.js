@@ -188,7 +188,7 @@ const dageMellem = (a, b) => Math.floor((b - a) / DAY);
 /** "2 af 3 de seneste 3 måneder" – eller hvorfor det ikke kan måles. */
 const momMaalTekst = m => (m.daekket ? `${m.afholdt} af ${MOM_MAAL} de seneste 3 måneder` : 'Data dækker ikke de seneste 3 måneder');
 const momTal = v => v.toLocaleString('da-DK', {maximumFractionDigits: 1});
-/** Foreningens momentum: {niveau, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler}. */
+/** Foreningens momentum: {niveau, grund, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler}. */
 function momentum(f) {
   const fra = new Date(NOW.getTime() - MOM_VINDUE * DAY), til = new Date(NOW.getTime() + MOM_FREMAD * DAY);
   const daekketD = new Date(daekketFra(f.navn) + 'T00:00:00Z');
@@ -210,6 +210,10 @@ function momentum(f) {
     : d > MOM_MAANED ? (fremad ? 'fremad' : d > MOM_HJAELP ? 'hjaelp' : 'faldende')
     : afholdt >= MOM_MAAL ? 'godt'
     : trend === 'ned' && !fremad ? 'faldende' : 'stabil';
+  // Den konkrete grund til niveauet ("Mister fart" har to mulige grunde).
+  const grund = niveau === 'faldende' && d <= MOM_MAANED
+    ? `Færre arrangementer end normalt (${afholdt} de seneste 3 måneder, normalt ${momTal(normalt)}) og intet i kalenderen`
+    : niveau === 'faldende' ? 'Over en måned siden sidste arrangement og intet i kalenderen' : MOM_STATUS[niveau].hint;
   // Tidlige advarsler (−), gode tegn (+) og oplysninger (i), der forklarer niveauet.
   const signaler = [];
   if (niveau !== 'ingenfb') {
@@ -225,7 +229,7 @@ function momentum(f) {
     if (trend === 'op') signaler.push(['+', `Flere end normalt (normalt ${momTal(normalt)} pr. 3 måneder)`]);
     if (aflyst) signaler.push(['-', `${aflyst} aflyst de seneste 3 måneder`]);
   }
-  return {niveau, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler};
+  return {niveau, grund, sidsteDage, naesteDage, afholdt, daekket, normalt, trend, fremad, aflyst, signaler};
 }
 const weekday = d => (new Date(dayKey(d) + 'T12:00:00Z').getUTCDay() + 6) % 7; // 0 = mandag
 /** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
@@ -1388,7 +1392,7 @@ registerSection({
     const trend = m.trend == null ? 'Normalt niveau kræver mere historik'
       : `${{op: '↑ flere end', ned: '↓ færre end', som: 'Som'}[m.trend]} normalt (${momTal(m.normalt)})`;
     return `<div class="hb-prognose"><span class="dot" style="background:${MOM_FILL[m.niveau]}"></span><b>${esc(st.ikon)} ${esc(st.label)}</b></div>
-      <p class="note">${esc(st.hint)}.<br>Mål: mindst ét arrangement om måneden.</p>
+      <p class="note">${esc(m.grund)}.<br>Mål: mindst ét arrangement om måneden.</p>
       ${momTidslinje([f], {aksetekst: false})}
       <div class="tiles">
         ${tile('Dage siden sidste', m.sidsteDage == null ? '–' : String(m.sidsteDage), `Mål: højst ${MOM_MAANED}`)}
