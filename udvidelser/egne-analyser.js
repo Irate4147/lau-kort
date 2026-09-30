@@ -135,9 +135,20 @@
     if (layerState['egen-analyse']) { drawLayers(); renderLegend(); } else setVisning('egen-analyse', true);
     if (selected) closeForening();
   }
+  /**
+   * Stiens navn til skærmen: "Arrangeret af → Navn" bliver "Forening (arrangeret af)", og "Arrangeret af → Momentum"
+   * bliver "Arrangeret af: momentum".
+   */
+  function stiNavn(type, sti) {
+    const s = ont().sti(type, sti);
+    if (!s.led.length) return s.egenskab.label;
+    const l = s.led[s.led.length - 1];
+    if (s.led.length === 1 && s.egenskab && s.egenskab.id === ont().type(l.til).titel) return `${ont().type(l.til).label} (${l.label.toLowerCase()})`;
+    return ont().stiLabel(type, sti).split(' → ').map((x, i) => (i ? x.toLowerCase() : x)).join(': ');
+  }
   const maalTekst = spec => {
     const m = spec.maal || {funktion: 'antal'}, T = slutType(spec);
-    return m.funktion === 'antal' ? `Antal ${flertal(T).toLowerCase()}` : `${K().MAAL[m.funktion].label} af ${ont().stiLabel(T, m.egenskab).toLowerCase()}`;
+    return m.funktion === 'antal' ? `Antal ${flertal(T).toLowerCase()}` : `${K().MAAL[m.funktion].label} af ${stiNavn(T, m.egenskab).toLowerCase()}`;
   };
 
   registerLayer({
@@ -190,9 +201,10 @@
     const grp = new Map();
     for (const s of via) { const l = s.sti.split('.')[0]; if (!grp.has(l)) grp.set(l, []); grp.get(l).push(s); }
     return `<select data-ea-nyt="${stiNoegle(sti)}" aria-label="Tilføj filter"><option value="">+ Tilføj filter …</option>
-      <optgroup label="${esc(flertal(type))}">${egne.map(s => opt(`e:${s.sti}`, s.label)).join('')}</optgroup>
-      ${links.length ? `<optgroup label="Har / har ingen linkede …">${links.map(l => opt(`l:${l.navn}`, `${l.label} der …`)).join('')}</optgroup>` : ''}
-      ${[...grp].map(([l, xs]) => `<optgroup label="${esc(ont().link(type, l).label)} →">${xs.map(s => opt(`e:${s.sti}`, s.label)).join('')}</optgroup>`).join('')}
+      <optgroup label="${esc(flertal(type))}s egne oplysninger">${egne.map(s => opt(`e:${s.sti}`, s.label)).join('')}</optgroup>
+      ${[...grp].map(([l, xs]) => { const lk = ont().link(type, l);
+        return `<optgroup label="${esc(lk.label)} (${esc(flertal(lk.til).toLowerCase())})">${xs.map(s => opt(`e:${s.sti}`, s.egenskab.label)).join('')}</optgroup>`; }).join('')}
+      ${links.length ? `<optgroup label="Har / har ingen …">${links.map(l => opt(`l:${l.navn}`, `Har (ingen) ${l.label.toLowerCase()} der …`)).join('')}</optgroup>` : ''}
     </select>`;
   }
 
@@ -201,7 +213,7 @@
       const l = ont().link(type, f.link);
       return `${f.ingen ? 'Har ingen' : 'Har'} ${l.label.toLowerCase()}${f.filtre && f.filtre.length ? ' der …' : ''}`;
     }
-    const e = ont().sti(type, f.egenskab).egenskab, label = ont().stiLabel(type, f.egenskab);
+    const e = ont().sti(type, f.egenskab).egenskab, label = stiNavn(type, f.egenskab);
     if (f.indeholder) return `${label} indeholder "${f.indeholder}"`;
     if (e.type === 'tal') {
       return `${label}: ${f.min != null && f.max != null ? `${num1(f.min)}–${num1(f.max)}` : f.min != null ? `mindst ${num1(f.min)}` : f.max != null ? `højst ${num1(f.max)}` : 'alle'}`;
@@ -233,7 +245,7 @@
   }
 
   function filterEditor(t, type, f, k) {
-    const L = lager(), e = ont().sti(type, f.egenskab).egenskab, label = ont().stiLabel(type, f.egenskab);
+    const L = lager(), e = ont().sti(type, f.egenskab).egenskab, label = stiNavn(type, f.egenskab);
     if (e.type === 'tal') {
       return `<div class="ea-editor" data-ea-editor="${k}"><b>${esc(label)}</b>
         <div class="ea-raekke"><label>Mindst<input type="number" data-ea-min value="${f.min ?? ''}"></label>
@@ -264,6 +276,36 @@
         <span>${esc(v == null ? '(ingen)' : K().visVaerdi(e, v))}</span><span class="ea-n">${c}</span></label>`).join('')}</div></div>`;
   }
 
+  /** Menu over stier, delt op i typens egne oplysninger og oplysninger gennem hvert link (i stedet for "A → B"). */
+  function stiMenu(type, stier, valgt) {
+    const egne = stier.filter(s => !s.viaLink), grp = new Map();
+    for (const s of stier.filter(x => x.viaLink)) { const l = s.sti.split('.')[0]; if (!grp.has(l)) grp.set(l, []); grp.get(l).push(s); }
+    return `${egne.length ? `<optgroup label="${esc(flertal(type))}s egne oplysninger">${egne.map(s => opt(s.sti, s.label, valgt === s.sti)).join('')}</optgroup>` : ''}
+      ${[...grp].map(([l, xs]) => { const lk = ont().link(type, l);
+        return `<optgroup label="${esc(lk.label)} (${esc(flertal(lk.til).toLowerCase())})">${xs.map(s => opt(s.sti, stiNavn(type, s.sti), valgt === s.sti)).join('')}</optgroup>`; }).join('')}`;
+  }
+
+  /** Analysen læst op i én sætning, så man kan se, hvad tallene betyder. */
+  function opsummering(s, r, T) {
+    // Filtre uden noget valgt (fx "alle") gør ingenting og nævnes ikke.
+    const virker = f => f.link || f.indeholder || f.periode || f.fra || f.til || f.min != null || f.max != null || (f.er && f.er.length);
+    const t0 = trin(s)[0], filtre = t => t.filtre.filter(virker).map(f => filterTekst(t.type, f).toLowerCase());
+    const dele = [`<b>${r.objekter.length} ${esc(flertal(T).toLowerCase())}</b>`];
+    const f0 = filtre(t0);
+    const kaede = trin(s).slice(1);
+    if (kaede.length) {
+      dele.push(`– fundet via ${esc(flertal(t0.type).toLowerCase())}${f0.length ? ` (${esc(f0.join(', '))})` : ''}`
+        + kaede.map(x => ` → ${esc(x.link.label.toLowerCase())}${filtre(x).length ? ` (${esc(filtre(x).join(', '))})` : ''}`).join(''));
+    } else if (f0.length) dele.push(`hvor ${esc(f0.join(' og '))}`);
+    const g = s.gruppering;
+    if (g) {
+      const ge = ont().sti(T, g.egenskab).egenskab;
+      dele.push(`– delt op efter <b>${esc(ge.type === 'dato' ? `${stiNavn(T, g.egenskab).toLowerCase()} pr. ${K().DATO_GRUPPER[g.pr || 'maaned'].label.toLowerCase()}` : stiNavn(T, g.egenskab).toLowerCase())}</b>`);
+    }
+    if ((s.maal || {}).funktion && s.maal.funktion !== 'antal') dele.push(`– viser <b>${esc(maalTekst(s).toLowerCase())}</b>`);
+    return `<p class="ea-opsummering">Du ser ${dele.join(' ')}.</p>`;
+  }
+
   const KOLONNER = {Forening: ['momentum', 'afholdt90', 'planlagte'], Arrangement: ['start', 'arrangeretAf.navn', 'status'], Kommune: ['forening.navn', 'aktivitetSenesteAar']};
 
   function renderBygger(t) {
@@ -274,7 +316,7 @@
     if (fejl.length) return `<p class="empty">Analysen kan ikke køres: ${esc(fejl.join('; '))}</p><button type="button" class="chip small" data-ea-nulstil>Nulstil</button>`;
     const r = K().koer(L, s), g = s.gruppering, ge = g && ont().sti(T, g.egenskab).egenskab;
     const maal = s.maal || {funktion: 'antal'};
-    const gruppeTekst = !g ? '' : ge.type === 'dato' ? K().DATO_GRUPPER[g.pr || 'maaned'].label.toLowerCase() : ont().stiLabel(T, g.egenskab).toLowerCase();
+    const gruppeTekst = !g ? '' : ge.type === 'dato' ? K().DATO_GRUPPER[g.pr || 'maaned'].label.toLowerCase() : stiNavn(T, g.egenskab).toLowerCase();
     const vis = r.grupper ? r.grupper.slice(0, MAKS_LISTE) : [];
     const diagram = !r.grupper ? '' : !r.grupper.length ? '<p class="empty">Ingen objekter i sættet.</p>'
       : hbars(vis.map(x => ({label: x.label, values: [x.vaerdi ?? 0],
@@ -290,34 +332,38 @@
     const foreningFor = o => (T === 'Forening' ? o.id : tilForening ? (L.linkede(o, tilForening.navn)[0] || {id: null}).id : null);
 
     return `<div class="ea">
-      <div class="ea-trin"><span class="ea-nr">1</span><div><b>Hvad vil du se på?</b>
+      <div class="ea-trin"><span class="ea-nr">1</span><div><b>Hvad vil du tælle?</b><p class="ea-hjaelp">Vælg hvad analysen handler om.</p>
         <div class="ea-knapper">${typer().map(x => `<button type="button" class="chip small${s.type === x.id ? ' on' : ''}" data-ea-type="${x.id}" aria-pressed="${s.type === x.id}">${esc(x.flertal)}</button>`).join('')}</div></div></div>
 
-      <div class="ea-trin"><span class="ea-nr">2</span><div><b>Filtrér – og følg links</b>
+      <div class="ea-trin"><span class="ea-nr">2</span><div><b>Afgræns <span class="muted">(valgfrit)</span></b>
+        <p class="ea-hjaelp">Tilføj filtre for kun at tage nogle med. Klik på et filter for at ændre det, × fjerner det.</p>
         ${trinliste.map((x, i) => `<div class="ea-saet">
           <div class="ea-saet-top">${i ? `<span class="ea-pil">→</span> <b>${esc(x.link.label)}</b> <span class="muted">(${esc(flertal(x.type).toLowerCase())})</span>
             ${i === trinliste.length - 1 ? '<button type="button" class="ea-fjern" data-ea-around-fjern aria-label="Fjern trin">×</button>' : ''}` : `<b>${esc(flertal(x.type))}</b>`}</div>
           ${filterListe(t, x.type, x.filtre, [i])}</div>`).join('')}
-        <div class="ea-knapper ea-around">Search around:${ont().links(T).filter(l => L.alle(l.til).length)
-          .map(l => `<button type="button" class="chip small" data-ea-around="${esc(l.navn)}" title="Skift til de ${esc(flertal(l.til).toLowerCase())}, sættet hænger sammen med">→ ${esc(l.label)}</button>`).join('')}</div>
+        ${ont().links(T).some(l => L.alle(l.til).length) ? `<div class="ea-around"><span>Vil du i stedet se på det, de ${r.objekter.length} ${esc(flertal(T).toLowerCase())} hænger sammen med? Skift til:</span>
+          <div class="ea-knapper">${ont().links(T).filter(l => L.alle(l.til).length)
+          .map(l => `<button type="button" class="chip small" data-ea-around="${esc(l.navn)}" title="Fx: arrangementerne ovenfor → de foreninger, der har arrangeret dem">${esc(l.label)} <span class="muted">(${esc(flertal(l.til).toLowerCase())})</span></button>`).join('')}</div></div>` : ''}
       </div></div>
 
-      <div class="ea-trin"><span class="ea-nr">3</span><div><b>Gruppér og mål</b>
+      <div class="ea-trin"><span class="ea-nr">3</span><div><b>Del op og beregn</b>
+        <p class="ea-hjaelp">Del resultatet op i grupper (fx pr. forening eller pr. måned), og vælg hvad der skal regnes ud for hver gruppe.</p>
         <div class="ea-raekke">
-          <label>Gruppér efter<select data-ea-gruppe>${opt('', '(ingen – kun det samlede tal)', !g)}${stier.filter(x => x.egenskab.type !== 'tal')
-            .map(x => opt(x.sti, x.label, g && g.egenskab === x.sti)).join('')}</select></label>
+          <label>Del op efter<select data-ea-gruppe>${opt('', 'Ingen opdeling – kun det samlede tal', !g)}${stiMenu(T, stier.filter(x => x.egenskab.type !== 'tal'), g && g.egenskab)}</select></label>
           ${ge && ge.type === 'dato' ? `<label>pr.<select data-ea-pr>${Object.entries(K().DATO_GRUPPER).map(([k, d]) => opt(k, d.label, (g.pr || 'maaned') === k)).join('')}</select></label>` : ''}
-          <label>Mål<select data-ea-maal>${Object.entries(K().MAAL).map(([k, m]) => opt(k, k === 'antal' ? `Antal ${flertal(T).toLowerCase()}` : `${m.label} af …`, maal.funktion === k)).join('')}</select></label>
-          ${maal.funktion !== 'antal' ? `<label>&nbsp;<select data-ea-maalfelt>${stier.filter(x => x.egenskab.type === 'tal').map(x => opt(x.sti, x.label, maal.egenskab === x.sti)).join('')}</select></label>` : ''}
+          <label>Beregn<select data-ea-maal>${Object.entries(K().MAAL).map(([k, m]) => opt(k, k === 'antal' ? `Antal ${flertal(T).toLowerCase()}` : `${m.label} af …`, maal.funktion === k)).join('')}</select></label>
+          ${maal.funktion !== 'antal' ? `<label>&nbsp;<select data-ea-maalfelt>${stiMenu(T, stier.filter(x => x.egenskab.type === 'tal'), maal.egenskab)}</select></label>` : ''}
         </div></div></div>
 
+      <h3 class="ea-resultat">Resultat</h3>
+      ${opsummering(s, r, T)}
       <div class="tiles">
-        ${tile(`${flertal(T)} i sættet`, String(r.objekter.length), `af ${L.alle(T).length} i alt`)}
+        ${tile(`${flertal(T)} i resultatet`, String(r.objekter.length), `af ${L.alle(T).length} i alt`)}
         ${maal.funktion !== 'antal' ? tile(maalTekst(s), num1(r.total), 'for hele sættet', true) : ''}
-        ${r.grupper ? tile('Grupper', String(r.grupper.length), gruppeTekst) : ''}
+        ${r.grupper ? tile('Grupper', String(r.grupper.length), `én pr. ${gruppeTekst}`) : ''}
       </div>
       ${r.grupper ? `<h3>${esc(maalTekst(s))} pr. ${esc(gruppeTekst)}</h3>
-        <p class="note">Klik på en søjle for at bore ned – gruppen bliver et filter.</p><div class="ea-diagram">${diagram}</div>` : ''}
+        <p class="note">Klik på en søjle for kun at se den gruppe (den bliver et filter).</p><div class="ea-diagram">${diagram}</div>` : ''}
 
       <div class="ea-handlinger">
         <button type="button" class="chip small primary" data-ea-kort>Vis på kortet</button>
@@ -325,9 +371,9 @@
         <button type="button" class="chip small" data-ea-nulstil>Nulstil</button>
       </div>
 
-      <h3>${esc(flertal(T))} i sættet</h3>
+      <h3>${esc(flertal(T))} med i resultatet</h3>
       ${!r.objekter.length ? '<p class="empty">Ingen.</p>' : `<table class="hb-tabel analyse-tabel ea-tabel"><thead><tr><th>${esc(ont().type(T).egenskaber[ont().type(T).titel].label)}</th>
-        ${[...kol, ...maalKol].map(k => `<th>${esc(ont().stiLabel(T, k))}</th>`).join('')}</tr></thead>
+        ${[...kol, ...maalKol].map(k => `<th>${esc(stiNavn(T, k))}</th>`).join('')}</tr></thead>
         <tbody>${r.objekter.slice(0, MAKS_RAEKKER).map(o => { const f = foreningFor(o);
           return `<tr${f ? ` tabindex="0" data-f="${esc(f)}"` : ''}><td>${esc(L.titel(o))}</td>${[...kol, ...maalKol].map(k => `<td>${esc(celle(o, k))}</td>`).join('')}</tr>`; }).join('')}</tbody></table>
         ${r.objekter.length > MAKS_RAEKKER ? `<p class="note">Viser ${MAKS_RAEKKER} af ${r.objekter.length} – hent CSV for dem alle.</p>` : ''}`}
