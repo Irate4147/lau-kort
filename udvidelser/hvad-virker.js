@@ -9,59 +9,59 @@
  * end HV.minN arrangementer nedtones og bruges ikke i konklusionerne.
  * Desuden: advarslen 'rekord' (niveau 'positiv') fremhæver i den grønne boks "Godt gået" lokalforeninger, der har fået
  * markant flere deltagere end normalt til et arrangement (se markant()).
+ * Reglerne står i kernen (kerne/regler.js: HVAD_VIRKER, REKORD, afholdteMed, normalniveau, rekord, starttid og
+ * varselGruppe) og i ontologien (kerne/lau.js): normalniveau, normaltDeltagere og rekord på Forening, starttid,
+ * varselGruppe og deltagerIndeks på Arrangement. Filen her læser dem fra DATA.lager og er kun analysen og advarslen.
  * Filen er pakket ind i en funktion, så dens navne ikke støder sammen med app.js eller andre udvidelser.
  */
 (() => {
-  const HV = {minForening: 3, minN: 5, forskel: 0.2};
+  const {MIN_FORENING, MIN_N, FORSKEL} = K.regler.HVAD_VIRKER;
+  const HV = {minForening: MIN_FORENING, minN: MIN_N, forskel: FORSKEL};
   // "Markant flere deltagere end normalt": mindst REKORD.gange × foreningens median og mindst REKORD.plus flere,
   // målt mod mindst REKORD.minAndre andre afholdte arrangementer. Afholdt de seneste REKORD.bagud dage, eller planlagt
-  // de næste REKORD.fremad dage (Facebook-deltagere indtil nu).
-  const REKORD = {gange: 1.5, plus: 5, minAndre: 3, bagud: 30, fremad: 14};
+  // de næste REKORD.fremad dage (Facebook-deltagere indtil nu). Reglen er rekord() i kerne/regler.js.
+  const R = K.regler.REKORD;
+  const REKORD = {gange: R.GANGE, plus: R.PLUS, minAndre: R.MIN_ANDRE, bagud: R.BAGUD, fremad: R.FREMAD};
+  // Målene (tallet på arrangementet er K.regler.DELTAGER_MAAL[id]).
   const MAAL = {
-    deltager: {label: 'Deltagere', lang: 'deltagere på Facebook ("deltager")', v: e => e.deltager, enhed: 'deltagere'},
-    svar: {label: 'Tilkendegivelser', lang: 'tilkendegivelser på Facebook ("deltager" + "interesseret")', v: e => e.svar, enhed: 'tilkendegivelser'},
-    fremmoede: {label: 'Fremmøde', lang: 'registreret fremmøde (noteret under Arrangementer)', v: e => e.fremmoede, enhed: 'fremmødte'},
+    deltager: {label: 'Deltagere', lang: 'deltagere på Facebook ("deltager")', enhed: 'deltagere'},
+    svar: {label: 'Tilkendegivelser', lang: 'tilkendegivelser på Facebook ("deltager" + "interesseret")', enhed: 'tilkendegivelser'},
+    fremmoede: {label: 'Fremmøde', lang: 'registreret fremmøde (noteret under Arrangementer)', enhed: 'fremmødte'},
   };
   const valg = {maal: 'deltager'};
   const tal1 = v => v.toLocaleString('da-DK', {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const fx = v => `${tal1(v)} ×`;
-  const UGEDAGE_LANG = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
-  const time = e => +fmtHM.format(e.startD).slice(0, 2); // time på dagen i dansk tid
-  // Varsel kan kun måles for arrangementer, der er opdaget efter indsamlingens start (samme regel som f.varsel i beregn()).
-  const varselDage = e => (!e.historisk && !e.manuel && e.firstD - DATA.firstRun > DAY && e.startD >= e.firstD
-    ? (e.startD - e.firstD) / DAY : null);
+  // Egenskaber fra kernens objektlager: et arrangements værdi og visningsnavnet for en kategori-egenskab.
+  const vaerdi = (e, id) => DATA.lager.vaerdi(DATA.lager.hent('Arrangement', e.id), id);
+  const navne = id => Object.values(K.LAU.egenskab('Arrangement', id).vaerdier);
+  const gruppe = id => e => { const k = vaerdi(e, id); return k == null ? null : K.LAU.egenskab('Arrangement', id).vaerdier[k]; };
 
   // Opdelingerne: grupper (i visningsrækkefølge), hvilken gruppe et arrangement hører til (null = ikke med) og en sætning.
   const DIMENSIONER = [
-    {id: 'kat', titel: 'Type', grupper: KAT_NAVNE, gruppe: e => e.kat,
+    {id: 'kat', titel: 'Type', grupper: navne('kategori'), gruppe: gruppe('kategori'),
      saetning: g => `<b>${esc(g)}</b>`},
-    {id: 'dag', titel: 'Ugedag', grupper: UGEDAGE_LANG, gruppe: e => UGEDAGE_LANG[weekday(e.startD)],
+    {id: 'dag', titel: 'Ugedag', grupper: navne('ugedag'), gruppe: gruppe('ugedag'),
      saetning: g => `Arrangementer om <b>${esc(g.toLowerCase())}en</b>`},
-    {id: 'tid', titel: 'Tidspunkt (start, dansk tid)', grupper: ['Før kl. 12', 'Kl. 12–17', 'Kl. 17–19', 'Kl. 19 eller senere'],
-     gruppe: e => { const h = time(e); return h < 12 ? 'Før kl. 12' : h < 17 ? 'Kl. 12–17' : h < 19 ? 'Kl. 17–19' : 'Kl. 19 eller senere'; },
+    {id: 'tid', titel: 'Tidspunkt (start, dansk tid)', grupper: navne('starttid'), gruppe: gruppe('starttid'),
      saetning: g => `Arrangementer, der starter <b>${esc(g.replace(/^Kl\./, 'kl.').replace(/^Før/, 'før'))}</b>,`},
-    {id: 'varsel', titel: 'Varsel (dage fra oprettelse til afholdelse)', grupper: ['Under 7 dage', '7–13 dage', '14–27 dage', '28 dage eller mere'],
-     gruppe: e => { const d = varselDage(e); return d == null ? null : d < 7 ? 'Under 7 dage' : d < 14 ? '7–13 dage' : d < 28 ? '14–27 dage' : '28 dage eller mere'; },
+    {id: 'varsel', titel: 'Varsel (dage fra oprettelse til afholdelse)', grupper: navne('varselGruppe'), gruppe: gruppe('varselGruppe'),
      saetning: g => `Arrangementer med <b>${esc(g.replace(/^Under/, 'under'))}</b> varsel`},
   ];
 
-  /** Foreningens afholdte arrangementer med et tal for målet (hvert arrangement én gang, hos den første forening). */
-  function afholdteMed(f, v) {
-    return f.afholdt.filter(e => v(e) != null && (f.national || e.foreninger.find(n => n !== NATIONAL && DATA.byName.has(n)) === f.navn));
-  }
-
-  /** Arrangementerne i grundlaget med indeks, og hvem der er udeladt. national: landsforeningen, ellers lokalforeningerne. */
+  /**
+   * Arrangementerne i grundlaget med indeks, og hvem der er udeladt. national: landsforeningen, ellers lokalforeningerne.
+   * Kernens normalniveau: hvert arrangement én gang (hos den første lokalforening) og indeks = tal ÷ foreningens median.
+   */
   function grundlag(maal, national) {
-    const v = MAAL[maal].v, rows = [], udeladt = [];
+    const rows = [], udeladt = [];
     const foreninger = national ? [DATA.byName.get(NATIONAL)].filter(Boolean) : DATA.lokale;
     let med = 0;
     for (const f of foreninger) {
-      const list = afholdteMed(f, v);
-      if (!list.length) continue;
-      const m = median(list.map(v));
-      if (list.length < HV.minForening || !m) { udeladt.push({navn: f.navn, n: list.length}); continue; }
+      const g = DATA.lager.vaerdi(DATA.lager.hent('Forening', f.navn), 'normalniveau')[maal];
+      if (!g.n) continue;
+      if (g.median == null) { udeladt.push({navn: f.navn, n: g.n}); continue; }
       med++;
-      for (const e of list) rows.push({e, forening: f.navn, vaerdi: v(e), median: m, idx: v(e) / m});
+      for (const x of g.arrangementer) rows.push({e: x.e, forening: f.navn, vaerdi: x.vaerdi, median: g.median, idx: x.indeks});
     }
     return {rows, udeladt, foreninger: med};
   }
@@ -118,7 +118,7 @@
         valg.maal === 'fremmoede' ? ' Fremmøde noteres under Arrangementer.' : ''}</p>`;
     }
     const opdelt = DIMENSIONER.map(dim => ({dim, grupper: opdel(rows, dim)}));
-    const nVarsel = rows.filter(r => varselDage(r.e) != null).length;
+    const nVarsel = rows.filter(r => vaerdi(r.e, 'varselGruppe') != null).length;
     const top = [...rows].sort((a, b) => b.idx - a.idx || b.vaerdi - a.vaerdi).slice(0, national ? 5 : 10);
     const udeladtN = udeladt.reduce((s, u) => s + u.n, 0);
     return `<div class="tiles">
@@ -149,25 +149,12 @@
    * Arrangementer i lokalforeningerne med markant flere deltagere end foreningen plejer: registreret fremmøde, hvis
    * det findes for arrangementet og mindst REKORD.minAndre andre, ellers deltagere på Facebook. Sammenlignes med
    * medianen af foreningens andre afholdte arrangementer med samme mål. Højst ét (det største) pr. forening.
+   * Reglen er rekord() i kernen (egenskaben rekordDetaljer på Forening).
    */
   function markant() {
-    const fra = new Date(NOW.getTime() - REKORD.bagud * DAY), til = new Date(NOW.getTime() + REKORD.fremad * DAY);
     const ud = [];
     for (const f of DATA.lokale) {
-      let bedst = null;
-      for (const e of f.gyldige) {
-        const afholdt = e.slutD < NOW;
-        if (afholdt ? e.slutD < fra : e.startD > til) continue;
-        for (const maal of afholdt ? ['fremmoede', 'deltager'] : ['deltager']) {
-          const v = MAAL[maal].v, x = v(e);
-          if (x == null) continue;
-          const andre = afholdteMed(f, v).filter(a => a !== e).map(v);
-          if (andre.length < REKORD.minAndre) continue;
-          const m = median(andre);
-          if (x >= REKORD.gange * m && x - m >= REKORD.plus && (!bedst || x / m > bedst.gange)) bedst = {e, maal, x, m, gange: m ? x / m : Infinity, afholdt};
-          break; // fremmøde går forud for Facebook, når det kan sammenlignes
-        }
-      }
+      const bedst = DATA.lager.vaerdi(DATA.lager.hent('Forening', f.navn), 'rekordDetaljer');
       if (bedst) ud.push({f, ...bedst});
     }
     return ud.sort((a, b) => b.gange - a.gange);

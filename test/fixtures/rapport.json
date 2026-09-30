@@ -1,0 +1,218 @@
+{
+ "fixtures 2026-03-31T21:59:00Z alle": {
+  "gemt": "140fa127bf64292d",
+  "udskrift": "47e38d829249e3ea",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-03-31T21:59:00Z 2026-03": {
+  "gemt": "224462fe56418720",
+  "udskrift": "b41e2162159a77c0",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-06-30T21:30:00Z alle": {
+  "gemt": "14a7ed3b0d268a3f",
+  "udskrift": "68de5309ece7ca7d",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-06-30T21:30:00Z 2026-06": {
+  "gemt": "34420cc938d6c465",
+  "udskrift": "9376e7ef52fe3a59",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-09-29T10:00:00Z alle": {
+  "gemt": "6a3564512e7c0356",
+  "udskrift": "77514df7fdc8307c",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-09-29T10:00:00Z 2026-09": {
+  "gemt": "1031e5ef8c63fdf7",
+  "udskrift": "2ab460a76e08615b",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-09-30T21:30:00Z alle": {
+  "gemt": "73433d733d904da8",
+  "udskrift": "77514df7fdc8307c",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-09-30T21:30:00Z 2026-09": {
+  "gemt": "03e31ebc612ed01c",
+  "udskrift": "33fc41427acacc1b",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-12-31T22:30:00Z alle": {
+  "gemt": "30d1cd81c0f0a5b6",
+  "udskrift": "52c6d6fbbc3f7999",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2026-12-31T22:30:00Z 2026-12": {
+  "gemt": "81392fef334ac49c",
+  "udskrift": "dc21fe7011470900",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2027-01-02T12:00:00Z alle": {
+  "gemt": "53251c60ea02fc2d",
+  "udskrift": "443e95a0e39391a6",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures 2027-01-02T12:00:00Z 2027-01": {
+  "gemt": "51bdc581256f0753",
+  "udskrift": "73f9b04e6740f43b",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures kæde 1": {
+  "gemt": "9d68a06436e8a7d6",
+  "udskrift": "3120bf1e45ce18d5",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures kæde 2": {
+  "gemt": "752b5f0429c90543",
+  "udskrift": "b559b4881a857b8b",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures kæde 3": {
+  "gemt": "e0e3b8e86f60ec69",
+  "udskrift": "1f2db560d1c3c110",
+  "exit": null,
+  "skrevet": true
+ },
+ "fixtures kæde 4": {
+  "gemt": "e0e3b8e86f60ec69",
+  "udskrift": "ed8c4859f750e60d",
+  "exit": null,
+  "skrevet": false
+ },
+ "fixtures kæde 5": {
+  "gemt": null,
+  "udskrift": "e3b0c44298fc1c14",
+  "exit": "2027-02 ligger i fremtiden",
+  "skrevet": false
+ },
+ "fixtures kæde 6": {
+  "gemt": "0185ba4a20a73031",
+  "udskrift": "8ad6a135753f25f6",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-03-31T21:59:00Z alle": {
+  "gemt": "2d1423a9b9366858",
+  "udskrift": "9f9ba1f82c3c52a3",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-03-31T21:59:00Z 2026-03": {
+  "gemt": "5377ce23994a42bc",
+  "udskrift": "726ea1b70847b3a2",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-06-30T21:30:00Z alle": {
+  "gemt": "e307fc16d78a438c",
+  "udskrift": "ce2857f989495d7d",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-06-30T21:30:00Z 2026-06": {
+  "gemt": "a20f6e1634958632",
+  "udskrift": "1142c517da5b855e",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-09-29T10:00:00Z alle": {
+  "gemt": "426f8c0756967322",
+  "udskrift": "a7cab13eccd20d39",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-09-29T10:00:00Z 2026-09": {
+  "gemt": "3a5b1e099a261d64",
+  "udskrift": "5f4e4cf7eb0a842b",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-09-30T21:30:00Z alle": {
+  "gemt": "2966c6d38a775155",
+  "udskrift": "a7cab13eccd20d39",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-09-30T21:30:00Z 2026-09": {
+  "gemt": "3f7a7cfd8286aaaa",
+  "udskrift": "70c2d9e6a55e190d",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-12-31T22:30:00Z alle": {
+  "gemt": "e53b471c4b436850",
+  "udskrift": "3eb4a1fca1835416",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2026-12-31T22:30:00Z 2026-12": {
+  "gemt": "d8f254dee7cfd176",
+  "udskrift": "6938cd5ff2707689",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2027-01-02T12:00:00Z alle": {
+  "gemt": "a378408be1a8da7c",
+  "udskrift": "abfbe9d407c23e5d",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret 2027-01-02T12:00:00Z 2027-01": {
+  "gemt": "5595838c6c81ffc4",
+  "udskrift": "2623558a4e594537",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret kæde 1": {
+  "gemt": "d354c14a805dfdd1",
+  "udskrift": "bb8a9ab6e3fdb9ac",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret kæde 2": {
+  "gemt": "6f3bac4254f5089b",
+  "udskrift": "d2633fcef97d2c4e",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret kæde 3": {
+  "gemt": "073f02e0c8b822b4",
+  "udskrift": "803c38d2f5c4a188",
+  "exit": null,
+  "skrevet": true
+ },
+ "varieret kæde 4": {
+  "gemt": "073f02e0c8b822b4",
+  "udskrift": "4cb778ff0d97d0ef",
+  "exit": null,
+  "skrevet": false
+ },
+ "varieret kæde 5": {
+  "gemt": null,
+  "udskrift": "e3b0c44298fc1c14",
+  "exit": "2027-02 ligger i fremtiden",
+  "skrevet": false
+ },
+ "varieret kæde 6": {
+  "gemt": "f57ebb46113c2b88",
+  "udskrift": "6a283d9e1adb3f96",
+  "exit": null,
+  "skrevet": true
+ }
+}

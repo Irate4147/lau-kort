@@ -6,3 +6,4 @@ export {LAU, ARR_STATUS, AKTIVITET_STATUS, HB_STATUS} from './lau.js';
 export {bygFraJson} from './kilder/json.js';
 export * as regler from './regler.js';
 export * as tid from './tid.js';
+export * as rapport from './rapport.js';

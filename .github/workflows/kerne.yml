@@ -1,11 +1,12 @@
 name: Kerne
 
-# Typetjek og tests af kernen (kerne/), herunder paritetstesten mod app.js. Kører på pull requests og ved push til main.
+# Typetjek og tests af kernen (kerne/), herunder facit-testen af app.js og testen af scripts/kerne.js, hb.py og rapport.py
+# (Python-scripts bruger kernens regler). Kører på pull requests og ved push til main.
 on:
   pull_request:
   push:
     branches: [main]
-    paths: ['kerne/**', 'test/**', 'app.js', 'data/**', 'package.json', 'package-lock.json', '.github/workflows/kerne.yml']
+    paths: ['kerne/**', 'test/**', 'app.js', 'scripts/**', 'data/**', 'package.json', 'package-lock.json', '.github/workflows/kerne.yml']
 
 permissions:
   contents: read
