@@ -46,7 +46,8 @@ aktiveKommuner: {label: 'Kommuner med aktivitet', type: 'tal',
 
 Den kan så straks bruges i analysebyggeren (filtre, gruppering, mål), gennem links (`arrangeretAf.aktiveKommuner`),
 på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `dato`, `bool` og `objekt` (intern).
-`adgang: 'admin'` skjuler den for offentligheden.
+`adgang: 'admin'` skjuler den for offentligheden. En `kat`-egenskab på Forening bliver også en farvning af kortet
+(Visninger); egne farver pr. værdi kan sættes i `FARVER` i `app.js`.
 
 ## Test
 

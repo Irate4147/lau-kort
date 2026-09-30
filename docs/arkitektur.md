@@ -195,9 +195,10 @@ Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–12
 - **`app.js` bruger kernen.** Dens egne kopier af reglerne (momentum, HB, kvartaler, dækning, kategorier, rettelser) er fjernet; `DATA.lager` er kernens objektlager. Udvidelserne bruger de samme navne som før og er uændrede.
 - Tests: enhedstests af kernen og en **facit-test**: hele `app.js` køres på frosne data på seks datoer (inkl. kvartals- og årsskifte) og skal give præcis det samme som den gamle `app.js` gjorde. CI kører dem ved hver pull request.
 - Analysebyggeren (`udvidelser/egne-analyser.js`) er bygget om oven på kernen: alle typer, egenskaber og links kommer fra ontologien. Den kan filtrere gennem links, finde objekter, der **ikke** har noget ("lokalforeninger uden arrangementer de næste 30 dage"), og følge links (search around).
+- **Kortets farvninger bygger på ontologien.** Enhver kategorisk egenskab (`kat`) på Forening kan farve kortet, og en ny i `kerne/lau.js` dukker automatisk op under Visninger (admin-egenskaber kun for admins). Kun præsentationen ligger i `app.js` (`FARVER`: farver og gennemsigtighed pr. værdi, tekster, tooltips; ellers en standardpalet). Kvartalerne ("Afholdt i Q1" …) er et særtilfælde i `app.js`, da hvilke kvartaler der findes og deres navne afhænger af dagen og 'ukendt' af datadækningen – men de har samme form og tegnes på samme måde. Kortet ser ud præcis som før (sammenlignet farve for farve i browseren, og en test sikrer, at farvningerne giver de samme værdier som facit).
 
 **Tilbage i fase 1:**
 
 1. `scripts/hb.py` og `scripts/rapport.py` skal bruge kernen (via Node i GitHub Actions) i stedet for deres egne kopier af reglerne. **Vigtigst**, da de er de sidste kopier.
-2. Kortets farvninger og foreningspanelet skal bygges på objektsæt og ontologien (så en ny egenskab også kan farve kortet).
+2. Foreningspanelet skal bygges på objektsæt og ontologien.
 3. De øvrige analyser (HB-risiko, hvide pletter, "Hvad virker?", månedsrapport) flyttes over på kernen én ad gangen.

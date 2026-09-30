@@ -31,7 +31,7 @@ export async function koerApp(tid, {app = readFileSync(ROD + 'app.js', 'utf8'), 
   });
   vm.runInContext(app, ctx, {filename: 'app.js'});
   await vm.runInContext('load()', ctx);
-  return vm.runInContext('({DATA, RAW, RET, NOW, arrStatus, kvStatus, daekketFra, KVARTALER, HB_KVARTALER, HB_NU, HB_AAR})', ctx);
+  return vm.runInContext('({DATA, RAW, RET, NOW, arrStatus, kvStatus, daekketFra, KVARTALER, HB_KVARTALER, HB_NU, HB_AAR, FARVNING_LISTE, egenskabsFarvning, farveFor})', ctx);
 }
 
 /** Det, app.js har beregnet, i en form, der kan sammenlignes og gemmes som JSON. */
