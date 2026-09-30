@@ -52,13 +52,9 @@ const DK_BOUNDS = [[8.05, 54.55], [15.2, 57.76]];
 // Håndplacerede navne, hvor tyngdepunktet giver overlap (Frederiksberg ligger inde i København).
 const LABEL_AT = {'København': [12.578, 55.643], 'Frederiksberg': [12.515, 55.692]};
 const MAP_FILL = {snart: '#2a78d6', planlagt: '#86b6ef', ingen: '#b8b6ae', ingenfb: '#d9d7d0'};
-const FILL_OPACITY = ['match', ['get', 'status'], 'snart', 0.55, 'planlagt', 0.55, 'ingen', 0.3, 0.25];
-const STATUS = {
-  snart:    {label: 'Aktivitet inden for det næste kvartal'},
-  planlagt: {label: 'Aktiviteter planlagt senere'},
-  ingen:    {label: 'Intet planlagt'},
-  ingenfb:  {label: 'Ingen Facebook-side tilknyttet'},
-};
+// Visningsnavnene kommer fra ontologien (kerne/lau.js) – på formen {nøgle: {label}}, som udvidelserne også bruger.
+const medLabel = vaerdier => Object.fromEntries(Object.entries(vaerdier).map(([k, label]) => [k, {label}]));
+const STATUS = medLabel(K.AKTIVITET_STATUS);
 const FONT_REG = ['Noto Sans Regular'];
 const FONT_BOLD = ['Noto Sans Bold'];
 const FONT_ITALIC = ['Noto Sans Italic'];
@@ -91,10 +87,10 @@ const KVARTALER = K.tid.kvartalerIndtilNu(NOW).map((k, q) => ({...k, kort: k.id,
 const KVARTAL = KVARTALER[KVARTALER.length - 1];
 const KVARTAL_FILL = {ja: '#1f9d55', nej: '#e4572e', ukendt: '#9d9b94', ingenfb: '#d9d7d0'};
 const kvartalStatus = k => ({
-  ja:      {label: `Afholdt aktivitet i ${k.kort}`},
-  nej:     {label: `Ingen afholdt aktivitet i ${k.kort}`},
-  ukendt:  {label: 'Historik ikke hentet endnu'},
-  ingenfb: {label: 'Ingen Facebook-side tilknyttet'},
+  ja:      `Afholdt aktivitet i ${k.kort}`,
+  nej:     `Ingen afholdt aktivitet i ${k.kort}`,
+  ukendt:  'Historik ikke hentet endnu',
+  ingenfb: 'Ingen Facebook-side tilknyttet',
 });
 // Hvor langt tilbage data dækker pr. forening (kernens beregnDaekning; sættes i beregn()).
 let DAEKNING = null;
@@ -111,14 +107,7 @@ const HB_KVARTALER = HB.kvartaler.map(k => ({...k, kort: k.id}));
 const HB_NU = HB.nuIndeks;
 // Kategorierne, bedst først. 'ikke' er den eneste, der ikke kan godkendes; 'ukendt', når historikken mangler.
 const HB_FILL = {plus_naeste: '#4b1f8f', alle: '#7b3fbf', planlagt_nu: '#a98ad8', mangler_nu: '#e39be3', ikke: '#8c1452', ukendt: '#d3cde0'};
-const HB_STATUS = {
-  plus_naeste: {label: 'Aktivitet i alle kvartaler inkl. det indeværende + planlagt i næste kvartal'},
-  alle:        {label: 'Aktivitet i alle kvartaler inkl. det indeværende'},
-  planlagt_nu: {label: 'Aktivitet i alle tidligere kvartaler – det indeværende har et planlagt arrangement'},
-  mangler_nu:  {label: 'Aktivitet i alle tidligere kvartaler – intet planlagt i det indeværende endnu'},
-  ikke:        {label: `Mangler aktivitet i et kvartal – kan ikke HB-godkendes i ${HB_AAR}`},
-  ukendt:      {label: 'Historik mangler'},
-};
+const HB_STATUS = {...medLabel(K.HB_STATUS), ikke: {label: `${K.HB_STATUS.ikke} i ${HB_AAR}`}};
 const HB_KV = {
   ja:       {label: 'afholdt', farve: HB_FILL.alle},
   planlagt: {label: 'planlagt', farve: HB_FILL.planlagt_nu},
@@ -141,15 +130,89 @@ const fbSider = K.regler.fbSider;
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
 const $ = id => document.getElementById(id);
 
+/*
+ * Kortets farvninger bygger på ontologien: enhver kategorisk egenskab (type 'kat') på Forening i kerne/lau.js kan
+ * farve kortet, og en ny egenskab kommer automatisk med under "Visninger" (adgang: 'admin' = kun for admins). Her
+ * ligger kun præsentationen. Kvartalerne ("Afholdt i Q1" …) er et særtilfælde: hvilke kvartaler der findes, og hvad de
+ * hedder, afhænger af dagen, og 'ukendt' af hvor langt data dækker – det hører ikke hjemme i ontologiens faste skema.
+ * De bygges derfor her (kvartalsFarvning), men har samme form som resten og tegnes på samme måde.
+ *
+ * En farvning: {id, label, hint?, admin?, vaerdi(f) → nøgle eller null, vaerdier {nøgle: visningsnavn} (i
+ * tegnforklaringens rækkefølge), farver {nøgle: farve}, opacitet {nøgle: tal} og ellers (kortets fyld for andre
+ * værdier), uden {farve, label} (foreninger uden værdi), forklaringOpacitet, iForklaring?() → nøglerne i
+ * tegnforklaringen (standard: dem, en lokalforening har), visLabel?(nøgle), titel?(nøgle), note?, advarsel?(),
+ * tip?(f, naeste) → tooltip-linjer (null: standardlinjerne), usynlig? (fladerne vises ikke)}.
+ */
+
+// Præsentationen pr. egenskab (id i kerne/lau.js) – alt er valgfrit. En egenskab uden farver får STANDARD_PALET.
+// label, hint og vaerdier går forud for ontologiens tekster (fx årstallet ved HB). skjul: true = ingen farvning.
+const FARVER = {
+  status: {farver: MAP_FILL, opacitet: {snart: 0.55, planlagt: 0.55, ingen: 0.3}, ellers: 0.25, forklaringOpacitet: 0.75,
+    iForklaring: () => Object.keys(STATUS), hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
+  momentum: {farver: MOM_FILL, opacitet: {ukendt: 0.35, ingenfb: 0.25}, uden: {farve: MAP_FILL.ingenfb, label: 'Landsforeningen'},
+    hint: 'Mindst ét arrangement om måneden? Dage siden sidste, antal de seneste 3 måneder og kalenderen – tidlig advarsel',
+    visLabel: k => `${MOM_STATUS[k].ikon} ${MOM_STATUS[k].label}`, titel: k => MOM_STATUS[k].hint, note: 'Mål: mindst ét arrangement om måneden',
+    tip: f => f.mom && [`${MOM_STATUS[f.mom.niveau].ikon} ${MOM_STATUS[f.mom.niveau].label}`, momMaalTekst(f.mom),
+      ...f.mom.signaler.slice(0, 2).map(s => s[1])]},
+  hb: {farver: HB_FILL, opacitet: {ukendt: 0.35}, vaerdier: {ikke: HB_STATUS.ikke.label}, uden: {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'},
+    label: `HB-godkendelse ${HB_AAR}`, hint: `Mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1} (Organisationshåndbogen 8.2)`,
+    note: `Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}`,
+    tip: f => f.hb && [HB_STATUS[f.hb].label, HB_KVARTALER.map(q => `${q.kort}: ${HB_KV[f.hbKv[q.id]].label}`).join(' · ')]},
+  // Landsforeningen har intet område på kortet, så alle flader ville få samme farve.
+  niveau: {skjul: true},
+};
+// Farver til egenskaber uden egne, i værdiernes rækkefølge (forfra, hvis der er flere værdier end farver).
+const STANDARD_PALET = ['#4e79a7', '#f28e2b', '#59a14f', '#e15759', '#b07aa1', '#76b7b2', '#edc948', '#9c755f'];
+// Rækkefølgen under "Visninger". Øvrige egenskaber kommer derefter (i ontologiens rækkefølge) og "Ingen farve" sidst.
+const FARVE_ORDEN = ['status', 'momentum', 'kvartaler', 'hb'];
+const medStandard = fv => ({opacitet: {}, ellers: 0.6, forklaringOpacitet: 0.8, uden: {farve: MAP_FILL.ingenfb, label: 'Ingen værdi'}, ...fv});
+
+/** Farvning efter en kategorisk egenskab på Forening. @param {object} e egenskaben fra ontologien */
+function egenskabsFarvning(e) {
+  const p = FARVER[e.id] || {};
+  return medStandard({...p, id: e.id, label: p.label || e.label, hint: p.hint || e.hint, admin: !K.tilladt(e.adgang, 'offentlig'),
+    vaerdier: {...e.vaerdier, ...p.vaerdier},
+    farver: p.farver || Object.fromEntries(Object.keys(e.vaerdier).map((k, i) => [k, STANDARD_PALET[i % STANDARD_PALET.length]])),
+    vaerdi: f => DATA.lager.vaerdi(DATA.lager.hent('Forening', f.navn), e.id)});
+}
+
+/** "Afholdt i Q1" …: mindst én afholdt aktivitet i kvartalet (kvStatus). */
+function kvartalsFarvning(k) {
+  const vaerdier = kvartalStatus(k);
+  return medStandard({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`,
+    vaerdi: f => kvStatus(f, k), vaerdier, farver: KVARTAL_FILL, opacitet: {ja: 0.55, nej: 0.45, ukendt: 0.35}, ellers: 0.25,
+    forklaringOpacitet: 0.75,
+    // 'ukendt' står kun i tegnforklaringen, når en forening mangler historik.
+    iForklaring: () => Object.keys(vaerdier).filter(s => s !== 'ukendt' || DATA.foreninger.some(f => kvStatus(f, k) === 'ukendt')),
+    // Advar, hvis dataindsamlingen ikke dækker hele kvartalet – ellers ser foreninger inaktive ud uden grund.
+    advarsel: () => (DATA.dataFra >= new Date(k.til + 'T00:00:00Z') ? `Ingen data for ${k.kort} endnu`
+      : DATA.dataFra > new Date(k.fra + 'T12:00:00Z') ? `Data for ${k.kort} kun fra ${fmtDate.format(DATA.dataFra)}` : ''),
+    tip: (f, naeste) => [f.kv[k.id] ? `Afholdt i ${k.kort}: ${f.kv[k.id]}` : vaerdier[kvStatus(f, k)], naeste]});
+}
+
+// Alle farvninger – også dem, kun admins må vælge (se FARVNINGER).
+const FARVNING_LISTE = (() => {
+  const ont = new Map(K.LAU.stier('Forening', {dybde: 0}).filter(s => s.egenskab.type === 'kat' && !FARVER[s.sti]?.skjul)
+    .map(s => [s.sti, egenskabsFarvning(s.egenskab)]));
+  const liste = FARVE_ORDEN.flatMap(id => (id === 'kvartaler' ? KVARTALER.map(kvartalsFarvning) : ont.has(id) ? [ont.get(id)] : []));
+  liste.push(...[...ont.values()].filter(fv => !FARVE_ORDEN.includes(fv.id)));
+  // Uden farve er fladerne usynlige (men kan klikkes på); listen og tooltips viser aktivitet nu.
+  liste.push({...ont.get('status'), id: 'ingen', label: 'Ingen farve', hint: '', usynlig: true});
+  return liste;
+})();
+
 let DATA = null;
 let selected = null;
-// Kortets farvning: 'status' (aktivitet nu), et kvartals id ('Q1', 'Q2', …), 'momentum', 'hb' (HB-godkendelse næste år) eller 'ingen'.
+// Kortets farvning: id'et på en farvning i FARVNING_LISTE – 'status' (aktivitet nu), 'momentum', et kvartals id ('Q1',
+// 'Q2', …), 'hb' (HB-godkendelse næste år), en anden kategorisk egenskab fra ontologien eller 'ingen'.
 let farvning = (() => {
   let v = 'status';
   try { v = localStorage.getItem('lau-farvning') || v; } catch (_) { /* fx privat vindue */ }
   if (v === 'kvartal') v = KVARTAL.id; // ældre gemt værdi
-  return v === 'hb' || v === 'momentum' || v === 'ingen' || KVARTALER.some(k => k.id === v) ? v : 'status';
+  return FARVNING_LISTE.some(fv => fv.id === v) ? v : 'status';
 })();
+/** Den valgte farvning. */
+const valgtFarvning = () => FARVNING_LISTE.find(fv => fv.id === farvning) || FARVNING_LISTE[0];
 /** Må aktiviteten vises? Offentligt kun kommende og afholdte det seneste år; admins ser alle. */
 const offentligTid = e => erAdmin() || e.slutD >= ET_AAR_SIDEN;
 const valgtKvartal = () => KVARTALER.find(k => k.id === farvning) || null;
@@ -425,6 +488,7 @@ function beregn() {
     }
   }
   const features = topojson.feature(topo, topo.objects.kom).features;
+  // Kommunerne får foreningens værdier med (til udvidelser; kortets fyld slås op pr. forening – se applyFill).
   for (const feat of features) {
     const f = byName.get(feat.properties.forening);
     feat.properties.status = f.status;
@@ -471,33 +535,29 @@ const mapPadding = () => (calloutsEnabled() ? 48 : 20);
 const CALLOUT_MIN_ZOOM = 8;
 const calloutsTooFarUde = () => !selected && MAP.map.getZoom() < CALLOUT_MIN_ZOOM;
 
-const STATUS_COLOR = ['match', ['get', 'status'], 'snart', MAP_FILL.snart, 'planlagt', MAP_FILL.planlagt, 'ingen', MAP_FILL.ingen, MAP_FILL.ingenfb];
-const kvColor = k => ['match', ['get', 'kv_' + k.id], 'ja', KVARTAL_FILL.ja, 'nej', KVARTAL_FILL.nej, 'ukendt', KVARTAL_FILL.ukendt, KVARTAL_FILL.ingenfb];
-const kvOpacity = k => ['match', ['get', 'kv_' + k.id], 'ja', 0.55, 'nej', 0.45, 'ukendt', 0.35, 0.25];
-const HB_COLOR = ['match', ['get', 'hb'], ...Object.entries(HB_FILL).flat(), HB_FILL.ukendt];
-const HB_OPACITY = ['match', ['get', 'hb'], 'ukendt', 0.35, 0.6];
-const MOM_COLOR = ['match', ['get', 'mom'], ...Object.entries(MOM_FILL).flat(), MOM_FILL.ingenfb];
-const MOM_OPACITY = ['match', ['get', 'mom'], 'ukendt', 0.35, 'ingenfb', 0.25, 0.6];
-/** Foreningens farve og forklaring i den valgte farvning. */
-function farveFor(f) {
-  if (farvning === 'ingen') return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
-  if (farvning === 'hb') return f.hb ? {farve: HB_FILL[f.hb], label: HB_STATUS[f.hb].label} : {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'};
-  if (farvning === 'momentum') return f.mom ? {farve: MOM_FILL[f.mom.niveau], label: MOM_STATUS[f.mom.niveau].label} : {farve: MAP_FILL.ingenfb, label: 'Landsforeningen'};
-  const k = valgtKvartal();
-  if (!k) return {farve: MAP_FILL[f.status], label: STATUS[f.status].label};
-  const s = kvStatus(f, k);
-  return {farve: KVARTAL_FILL[s], label: kvartalStatus(k)[s].label};
+/** Foreningens farve og forklaring i en farvning (standard: den valgte). */
+function farveFor(f, fv = valgtFarvning()) {
+  const v = fv.vaerdi(f);
+  return v == null ? fv.uden : {farve: fv.farver[v], label: fv.vaerdier[v]};
+}
+
+// Kortets fyld slås op pr. forening, så kortet altid viser det samme som farveFor (listerne og tegnforklaringen).
+const prForening = (fn, ellers) => (DATA.lokale.length ? ['match', ['get', 'forening'], ...DATA.lokale.flatMap(f => [f.navn, fn(f)]), ellers] : ellers);
+const fyldFarve = () => { const fv = valgtFarvning(); return prForening(f => farveFor(f, fv).farve, MAP_FILL.ingenfb); };
+/** @param {string} local den valgte lokalforening ('' = ingen) */
+function fyldOpacitet(local) {
+  const fv = valgtFarvning(), valgt = ['==', ['get', 'forening'], local];
+  // Uden farvning er fladerne usynlige, men kan stadig klikkes på.
+  if (fv.usynlig) return local ? ['case', valgt, 0.25, 0] : 0;
+  if (local) return ['case', valgt, 0.55, 0.12];
+  return prForening(f => { const v = fv.vaerdi(f); return v != null && v in fv.opacitet ? fv.opacitet[v] : fv.ellers; }, 0.25);
 }
 
 function applyFill() {
   if (!MAP.ready) return;
   const f = selected && DATA.byName.get(selected);
-  const local = f && !f.national ? f.navn : '';
-  const k = valgtKvartal(), hb = farvning === 'hb', mom = farvning === 'momentum', ingen = farvning === 'ingen';
-  MAP.map.setPaintProperty('kom-fill', 'fill-color', hb ? HB_COLOR : mom ? MOM_COLOR : k ? kvColor(k) : STATUS_COLOR);
-  // Uden farvning er fladerne usynlige, men kan stadig klikkes på.
-  MAP.map.setPaintProperty('kom-fill', 'fill-opacity', ingen ? (local ? ['case', ['==', ['get', 'forening'], local], 0.25, 0] : 0)
-    : local ? ['case', ['==', ['get', 'forening'], local], 0.55, 0.12] : hb ? HB_OPACITY : mom ? MOM_OPACITY : k ? kvOpacity(k) : FILL_OPACITY);
+  MAP.map.setPaintProperty('kom-fill', 'fill-color', fyldFarve());
+  MAP.map.setPaintProperty('kom-fill', 'fill-opacity', fyldOpacitet(f && !f.national ? f.navn : ''));
 }
 
 function setFarvning(mode) {
@@ -608,7 +668,7 @@ function addBaseLayers() {
   map.addSource('events', {type: 'geojson', data: g.events});
   map.addImage('diamond', diamondImage(), {pixelRatio: 2});
 
-  map.addLayer({id: 'kom-fill', type: 'fill', source: 'kom', paint: {'fill-color': STATUS_COLOR, 'fill-opacity': FILL_OPACITY}}, firstRoad);
+  map.addLayer({id: 'kom-fill', type: 'fill', source: 'kom', paint: {'fill-color': fyldFarve(), 'fill-opacity': fyldOpacitet('')}}, firstRoad);
   map.addLayer({id: 'kom-inner', type: 'line', source: 'inner', paint: {
     'line-color': '#ffffff', 'line-opacity': 0.7, 'line-width': ['interpolate', ['linear'], ['zoom'], 6, 0.6, 10, 1.4]}}, firstSymbol);
   map.addLayer({id: 'f-border', type: 'line', source: 'border', paint: {
@@ -934,18 +994,11 @@ function hoverForening(navn, ev) {
   if (!navn || !ev) return hideTip();
   const f = DATA.byName.get(navn);
   const next = f.naeste ? `Næste: ${fmtDay.format(f.naeste.startD)} – ${f.naeste.navn}` : 'Ingen planlagte aktiviteter';
-  if (farvning === 'hb' && f.hb) {
-    const kv = HB_KVARTALER.map(q => `${q.kort}: ${HB_KV[f.hbKv[q.id]].label}`).join(' · ');
-    return showTip(ev, [visningsnavn(f), HB_STATUS[f.hb].label, kv]);
-  }
-  if (farvning === 'momentum' && f.mom) {
-    const m = f.mom;
-    return showTip(ev, [visningsnavn(f), `${MOM_STATUS[m.niveau].ikon} ${MOM_STATUS[m.niveau].label}`,
-      momMaalTekst(m), ...m.signaler.slice(0, 2).map(s => s[1])]);
-  }
-  const k = valgtKvartal();
-  const linje = !k ? STATUS[f.status].label : f.kv[k.id] ? `Afholdt i ${k.kort}: ${f.kv[k.id]}` : kvartalStatus(k)[kvStatus(f, k)].label;
-  showTip(ev, [visningsnavn(f), linje, next]);
+  const fv = valgtFarvning(), tip = fv.tip && fv.tip(f, next);
+  if (tip) return showTip(ev, [visningsnavn(f), ...tip]);
+  // Standard: foreningens værdi i farvningen (aktivitet nu, hvis den ingen har) og næste aktivitet.
+  const v = fv.vaerdi(f);
+  showTip(ev, [visningsnavn(f), v == null ? STATUS[f.status].label : fv.vaerdier[v], next]);
 }
 
 // ------------------------------------------------------------------ tooltip
@@ -1476,13 +1529,8 @@ function visFane(fane) {
 
 // ------------------------------------------------------------------ fane: visninger
 
-const FARVNINGER = () => [
-  {id: 'status', label: 'Aktivitet nu', hint: 'Aktivitet inden for det næste kvartal / planlagt senere / intet'},
-  {id: 'momentum', admin: true, label: 'Momentum', hint: 'Mindst ét arrangement om måneden? Dage siden sidste, antal de seneste 3 måneder og kalenderen – tidlig advarsel'},
-  ...KVARTALER.map(k => ({id: k.id, admin: true, label: `Afholdt i ${k.kort}`, hint: `Grøn: mindst én afholdt aktivitet i ${k.navn}`})),
-  {id: 'hb', admin: true, label: `HB-godkendelse ${HB_AAR}`, hint: `Mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1} (Organisationshåndbogen 8.2)`},
-  {id: 'ingen', label: 'Ingen farve'},
-].filter(tilladt);
+// De farvninger, brugeren må vælge (af FARVNING_LISTE, der bygger på ontologien).
+const FARVNINGER = () => FARVNING_LISTE.filter(tilladt);
 const GRUPPER = {aktiviteter: 'Aktiviteter på kortet', kort: 'Kortet'};
 const toggles = gruppe => [...VISNINGER, ...MAP_LAYERS.filter(l => l.toggle && tilladt(l) && (!l.tilgaengelig || l.tilgaengelig()))]
   .filter(v => (v.gruppe || 'kort') === gruppe);
@@ -1559,32 +1607,19 @@ function renderLegend() {
   const tegnforklaring = hbLag + (!layerState.punkter ? ''
     : '<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#111827"/></svg>Lokal aktivitet</span>'
     + (layerState.landsforeningen ? '<span><svg width="12" height="12" aria-hidden="true"><path d="M6 1L11 6L6 11L1 6Z" fill="#111827"/></svg>Landsforeningen</span>' : ''));
-  if (farvning === 'ingen') { $('legend').innerHTML = tegnforklaring; return; }
-  if (farvning === 'hb') {
-    const brugt = new Set(DATA.lokale.map(f => f.hb));
-    $('legend').innerHTML = Object.entries(HB_STATUS).filter(([k]) => brugt.has(k))
-      .map(([k, s]) => `<span><span class="swatch" style="background:${HB_FILL[k]};opacity:.8"></span>${esc(s.label)}</span>`).join('')
-      + `<span class="muted">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}</span>` + tegnforklaring;
-    return;
-  }
-  if (farvning === 'momentum') {
-    const brugt = new Set(DATA.lokale.map(f => f.mom.niveau));
-    $('legend').innerHTML = Object.entries(MOM_STATUS).filter(([k]) => brugt.has(k))
-      .map(([k, s]) => `<span title="${esc(s.hint)}"><span class="swatch" style="background:${MOM_FILL[k]};opacity:.8"></span>${esc(s.ikon)} ${esc(s.label)}</span>`).join('')
-      + `<span class="muted">Mål: mindst ét arrangement om måneden</span>` + tegnforklaring;
-    return;
-  }
-  const kv = valgtKvartal();
-  let [labels, fills] = kv ? [kvartalStatus(kv), KVARTAL_FILL] : [STATUS, MAP_FILL];
-  if (kv && !DATA.foreninger.some(f => kvStatus(f, kv) === 'ukendt')) { labels = {...labels}; delete labels.ukendt; }
-  // Advar, hvis dataindsamlingen ikke dækker hele kvartalet – ellers ser foreninger inaktive ud uden grund.
-  let mangler = '';
-  if (kv && DATA.dataFra >= new Date(kv.til + 'T00:00:00Z')) mangler = `Ingen data for ${kv.kort} endnu`;
-  else if (kv && DATA.dataFra > new Date(kv.fra + 'T12:00:00Z')) mangler = `Data for ${kv.kort} kun fra ${fmtDate.format(DATA.dataFra)}`;
-  $('legend').innerHTML = Object.entries(labels)
-    .map(([k, s]) => `<span><span class="swatch" style="background:${fills[k]};opacity:.75"></span>${esc(s.label)}</span>`).join('')
-    + (mangler ? `<span class="warn">⚠ ${esc(mangler)}</span>` : '')
-    + tegnforklaring;
+  const fv = valgtFarvning();
+  $('legend').innerHTML = (fv.usynlig ? '' : forklaring(fv)) + tegnforklaring;
+}
+
+/** Tegnforklaringen for en farvning: værdierne (standard: dem, der er i brug) og evt. en advarsel eller note. */
+function forklaring(fv) {
+  const brugt = !fv.iForklaring && new Set(DATA.lokale.map(fv.vaerdi));
+  const noegler = fv.iForklaring ? fv.iForklaring() : Object.keys(fv.vaerdier).filter(k => brugt.has(k));
+  const advarsel = fv.advarsel && fv.advarsel();
+  return noegler.map(k => `<span${fv.titel ? ` title="${esc(fv.titel(k))}"` : ''}><span class="swatch" style="background:${fv.farver[k]};opacity:${
+    fv.forklaringOpacitet}"></span>${esc(fv.visLabel ? fv.visLabel(k) : fv.vaerdier[k])}</span>`).join('')
+    + (advarsel ? `<span class="warn">⚠ ${esc(advarsel)}</span>` : '')
+    + (fv.note ? `<span class="muted">${esc(fv.note)}</span>` : '');
 }
 
 // ------------------------------------------------------------------ rettelser af arrangementer
@@ -2283,7 +2318,7 @@ async function main() {
   // Admin: fanerne vises, og login-fanen bliver til "Admin". Andre ser kun de offentlige farvninger.
   document.querySelectorAll('.side-tabs [data-admin]').forEach(b => { b.hidden = !erAdmin(); });
   $('fane-admin').textContent = erAdmin() ? 'Admin' : '🔒 Log ind';
-  if (![...FARVNINGER().map(v => v.id), ...(erAdmin() ? ['hb'] : [])].includes(farvning)) farvning = 'status';
+  if (!FARVNINGER().some(v => v.id === farvning)) farvning = 'status';
   renderLegend();
   const nat = DATA.byName.get(NATIONAL);
   $('map-actions').innerHTML = (nat ? `<button class="chip" data-f="${NATIONAL}" aria-pressed="false">◆ Landsforeningen</button>` : '')

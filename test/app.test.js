@@ -5,6 +5,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DATOER, FIXTURES, koerApp, udtraek} from './hjaelp/app-vm.js';
+import {LAU} from '../kerne/index.js';
 
 const FACIT = JSON.parse(readFileSync(FIXTURES + 'golden.json', 'utf8'));
 
@@ -18,3 +19,36 @@ for (const tid of DATOER) {
     assert.deepEqual(nu.kommuner, f.kommuner, 'kortets kommuner');
   });
 }
+
+// Kortets farvninger bygges af ontologien (kategoriske egenskaber på Forening) plus kvartalerne. De skal give de
+// samme værdier som kommunernes egenskaber, som facit ovenfor låser – dvs. kortet farves som før.
+for (const tid of DATOER) {
+  test(`farvningerne bygger på ontologien og farver som før (${tid})`, async () => {
+    const app = await koerApp(tid), liste = [...app.FARVNING_LISTE], fv = id => liste.find(x => x.id === id);
+    assert.deepEqual(liste.map(x => x.id), ['status', 'momentum', ...app.KVARTALER.map(k => k.id), 'hb', 'ingen']);
+    for (const e of LAU.type('Forening').egenskabsliste.filter(e => e.type === 'kat' && !e.intern && e.id !== 'niveau')) {
+      assert.equal(fv(e.id).admin, e.adgang !== 'offentlig', `${e.id}: adgang`);
+      assert.deepEqual(Object.keys(fv(e.id).vaerdier), Object.keys(e.vaerdier), `${e.id}: værdier fra ontologien`);
+    }
+    for (const feat of app.DATA.features) {
+      const f = app.DATA.byName.get(feat.properties.forening), p = feat.properties;
+      assert.equal(fv('status').vaerdi(f), p.status);
+      assert.equal(fv('momentum').vaerdi(f), p.mom);
+      assert.equal(fv('hb').vaerdi(f), p.hb);
+      for (const k of app.KVARTALER) assert.equal(fv(k.id).vaerdi(f), p['kv_' + k.id]);
+    }
+    const lands = app.DATA.byName.get('Landsforeningen');
+    assert.equal(app.farveFor(lands, fv('momentum')).label, 'Landsforeningen');
+    assert.equal(app.farveFor(lands, fv('hb')).label, 'Ikke omfattet af HB-kravet');
+  });
+}
+
+test('en ny kategorisk egenskab får standardfarver og ontologiens adgang', async () => {
+  const app = await koerApp(DATOER[0]);
+  const fv = app.egenskabsFarvning({id: 'ny', label: 'Ny egenskab', type: 'kat', adgang: 'admin', vaerdier: {a: 'A', b: 'B'}});
+  assert.equal(fv.label, 'Ny egenskab');
+  assert.equal(fv.admin, true);
+  assert.deepEqual(Object.keys(fv.farver), ['a', 'b']);
+  assert.notEqual(fv.farver.a, fv.farver.b);
+  assert.equal(app.egenskabsFarvning({id: 'offentlig', label: 'O', type: 'kat', adgang: 'offentlig', vaerdier: {x: 'X'}}).admin, false);
+});

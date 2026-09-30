@@ -37,7 +37,7 @@ export async function koerApp(tid, {app = readFileSync(ROD + 'app.js', 'utf8'), 
   vm.runInContext(app, ctx, {filename: 'app.js'});
   for (const u of udvidelser) vm.runInContext(readFileSync(ROD + 'udvidelser/' + u, 'utf8'), ctx, {filename: u});
   await vm.runInContext('load()', ctx);
-  return {...vm.runInContext('({DATA, RAW, RET, NOW, arrStatus, kvStatus, daekketFra, KVARTALER, HB_KVARTALER, HB_NU, HB_AAR})', ctx), ctx};
+  return {...vm.runInContext('({DATA, RAW, RET, NOW, arrStatus, kvStatus, daekketFra, KVARTALER, HB_KVARTALER, HB_NU, HB_AAR, FARVNING_LISTE, egenskabsFarvning, farveFor})', ctx), ctx};
 }
 
 export const ANALYSE_UDVIDELSER = ['maanedsrapport.js', 'hb-risiko.js', 'hvide-pletter.js', 'hvad-virker.js'];
