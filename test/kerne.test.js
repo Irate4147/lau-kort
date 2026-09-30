@@ -78,6 +78,14 @@ test('search around, gruppering, mål og boring ned', () => {
   assert.equal(koer(L, q3).objekter.length, 4, 'Q3: 1, 2, 5 og 6');
 });
 
+test('to mål pr. gruppe (punktdiagram): antal arrangementer og deltagere pr. forening', () => {
+  const r = koer(L, {type: 'Arrangement', gruppering: {egenskab: 'arrangeretAf.navn'}, maal: {funktion: 'antal'}, maal2: {funktion: 'sum', egenskab: 'deltager'}});
+  for (const g of r.grupper) assert.equal(g.vaerdi2, g.objekter.reduce((s, o) => s + (o.v.deltager ?? 0), 0));
+  assert.equal(r.total2, r.objekter.reduce((s, o) => s + (o.v.deltager ?? 0), 0));
+  assert.equal(valider(LAU, {type: 'Arrangement', maal2: {funktion: 'gns', egenskab: 'navn'}}).length, 1);
+  assert.equal(koer(L, {type: 'Arrangement', gruppering: {egenskab: 'kategori'}}).grupper[0].vaerdi2, undefined);
+});
+
 test('mål pr. forening (til kortet)', () => {
   const r = koer(L, {type: 'Arrangement', filtre: [{egenskab: 'status', er: ['afholdt']}]});
   const pr = prObjekt(L, r, {funktion: 'antal'}, 'Forening');
