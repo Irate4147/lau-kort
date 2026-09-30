@@ -344,3 +344,42 @@ test('månedsrapport: fremad – risici i rækkefølge efter alvor', () => {
   const aar = dec.risici.find(x => x.type === 'aarsskifte');
   assert.deepEqual([aar.forening, aar.dage, /mangler stadig et afholdt arrangement i Q4 \(X\)/.test(aar.tekst)], [null, 30, true]);
 });
+
+test('månedsrapport: snapshots – levende den 1., ellers rekonstrueret med det, man vidste dengang', () => {
+  // Arrangement 3 (5. okt.) var set på Facebook fra 1. januar; 9 blev først set 20. september og kendtes ikke 1. september.
+  const kilder = {...DATA, events: [...DATA.events, ev('9', 'Fyn', '2026-10-10T17:00:00Z', {foerst_set: '2026-09-20T00:00:00Z', historisk: false})]};
+  const ved = (tid, rekonstruer) => bygFraJson({...kilder, ved: {tid, rekonstruer}});
+  const snap = RAP.snapshot(bygFraJson(kilder), ved, '2026-09');
+  assert.deepEqual([snap.tid, snap.rekonstrueret, snap.taget, snap.hb_aar], ['2026-08-31T22:00:00Z', true, '2026-09-29T10:00:00Z', 2027]);
+  assert.deepEqual([snap.foreninger.Fyn.planlagt, snap.foreninger.Fyn.afholdt], [3, 1], '1 (20. sep.), 6 (10. sep.) og 3 – ikke 9');
+  assert.equal(snap.foreninger.Aarhus.aflyste.length, 0, 'aflysningen fra Facebook regnes som sket senere');
+  // Den første kørsel den 1. (dansk tid) tager et levende snapshot af data, som de er.
+  const live = RAP.snapshot(bygFraJson({...kilder, nu: new Date('2026-09-30T22:30:00Z')}), ved, '2026-10');
+  assert.deepEqual([live.tid, live.rekonstrueret, live.foreninger.Fyn.planlagt], ['2026-09-30T22:30:00Z', false, 2]);
+  assert.equal(RAP.maanedStart('2026-01').toISOString(), '2025-12-31T23:00:00.000Z', 'vintertid');
+});
+
+test('månedsrapport: opdater() genbruger gemte snapshots og rapporter', () => {
+  const ved = (tid, rekonstruer) => bygFraJson({...DATA, ved: {tid, rekonstruer}});
+  const foerste = RAP.opdater(L, ved, {}, '');
+  assert.deepEqual([foerste.maaneder, Object.keys(foerste.snapshots), Object.keys(foerste.rapporter)], [['2026-08'], ['2026-09', '2026-08'], ['2026-08']]);
+  assert.match(foerste.udskrift, /^\nMånedsrapport for august 2026\n\nFREMAD fra 1\. sep\. \(35 dage\)/);
+  // Samme data igen: intet nyt at gemme – heller ikke når måneden genberegnes (rekonstrueret igen, men ens).
+  const gemt = {snapshots: foerste.snapshots, rapporter: foerste.rapporter};
+  for (const valg of ['', '2026-08']) {
+    const igen = RAP.opdater(L, ved, gemt, valg);
+    assert.deepEqual([Object.keys(igen.snapshots), Object.keys(igen.rapporter)], [[], []], valg);
+  }
+  assert.deepEqual(RAP.opdater(L, ved, gemt, 'alle').maaneder, ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08']);
+  assert.deepEqual(RAP.opdater(L, ved, gemt, '2026-10'), {fejl: '2026-10 ligger i fremtiden'});
+});
+
+test('månedsrapport: lange titler afkortes efter tegn – en emoji deles ikke', () => {
+  const navn = '🎅🏻🌲 Julefrokost med ekstra lang titel og endnu mere tekst, der skal væk';
+  const fr = RAP.fremad(bygFraJson({...DATA, foreninger: [{navn: 'X', facebook: 'x', kommuner: []}],
+    events: [ev('X1', 'X', '2026-02-01T17:00:00Z'), ev('X2', 'X', '2026-05-01T17:00:00Z'), ev('X3', 'X', '2026-09-25T17:00:00Z', {navn})],
+    rettelser: {}, nu: new Date('2026-09-20T10:00:00Z')}));
+  // Som Python: de første 49 tegn (kodepunkter), mellemrum til sidst fjernet, og "…".
+  assert.equal(fr.risici[0].tekst, `Q3 hænger på ét planlagt arrangement: "${[...navn].slice(0, 49).join('').trimEnd()}…" 25. sep. – 10 dage tilbage.`);
+  assert.ok(!/[\ud800-\udbff](?![\udc00-\udfff])/.test(fr.risici[0].tekst), 'ingen halve emoji');
+});

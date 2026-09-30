@@ -9,7 +9,7 @@ TypeScript via JSDoc (`npm run typetjek`).
 | `ontologi.js` | Frameworket: objekttyper, egenskaber, links, stier gennem links og adgang. Ved intet om LAU. |
 | `lau.js` | **LAU's ontologi**: Forening, Arrangement, Kommune, Person, Rolle og deres links. Her tilføjes nye egenskaber og typer. |
 | `regler.js` | Forretningsreglerne: kategorier, status, rettelser, dækning, HB-godkendelse, HB-risiko, momentum og "hvad vidste vi dengang" (månedsrapportens snapshots) – og analysernes regler (hvide pletter og "Hvad virker?"). Den eneste kopi – siden, udvidelserne og Python-scripts bruger den. |
-| `rapport.js` | Månedsrapporten for den indeværende måned: Bagud (`maanedIndtilNu`) og Fremad (`fremad`) – samme opbygning og tekster som `scripts/rapport.py`. |
+| `rapport.js` | **Månedsrapporten** – den eneste kopi: snapshots (`tilstand`, `snapshot`), Bagud (`maanedsrapport`; for den indeværende måned `maanedIndtilNu`), Fremad (`fremad`), de gemte rapporter (`opdater`) og udskriften i loggen (`udskrift`). Siden viser "Denne måned indtil nu" med den; `scripts/rapport.py` laver de gemte rapporter. |
 | `lager.js` | Objektlageret: objekter, links og beregnede egenskaber. Håndhæver adgang. |
 | `objektsaet.js` | Forespørgselssproget: filtrér, følg links (search around), gruppér, mål, bor ned. |
 | `kilder/json.js` | Adapter fra de nuværende JSON-filer. Fase 2: en Supabase-adapter med samme resultat. |
@@ -38,7 +38,7 @@ importerer, caches højst 10 minutter af GitHub Pages.
 
 ### Fra Python (GitHub Actions)
 
-`scripts/hb.py`, `scripts/rapport.py` og `scripts/kalender.py` har ingen egne regler. De kalder `scripts/kerne.js` (via
+`scripts/hb.py`, `scripts/rapport.py` og `scripts/kalender.py` har ingen egne regler (`rapport.py` heller ingen egen rapport). De kalder `scripts/kerne.js` (via
 `scripts/kerne.py`) med data, rettelser og de tidspunkter, der skal beregnes, og får JSON tilbage:
 
 ```sh
@@ -48,9 +48,12 @@ echo '{"foreninger": […], "events": […], "meta": {…}, "rettelser": {…}, 
 #  "tidspunkter": [{"foreninger": {"Fyn": {"afholdt": [id…], "planlagt": [id…], "momentum": {…}, "hb": {…}, "hbRisiko": {…}}}}]}
 ```
 
-`rekonstruer: true` bruger `tilstandVed()`: kun det, der var kendt på tidspunktet (månedsrapportens snapshots). `hbAar`
-vurderer et andet års kvartaler (`hb.py ÅR`). Formatet står øverst i `scripts/kerne.js`. Workflowene sætter Node 22 op
-og kører `npm ci`, før scriptene kører.
+`rekonstruer: true` bruger `tilstandVed()`: kun det, der var kendt på tidspunktet. `hbAar` vurderer et andet års
+kvartaler (`hb.py ÅR`). Månedsrapporten: `"rapport": {"valg": "" | "alle" | "ÅÅÅÅ-MM", "gemt": {"snapshots": …,
+"rapporter": …}}` giver `"rapport": {"maaneder", "snapshots", "rapporter", "udskrift"}` med kun de nye og ændrede
+snapshots og rapporter (eller `{"fejl": …}`) – `rapport.opdater()` med lagre på tidligere tidspunkter
+(`bygFraJson({…, ved: {tid, rekonstruer: true}})`, som bruger `tilstandVed()`). Formatet står øverst i
+`scripts/kerne.js`. Workflowene sætter Node 22 op og kører `npm ci`, før scriptene kører.
 
 ## Analysernes egenskaber
 
@@ -95,8 +98,13 @@ på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `d
 `npm run tjek` kører typetjek og tests (også i GitHub Actions ved hver pull request):
 
 - `test/kerne.test.js` – kernen på et lille, fast datasæt, også analysernes regler på faste datoer.
-- `test/scripts.test.js` – `scripts/kerne.js` skal give det samme som facit (siden) på alle datoer, og `scripts/hb.py` og
-  `scripts/rapport.py` (køres uden `ADMIN_KODE`) skal bruge kernens resultat uændret (springes over uden `python3`).
+- `test/scripts.test.js` – `scripts/kerne.js` skal give det samme som facit (siden) på alle datoer, og `scripts/hb.py`
+  (køres uden `ADMIN_KODE`) skal bruge kernens resultat uændret. `scripts/rapport.py` køres uden `ADMIN_KODE`
+  (`test/hjaelp/koer-rapport.py`) i faste scenarier (`test/hjaelp/rapport-py.js`: seks datoer ved måneds-, kvartals- og
+  årsskifte, de frosne data og et varieret datasæt, og en kæde af kørsler med gemte data), og det gemte (præcis den
+  JSON, der krypteres) og udskriften skal have samme fingeraftryk som facit (`test/fixtures/rapport.json`). Facit svarer
+  til rapport.py, før rapporten kom i kernen (se docs/arkitektur.md). Ændres rapporten bevidst:
+  `node test/lav-rapport-facit.js [mappe]`. Python-delene springes over uden `python3`.
 - `test/app.test.js` – hele `app.js` (der bruger kernen) køres på frosne data (`test/fixtures/data/`) på seks datoer og
   skal give præcis det samme som facit (`test/fixtures/golden.json`). Facit blev lavet med `app.js`, før reglerne blev
   flyttet til kernen, så det beviser, at flytningen ikke ændrede noget. Ændres en regel **bevidst**, laves nyt facit med

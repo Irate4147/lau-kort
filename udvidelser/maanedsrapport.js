@@ -7,17 +7,17 @@
  * Rapporten har to sektioner:
  *   Fremad – set fra rapportens slutning (den 1. i måneden efter; for "Denne måned indtil nu": i dag): kommende
  *            arrangementer de næste FREMAD_DAGE dage, lokalforeninger uden noget planlagt og risici sorteret efter
- *            alvor, hver med en konkret handling. Gemt i rapporten som "fremad" (lav_fremad() i scripts/rapport.py).
+ *            alvor, hver med en konkret handling. Gemt i rapporten som "fremad".
  *   Bagud  – hvad der skete i måneden: afholdte, aflyste, nye og forsvundne arrangementer, fremmøde og ændringer i
  *            momentum og HB-prognose.
- * "Denne måned indtil nu" beregnes i browseren af kernen (kerne/rapport.js: maanedIndtilNu og fremad) med samme
- * opbygning og tekster som rapporterne – momentum og HB-prognose sammenlignes med månedens snapshot, hvis det findes
+ * Rapporten laves kun i kernen (kerne/rapport.js): de gemte af scripts/rapport.py (opdater), "Denne måned indtil nu" i
+ * browseren (maanedIndtilNu og fremad) – momentum og HB-prognose sammenlignes med månedens snapshot, hvis det findes
  * (ellers vises kun, hvordan de er nu). HB-risikoen i "Fremad" er kernens hbRisiko; forklaringen til hver risiko er
  * teksten fra LAU.hbRisiko(f) (udvidelser/hb-risiko.js). Filen her er brugerfladen.
  */
 (() => {
   const MR = {valgt: null}; // valgt måned ('ÅÅÅÅ-MM' eller 'nu'); null = den nyeste afsluttede
-  // Bedst først (kerne/rapport.js, som i scripts/rapport.py).
+  // Bedst først (kerne/rapport.js).
   const {MOM_RAEKKE, HB_ORDEN} = K.rapport;
   const HB_KORT = {plus_naeste: 'Alle + næste', alle: 'Alle kvartaler', planlagt_nu: 'Planlagt nu', mangler_nu: 'Mangler nu',
     ikke: 'Kan ikke godkendes', ukendt: 'Historik mangler'};

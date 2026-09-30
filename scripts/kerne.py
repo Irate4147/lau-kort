@@ -1,8 +1,8 @@
 """Bro til kernen (kerne/): forretningsreglerne beregnes af scripts/kerne.js med Node, så de kun findes ét sted.
 
 Scriptene læser og skriver selv filerne (og krypterer); kernen får data og rettelser og giver regnestykkerne tilbage:
-arrangementer med rettelser, dækning, momentum, HB-prognose og HB-risiko pr. forening på de ønskede tidspunkter. Se
-scripts/kerne.js for formatet. Kræver Node 22 (GitHub Actions: actions/setup-node og npm ci).
+arrangementer med rettelser, dækning, momentum, HB-prognose og HB-risiko pr. forening på de ønskede tidspunkter – og
+månedsrapportens nye snapshots og rapporter (rapport=). Se scripts/kerne.js for formatet. Kræver Node 22 (GitHub Actions: actions/setup-node og npm ci).
 """
 import json
 import shutil
@@ -19,12 +19,13 @@ def iso(t):
     return t.astimezone(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
-def beregn(foreninger, events, meta, rettelser, nu, tidspunkter=()):
-    """Kør kernen. nu og tidspunkternes "tid" er datetimes med tidszone; se scripts/kerne.js."""
+def beregn(foreninger, events, meta, rettelser, nu, tidspunkter=(), rapport=None):
+    """Kør kernen. nu og tidspunkternes "tid" er datetimes med tidszone; rapport: {valg, gemt} (månedsrapporten). Se
+    scripts/kerne.js."""
     if not shutil.which("node"):
         sys.exit("Mangler Node (22 eller nyere): reglerne ligger i kerne/ og køres med node scripts/kerne.js")
     ind = {"foreninger": foreninger, "events": events, "meta": meta, "rettelser": rettelser or {}, "nu": iso(nu),
-           "tidspunkter": [{**t, "tid": iso(t["tid"])} for t in tidspunkter]}
+           "tidspunkter": [{**t, "tid": iso(t["tid"])} for t in tidspunkter], **({"rapport": rapport} if rapport else {})}
     p = subprocess.run(["node", str(CLI)], input=json.dumps(ind, ensure_ascii=False), capture_output=True, text=True,
                        encoding="utf-8")
     if p.returncode:
