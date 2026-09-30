@@ -9,7 +9,8 @@ Filer (kan abonneres på i fx Google Kalender, Apple Kalender og Outlook):
   kalender/landsforeningen.ics   kun landsforeningens arrangementer
   kalender/alle.ics              alle arrangementer
 
-Rettelser i data/rettelser.json (den offentlige del, se scripts/admin.py) anvendes (samme regler som siden og hb.py). Skjulte arrangementer,
+Rettelser i data/rettelser.json (den offentlige del, se scripts/admin.py) anvendes af kernen (anvendRettelser() i kerne/regler.js,
+samme regler som siden – køres med Node via scripts/kerne.py). Skjulte arrangementer,
 arrangementer fjernet fra Facebook og arrangementer mere end et år tilbage udelades; aflyste står som aflyst. Filnavnene laves med slug() –
 samme regel som kalenderSlug() i app.js.
 """
@@ -18,7 +19,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from hb import anvend_rettelser
+import kerne
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -117,9 +118,11 @@ def kalender(navn, beskrivelse, events):
 def main():
     foreninger = json.loads((DATA / "foreninger.json").read_text(encoding="utf-8"))
     events = json.loads((DATA / "events.json").read_text(encoding="utf-8"))
+    meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8"))
     rettelser_fil = DATA / "rettelser.json"
-    if rettelser_fil.exists():
-        events = anvend_rettelser(events, json.loads(rettelser_fil.read_text(encoding="utf-8")).get("rettelser"))
+    rettelser = json.loads(rettelser_fil.read_text(encoding="utf-8")).get("rettelser") if rettelser_fil.exists() else {}
+    # Med rettelser, uden skjulte.
+    events = kerne.beregn(foreninger, events, meta, rettelser, datetime.now(timezone.utc))["arrangementer"]
     # Fjernet fra Facebook: kun med, hvis det er bekræftet afholdt.
     events = [e for e in events if e.get("start") and (not e.get("forsvundet") or e.get("bekraeftet"))]
     # Tidligere arrangementer højst et år tilbage (som på siden).

@@ -1,0 +1,24 @@
+name: Kerne
+
+# Typetjek og tests af kernen (kerne/), herunder facit-testen af app.js og testen af scripts/kerne.js, hb.py og rapport.py
+# (Python-scripts bruger kernens regler). Kører på pull requests og ved push til main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths: ['kerne/**', 'test/**', 'app.js', 'scripts/**', 'data/**', 'package.json', 'package-lock.json', '.github/workflows/kerne.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  tjek:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run tjek

@@ -179,6 +179,10 @@ ul.rank .sub { grid-column: 2 / 4; color: var(--muted); font-size: 12px; overflo
 .stamdata { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; font-size: 13px; }
 .stamdata dt { color: var(--text-secondary); }
 .stamdata dd { margin: 0; }
+/* Objektvisningens egenskaber og links (panelets "Egenskaber" og "Forbundne objekter"): lange navne, værdien til højre. */
+.stamdata.egenskaber { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.stamdata.egenskaber dd { font-variant-numeric: tabular-nums; }
+.stamdata.egenskaber dd.fordeling { grid-column: 1 / -1; text-align: left; color: var(--muted); font-size: 12px; margin-top: -2px; }
 textarea.notes {
   width: 100%; font: inherit; font-size: 13px; padding: 8px; border-radius: 8px; resize: vertical;
   border: 1px solid var(--axis); background: var(--page); color: var(--text-primary);
@@ -640,3 +644,40 @@ ul.mr-kommende, ul.mr-uden { list-style: none; margin: 0; padding: 0; font-size:
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) .viz-root .mr-tabel td.mr-celle.op .mr-skift-tekst { color: #5fd35f; }
 }
+
+/* ---- udvidelse: egne analyser (analysebygger) ---- */
+.ea-trin { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--grid); }
+.ea-trin:first-child { border-top: 0; padding-top: 0; }
+.ea-nr { width: 22px; height: 22px; border-radius: 50%; background: #0e7c86; color: #fff; font-weight: 700; font-size: 12px; display: grid; place-items: center; }
+.ea-knapper { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.ea-filter { display: inline-flex; align-items: center; border: 1px solid var(--axis); border-radius: 999px; background: var(--page); font-size: 12px; }
+.ea-filter.aaben { border-color: #0e7c86; box-shadow: 0 0 0 1px #0e7c86; }
+.ea-filter-tekst, .ea-fjern { border: 0; background: none; color: var(--text-primary); cursor: pointer; font: inherit; padding: 3px 4px 3px 10px; }
+.ea-fjern { padding: 3px 9px 3px 4px; color: var(--muted); font-size: 14px; line-height: 1; }
+.ea-fjern:hover { color: var(--critical); }
+.ea select, .ea input[type="number"], .ea input[type="date"], .ea input[type="text"] {
+  font: inherit; font-size: 13px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--axis); background: var(--page); color: var(--text-primary);
+}
+.ea-raekke { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 6px; }
+.ea-raekke label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-secondary); }
+.ea-editor { margin-top: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--page); }
+.ea-editor-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.ea-vaerdier { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2px 14px; max-height: 190px; overflow-y: auto; margin-top: 6px; }
+.ea-vaerdier label { display: flex; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; padding: 2px 0; }
+.ea-vaerdier label span:nth-of-type(1) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ea-n { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 11.5px; }
+.ea-diagram .chart { max-width: 100%; }
+.ea-handlinger { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.ea-tabel td { text-align: left; white-space: normal; }
+.ea-tabel tr[data-f] { cursor: pointer; }
+.ea-tabel tr[data-f]:hover { background: var(--page); }
+.ea-gem input[type="text"] { min-width: 240px; }
+.ea-saet { padding: 6px 0 8px; }
+.ea-saet + .ea-saet { border-top: 1px dashed var(--grid); }
+.ea-saet-top { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.ea-pil { color: #0e7c86; font-weight: 700; }
+.ea-saet-top .muted { color: var(--muted); }
+.ea-filter.ea-link { border-style: dashed; }
+.ea-linkfilter { margin: 8px 0 2px 12px; padding: 6px 10px; border-left: 3px solid #0e7c86; background: var(--page); border-radius: 0 8px 8px 0; }
+.ea-linkfilter-top { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.ea-around { margin-top: 10px; font-size: 12px; color: var(--text-secondary); }

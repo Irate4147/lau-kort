@@ -27,6 +27,15 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Reglerne (HB, momentum, rettelser, dækning) ligger i kerne/ og køres med Node af scripts/kerne.js.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installér kernens værktøjer (Node)
+        run: npm ci
+
       - name: Installér kryptering (fortrolige admindata)
         run: pip install cryptography
 

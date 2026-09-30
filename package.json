@@ -1,0 +1,16 @@
+{
+  "name": "lau-kort",
+  "private": true,
+  "type": "module",
+  "description": "Kun udviklingsværktøjer. Siden har intet build-trin: kerne/ er almindelige ES-moduler, der typetjekkes via JSDoc.",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "typetjek": "tsc -p kerne/jsconfig.json",
+    "tjek": "npm run typetjek && npm test"
+  },
+  "devDependencies": {
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "typescript": "^5.9.3"
+  }
+}

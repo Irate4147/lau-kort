@@ -1,0 +1,210 @@
+# Arkitektur: fra kort til foreningens operativsystem
+
+Status: **besluttet** – byg selv på Supabase. Fase 1 er færdig; næste er fase 2 (se sidst).
+
+## Kort fortalt
+
+Målet er ét system, hvor alt kan forbindes med alt, hvor brugerne selv kan lave analyser, diagrammer og views, og hvor workflows ligger samme sted som data.
+
+Det løses ikke ved at bygge flere funktioner oven på `app.js`. Det løses ved at lægge en **ontologi** (en typet objektgraf) i bunden, som alt andet bygges på:
+
+> **Objekter** (Forening, Arrangement, Person …) med **egenskaber**, forbundet af **links**, ændret gennem **handlinger** og beriget af **beregninger**. Oven på det: **ét forespørgselssprog** (objektsæt), som alle views, analyser, kortlag, advarsler og workflows bruger.
+
+Det er Palantirs model (Foundry Ontology), skaleret ned til en forening.
+
+## Er det en knowledge graph?
+
+Tæt på, men ikke helt – og forskellen betyder noget for valget af teknologi.
+
+| | Klassisk knowledge graph (RDF, SPARQL, Neo4j) | Ontologi / typet objektgraf (Palantir) |
+|---|---|---|
+| Skema | Åbent, alt kan siges om alt | Fast, typet: en Forening *har* disse egenskaber |
+| Formål | Viden, sammenhænge, slutninger | Drift: se, beslutte, handle |
+| Skrivning | Tripler tilføjes | Gennem **handlinger** med regler, rettigheder og log |
+| Passer til jer | Nej – for løst og for tungt | **Ja** |
+
+Pointen: I skal have en **graf-formet datamodel**, ikke en **grafdatabase**. Ved jeres datamængde (tiere af foreninger, hundreder af arrangementer, tusinder af medlemmer) er "følg et link" bare et opslag. En almindelig database (Postgres) klarer det uden besvær.
+
+## Hvor systemet er i dag
+
+Prototypen virker og har gode idéer (registre, rettelser som lag oven på kildedata, krypterede admin-filer). Men den er bygget feature for feature:
+
+1. **Logikken er skrevet flere gange.** Momentum og HB-reglerne findes både i `app.js` og i `scripts/hb.py` / `scripts/rapport.py`. De to kopier kan komme ud af trit.
+2. **Links er implicitte.** Et arrangement peger på en forening med et navn (`"forening": "Fyn"`). Omdøbes en forening, knækker sammenhængen.
+3. **Hver visning har sin egen kode.** Momentum, HB, hvide pletter og "Hvad virker?" har hver deres beregning og tegning. En ny egenskab bliver ikke automatisk tilgængelig i filtre, kort og tabeller.
+4. **Udvidelsespunkterne ligger i brugerfladen** (`registerSection`, `registerLayer`). Den nye type data kan ikke registreres, kun nye måder at vise den på.
+5. **Adgang er én fælles kode.** Alle admins ser alt. Der er ingen roller og ingen personlig log over, hvem der gjorde hvad.
+6. **Git er databasen.** Det fungerer til offentlige arrangementer, men ikke til persondata (se [Persondata](#persondata-vigtigt)).
+
+## Målarkitekturen
+
+```mermaid
+flowchart TB
+  subgraph Kilder
+    FB[Facebook via Apify]
+    MS[Medlemssystem / CSV]
+    DR[Drive / Sheets]
+    MAN[Manuel indtastning]
+  end
+  subgraph Kerne["Kerne (ét framework)"]
+    CON[Connectors] --> ACT
+    ACT[Handlinger<br/>validering, rettigheder, log] --> STORE[(Objektlager<br/>objekter + links + handlingslog)]
+    ONT[Ontologi<br/>typer, egenskaber, links,<br/>beregninger, roller] -.styrer.-> ACT
+    ONT -.styrer.-> Q
+    STORE --> Q[Objektsæt-motor<br/>filtrér, search around, gruppér, mål]
+  end
+  subgraph Brugerflade["Én brugerflade"]
+    W[Widgets: tabel, søjler, tidslinje,<br/>kort, kalender, liste, nøgletal]
+    V[Views og objektsider<br/>sat sammen af widgets]
+    R[Regler og opgaver<br/>advarsler, indbakke, notifikationer]
+  end
+  Kilder --> CON
+  Q --> W --> V
+  Q --> R --> ACT
+  V -- knapper --> ACT
+```
+
+### 1. Ontologi – ét skema, der styrer alt
+
+Én deklarativ definition (fx `ontologi/*.ts`) af:
+
+- **Objekttyper og egenskaber:** Forening, Kommune, Arrangement, Person, Rolle (Person er formand i Forening fra–til), Opgave, Note, HB-vurdering, senere Kampagne, Budget …
+- **Links:** Arrangement → arrangeret af → Forening (mange-til-mange), Forening → dækker → Kommune, Person → medlem af → Forening, Opgave → handler om → hvad som helst.
+- **Beregnede egenskaber (functions):** momentum, HB-status, dage siden sidste arrangement, varsel. De skrives **én gang** i TypeScript og bruges overalt: i filtre, på kortet, i tabeller og i regler. Python-kopierne forsvinder.
+- **Roller:** hvem må se og ændre hvilke typer og egenskaber.
+
+Alt, der står i ontologien, dukker automatisk op i analysebyggeren, på kortet, i CSV-eksport og i objektsiderne. Det er det, der gør, at "alt kan forbindes med alt".
+
+### 2. Objektlager med handlingslog
+
+- Hvert objekt har et stabilt id. Links er rigtige referencer, ikke navne.
+- **Kildedata og brugerrettelser holdes adskilt.** Det, I allerede gør med `rettelser`, gøres generelt: Facebook siger X, en admin retter til Y, og Y vinder – for alle objekttyper.
+- **Alle ændringer er handlinger** i en log, der kun kan skrives til (hvem, hvad, hvornår, hvorfor). Det giver historik, fortryd og "hvad vidste vi den 1. september?" gratis. Månedsrapportens snapshots bliver bare en forespørgsel på loggen.
+
+### 3. Objektsæt – ét forespørgselssprog
+
+Én serialiserbar beskrivelse (JSON), som alle dele af systemet bruger:
+
+```json
+{
+  "type": "Arrangement",
+  "filtre": [
+    {"egenskab": "start", "periode": "seneste365"},
+    {"egenskab": "arrangeretAf.momentum", "er": ["faldende", "hjaelp"]}
+  ],
+  "gruppering": {"egenskab": "start", "pr": "maaned"},
+  "maal": {"funktion": "median", "egenskab": "deltager"}
+}
+```
+
+("Median af deltagere pr. måned det seneste år, for arrangementer i foreninger, der mister fart eller har brug for hjælp.")
+
+Den samme beskrivelse kan vises som søjlediagram, tabel eller kort, gemmes som view, bruges som betingelse i en regel ("hvis sættet ikke er tomt, opret en opgave") eller deles som link. Formatet er implementeret i `kerne/objektsaet.js`.
+
+### 4. Widgets og views – brugerne bygger selv
+
+- **Widgets** tager et objektsæt og tegner det: tabel, søjler, tidslinje, kort, kalender, liste, nøgletal, kanban.
+- **Views** er gemte sider med widgets, der deler variabler: vælg en forening i kortet, og tabellen og diagrammet ved siden af filtrerer med.
+- **Objektsider** genereres ud fra ontologien: foreningspanelet bliver "objektsiden for Forening", konfigureret i stedet for kodet. Samme for Person, Arrangement osv.
+- Det offentlige kort er bare et view med den offentlige rolle.
+
+### 5. Workflows – handling samme sted som data
+
+- **Handlinger** er knapper på objekter: "Bekræft afholdt", "Tildel opgave", "Registrér fremmøde". De har regler for, hvem der må, og felter, der skal udfyldes.
+- **Regler** er objektsæt med en betingelse og en effekt, der kører på skema eller ved ændringer. "Kræver handling nu" bliver en regel i stedet for hårdkodet logik. Eksempel: "Lokalforeninger uden noget afholdt eller planlagt i kvartalet, 14 dage før kvartalsslut → opret en opgave til regionsansvarlig og send en mail."
+- **Opgaver** er selv objekter med links, så de kan ses på kortet, filtreres og analyseres som alt andet.
+
+### 6. Udvidelser på dataniveau
+
+En udvidelse registrerer **objekttyper, beregninger, handlinger, widgets og connectors** mod det samme register. En ny datakilde – fx medlemstal eller kampagner – bliver dermed straks brugbar i alle views og analyser, uden ny UI-kode.
+
+## Teknologivalg (anbefaling)
+
+| Lag | Anbefaling | Hvorfor |
+|---|---|---|
+| Objektlager, login, rettigheder | **Postgres hos Supabase (EU-region)** | Rigtige personlige logins, rettigheder pr. række (en lokalformand ser kun sin egen forening), handlingslog, gratis til jeres størrelse. Links er bare tabeller – ingen grafdatabase nødvendig. |
+| Datamodel i databasen | Generisk: `objekter(id, type, egenskaber jsonb)`, `links(fra, til, type)`, `handlinger(...)` + validering ud fra ontologien | Nye objekttyper kræver ingen databasemigrering. Ved jeres datamængde er ydelsen ikke et problem. |
+| Ontologi, beregninger, objektsæt-motor | **JavaScript-moduler med typetjek** (JSDoc + TypeScript), delt mellem browser, Node og server | Én implementering af hver regel. Ingen build-trin: samme filer kører overalt, og der er mindre at vedligeholde. Typetjek og tests i CI fanger fejl tidligt. |
+| Analyse | I browseren på det sæt, brugeren har adgang til (evt. DuckDB-WASM senere) | Hurtigt og enkelt ved hundreder–tusinder af objekter. Serveren håndhæver adgangen. |
+| Brugerflade | Vite + TypeScript, MapLibre som i dag, lille UI-framework (fx Svelte) | Kan bygges gradvist ved siden af det nuværende. |
+| Connectors | De nuværende Python-scripts, men de skriver via handlings-API'et (kilde: "facebook") i stedet for til filer | Genbrug af det, der virker. |
+| Hosting | GitHub Pages til frontend som nu; Cloudflare-workeren kan udfases | Ingen ny drift ud over Supabase. |
+
+**Alternativ, der skal nævnes:** NocoDB eller Baserow (open source, kan hostes i EU) giver tabeller, links, views, formularer og automatiseringer færdigt. Kortet og jeres analyser skulle så bygges oven på deres API. Hurtigere start, men mindre kontrol over oplevelsen, og ikke ét samlet interface. Det giver mening, hvis I hellere vil bruge tid på foreningen end på et system.
+
+## Persondata (vigtigt)
+
+Medlemskab af et politisk ungdomsparti afslører politisk overbevisning. Det er **særlige kategorier af personoplysninger** efter GDPR art. 9. Foreningen må godt behandle sine egne medlemmers data (art. 9, stk. 2, litra d), men det stiller krav:
+
+- Persondata må **ikke ligge i git** – heller ikke krypteret. Historikken kan ikke slettes, og alle deler én nøgle.
+- Personlige logins, adgang efter rolle og log over, hvem der har set og ændret hvad.
+- Databehandleraftale med hostingudbyderen og hosting i EU.
+
+Det er det stærkeste argument for at flytte objektlageret ud af repoet, før personer kommer ind i systemet. (Dette er ikke juridisk rådgivning – tjek med landsorganisationens dataansvarlige.)
+
+## Vej derhen – uden big bang
+
+Hver fase kan tages i brug, før den næste starter.
+
+| Fase | Indhold | Resultat |
+|---|---|---|
+| **0. Beslut** ✅ | Beslutningerne nedenfor. Skriv ontologien for det, der findes i dag (Forening, Kommune, Arrangement, rettelser, HB, momentum). | Et fælles sprog |
+| **1. Kerne i browseren** ✅ | Ontologi + objektsæt-motor i TypeScript oven på de nuværende JSON-filer (en adapter). Momentum og HB flyttes ind som beregnede egenskaber. Kort, panel og analysebyggeren bygges om til at bruge motoren. | Én implementering af hver regel. Alle egenskaber virker overalt. Ingen ny server. |
+| **2. Rigtigt objektlager** | Supabase, migrering af foreninger, arrangementer og rettelser (rettelser → handlingslog). Personlige logins og roller. Python-sync skriver via API. | Sikker adgang, historik, klar til persondata |
+| **3. Views** | Generiske widgets, gemte views med delte variabler, konfigurerbare objektsider. | Brugerne bygger selv |
+| **4. Workflows** | Handlinger med formularer, regler på skema/ændring, opgaver og indbakke, mail. | "Kræver handling nu" bliver til opgaver med en ansvarlig |
+| **5. Nye objekttyper** | Personer og roller (efter GDPR-afklaring), kampagner, økonomi, frivillige … | Hele foreningen i ét system |
+
+Fase 1 er den vigtigste og kan laves uden at vælge backend. Den giver den grundlæggende struktur, som resten hviler på.
+
+## Beslutninger
+
+1. **Personer (medlemmer, frivillige, bestyrelser) skal ind i systemet.** ✅ Besluttet. En rigtig backend med personlige logins er derfor et krav.
+2. **Lokale bestyrelser skal være brugere med adgang til deres egen forening.** ✅ Besluttet. Det kræver **adgang pr. række**: en bestyrelse ser kun sine egne medlemmer. Det bliver det afgørende kriterium i valget nedenfor.
+3. **Bygge selv på Supabase.** ✅ Besluttet. Se sammenligningen nedenfor.
+
+### Bygge selv eller købe? (sammenligning, september 2026)
+
+Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–120 brugere plus landsledelsen.
+
+| | **Bygge selv på Supabase (Postgres)** | **Baserow** | **NocoDB** |
+|---|---|---|---|
+| Hvad det er | Database, login og rettigheder som byggeklodser. Brugerfladen bygger I selv. | "Airtable i open source": tabeller, links, views, formularer, automatiseringer, app-bygger. Hollandsk, EU-hosting. | Samme idé som Baserow. Kan også lægges oven på en eksisterende Postgres. |
+| Adgang pr. række (bestyrelse ser kun egen forening) | ✅ Indbygget og gratis (Row Level Security) | ⚠️ Rettigheder går kun ned til tabelniveau (Advanced-planen). Omvej: en portal bygget i deres app-bygger (op til 500 app-brugere gratis). | ⚠️ Kun i den dyreste selvbetjente plan (Scale) |
+| Pris ved ~120 brugere | ca. 0–175 kr./md. (gratis → Pro $25) | Fulde brugere: $18/bruger/md. → ca. 15.000 kr./md. Billigt kun, hvis bestyrelserne bruger portalen, og få er fulde brugere. | Afhænger af antal redaktører; rækkeadgang kræver Scale |
+| Licens | Open source (Apache 2.0); data i almindelig Postgres | Kernen er open source (MIT); rettigheder er betalt | **Ikke længere open source** (Sustainable Use License siden 2026) |
+| Kort og ét samlet interface | ✅ Det er det, I bygger | ❌ Kortet og analyserne bliver en separat app oven på deres API | ❌ Samme |
+| Tid til noget brugbart | Måneder | Dage–uger | Dage–uger |
+| Største risiko | **Nøgleperson-afhængighed:** hvem vedligeholder koden, når du ikke gør? | Pris og begrænsninger låser jer fast; to brugerflader | Licens og pris kan ændre sig igen (er lige sket) |
+
+**Anbefaling: byg selv på Supabase**, men gør det bevidst for at mindske nøgleperson-risikoen:
+
+- Data ligger i **almindelig Postgres** med et dokumenteret skema. Hvis den hjemmebyggede brugerflade en dag står stille, kan et færdigt værktøj sættes oven på de samme data, uden at noget skal flyttes. Vejen tilbage er åben.
+- Standardteknologi (TypeScript, Postgres), ingen eksotiske valg, og ontologien som ét dokument, andre kan læse.
+- Fase 1 (kernen i browseren) giver værdi, før der er brugt tid på backend.
+
+**Vælg Baserow i stedet**, hvis ingen realistisk kan vedligeholde kode om to år, og I kan leve med, at kortet og analyserne er en separat app. NocoDB anbefales ikke på grund af licensskiftet og prisen på rækkeadgang.
+
+## Status for fase 1
+
+**Gjort:**
+
+- `kerne/`: ontologien (Forening, Arrangement, Kommune, Person, Rolle og links), objektlageret, objektsæt-motoren og reglerne (momentum, HB, status, kategori, dækning, rettelser). Se [kerne/README.md](../kerne/README.md).
+- Adapter fra de nuværende JSON-filer (`kerne/kilder/json.js`). Supabase-adapteren i fase 2 skal give samme resultat.
+- Adgang pr. type, egenskab og række er en del af modellen (offentlig/forening/admin) og håndhæves i lageret.
+- **`app.js` bruger kernen.** Dens egne kopier af reglerne (momentum, HB, kvartaler, dækning, kategorier, rettelser) er fjernet; `DATA.lager` er kernens objektlager. Udvidelserne bruger de samme navne som før og er uændrede.
+- Tests: enhedstests af kernen og en **facit-test**: hele `app.js` køres på frosne data på seks datoer (inkl. kvartals- og årsskifte) og skal give præcis det samme som den gamle `app.js` gjorde. CI kører dem ved hver pull request.
+- Analysebyggeren (`udvidelser/egne-analyser.js`) er bygget om oven på kernen: alle typer, egenskaber og links kommer fra ontologien. Den kan filtrere gennem links, finde objekter, der **ikke** har noget ("lokalforeninger uden arrangementer de næste 30 dage"), og følge links (search around).
+- **Python-scripts bruger kernen.** `scripts/hb.py`, `scripts/rapport.py` og `scripts/kalender.py` har ingen egne kopier af reglerne længere: de kalder `scripts/kerne.js` (Node 22 i GitHub Actions, via `scripts/kerne.py`) og laver kun fil-I/O, kryptering og (indtil videre) rapportens opbygning – se "Månedsrapporten står kun i kernen" herunder. Kernen fik de regler, scriptene manglede: HB-risikoens niveau og grænser (`hbRisiko()`, som `udvidelser/hb-risiko.js` nu også bruger), HB-prognosen for et andet år og månedsrapportens rekonstruktion (`tilstandVed()`). Beviset: de gamle og nye scripts gav identisk output på 13 faste datoer (inkl. kvartals- og årsskifte) på de rigtige data; på et varieret datasæt var den eneste regelforskel, at `hb.py` regnede et arrangement som afholdt fra dets startdag, hvor siden (kernen) først regner det afholdt, når det er slut – kernens regel gælder nu. Desuden får manuelle arrangementer i kalenderne (`.ics`) nu `DTSTAMP` fra rettelsen (kernen sætter `foerst_set` til rettelsens tidspunkt, som på siden) i stedet for starttidspunktet. `test/scripts.test.js` holder scriptene lig facit.
+- **Analyserne er flyttet over på kernen.** Reglerne for HB-risiko, hvide pletter og "Hvad virker?" står i `kerne/regler.js` og er egenskaber i ontologien (fx `hbRisiko` og `rekord` på Forening, `hvidPlet` på Kommune, `deltagerIndeks`, `starttid` og `varselGruppe` på Arrangement), så de også kan bruges i analysebyggeren, filtre og på kortet. Månedsrapportens "Denne måned indtil nu" (Bagud og Fremad) beregnes af `kerne/rapport.js`. Udvidelserne læser værdierne fra `DATA.lager` og er kun brugerflade. En facit-test (`test/analyser.test.js`) beviser, at analysernes HTML, advarsler og kortlag er uændrede på seks datoer.
+- **Månedsrapporten står kun i kernen.** `scripts/rapport.py` er nu kun fil-I/O, kryptering og kommandolinje: snapshots, Bagud (fald/forbedring, nye aflysninger, uden aktivitet, fordeling), Fremad (risici, deres tekster og rækkefølge, `FREMAD_DAGE`), hvornår et gemt snapshot eller en gemt rapport erstattes, og udskriften i loggen laves af `kerne/rapport.js` (`opdater()`, `tilstand()`, `snapshot()`, `maanedsrapport()`, `fremad()`, `udskrift()`) via `scripts/kerne.js` (`"rapport": {valg, gemt}`) – de samme funktioner, som siden bruger til "Denne måned indtil nu" (`maanedIndtilNu()` er `maanedsrapport()` med nu som slut). Rekonstruktionen af afsluttede måneder er også flyttet helt: `bygFraJson({…, ved: {tid, rekonstruer: true}})` bygger lageret, som det så ud på tidspunktet (`tilstandVed()`), og snapshots og Fremad beregnes på det med de almindelige egenskaber. Det eneste, Python stadig gør ved indholdet, er at gemme `normalt` som decimaltal (1.0), som snapshots altid er gemt – JSON fra Node skelner ikke 1 fra 1.0. Beviset: det gamle og det nye `rapport.py` blev kørt uden `ADMIN_KODE` (admin.py erstattet) med `alle`, den indeværende måned og uden argument på ti faste datoer (2026-03-31T21:59Z, 2026-06-15T12Z, 2026-06-30T21:30Z, 2026-09-29T10Z, 2026-09-30T21:30Z, 2026-09-30T22:30Z – den 1. dansk tid, levende snapshot –, 2026-10-01T08Z, 2026-12-31T12Z, 2026-12-31T22:30Z og 2027-01-02T12Z) og i en kæde af kørsler med gemte data, på `data/`, `test/fixtures/data/` og et varieret datasæt (aflyste, forsvundne, manuelle, flyttede og skjulte arrangementer, fremmøde, lange titler med emoji, kørsler fra januar): 327 filer (gemt JSON, præcis som den krypteres, og udskriften), 222 byte-identiske; de øvrige 105 er byte-identiske, når de to rækkefølger herunder sorteres som i kernen – der er ingen andre forskelle. Forskellene mellem Python og kernen, hvor kernens (sidens) regel nu gælder:
+  1. **Fremads risici** med samme alvor, type og antal dage (i praksis "Brug for hjælp" og "Mister fart") sorteres efter foreningens navn på dansk (`localeCompare(…, 'da')`), som "Denne måned indtil nu" altid har gjort: Aalborg og Aarhus står sidst ("aa" = "å"), og æ, ø, å kommer i dansk rækkefølge. Python sorterede efter tegnkoder (Aalborg og Aarhus først).
+  2. **Nye aflysninger** inden for samme forening står efter arrangementets dato (som på siden); Python sorterede dem efter Facebook-id.
+  3. Titler i "… hænger på ét planlagt arrangement" afkortes nu efter tegn (kodepunkter), som Python gjorde; siden afkortede efter UTF-16-enheder og kunne dele en emoji i to (og en halv emoji ville have fået `rapport.py` til at fejle ved krypteringen). Påvirker kun titler over 50 tegn med emoji og ændrer ikke de gemte rapporter.
+  4. "Uden afholdt aktivitet – sidst": den sidste **afholdte** før måneden (som siden). Python talte også et arrangement med, der begyndte før måneden og stadig ikke var slut – det forekom ikke i nogen af kørslerne.
+  Uændret, men værd at vide: `ufuldstaendig` (Fremad ligger før den første ugentlige kørsel) sættes kun i gemte rapporter (`fremad(L, {gemt: true})`) – på siden er "nu" altid efter den første kørsel –, og `forklaring` på HB-risiciene er i de gemte rapporter rapportens egen korte tekst og i "Denne måned indtil nu" teksten fra `LAU.hbRisiko(f)`. `test/scripts.test.js` kører nu `rapport.py` i 36 faste scenarier og kræver præcis facit (`test/fixtures/rapport.json`) og, at den foreløbige rapport er den samme, som siden viser. `rapport.py alle` er desuden omkring fire gange hurtigere (ét Node-kald i stedet for et pr. tidspunkt).
+- **Kortets farvninger bygger på ontologien.** Enhver kategorisk egenskab (`kat`) på Forening kan farve kortet, og en ny i `kerne/lau.js` dukker automatisk op under Visninger (admin-egenskaber kun for admins) – fx analysernes HB-risiko (`hbRisiko`, `hbRisikoSpand`). Kun præsentationen ligger i `app.js` (`FARVER`: farver og gennemsigtighed pr. værdi, tekster, tooltips; ellers en standardpalet). Kvartalerne ("Afholdt i Q1" …) er et særtilfælde i `app.js`, da hvilke kvartaler der findes og deres navne afhænger af dagen og 'ukendt' af datadækningen – men de har samme form og tegnes på samme måde. Kortet ser ud præcis som før (sammenlignet farve for farve i browseren, og en test sikrer, at farvningerne giver de samme værdier som facit).
+
+- **Foreningspanelet er en objektvisning** (som Palantirs Object View) af foreningens objekt i objektlageret. Sektionerne får objektet (`render(f, o)`) og læser tal fra ontologiens egenskaber (fx `afholdt90`, `dageSidenSidste`, `momentumDetaljer`, `hbDetaljer`, kommunerne via linket `kommuner`), fordelinger fra objektsæt (`K.koer`: search around fra foreningen ad `arrangementer`, filtreret på arrangementets `status` og grupperet efter `start`, `kategori` eller `ugedag`; gennemsnittene for lokalforeningerne som mål) og arrangementslisterne fra kernens inddeling af linket (`aktivitet`). To generiske sektioner viser resten af ontologien med `objektVisning()` i `kerne/objektsaet.js`: **Egenskaber** (typens egenskaber, som rollen må se – admin-egenskaber kun for admins –, fx analysernes HB-risiko, hvide pletter og normalt antal deltagere) og **Forbundne objekter** (antal pr. link og fordelingen på den linkede types første kategori, fx arrangementernes status og kommunernes hvide pletter). Det, en sektion allerede viser, står i dens `viser: [...]` og gentages ikke. En ny egenskab eller et nyt link i `kerne/lau.js` dukker derfor op i panelet uden ny kode. Beviset: panelets HTML for alle 24 foreninger (inkl. Landsforeningen), offentligt og som admin, blev gemt i browseren før og efter – de eksisterende sektioner er tegn for tegn identiske (48 af 48); den eneste forskel er de to nye sektioner. `test/app.test.js` sikrer, at panelets objektsæt er præcis kernens inddeling på seks datoer, og at sektionerne kan tegnes for alle foreninger i den faste rækkefølge; `test/kerne.test.js` tester `objektVisning()` (rolle, interne og tomme egenskaber, rækkeadgang på links og en ny egenskab og et nyt link uden ny kode).
+
+**Fase 1 er færdig.** Alle regler står ét sted (kernen), og kortet, panelet, analyserne, analysebyggeren og Python-scriptene bygger på ontologien og objektsæt. Næste skridt er fase 2: Supabase som objektlager (en adapter med samme resultat som `kerne/kilder/json.js`), rettelser som handlingslog, personlige logins og roller.
