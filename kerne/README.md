@@ -11,7 +11,7 @@ TypeScript via JSDoc (`npm run typetjek`).
 | `regler.js` | Forretningsreglerne: kategorier, status, rettelser, dækning, HB-godkendelse, HB-risiko, momentum og "hvad vidste vi dengang" (månedsrapportens snapshots) – og analysernes regler (hvide pletter og "Hvad virker?"). Den eneste kopi – siden, udvidelserne og Python-scripts bruger den. |
 | `rapport.js` | **Månedsrapporten** – den eneste kopi: snapshots (`tilstand`, `snapshot`), Bagud (`maanedsrapport`; for den indeværende måned `maanedIndtilNu`), Fremad (`fremad`), de gemte rapporter (`opdater`) og udskriften i loggen (`udskrift`). Siden viser "Denne måned indtil nu" med den; `scripts/rapport.py` laver de gemte rapporter. |
 | `lager.js` | Objektlageret: objekter, links og beregnede egenskaber. Håndhæver adgang. |
-| `objektsaet.js` | Forespørgselssproget: filtrér, følg links (search around), gruppér, mål, bor ned. |
+| `objektsaet.js` | Forespørgselssproget: filtrér, følg links (search around), gruppér, mål, bor ned. Og objektvisningen (`objektVisning`): et objekts egenskaber og links, som en rolle må se – foreningspanelets "Egenskaber" og "Forbundne objekter". |
 | `kilder/json.js` | Adapter fra de nuværende JSON-filer. Fase 2: en Supabase-adapter med samme resultat. |
 | `tid.js` | Dansk tid, kalenderdage, kvartaler og HB-året. |
 
@@ -90,7 +90,7 @@ aktiveKommuner: {label: 'Kommuner med aktivitet', type: 'tal',
 ```
 
 Den kan så straks bruges i analysebyggeren (filtre, gruppering, mål), gennem links (`arrangeretAf.aktiveKommuner`),
-på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `dato`, `bool` og `objekt` (intern).
+på kortet, i foreningspanelet ("Egenskaber"; et nyt link under "Forbundne objekter") og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `dato`, `bool` og `objekt` (intern).
 `adgang: 'admin'` skjuler den for offentligheden. En `kat`-egenskab på Forening bliver også en farvning af kortet
 (Visninger); egne farver pr. værdi kan sættes i `FARVER` i `app.js`.
 
@@ -109,7 +109,9 @@ på kortet og i CSV-eksporten. Typer: `tekst`, `kat` (med `vaerdier`), `tal`, `d
 - `test/app.test.js` – hele `app.js` (der bruger kernen) køres på frosne data (`test/fixtures/data/`) på seks datoer og
   skal give præcis det samme som facit (`test/fixtures/golden.json`). Facit blev lavet med `app.js`, før reglerne blev
   flyttet til kernen, så det beviser, at flytningen ikke ændrede noget. Ændres en regel **bevidst**, laves nyt facit med
-  `node test/lav-golden.js` – og ændringen i `golden.json` viser præcis, hvad reglen ændrede.
+  `node test/lav-golden.js` – og ændringen i `golden.json` viser præcis, hvad reglen ændrede. Testen sikrer også, at kortets
+  farvninger og foreningspanelet bygger på ontologien (panelets objektsæt er præcis kernens inddeling af arrangementerne,
+  og alle sektioner kan tegnes for alle foreninger, offentligt og som admin).
 - `test/analyser.test.js` – analyserne i `udvidelser/` køres på de samme frosne data og datoer, og deres output (HTML,
   advarsler, kortlaget og `LAU.hbRisiko`) skal have samme fingeraftryk som facit (`test/fixtures/analyser.json`, lavet
   før analysernes regler blev flyttet hertil). Ændres en analyse bevidst: `node test/lav-analyse-facit.js [mappe]` (med en

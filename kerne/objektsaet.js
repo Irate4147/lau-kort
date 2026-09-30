@@ -17,6 +17,7 @@
 //     "maal": {"funktion": "median", "egenskab": "deltager"}
 //   }
 
+import {tilladt} from './ontologi.js';
 import {DAG, dagNoegle, fmtDato, maanedNoegle} from './tid.js';
 
 /** @typedef {import('./ontologi.js').Objekt} Objekt @typedef {import('./ontologi.js').Egenskab} Egenskab */
@@ -186,6 +187,53 @@ export function visVaerdi(e, v) {
   if (e.type === 'dato') return fmtDato.format(v);
   if (e.type === 'tal') return v.toLocaleString('da-DK', {maximumFractionDigits: 1});
   return String(v);
+}
+
+/**
+ * @typedef {import('./ontologi.js').Link} Link @typedef {import('./ontologi.js').Adgang} Adgang
+ * @typedef {{egenskab: Egenskab, vaerdi: any, tekst: string}} VistEgenskab
+ * @typedef {{link: Link, objekter: Objekt[], fordeling: {egenskab: Egenskab, grupper: {noegle: any, label: string, antal: number}[]}|null}} VistLink
+ */
+
+/**
+ * Objektvisningen (som Palantirs Object View): et objekts egenskaber og links, som rollen må se, bygget af ontologien –
+ * en ny egenskab eller et nyt link i lau.js kommer med uden ny kode. Interne egenskaber, objekter og egenskaber uden
+ * værdi er udeladt. Et link giver de linkede objekter (kun dem, rollen må se; links uden objekter er udeladt) og deres
+ * fordeling på den linkede types første kategori (ellers første ja/nej-egenskab), fx arrangementernes status.
+ * @param {Lager} lager @param {Objekt} o
+ * @param {{rolle?: Adgang, udelad?: Iterable<string>}} [valg] rolle: standard lagerets; udelad: egenskaber og links
+ *   (id/navn), der allerede vises andetsteds
+ * @returns {{egenskaber: VistEgenskab[], links: VistLink[]}}
+ */
+export function objektVisning(lager, o, {rolle = lager.rolle, udelad = []} = {}) {
+  const ont = lager.ontologi, ud = new Set(udelad);
+  const synlig = (/** @type {Egenskab} */ e) => !e.intern && e.type !== 'objekt' && tilladt(e.adgang, rolle) && !ud.has(e.id);
+  const egenskaber = ont.type(o.type).egenskabsliste.filter(synlig)
+    .map(e => ({egenskab: e, vaerdi: lager.vaerdi(o, e.id)}))
+    .filter(x => x.vaerdi != null && x.vaerdi !== '')
+    .map(x => ({...x, tekst: visVaerdi(x.egenskab, x.vaerdi)}));
+  /** @type {VistLink[]} */
+  const links = [];
+  for (const link of ont.links(o.type)) {
+    if (ud.has(link.navn) || !tilladt(ont.type(link.til).adgang, rolle)) continue;
+    const objekter = lager.linkede(o, link.navn).filter(x => lager.maaSe(x, rolle));
+    if (!objekter.length) continue;
+    const kandidater = ont.type(link.til).egenskabsliste.filter(e => !e.intern && tilladt(e.adgang, rolle));
+    const e = kandidater.find(x => x.type === 'kat') || kandidater.find(x => x.type === 'bool');
+    let fordeling = null;
+    if (e) {
+      /** @type {Map<any, number>} */
+      const antal = new Map();
+      for (const x of objekter) { const v = lager.vaerdi(x, e.id); if (v != null) antal.set(v, (antal.get(v) || 0) + 1); }
+      /** @type {any[]} */
+      const orden = e.type === 'kat' ? Object.keys(e.vaerdier || {}) : [true, false];
+      const plads = (/** @type {any} */ v) => (orden.indexOf(v) + 1) || orden.length + 1;
+      const grupper = [...antal].sort((a, b) => plads(a[0]) - plads(b[0])).map(([noegle, n]) => ({noegle, label: visVaerdi(e, noegle), antal: n}));
+      if (grupper.length) fordeling = {egenskab: e, grupper};
+    }
+    links.push({link, objekter, fordeling});
+  }
+  return {egenskaber, links};
 }
 
 /**

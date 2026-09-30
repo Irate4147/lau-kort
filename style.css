@@ -179,6 +179,10 @@ ul.rank .sub { grid-column: 2 / 4; color: var(--muted); font-size: 12px; overflo
 .stamdata { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; font-size: 13px; }
 .stamdata dt { color: var(--text-secondary); }
 .stamdata dd { margin: 0; }
+/* Objektvisningens egenskaber og links (panelets "Egenskaber" og "Forbundne objekter"): lange navne, værdien til højre. */
+.stamdata.egenskaber { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.stamdata.egenskaber dd { font-variant-numeric: tabular-nums; }
+.stamdata.egenskaber dd.fordeling { grid-column: 1 / -1; text-align: left; color: var(--muted); font-size: 12px; margin-top: -2px; }
 textarea.notes {
   width: 100%; font: inherit; font-size: 13px; padding: 8px; border-radius: 8px; resize: vertical;
   border: 1px solid var(--axis); background: var(--page); color: var(--text-primary);

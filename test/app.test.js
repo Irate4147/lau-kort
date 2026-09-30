@@ -4,6 +4,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
 import {DATOER, FIXTURES, koerApp, udtraek} from './hjaelp/app-vm.js';
 import {LAU} from '../kerne/index.js';
 
@@ -52,3 +53,41 @@ test('en ny kategorisk egenskab får standardfarver og ontologiens adgang', asyn
   assert.notEqual(fv.farver.a, fv.farver.b);
   assert.equal(app.egenskabsFarvning({id: 'offentlig', label: 'O', type: 'kat', adgang: 'offentlig', vaerdier: {x: 'X'}}).admin, false);
 });
+
+// Foreningspanelet er en objektvisning: sektionerne læser fra objektlageret. Panelets objektsæt over arrangementer-linket
+// (filtreret på arrangementets status) skal være præcis kernens aktivitet, alle sektioner skal kunne tegnes for alle
+// foreninger – offentligt og for admins – i den faste rækkefølge, og de generiske sektioner følger ontologien og rollen.
+const PANEL_ORDEN = ['kommende', 'momentum', 'hb', 'tidligere', 'aar', 'noegletal', 'typer', 'tilkendegivelser', 'geografi',
+  'ugedage', 'stamdata', 'egenskaber', 'links', 'noter'];
+for (const tid of DATOER) {
+  test(`foreningspanelet bygger på objektlageret og ontologien (${tid})`, async () => {
+    const app = await koerApp(tid);
+    const ud = JSON.parse(vm.runInContext(`JSON.stringify([false, true].flatMap(admin => {
+      ADMIN.noegle = admin ? 'test' : null;
+      return DATA.foreninger.map(f => {
+        const o = DATA.lager.hent('Forening', f.navn), a = aktivitetAf(o), ids = xs => xs.map(x => x.id).sort();
+        const saet = Object.fromEntries(Object.keys(ARR_SAET).map(s => [s, [ids(arrSaet(o, s).objekter), ids(a[s])]]));
+        const sek = PANEL_SECTIONS.filter(s => tilladt(s) && (!s.synlig || s.synlig(f, o)));
+        const html = Object.fromEntries(sek.map(s => [s.id, s.render(f, o)]));
+        const v = objektVisning(f, o);
+        return {navn: f.navn, admin, saet, sek: sek.map(s => s.id), html, vist: [...vistIPanelet(f, o)],
+          egenskaber: v.egenskaber.map(x => x.egenskab.id), links: v.links.map(l => [l.link.navn, l.objekter.length])};
+      });
+    }))`, app.ctx));
+    assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(PANEL_SECTIONS.map(s => s.id))', app.ctx)), PANEL_ORDEN);
+    for (const p of ud) {
+      const hvor = `${p.navn} (${p.admin ? 'admin' : 'offentlig'})`;
+      for (const [s, [saet, akt]] of Object.entries(p.saet)) assert.deepEqual(saet, akt, `${hvor}: objektsættet ${s}`);
+      assert.deepEqual(p.sek, PANEL_ORDEN.filter(id => p.sek.includes(id)), `${hvor}: rækkefølgen`);
+      for (const [id, html] of Object.entries(p.html)) assert.equal(typeof html, 'string', `${hvor}: ${id}`);
+      if (!p.admin) assert.ok(p.sek.every(id => ['kommende', 'tidligere', 'stamdata', 'egenskaber', 'links'].includes(id)), hvor);
+      for (const id of p.egenskaber) {
+        const e = LAU.egenskab('Forening', id);
+        assert.ok(p.admin || e.adgang === 'offentlig', `${hvor}: ${id} er kun for admins`);
+        assert.ok(!p.vist.includes(id), `${hvor}: ${id} vises allerede`);
+      }
+      if (p.admin && p.navn !== 'Landsforeningen') assert.ok(p.egenskaber.includes('hbRisiko') && !p.egenskaber.includes('momentum'), hvor);
+      assert.equal(p.links.find(l => l[0] === 'kommuner')?.[1] ?? 0, app.DATA.byName.get(p.navn).kommuner.length, `${hvor}: kommuner`);
+    }
+  });
+}

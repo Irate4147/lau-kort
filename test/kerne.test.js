@@ -1,7 +1,7 @@
 // Enhedstests af kernen på et lille, fast datasæt.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {bygFraJson, koer, valider, boreNed, prObjekt, LAU, Ontologi, regler, regler as R, tid, rapport as RAP} from '../kerne/index.js';
+import {bygFraJson, koer, valider, boreNed, prObjekt, objektVisning, Lager, LAU, Ontologi, regler, regler as R, tid, rapport as RAP} from '../kerne/index.js';
 
 const NU = new Date('2026-09-29T10:00:00Z');
 const ev = (id, forening, start, ekstra = {}) => ({id, forening, foreninger: [forening], navn: `Arrangement ${id}`, start,
@@ -106,6 +106,47 @@ test('ontologien afviser dobbelte navne og ukendte typer', () => {
     links: {l: {fra: 'A', til: 'B', label: 'l', omvendt: {id: 'm', label: 'm'}}}}), /ukendt type/);
   assert.throws(() => new Ontologi({typer: {A: {label: 'A', flertal: 'A', titel: 'x', egenskaber: {x: {label: 'x', type: 'tekst'}}}},
     links: {x: {fra: 'A', til: 'A', label: 'l', omvendt: {id: 'y', label: 'y'}}}}), /to gange/);
+});
+
+test('objektvisning: egenskaber og links efter rolle, uden interne, tomme og udeladte', () => {
+  const O = bygFraJson({...DATA, nu: new Date('2027-09-15T00:00:00Z')}), fyn = O.hent('Forening', 'Fyn');
+  const ids = v => v.egenskaber.map(x => x.egenskab.id);
+  const admin = objektVisning(O, fyn), off = objektVisning(O, fyn, {rolle: 'offentlig'});
+  assert.ok(ids(admin).includes('momentum') && ids(admin).includes('afholdtIAlt'));
+  assert.ok(!ids(admin).some(id => LAU.egenskab('Forening', id).intern), 'ingen interne');
+  assert.ok(!ids(off).some(id => LAU.egenskab('Forening', id).adgang === 'admin'), 'offentlig: ingen admin-egenskaber');
+  assert.ok(!ids(admin).includes('naesteArrangement'), 'uden værdi (intet planlagt) udelades');
+  assert.equal(admin.egenskaber.find(x => x.egenskab.id === 'antalKommuner').tekst, '2');
+  assert.ok(!ids(objektVisning(O, fyn, {udelad: ['momentum']})).includes('momentum'));
+  // Linkene: arrangementer med status-fordeling (offentligt kun det seneste år), kommuner; personer har ingen data.
+  const link = (v, navn) => v.links.find(l => l.link.navn === navn);
+  assert.deepEqual(admin.links.map(l => l.link.navn), ['arrangementer', 'kommuner']);
+  assert.equal(link(admin, 'arrangementer').objekter.length, 4);
+  assert.equal(link(off, 'arrangementer').objekter.length, 2, 'offentlig: kun det seneste år');
+  assert.deepEqual(link(admin, 'arrangementer').fordeling.grupper.map(g => [g.noegle, g.antal]), [['afholdt', 4]]);
+  assert.equal(link(admin, 'kommuner').fordeling.egenskab.id, 'hvidPlet', 'Kommune har ingen kategori: første ja/nej');
+  assert.equal(link(off, 'kommuner').fordeling, null, 'hvidPlet er kun for admins');
+  assert.equal(objektVisning(O, fyn, {udelad: ['kommuner']}).links.length, 1);
+});
+
+test('objektvisning: en ny egenskab eller et nyt link i ontologien kommer med uden ny kode', () => {
+  const ont = new Ontologi({
+    typer: {
+      A: {label: 'A', flertal: 'A', titel: 'navn', egenskaber: {navn: {label: 'Navn', type: 'tekst'},
+        ny: {label: 'Ny', type: 'tal', beregn: (o, L) => L.linkede(o, 'bs').length * 10},
+        hemmelig: {label: 'Hemmelig', type: 'tekst', adgang: 'admin'}}},
+      B: {label: 'B', flertal: 'B', titel: 'navn', egenskaber: {navn: {label: 'Navn', type: 'tekst'},
+        farve: {label: 'Farve', type: 'kat', vaerdier: {roed: 'Rød', blaa: 'Blå'}}}},
+    },
+    links: {til: {fra: 'B', til: 'A', label: 'Til', omvendt: {id: 'bs', label: 'B\'er', mange: true}}},
+  });
+  const S = new Lager(ont), a = S.tilfoej('A', 'a', {navn: 'a', hemmelig: 'x'});
+  for (const [id, farve] of [['1', 'blaa'], ['2', 'roed'], ['3', 'blaa']]) S.forbind('til', S.tilfoej('B', id, {navn: id, farve}), a);
+  const v = objektVisning(S, a);
+  assert.deepEqual(v.egenskaber.map(x => [x.egenskab.id, x.tekst]), [['navn', 'a'], ['ny', '30'], ['hemmelig', 'x']]);
+  assert.deepEqual(objektVisning(S, a, {rolle: 'offentlig'}).egenskaber.map(x => x.egenskab.id), ['navn', 'ny']);
+  assert.deepEqual(v.links.map(l => [l.link.label, l.objekter.length, l.fordeling.grupper.map(g => `${g.label} ${g.antal}`)]),
+    [["B'er", 3, ['Rød 1', 'Blå 2']]], 'fordelingen står i kategoriens rækkefølge');
 });
 
 // ---------------------------------------------------------------- regler, som scripts/hb.py og rapport.py bruger via scripts/kerne.js

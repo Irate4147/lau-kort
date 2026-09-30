@@ -1,6 +1,6 @@
 # LAU – lokalforeningernes aktiviteter
 
-Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (det næste kvartal, regnet fra i dag, vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens kommende og tidligere arrangementer. Tidligere arrangementer vises offentligt (panel, kortlaget "Afholdte aktiviteter", kalenderen og .ics-filerne) højst et år tilbage; admins ser alle. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
+Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med kommende aktiviteter (det næste kvartal, regnet fra i dag, vises direkte på kortet). Klik på en forening for at zoome ind og åbne et panel med dens kommende og tidligere arrangementer. Panelet er en objektvisning bygget på [kernen](kerne/README.md): tallene er ontologiens egenskaber, og sektionerne "Egenskaber" og "Forbundne objekter" viser foreningens øvrige egenskaber og links (fx antal arrangementer pr. status og kommuner) – en ny egenskab eller et nyt link i `kerne/lau.js` kommer med automatisk (admin-egenskaber kun for admins). Tidligere arrangementer vises offentligt (panel, kortlaget "Afholdte aktiviteter", kalenderen og .ics-filerne) højst et år tilbage; admins ser alle. HB-godkendelse, rettelser, noter og statistik kræver [adminlogin](#adminlogin).
 
 **Side:** https://irate4147.github.io/lau-kort/ – link direkte til en forening med `#Navn`, fx `#Næstved`.
 
@@ -194,8 +194,10 @@ Forretningsreglerne findes kun ét sted: i kernen (`kerne/regler.js` og månedsr
 
 `app.js` er bygget op om registre, så nye funktioner kan tilføjes uden at ændre resten. Sektioner, lag og sorteringer med `admin: true` vises kun for admins:
 
-- **Panelsektioner** – `LAU.registerSection({id, titel, synlig(f), render(f), efter(el, f)}, {efter: 'kommende'})`.
-  Indbyggede: `kommende` og `stamdata` (offentlige) samt `momentum`, `hb`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage` og `noter` (admin).
+- **Panelsektioner** – `LAU.registerSection({id, titel, viser, synlig(f, o), render(f, o), efter(el, f, o)}, {efter: 'kommende'})`.
+  `f` er foreningen (`DATA.byName`), `o` dens objekt i objektlageret (`DATA.lager.vaerdi(o, 'momentum')`, `DATA.lager.linkede(o, 'kommuner')`).
+  `viser` er de egenskaber og links fra ontologien, sektionen viser – de gentages så ikke i "Egenskaber" og "Forbundne objekter".
+  Indbyggede: `kommende`, `tidligere`, `stamdata`, `egenskaber` og `links` (offentlige) samt `momentum`, `hb`, `aar`, `noegletal`, `typer`, `tilkendegivelser`, `geografi`, `ugedage` og `noter` (admin).
 - **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, gruppe, hint, tilgaengelig(), synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
   Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin); `hvide-pletter` og `egen-analyse` (admin) kommer fra `udvidelser/`.
 - **Analyser** (fanen **Analyser**, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Fanen viser listen over analyser i sidepanelet; den valgte analyse vises i et stort vindue over højre del af kortet, og klik på en anden i listen skifter indholdet. Krydset i hjørnet (eller Esc) lukker vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen (og kommer igen, når vinduet lukkes). Tegn igen med `renderAnalyser()`; åbn en analyse med `LAU.aabnAnalyse(id)`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening); resten kommer fra `udvidelser/` (se [Analyser og advarsler](#analyser-og-advarsler)).

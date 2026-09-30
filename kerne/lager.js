@@ -55,10 +55,10 @@ export class Lager {
     return this._synlige.get(type);
   }
 
-  /** @param {Objekt} o */
-  maaSe(o) {
+  /** Må rollen (standard: lagerets) se objektet? @param {Objekt} o @param {Adgang} [rolle] */
+  maaSe(o, rolle = this.rolle) {
     const t = this.ontologi.type(o.type);
-    return tilladt(t.adgang, this.rolle) && (!t.raekkeadgang || t.raekkeadgang(o, this, this.rolle));
+    return tilladt(t.adgang, rolle) && (!t.raekkeadgang || t.raekkeadgang(o, this, rolle));
   }
 
   /** Forbinder to objekter med et link fra ontologien. @param {string} linkId @param {Objekt} fra @param {Objekt} til */
