@@ -25,7 +25,7 @@ for (const tid of DATOER) {
 for (const tid of DATOER) {
   test(`farvningerne bygger på ontologien og farver som før (${tid})`, async () => {
     const app = await koerApp(tid), liste = [...app.FARVNING_LISTE], fv = id => liste.find(x => x.id === id);
-    assert.deepEqual(liste.map(x => x.id), ['status', 'momentum', ...app.KVARTALER.map(k => k.id), 'hb', 'ingen']);
+    assert.deepEqual(liste.map(x => x.id), ['status', 'momentum', ...app.KVARTALER.map(k => k.id), 'hb', 'hbRisiko', 'hbRisikoSpand', 'ingen']);
     for (const e of LAU.type('Forening').egenskabsliste.filter(e => e.type === 'kat' && !e.intern && e.id !== 'niveau')) {
       assert.equal(fv(e.id).admin, e.adgang !== 'offentlig', `${e.id}: adgang`);
       assert.deepEqual(Object.keys(fv(e.id).vaerdier), Object.keys(e.vaerdier), `${e.id}: værdier fra ontologien`);

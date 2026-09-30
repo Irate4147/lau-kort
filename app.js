@@ -118,6 +118,7 @@ const HB_KV = {
 // Momentum: en tidlig sundhedsindikator (mindst ét arrangement om måneden). Reglen er momentum() i kerne/regler.js.
 const {VINDUE: MOM_VINDUE, MAAL: MOM_MAAL, MAANED: MOM_MAANED, HJAELP: MOM_HJAELP, FREMAD: MOM_FREMAD} = K.regler.MOMENTUM;
 const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
+const HB_RISIKO_FILL = {kritisk: '#d03b3b', advarsel: '#fab219', opmaerksom: '#f2dc6b', sikret: '#0ca30c', tabt: '#8c1452', ukendt: '#b8b6ae'};
 const MOM_STATUS = K.regler.MOMENTUM_NIVEAUER; // {ikon, label, hint} pr. niveau
 const MOM_ORDEN = Object.fromEntries(Object.keys(MOM_STATUS).map((k, i) => [k, i])); // dem, der kræver handling, først
 const dageMellem = (a, b) => Math.floor((b - a) / DAY);
@@ -158,6 +159,11 @@ const FARVER = {
     label: `HB-godkendelse ${HB_AAR}`, hint: `Mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1} (Organisationshåndbogen 8.2)`,
     note: `Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}`,
     tip: f => f.hb && [HB_STATUS[f.hb].label, HB_KVARTALER.map(q => `${q.kort}: ${HB_KV[f.hbKv[q.id]].label}`).join(' · ')]},
+  // HB-risiko (kerne/regler.js): rød = kritisk/skal handle, gul = afhænger af planlagte/hold øje, grøn = i hus.
+  hbRisiko: {farver: HB_RISIKO_FILL, opacitet: {ukendt: 0.35}, uden: {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'}},
+  hbRisikoSpand: {farver: {handle: HB_RISIKO_FILL.kritisk, planlagt: HB_RISIKO_FILL.advarsel, hold: HB_RISIKO_FILL.opmaerksom,
+    sikret: HB_RISIKO_FILL.sikret, tabt: HB_RISIKO_FILL.tabt, ukendt: HB_RISIKO_FILL.ukendt}, opacitet: {ukendt: 0.35},
+    uden: {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'}},
   // Landsforeningen har intet område på kortet, så alle flader ville få samme farve.
   niveau: {skjul: true},
 };
