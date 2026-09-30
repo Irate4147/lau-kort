@@ -43,9 +43,11 @@ import {DAG, dagNoegle, fmtDato, maanedNoegle} from './tid.js';
  * @property {{link: string, filtre?: Filter[]}[]} [searchAround]
  * @property {{egenskab: string, pr?: string}} [gruppering]
  * @property {{funktion: string, egenskab?: string}} [maal]
+ * @property {{funktion: string, egenskab?: string}} [maal2]  et andet mål pr. gruppe – til et punktdiagram (maal ud ad x, maal2 op ad y)
+ * @property {'soejler'|'punkter'} [visning]  kun brugerfladen: søjler (standard) eller punktdiagram
  *
- * @typedef {{noegle: any, label: string, objekter: Objekt[], vaerdi: number|null}} Gruppe
- * @typedef {{type: string, objekter: Objekt[], grupper: Gruppe[]|null, total: number|null, antalAlle: number}} Resultat
+ * @typedef {{noegle: any, label: string, objekter: Objekt[], vaerdi: number|null, vaerdi2?: number|null}} Gruppe
+ * @typedef {{type: string, objekter: Objekt[], grupper: Gruppe[]|null, total: number|null, total2?: number|null, antalAlle: number}} Resultat
  */
 
 const dag = (nu, n) => dagNoegle(new Date(+nu + n * DAG));
@@ -130,10 +132,13 @@ export function valider(ont, spec) {
       if (!e) fejl.push('Grupperingen skal pege på en egenskab');
       else if (spec.gruppering.pr && !DATO_GRUPPER[spec.gruppering.pr]) fejl.push(`Ukendt datogruppe "${spec.gruppering.pr}"`);
     }
-    if (spec.maal && !MAAL[spec.maal.funktion]) fejl.push(`Ukendt mål "${spec.maal.funktion}"`);
-    if (spec.maal && spec.maal.funktion !== 'antal') {
-      const e = spec.maal.egenskab ? ont.sti(t, spec.maal.egenskab).egenskab : null;
-      if (!e || e.type !== 'tal') fejl.push('Målet skal være en tal-egenskab');
+    for (const m of [spec.maal, spec.maal2]) {
+      if (!m) continue;
+      if (!MAAL[m.funktion]) { fejl.push(`Ukendt mål "${m.funktion}"`); continue; }
+      if (m.funktion !== 'antal') {
+        const e = m.egenskab ? ont.sti(t, m.egenskab).egenskab : null;
+        if (!e || e.type !== 'tal') fejl.push('Målet skal være en tal-egenskab');
+      }
     }
   } catch (err) { fejl.push(err.message); }
   return fejl;
@@ -263,6 +268,7 @@ export function koer(lager, spec) {
       for (const k of noegler) { if (!m.has(k)) m.set(k, []); m.get(k).push(o); }
     }
     grupper = [...m].map(([noegle, xs]) => ({noegle, objekter: xs, vaerdi: maal(lager, spec.maal, xs),
+      ...(spec.maal2 ? {vaerdi2: maal(lager, spec.maal2, xs)} : {}),
       label: noegle == null ? '(ingen)' : dg ? dg.label2(noegle) : visVaerdi(e, noegle)}));
     const orden = e.vaerdier ? Object.keys(e.vaerdier) : null;
     const sidst = (a, b) => +(a.noegle == null) - +(b.noegle == null);
@@ -271,7 +277,8 @@ export function koer(lager, spec) {
     else if (e.type === 'bool') grupper.sort((a, b) => sidst(a, b) || +b.noegle - +a.noegle);
     else grupper.sort((a, b) => sidst(a, b) || (b.vaerdi ?? -Infinity) - (a.vaerdi ?? -Infinity) || a.label.localeCompare(b.label, 'da'));
   }
-  return {type, objekter, grupper, total: maal(lager, spec.maal, objekter), antalAlle: alle.length};
+  return {type, objekter, grupper, total: maal(lager, spec.maal, objekter),
+    ...(spec.maal2 ? {total2: maal(lager, spec.maal2, objekter)} : {}), antalAlle: alle.length};
 }
 
 /**
