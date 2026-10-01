@@ -42,6 +42,8 @@ const harFb = f => !!f.v.facebook;
 const lokal = f => !f.v.national;
 /** Lokalforeningernes navne (til afholdteMed: hvert arrangement tæller hos sin første lokalforening). @param {Lager} L */
 const lokaleNavne = L => new Set(L.alle('Forening').filter(lokal).map(f => f.id));
+/** Foreningens afholdte arrangementer det seneste år. @param {Objekt} f @param {Lager} L */
+const afholdtAar = (f, L) => akt(f, L).afholdt.filter(e => +L.nu - +e.startD <= 365 * DAG);
 /** "Hvad virker?": foreningens afholdte med et tal for målet. @param {Objekt} f @param {Lager} L @param {string} maal */
 const medMaal = (f, L, maal) => afholdteMed(akt(f, L), f.v.navn, !!f.v.national, maal, lokaleNavne(L));
 
@@ -60,6 +62,14 @@ export const LAU = new Ontologi({
         afholdt90: {label: 'Afholdt de seneste 90 dage', type: 'tal', adgang: 'admin',
           beregn: (f, L) => akt(f, L).afholdt90.length},
         afholdtIAlt: {label: 'Afholdt i alt', type: 'tal', adgang: 'admin', beregn: (f, L) => akt(f, L).afholdt.length},
+        // Seneste år – til fx punktdiagrammet "deltagere pr. arrangement mod antal arrangementer".
+        afholdtAar: {label: 'Afholdte arrangementer (seneste år)', type: 'tal', adgang: 'admin', beregn: (f, L) => afholdtAar(f, L).length},
+        deltagereAar: {label: 'Deltagere i alt (seneste år)', type: 'tal', adgang: 'admin',
+          hint: 'Deltagere på Facebook, lagt sammen for de afholdte arrangementer det seneste år',
+          beregn: (f, L) => { const xs = afholdtAar(f, L).filter(e => e.deltager != null); return xs.length ? xs.reduce((s, e) => s + e.deltager, 0) : null; }},
+        deltagereGns: {label: 'Deltagere pr. arrangement (gns., seneste år)', type: 'tal', adgang: 'admin',
+          hint: 'Gennemsnitligt antal deltagere på Facebook pr. afholdt arrangement det seneste år (kun arrangementer med et deltagertal)',
+          beregn: (f, L) => { const xs = afholdtAar(f, L).filter(e => e.deltager != null); return xs.length ? xs.reduce((s, e) => s + e.deltager, 0) / xs.length : null; }},
         planlagte: {label: 'Planlagte arrangementer', type: 'tal', beregn: (f, L) => akt(f, L).planlagt.length},
         sidsteArrangement: {label: 'Sidste afholdte arrangement', type: 'dato', beregn: (f, L) => akt(f, L).sidste},
         naesteArrangement: {label: 'Næste arrangement', type: 'dato', beregn: (f, L) => akt(f, L).naeste?.startD ?? null},
