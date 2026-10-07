@@ -74,6 +74,37 @@
     "Landsforeningen"
    ],
    "begivenheder": 5
+  },
+  {
+   "id": "9mSYiDuw3nYR8b869",
+   "tid": "2026-10-07T19:11:01Z",
+   "foreninger": [
+    "Aalborg",
+    "Aarhus",
+    "Bornholm",
+    "Egedal-Furesø",
+    "Frederiksberg",
+    "Fyn",
+    "Herning",
+    "Horsens",
+    "Kolding",
+    "Kronjylland",
+    "København",
+    "Køge Bugt",
+    "Landsforeningen",
+    "Nordkøbenhavn",
+    "Nordsjælland",
+    "Næstved",
+    "Roskilde",
+    "Silkeborg",
+    "Sydvestjylland",
+    "Sønderjylland",
+    "Vejle",
+    "Vestegnen",
+    "Vestsjælland",
+    "Viborg"
+   ],
+   "begivenheder": 25
   }
  ],
  "behandlet": [
@@ -87,6 +118,7 @@
   "6QkaYDHKwiyQezR6S",
   "8L5C4yyYakX9RTjtc",
   "8goHgKpUg4F2EmgE9",
+  "9mSYiDuw3nYR8b869",
   "AMwpRXv3R5JvuLnLh",
   "Be9ozReW1Ieju6aCR",
   "D1vDLueDycTLzRXoI",
@@ -156,7 +188,7 @@
   "zV457MIVjJYnjCYU1",
   "zz2FSQsbvQfUwolup"
  ],
- "opdateret": "2026-09-28T16:09:04Z",
+ "opdateret": "2026-10-07T19:15:04Z",
  "historik": {
   "koersler": [
    {

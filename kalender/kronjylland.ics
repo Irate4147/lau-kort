@@ -515,6 +515,25 @@ URL:https://www.facebook.com/events/1050970907692100/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:2478220369256036@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261018T130000Z
+DTEND:20261018T150000Z
+SUMMARY:LAU-Kronjylland får besøg af David Klausen!
+DESCRIPTION:LAU Kronjylland\n\nLAU-Kronjylland får besøg af social- og su
+ ndhedsordfører\, David Klausen!\n\nDenne gang skal vi snakke sundhedspoli
+ tik. Hvordan skaber vi et sundhedsvæsen med mere frihed\, mindre bureaukr
+ ati og bedre behandling for den enkelte?\n\nDer bliver selvfølgelig også
+  rig mulighed for spørgsmål\, debat og gode liberale snakke.\n\nAlle er 
+ velkomne – vi håber at se jer! 💙\n\nhttps://www.facebook.com/events/
+ 2478220369256036/
+CATEGORIES:LAU Kronjylland
+LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
+GEO:56.46094;10.0299
+URL:https://www.facebook.com/events/2478220369256036/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1437806824847860@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261031T093000Z

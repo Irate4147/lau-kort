@@ -944,6 +944,50 @@ URL:https://www.facebook.com/events/1774854557174285/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1115705314128956@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261023T160000Z
+DTEND:20261023T180000Z
+SUMMARY:Efterårsfest med LAU & LA-KBH
+DESCRIPTION:LAU København\n\n🍂 EFTERÅRSFEST MED LA KØBENHAVN & LAU K
+ ØBENHAVN 🎉\n \nEfter en stærk valgkamp ved både kommunalvalget og fo
+ lketingsvalget er det tid til at fejre vores resultater og ikke mindst den
+  enorme indsats\, som vi alle har lagt i valgkampen.\n \nDet er takket væ
+ re vores alles bidrag\, engagement og hårde arbejde\, at vi kan se tilbag
+ e på en god valgkamp. Både LAKBH og LAUKBH's medlemmer har spillet en k
+ æmpe rolle i de seneste valgkampe\, og det skal selvfølgelig markeres! \
+ n \nSom en del af vores gode samarbejde mellem LAKBH og LAUKBH inviterer v
+ i til en festlig efterårsaften på La Boucherie den 23. oktober 202\n\nht
+ tps://www.facebook.com/events/1115705314128956/
+CATEGORIES:LAU København
+LOCATION:La Boucherie
+GEO:55.67792;12.57058
+URL:https://www.facebook.com/events/1115705314128956/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1087481507501818@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261029T163000Z
+DTEND:20261029T183000Z
+SUMMARY:Nationalbanken indefra | Dansk pengepolitik med Lars Mikkelsen
+DESCRIPTION:LAU København\n\nHvorfor følger den danske krone euroen så t
+ æt?  Hvad kan Nationalbanken egentlig bruge renten til? Og hvilken rolle 
+ spiller Nationalbanken i dansk økonomi?\n\nDen 29. oktober tager LAU Køb
+ enhavn på besøg i Danmarks Nationalbank\, hvor Lars Mikkelsen holder opl
+ æg om dansk pengepolitik og Nationalbanken som institution.\n\nVi bliver 
+ blandt andet blive klogere på\, hvorfor Danmark fører fastkurspolitik\, 
+ hvordan Nationalbanken arbejder for at holde kronens kurs stabil over for 
+ euroen\, og hvilken betydning renter og andre pengepolitiske værktøjer h
+ ar. Nationalbanken bruger blandt andet renteændringer og \n\nhttps://www.
+ facebook.com/events/1087481507501818/
+CATEGORIES:LAU København
+LOCATION:Langelinie Allé 47\, 2100 København
+GEO:55.70199;12.60017
+URL:https://www.facebook.com/events/1087481507501818/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1437806824847860@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261031T093000Z
@@ -955,6 +999,28 @@ CATEGORIES:Landsforeningen
 LOCATION:Landgreven 3\, 1301 København K\, Danmark
 GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/1437806824847860/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1100375459252123@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261103T170000Z
+DTEND:20261103T190000Z
+SUMMARY:Hvor liberal er du egentlig? | Retspolitik med Nicolai Melholt
+DESCRIPTION:LAU København\n\nHvor liberal er du egentlig\, når det bliver
+  svært?\n\nDet er nemt nok at være enig om skat\, bureaukrati og mere pe
+ rsonlig frihed. Men hvad sker der\, når de liberale principper bliver pre
+ sset helt ud i kanten?\n\nDen 3. november får LAU København besøg af LA
+ U’s retsordfører\, Nicolai Melholt\, til et oplæg om nogle af de retsp
+ olitiske spørgsmål\, hvor svarene ikke altid er helt så oplagte.\n\nSka
+ l vi eksempelvis lovliggøre sexdukker\, der kan ligne børn? Skal våbenl
+ ovgivningen liberaliseres? Og hvad gør man\, når ens liberale principper
+  peger i en retning\, man måske ikke selv er komfortabel med?\n\nNicolai 
+ \n\nhttps://www.facebook.com/events/1100375459252123/
+CATEGORIES:LAU København
+LOCATION:Borgergade 28\, 4. sal\, 1300 København K
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1100375459252123/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -988,8 +1054,8 @@ DESCRIPTION:LAU København\n\nHvordan navigerer en global virksomhed mellem
  nser.\n\nVi kommer indenfor hos Carlsberg og hører\, hvordan sa\n\nhttps:
  //www.facebook.com/events/1647538973659918/
 CATEGORIES:LAU København
-LOCATION:Carlsberg\, Bag Elefanterne 7\, 1799 København V\, Danmark
-GEO:55.66787;12.53171
+LOCATION:J.C. Jacobsensgade 1\, 1799 Copenhagen V\, Denmark
+GEO:55.66678;12.52878
 URL:https://www.facebook.com/events/1647538973659918/
 STATUS:CONFIRMED
 END:VEVENT

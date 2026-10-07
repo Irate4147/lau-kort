@@ -714,6 +714,28 @@ URL:https://www.facebook.com/events/1779906586346519/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1068504116067133@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261007T163000Z
+DTEND:20261007T183000Z
+SUMMARY:Oplæg v/ Social- & Sundhedsordfører David Klausen
+DESCRIPTION:LAU Roskilde\n\nSocial- og sundhedspolitik med David Klausen\n\
+ nKom med\, når LAU Roskilde får besøg af David Klausen\, der arbejder m
+ ed social- og sundhedspolitik i Liberal Alliances Ungdom.\nAftenen byder p
+ å et oplæg om aktuelle spørgsmål inden for social- og sundhedspolitikk
+ en\, liberale perspektiver på området og efterfølgende mulighed for sp
+ ørgsmål og debat.\n\n📅 7. oktober 2026\n⏰ Kl. 18.30\n📍 Lokation:
+  Under Gulvtæppet\, Byens Hus\, Roskilde\n\nDet bliver en spændende afte
+ n med oplæg\, debat og mulighed for at stille spørgsmål – så kom gla
+ d og kom spørgende!🙌🏻\n\nhttps://www.facebook.com/events/1068504116
+ 067133/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1068504116067133/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1073196438419650@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261103T180000Z
@@ -722,8 +744,7 @@ SUMMARY:Bestyrelsesmøde November
 DESCRIPTION:LAU Roskilde\n\nDagsorden kommer snarest.\n\nLokale: Forsamling
  en\n\nhttps://www.facebook.com/events/1073196438419650/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Mindesten for Danmarks Besaette\, Fondens B
- ro\, 4000 Roskilde\, Danmark
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1073196438419650/
 STATUS:CONFIRMED

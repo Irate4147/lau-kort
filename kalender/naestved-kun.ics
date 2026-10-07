@@ -257,7 +257,7 @@ UID:1479019457397661@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261019T170000Z
 DTEND:20261019T190000Z
-SUMMARY:oplæg med Social- og Sundhedsordfører David Klausen
+SUMMARY:Oplæg med Social- og Sundhedsordfører David Klausen
 DESCRIPTION:LAU Næstved\n\nSkal du med når Lau's Social- og Sundhedsordf
  ører David Klausen\, lægger turen forbi Næstved for at holde oplæg omk
  ring hans ordførerskab ? \n\nDet forgår mandag den 19. Oktober klokken 1
@@ -293,15 +293,37 @@ UID:1408115147328233@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261110T173000Z
 DTEND:20261110T190000Z
-SUMMARY:Tag med til " der er et myndigt land "
+SUMMARY:Tag med til "Der er et myndigt land"
 DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  er til Vordingborg den 10. november i forbindelse med hans bogturne. vi h
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk
+LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2029863341034375@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261203T180000Z
+DTEND:20261203T200000Z
+SUMMARY:Rundvisning på Næstved rådhus
+DESCRIPTION:LAU Næstved\n\n🏛️ Har du nogensinde tænkt over\, hvad de
+ r egentlig sker bag dørene på Næstved Rådhus?\n\nNu har du chancen for
+  at komme med indenfor! \n\nLAU Næstved inviterer til en hyggelig og spæ
+ ndende aften på rådhuset\, hvor byrådsmedlem Kasper Schneider tager os 
+ med på rundvisning og giver os et indblik i både rådhuset og det lokale
+  politiske arbejde.\n\n\nKom med hvis du vil se rådhuset indefra\, høre 
+ lidt om livet i byrådet og selvfølgelig have en hyggelig aften sammen me
+ d resten af LAU Næstved. Og hvis der er stemning for det så kender vi en
+  god torsdagsbar til at nyde en øl på efter arrangementet🍻\n\n 3. dec
+ em\n\nhttps://www.facebook.com/events/2029863341034375/
+CATEGORIES:LAU Næstved
+LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
+GEO:55.22962;11.76326
+URL:https://www.facebook.com/events/2029863341034375/
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR
