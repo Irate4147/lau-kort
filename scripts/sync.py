@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Saml LAU-begivenheder fra de løbende Apify-kørsler til data/events.json.
 
-Scraperen køres ugentligt af Google Apps Scriptet i regnearket "LAU – begivenheder".
-Dette script scraper ikke selv: det læser resultaterne af de kørsler, der allerede
-er lavet (kun kørsler på lokalforeningernes "upcoming_hosted_events"), og fletter dem
-ind i en voksende database, så afholdte begivenheder bevares til analyserne.
+Læser resultaterne af Apify-kørslerne (kun kørsler på foreningernes "upcoming_hosted_events")
+og fletter dem ind i en voksende database, så afholdte begivenheder bevares til analyserne.
 
-    APIFY_TOKEN=... python3 scripts/sync.py
+    APIFY_TOKEN=... python3 scripts/sync.py            # kun hent færdige kørsler
+    APIFY_TOKEN=... python3 scripts/sync.py --start    # start først ugens kørsel og vent på den
+
+--start starter én kørsel på alle foreningers hovedsider (data/foreninger.json), medmindre der
+allerede er startet en inden for UGE_DAGE (fx manuelt) – så scrapes der ikke to gange.
 
 Historik (engangskørsel): scraper foreningernes "past_hosted_events" og tilføjer de
 afholdte begivenheder siden FRA (ÅÅÅÅ-MM-DD eller antal dage; standard 1. januar i år):
@@ -40,6 +42,9 @@ DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
 HISTORIK_MAX_PR_SIDE = 20   # loft pr. side: siden viser nyeste først, og 20 dækker 2026 for de fleste (ellers fordobles det)
 HISTORIK_SAMTIDIGE = 2
+UGE_MAX = 150    # loft for ugens kørsel (alle sider tilsammen); normalt er der 20-40 kommende
+UGE_DAGE = 3     # en kørsel nyere end dette tæller som ugens
+UGE_VENT_MIN = 45
 
 
 # ---------------------------------------------------------------- apify
@@ -300,6 +305,48 @@ def main():
     save_state(events, meta)
 
 
+# ---------------------------------------------------------------- ugens kørsel
+
+def upcoming_url(fb):
+    if "profile.php" in fb:
+        return fb.split("&")[0] + "&sk=upcoming_hosted_events"
+    return fb.split("?")[0].rstrip("/") + "/upcoming_hosted_events"
+
+
+def er_uge_run(run):
+    inp = api(f"/key-value-stores/{run['defaultKeyValueStoreId']}/records/INPUT") or {}
+    urls = [u if isinstance(u, str) else (u or {}).get("url", "") for u in inp.get("startUrls") or []]
+    return any("upcoming_hosted_events" in u for u in urls)
+
+
+def vent(run):
+    slut = time.time() + UGE_VENT_MIN * 60
+    while run["status"] in ("READY", "RUNNING") and time.time() < slut:
+        time.sleep(15)
+        run = api(f"/actor-runs/{run['id']}")["data"]
+    return run
+
+
+def start_uge():
+    """Start ugens kørsel på alle foreningers kommende begivenheder og vent på den."""
+    graense = datetime.now(timezone.utc) - timedelta(days=UGE_DAGE)
+    runs = (api(f"/acts/{ACTOR}/runs?desc=1&limit=20") or {}).get("data", {}).get("items", [])
+    for run in runs:
+        if parse(run["startedAt"]) < graense:
+            break
+        if run["status"] in ("READY", "RUNNING", "SUCCEEDED") and er_uge_run(run):
+            print(f"Ugens kørsel findes allerede ({run['id']}, {run['startedAt']}, {run['status']})")
+            if run["status"] != "SUCCEEDED":
+                vent(run)
+            return
+    urls = [upcoming_url(f["facebook"]) for f in json.loads(FORENINGER.read_text(encoding="utf-8")) if f.get("facebook")]
+    run = api(f"/acts/{ACTOR}/runs", {"startUrls": urls, "maxEvents": UGE_MAX})["data"]
+    print(f"Startede ugens kørsel {run['id']} på {len(urls)} sider")
+    run = vent(run)
+    if run["status"] != "SUCCEEDED":
+        sys.exit(f"Ugens kørsel {run['id']}: {run['status']} – {run.get('statusMessage') or ''}\n{log_tail(run['id'])}")
+
+
 # ---------------------------------------------------------------- historik
 
 def past_url(fb):
@@ -427,4 +474,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--historik":
         historik(historik_fra(sys.argv[2] if len(sys.argv) > 2 else ""))
     else:
+        if "--start" in sys.argv[1:]:
+            start_uge()
         main()

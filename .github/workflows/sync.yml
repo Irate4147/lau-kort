@@ -1,12 +1,11 @@
 name: Hent begivenheder
 
-# Henter resultaterne af de ugentlige Apify-kørsler (startet af Apps Scriptet i
-# regnearket "LAU – begivenheder" mandag morgen) og gemmer dem i data/.
-# Den scraper ikke selv og koster intet – den læser kun de færdige resultater.
+# Starter ugens Apify-kørsel på foreningernes kommende begivenheder (medmindre en
+# allerede er kørt de sidste dage), venter på den og gemmer resultatet i data/.
 # Siden læser data/ direkte fra repoet, så en commit her er nok til at opdatere den.
 on:
   schedule:
-    - cron: '0 9 * * 1'   # mandag kl. 10/11 dansk tid, efter Apps Scriptets kørsel kl. 7
+    - cron: '0 6 * * 1'   # mandag morgen (GitHub kan forsinke planlagte kørsler)
   workflow_dispatch:
 
 permissions:
@@ -38,10 +37,10 @@ jobs:
       - name: Installér kryptering (fortrolige admindata)
         run: pip install cryptography
 
-      - name: Hent nye kørsler fra Apify
+      - name: Kør scraperen og hent nye kørsler fra Apify
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-        run: python3 scripts/sync.py
+        run: python3 scripts/sync.py --start
 
       - name: Fortrolige data (kryptér, offentlige rettelser)
         env:
