@@ -6,15 +6,15 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 
 ## Sådan hænger det sammen
 
-1. Google Apps Scriptet i regnearket "LAU – begivenheder" kører Apifys Facebook Events Scraper hver mandag på foreningernes `upcoming_hosted_events`.
-2. GitHub Action (`.github/workflows/sync.yml`) kører mandag formiddag (én gang om ugen, ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py` henter resultaterne af nye kørsler fra Apify (ingen ekstra scraping), fletter dem ind i `data/events.json` og committer dem.
+1. GitHub Action (`.github/workflows/sync.yml`) kører mandag morgen (én gang om ugen, ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py --start` starter Apifys Facebook Events Scraper på hovedsidernes `upcoming_hosted_events` fra `data/foreninger.json` (én kørsel, højst 150 begivenheder) og venter på den. Er der allerede startet en kørsel på kommende begivenheder inden for 3 dage (fx manuelt), bruges den i stedet, så der ikke scrapes to gange.
+2. Derefter henter `scripts/sync.py` resultaterne af alle nye kørsler, fletter dem ind i `data/events.json` og committer dem.
 3. Siden (`index.html`, `app.js` og kernen i `kerne/` – ontologien og alle regler; ret `?v=` i `index.html`, når `app.js`/`style.css` ændres, så browsere ikke blander gammel og ny kode) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
 Facebook viser kun kommende begivenheder i de ugentlige kørsler. Afholdte aktiviteter før 28. sep. 2026 hentes med en engangskørsel på foreningernes `past_hosted_events`:
 Actions → "Hent historik" → *Run workflow* (standard fra 1. januar i år; højst 20 begivenheder pr. side, så Apify-forbruget er begrænset). Allerede hentede sider springes over. Ramte en side loftet, og lå alle de hentede i perioden (fx Roskilde og København), mangler der ældre begivenheder – så henter næste kørsel kun den side igen med dobbelt loft (20 → 40 → 80 …).
 Lokalt: `APIFY_TOKEN=... python3 scripts/sync.py --historik [ÅÅÅÅ-MM-DD]`. Begivenheder hentet på den måde får `"historisk": true` og tæller ikke med i "varsel".
 
-En forening kan have flere Facebook-sider: `"facebook_ekstra": ["…"]` i `data/foreninger.json` (fx Fyns tidligere Odense-side). Begivenheder derfra hører til foreningen, og "Hent historik" holder styr på hver side for sig – en ny side hentes, selvom foreningens hovedside allerede er hentet, og foreningen regnes først som dækket, når alle dens sider er hentet. Skal en ekstra side også med i de ugentlige kørsler, skal den tilføjes i regnearket. En ekstra side kan også angives som `{"url": "…", "begivenheder": ["https://www.facebook.com/events/…/", …]}` – så henter historikken kun de begivenheder (én kørsel med `maxEvents` = antallet) i stedet for sidens tidligere begivenheder, hvilket sparer Apify-forbrug.
+En forening kan have flere Facebook-sider: `"facebook_ekstra": ["…"]` i `data/foreninger.json` (fx Fyns tidligere Odense-side). Begivenheder derfra hører til foreningen, og "Hent historik" holder styr på hver side for sig – en ny side hentes, selvom foreningens hovedside allerede er hentet, og foreningen regnes først som dækket, når alle dens sider er hentet. De ugentlige kørsler scraper kun hovedsiden (`"facebook"`). En ekstra side kan også angives som `{"url": "…", "begivenheder": ["https://www.facebook.com/events/…/", …]}` – så henter historikken kun de begivenheder (én kørsel med `maxEvents` = antallet) i stedet for sidens tidligere begivenheder, hvilket sparer Apify-forbrug.
 
 Har en forening ikke brug for historikken (fx ingen arrangementer i år), kan `"historik_fra": "ÅÅÅÅ-MM-DD"` sættes i `data/foreninger.json`: så regnes dens data som komplette fra den dato, og "Hent historik" springer den over.
 
@@ -180,7 +180,7 @@ python3 scripts/admin.py vis rapporter
 
 ## Ændringer
 
-- **Foreninger, Facebook-sider og kommuner:** `data/foreninger.json`. Nye Facebook-sider skal også tilføjes i fanen "Foreninger" i regnearket, ellers bliver de ikke scrapet.
+- **Foreninger, Facebook-sider og kommuner:** `data/foreninger.json`. Hovedsiden (`"facebook"`) scrapes automatisk hver uge.
 - **Kort:** `geo/kommuner.topo.json` er DAWA's kommunegrænser, forenklet med mapshaper og påført en `forening`-egenskab.
 - Secrets `APIFY_TOKEN` og `ADMIN_KODE` (se "Adminlogin") skal være sat i repoets indstillinger.
 
