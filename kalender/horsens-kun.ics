@@ -258,8 +258,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:1732151117902019@lau-kort
 DTSTAMP:20260928T092659Z
-DTSTART:20261017T220000Z
-DTEND:20261018T000000Z
+DTSTART:20261018T100000Z
+DTEND:20261018T120000Z
 SUMMARY:Brætspils hygge på tværs af ungdomspartier i Horsens
 DESCRIPTION:LAU Horsens\n\nKom til arrangementet og mød andre politiske in
  teresseret unge i Horsens. Til arrangementet vil der være ølsmagning\, s

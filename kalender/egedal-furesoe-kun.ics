@@ -123,4 +123,19 @@ GEO:55.73156;12.30809
 URL:https://www.facebook.com/events/28487868687475921/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1632541278536492@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261019T163000Z
+DTEND:20261019T183000Z
+SUMMARY:Oplæg med Udlændinge- og Integrationsordfører Asta
+DESCRIPTION:LAU Egedal-Furesø\n\nUdlændinge- og Integrationsordfører Ast
+ a Sophie Georgsen kommer ud og holder oplæg i Hyggeklubben!\n\n\nhttps://
+ www.facebook.com/events/1632541278536492/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Flodvej 68\, 2765 smørumnedre
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1632541278536492/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR

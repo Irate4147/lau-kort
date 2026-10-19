@@ -623,13 +623,38 @@ UID:1437806824847860@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261031T093000Z
 DTEND:20261031T113000Z
-SUMMARY:Liberalt Seminar
-DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
- ://www.facebook.com/events/1437806824847860/
+SUMMARY:Liberalt Seminar: Den liberale danmarkshistorie
+DESCRIPTION:Landsforeningen\n\nEmnet er “Den liberale danmarkshistorie”
+ . Det er den liberale ideologi\, der binder os sammen. Derfor er det altaf
+ gørende\, at vi forstår\, hvordan den liberale danmarkshistorie har form
+ et Danmark. \n\nSeminaret er den 31. oktober. Det kommer til at foregå ho
+ s CEPOS (Landgreven 3\, 1301 København).\n\nHer vil tre oplægsholdere st
+ å for lærerige oplæg med et højt fagligt niveau. \n\nLink til tilmeldi
+ ng: https://liberalallianceungdom.membersite.dk/Events/ComingEvents\n\n\nh
+ ttps://www.facebook.com/events/1437806824847860/
 CATEGORIES:Landsforeningen
 LOCATION:Landgreven 3\, 1301 København K\, Danmark
 GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/1437806824847860/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2958852254476565@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261102T144500Z
+DTEND:20261102T164500Z
+SUMMARY:Christiansborgbesøg med Freja Brandhøj
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom med til en spændende rundvisning med
+  vores lokalvalgte folketingsmedlem Freja Brandhøj!\n\nFreja vil give en 
+ rundvisning på Christiansborg\, og vil vise os hvordan det er at være fo
+ lkevalgt.\n\nFor at sikre dig plads\, så husk at trykke deltager! Der er 
+ begrænset antal pladser\, og det er først til mølle.\n\nVi glæder os t
+ il en hyggelig rundvisning!\n\nhttps://www.facebook.com/events/29588522544
+ 76565/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Christiansborg Slot
+GEO:55.676112250042;12.581343254026
+URL:https://www.facebook.com/events/2958852254476565/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

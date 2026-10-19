@@ -4633,9 +4633,10 @@ END:VEVENT
 BEGIN:VEVENT
 UID:1774854557174285@lau-kort
 DTSTAMP:20260928T092659Z
-DTSTART:20261013T150000Z
-DTEND:20261013T170000Z
-SUMMARY:Keynote/oplæg om økonomi og erhverv med Victor Galland
+DTSTART:20261013T160000Z
+DTEND:20261013T180000Z
+SUMMARY:!Gratis Pizza! Keynote/oplæg om økonomi og erhverv med Victor Gal
+ land
 DESCRIPTION:LAU København\n\nHvordan skaber vi mere vækst\, økonomisk fr
  ihed og bedre vilkår for danske virksomheder? 📈💙\n\nLAU København 
  inviterer til keynote med Victor Galland\, Økonomi- og Erhvervsordfører 
@@ -4672,8 +4673,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:1732151117902019@lau-kort
 DTSTAMP:20260928T092659Z
-DTSTART:20261017T220000Z
-DTEND:20261018T000000Z
+DTSTART:20261018T100000Z
+DTEND:20261018T120000Z
 SUMMARY:Brætspils hygge på tværs af ungdomspartier i Horsens
 DESCRIPTION:LAU Horsens\n\nKom til arrangementet og mød andre politiske in
  teresseret unge i Horsens. Til arrangementet vil der være ølsmagning\, s
@@ -4726,6 +4727,21 @@ URL:https://www.facebook.com/events/1430974682480846/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1632541278536492@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261019T163000Z
+DTEND:20261019T183000Z
+SUMMARY:Oplæg med Udlændinge- og Integrationsordfører Asta
+DESCRIPTION:LAU Egedal-Furesø\n\nUdlændinge- og Integrationsordfører Ast
+ a Sophie Georgsen kommer ud og holder oplæg i Hyggeklubben!\n\n\nhttps://
+ www.facebook.com/events/1632541278536492/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Flodvej 68\, 2765 smørumnedre
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1632541278536492/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1479019457397661@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261019T170000Z
@@ -4765,10 +4781,32 @@ URL:https://www.facebook.com/events/1610800827090799/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1900294934714656@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261022T160000Z
+DTEND:20261022T180000Z
+SUMMARY:💙 LAU Aalborg får besøg af Andreas Aksel Jensen
+DESCRIPTION:LAU Aalborg\n\nHVAAA SÅÅÅ LAU NORDENS PARIS!!! 💙🔥\n\nH
+ vad betyder demokrati og liberal ideologi egentlig\, og hvordan ser det ud
+ \, når vi omsætter vores liberale værdier til politik?\n\nDen 22/10 kl.
+  18.00 får vi besøg af vores helt egen Andreas Aksel Jensen\, LAU's demo
+ krati- og ideologiordfører\, kommer forbi og fortæller om LAU's politik\
+ , demokrati\, ideologi og selvfølgelig med et personligt twist 💙\n\nS
+ å kom\, tag din skabs-liberale ven under armen\, og vær med til en aften
+  med gode snakke\, spændende diskussioner og selvfølgelig mad\, så I sk
+ al ikke spise hjemmefra! 🍽️🙌\n\nhttps://www.facebook.com/events/19
+ 00294934714656/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1900294934714656/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1115705314128956@lau-kort
 DTSTAMP:20261007T191101Z
-DTSTART:20261023T160000Z
-DTEND:20261023T180000Z
+DTSTART:20261023T163000Z
+DTEND:20261023T183000Z
 SUMMARY:Efterårsfest med LAU & LA-KBH
 DESCRIPTION:LAU København\n\n🍂 EFTERÅRSFEST MED LA KØBENHAVN & LAU K
  ØBENHAVN 🎉\n \nEfter en stærk valgkamp ved både kommunalvalget og fo
@@ -4784,6 +4822,28 @@ CATEGORIES:LAU København
 LOCATION:La Boucherie
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1115705314128956/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1452165026797489@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261026T160000Z
+DTEND:20261026T180000Z
+SUMMARY:LAU ROSKILDE BESØGER CEPOS
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE BESØGER CEPOS!\n\nHvis der findes
+  noget\, der minder om Disneyland for borgerlige liberalister\, så må de
+ t være CEPOS!\n\nCEPOS er en af Danmarks mest markante borgerlig-liberale
+  tænketanke\, og deres analyser er med til at sætte dagsordenen i den po
+ litiske debat. Her bliver liberale idéer til skarpe argumenter\, der kan 
+ udfordre status quo og give politikerne på Christiansborg kamp til strege
+ n!\n\nMen hvad foregår der egentlig bag kulisserne? Hvordan bliver analys
+ erne til? Og hvordan arbejder man for at fremme frihed\, lavere skat og mi
+ ndre stat?\n\nDet skal vi selvfølgelig finde ud af!\n\nDerf\n\nhttps://ww
+ w.facebook.com/events/1452165026797489/
+CATEGORIES:LAU Roskilde
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
+URL:https://www.facebook.com/events/1452165026797489/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -4830,13 +4890,42 @@ URL:https://www.facebook.com/events/1087481507501818/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1103118949294921@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261030T180000Z
+DTEND:20261030T200000Z
+SUMMARY:HALLOWEENFEST MED LAU FREDERIKSBERG 🎃👻
+DESCRIPTION:LAU Frederiksberg\n\n🎃👻 HALLOWEEN HOS LAU FREDERIKSBERG
+ 💀🕸️\n\nDet er blevet den tid på året\, hvor skeletterne vælter 
+ ud af skabet\, græskarrene får ansigter\, og selv de mest liberale sjæl
+ e kan blive skræmt fra vid og sans! 🎃\n\nFredag den 30. oktober kl. 19
+ .00 inviterer LAU Frederiksberg til en (u)hyggelig halloweenfest\, hvor vi
+  skruer helt op for uhyggen\, festlighederne og den gode stemning! 🦇\n\
+ nAftenens underholdning er lagt i hænderne på Steffen og Ulrik\, der har
+  forberedt et program\, som I godt kan begynde at frygte allerede nu. Hvad
+  de har fundet på\, må tiden vise … 👀\n\nVi uddeler præmier for be
+ dste udklædning i to \n\nhttps://www.facebook.com/events/1103118949294921
+ /
+CATEGORIES:LAU Frederiksberg
+LOCATION:Øster Farimagsgade 5B\, 1353 København
+GEO:55.68738;12.57099
+URL:https://www.facebook.com/events/1103118949294921/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1437806824847860@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261031T093000Z
 DTEND:20261031T113000Z
-SUMMARY:Liberalt Seminar
-DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
- ://www.facebook.com/events/1437806824847860/
+SUMMARY:Liberalt Seminar: Den liberale danmarkshistorie
+DESCRIPTION:Landsforeningen\n\nEmnet er “Den liberale danmarkshistorie”
+ . Det er den liberale ideologi\, der binder os sammen. Derfor er det altaf
+ gørende\, at vi forstår\, hvordan den liberale danmarkshistorie har form
+ et Danmark. \n\nSeminaret er den 31. oktober. Det kommer til at foregå ho
+ s CEPOS (Landgreven 3\, 1301 København).\n\nHer vil tre oplægsholdere st
+ å for lærerige oplæg med et højt fagligt niveau. \n\nLink til tilmeldi
+ ng: https://liberalallianceungdom.membersite.dk/Events/ComingEvents\n\n\nh
+ ttps://www.facebook.com/events/1437806824847860/
 CATEGORIES:Landsforeningen
 LOCATION:Landgreven 3\, 1301 København K\, Danmark
 GEO:55.68288;12.58555
@@ -4844,11 +4933,31 @@ URL:https://www.facebook.com/events/1437806824847860/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:2958852254476565@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261102T144500Z
+DTEND:20261102T164500Z
+SUMMARY:Christiansborgbesøg med Freja Brandhøj
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom med til en spændende rundvisning med
+  vores lokalvalgte folketingsmedlem Freja Brandhøj!\n\nFreja vil give en 
+ rundvisning på Christiansborg\, og vil vise os hvordan det er at være fo
+ lkevalgt.\n\nFor at sikre dig plads\, så husk at trykke deltager! Der er 
+ begrænset antal pladser\, og det er først til mølle.\n\nVi glæder os t
+ il en hyggelig rundvisning!\n\nhttps://www.facebook.com/events/29588522544
+ 76565/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Christiansborg Slot
+GEO:55.676112250042;12.581343254026
+URL:https://www.facebook.com/events/2958852254476565/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1100375459252123@lau-kort
 DTSTAMP:20261007T191101Z
 DTSTART:20261103T170000Z
 DTEND:20261103T190000Z
-SUMMARY:Hvor liberal er du egentlig? | Retspolitik med Nicolai Melholt
+SUMMARY:!Gratis Pizza! Hvor liberal er du egentlig? | Retspolitik med Nicol
+ ai Melholt
 DESCRIPTION:LAU København\n\nHvor liberal er du egentlig\, når det bliver
   svært?\n\nDet er nemt nok at være enig om skat\, bureaukrati og mere pe
  rsonlig frihed. Men hvad sker der\, når de liberale principper bliver pre
@@ -4874,9 +4983,54 @@ SUMMARY:Bestyrelsesmøde November
 DESCRIPTION:LAU Roskilde\n\nDagsorden kommer snarest.\n\nLokale: Forsamling
  en\n\nhttps://www.facebook.com/events/1073196438419650/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Mindesten for Danmarks Besaette\, Fondens B
+ ro\, 4000 Roskilde\, Danmark
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1073196438419650/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1126840473021364@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261104T160000Z
+DTEND:20261104T180000Z
+SUMMARY:Åben bestyrelses møde\, og Alex Vanopslagh's show  " Der er et My
+ ndigt Land"
+DESCRIPTION:LAU Viborg\n\nAlex Vanopslagh Kommer til Viborg!\n🎟️(Grati
+ s biletter!)\n\nDen 4. november kan vi alle se frem til\, at Alex Vanopsla
+ gh kommer til Viborg med sit show "Der er et Myndigt land" – og i Libera
+ l Alliances Ungdom Viborg arrangerer vi en fælles tur til showet! 🇩
+ 🇰💙\n\nI den forbindelse har vi skaffet et begrænset antal billetter
+  til nye medlemmer af LAU Viborg. Der vil desuden være mulighed for at si
+ ge hej til Alex og eventuelt få taget et billede med ham. 📸\n\nDer er 
+ dog et begrænset antal billetter\, og de fordeles efter først til mølle
+ -princippet! \nSå skynd dig at få fat i dine venner\, og tilmeld jer sam
+ m\n\nhttps://www.facebook.com/events/1126840473021364/
+CATEGORIES:LAU Viborg
+LOCATION:8800 Viborg\, Denmark
+URL:https://www.facebook.com/events/1126840473021364/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1433679275365251@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261105T170000Z
+DTEND:20261105T190000Z
+SUMMARY:LAU ROSKILDE FÅR BESØG AF RETSORDFØRER NICOLAI MELHOLT
+DESCRIPTION:LAU Roskilde\n\n⚖️LAU ROSKILDE FÅR BESØG AF RETSORDFØRER
+  NICOLAI MELHOLT!\n\nIngen frihed uden retssikkerhed – og ingen liberali
+ sme uden en stærk retsstat!\n\nRetssikkerhed\, personlig frihed og lighed
+  for loven er ikke bare flotte ord. Det er nogle af de vigtigste grundsten
+  i et frit og liberalt samfund!\n\nMen hvor går grænsen mellem statens m
+ agt og borgernes frihed? Hvordan sikrer vi\, at staten beskytter vores ret
+ tigheder frem for at begrænse dem? Og hvordan skal fremtidens liberale re
+ tspolitik egentlig se ud?\n\nDet skal vi blive meget klogere på!\n\nDerfo
+ r får LAU Roskilde besøg af LAU's retsordfører\, Nicolai Melho\n\nhttps
+ ://www.facebook.com/events/1433679275365251/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1433679275365251/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -4909,9 +5063,67 @@ DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
+LOCATION:stars.dk
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1071150909256051@lau-kort
+DTSTAMP:20261012T144528Z
+DTSTART:20261111T170000Z
+DTEND:20261111T190000Z
+SUMMARY:!Gratis Pizza! Oplæg om Ukraine v. Anders Peter Hansen
+DESCRIPTION:LAU København\n\nKom og hør tidligere formand for Ungdommens 
+ Nordiske Råd\, Ukraine-frivillig og folketingskandidat for Liberal Allian
+ ce\, Anders Peter Hansen\, fortælle om sine personlige oplevelser og hist
+ orier fra Ukraine\, samt en opdatering på\, hvad der rører sig i Ukraine
+  lige nu.\n\nhttps://www.facebook.com/events/1071150909256051/
+CATEGORIES:LAU København
+LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
+ sen\, Borgergade 28\, 1300 København K\, Danmark
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1071150909256051/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1403957741809461@lau-kort
+DTSTAMP:20261012T144528Z
+DTSTART:20261117T170000Z
+DTEND:20261117T190000Z
+SUMMARY:!Gratis Pizza! LAU's politik\, demokrati og ideologi
+DESCRIPTION:LAU København\n\nKom og hør LAU’s demokrati- og ideologiord
+ fører Andreas fortælle om friheden til information\, og hvordan demokrat
+ iet kan blive påvirket\, hvis denne frihed ikke bliver opretholdt.\n\nhtt
+ ps://www.facebook.com/events/1403957741809461/
+CATEGORIES:LAU København
+LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
+ sen
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1403957741809461/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1114259494448058@lau-kort
+DTSTAMP:20261012T144528Z
+DTSTART:20261118T180000Z
+DTEND:20261118T200000Z
+SUMMARY:En ægte liberal på Frederiksberg v. Jan E. Jørgensen
+DESCRIPTION:LAU Frederiksberg\n\nHvordan fører man valgkamp i en rød by\,
+  når man er ægte liberal?\n\nDet bliver temaet\, når Jan E. Jørgensen 
+ gæster Liberal Alliances Ungdom Frederiksberg!\n\nJan E. Jørgensen behø
+ ver næsten ingen introduktion. Han sad i Folketinget for Venstre fra 2011
+  til det seneste folketingsvalg\, og han sidder i byrådet lige her på vo
+ res dejlige Frederiksberg. Derudover står han bag bogen En ægte liberal 
+ – Venstremanden\, der ikke vil tie stille.\n\nMen hvordan er det egentli
+ g at føre valgkamp som liberal i en by som København\, hvor de røde fan
+ er traditionelt har vajet højt? Hvordan trænger man igennem med libera\n
+ \nhttps://www.facebook.com/events/1114259494448058/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Bülowshallen\, Bülowsvej 34\, 1879 Frederiksberg\, 1870 Frederik
+ sberg\, Denmark
+GEO:55.68212;12.54502
+URL:https://www.facebook.com/events/1114259494448058/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -4944,6 +5156,29 @@ URL:https://www.facebook.com/events/3490883764418561/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1139112898775576@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261126T170000Z
+DTEND:20261126T190000Z
+SUMMARY:LAU ROSKILDE FÅR BESØG AF GENERATION IDENTITÆR DANMARK
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
+ ÆR DANMARK!\n\nHvor går grænsen mellem national identitet og individuel
+  frihed?\nIndvandring\, kultur\, national identitet og ytringsfrihed er no
+ gle af de mest omdiskuterede emner i dansk politik. Men hvad sker der\, n
+ år den identitære bevægelses idéer møder liberalismens grundprincippe
+ r?\n\nDet skal vi diskutere i LAU Roskilde!\n\nVi får nemlig besøg af Ge
+ neration Identitær Danmark\, en bevægelse\, der arbejder for at bevare d
+ ansk og europæisk etnokulturel identitet og er kritisk over for indvandri
+ ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
+ ps://www.facebook.com/events/1139112898775576/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1139112898775576/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2282793162534325@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261201T180000Z
@@ -4952,7 +5187,8 @@ SUMMARY:Bestyrelsesmøde December
 DESCRIPTION:LAU Roskilde\n\nDagsorden og lokale kommer snarest\n\nhttps://w
  ww.facebook.com/events/2282793162534325/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/2282793162534325/
 STATUS:CONFIRMED
@@ -4999,6 +5235,20 @@ CATEGORIES:LAU Næstved
 LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
 GEO:55.22962;11.76326
 URL:https://www.facebook.com/events/2029863341034375/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2071150373568941@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261211T180000Z
+DTEND:20261211T200000Z
+SUMMARY:Julehygge hos Lau Næstved🎅🌲
+DESCRIPTION:LAU Næstved\n\nflere detaljer følger...\n\nhttps://www.facebo
+ ok.com/events/2071150373568941/
+CATEGORIES:LAU Næstved
+LOCATION:Slagelsevej 11F 1.th 4700 Næstved
+GEO:55.22962;11.75296
+URL:https://www.facebook.com/events/2071150373568941/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

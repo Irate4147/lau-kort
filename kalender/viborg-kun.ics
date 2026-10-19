@@ -141,4 +141,26 @@ GEO:56.133436478276;9.0157447224063
 URL:https://www.facebook.com/events/1922503511754154/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1126840473021364@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261104T160000Z
+DTEND:20261104T180000Z
+SUMMARY:Åben bestyrelses møde\, og Alex Vanopslagh's show  " Der er et My
+ ndigt Land"
+DESCRIPTION:LAU Viborg\n\nAlex Vanopslagh Kommer til Viborg!\n🎟️(Grati
+ s biletter!)\n\nDen 4. november kan vi alle se frem til\, at Alex Vanopsla
+ gh kommer til Viborg med sit show "Der er et Myndigt land" – og i Libera
+ l Alliances Ungdom Viborg arrangerer vi en fælles tur til showet! 🇩
+ 🇰💙\n\nI den forbindelse har vi skaffet et begrænset antal billetter
+  til nye medlemmer af LAU Viborg. Der vil desuden være mulighed for at si
+ ge hej til Alex og eventuelt få taget et billede med ham. 📸\n\nDer er 
+ dog et begrænset antal billetter\, og de fordeles efter først til mølle
+ -princippet! \nSå skynd dig at få fat i dine venner\, og tilmeld jer sam
+ m\n\nhttps://www.facebook.com/events/1126840473021364/
+CATEGORIES:LAU Viborg
+LOCATION:8800 Viborg\, Denmark
+URL:https://www.facebook.com/events/1126840473021364/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR

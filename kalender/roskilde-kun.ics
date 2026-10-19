@@ -736,6 +736,28 @@ URL:https://www.facebook.com/events/1068504116067133/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1452165026797489@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261026T160000Z
+DTEND:20261026T180000Z
+SUMMARY:LAU ROSKILDE BESØGER CEPOS
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE BESØGER CEPOS!\n\nHvis der findes
+  noget\, der minder om Disneyland for borgerlige liberalister\, så må de
+ t være CEPOS!\n\nCEPOS er en af Danmarks mest markante borgerlig-liberale
+  tænketanke\, og deres analyser er med til at sætte dagsordenen i den po
+ litiske debat. Her bliver liberale idéer til skarpe argumenter\, der kan 
+ udfordre status quo og give politikerne på Christiansborg kamp til strege
+ n!\n\nMen hvad foregår der egentlig bag kulisserne? Hvordan bliver analys
+ erne til? Og hvordan arbejder man for at fremme frihed\, lavere skat og mi
+ ndre stat?\n\nDet skal vi selvfølgelig finde ud af!\n\nDerf\n\nhttps://ww
+ w.facebook.com/events/1452165026797489/
+CATEGORIES:LAU Roskilde
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
+URL:https://www.facebook.com/events/1452165026797489/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1073196438419650@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261103T180000Z
@@ -744,9 +766,55 @@ SUMMARY:Bestyrelsesmøde November
 DESCRIPTION:LAU Roskilde\n\nDagsorden kommer snarest.\n\nLokale: Forsamling
  en\n\nhttps://www.facebook.com/events/1073196438419650/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Mindesten for Danmarks Besaette\, Fondens B
+ ro\, 4000 Roskilde\, Danmark
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1073196438419650/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1433679275365251@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261105T170000Z
+DTEND:20261105T190000Z
+SUMMARY:LAU ROSKILDE FÅR BESØG AF RETSORDFØRER NICOLAI MELHOLT
+DESCRIPTION:LAU Roskilde\n\n⚖️LAU ROSKILDE FÅR BESØG AF RETSORDFØRER
+  NICOLAI MELHOLT!\n\nIngen frihed uden retssikkerhed – og ingen liberali
+ sme uden en stærk retsstat!\n\nRetssikkerhed\, personlig frihed og lighed
+  for loven er ikke bare flotte ord. Det er nogle af de vigtigste grundsten
+  i et frit og liberalt samfund!\n\nMen hvor går grænsen mellem statens m
+ agt og borgernes frihed? Hvordan sikrer vi\, at staten beskytter vores ret
+ tigheder frem for at begrænse dem? Og hvordan skal fremtidens liberale re
+ tspolitik egentlig se ud?\n\nDet skal vi blive meget klogere på!\n\nDerfo
+ r får LAU Roskilde besøg af LAU's retsordfører\, Nicolai Melho\n\nhttps
+ ://www.facebook.com/events/1433679275365251/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1433679275365251/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1139112898775576@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261126T170000Z
+DTEND:20261126T190000Z
+SUMMARY:LAU ROSKILDE FÅR BESØG AF GENERATION IDENTITÆR DANMARK
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
+ ÆR DANMARK!\n\nHvor går grænsen mellem national identitet og individuel
+  frihed?\nIndvandring\, kultur\, national identitet og ytringsfrihed er no
+ gle af de mest omdiskuterede emner i dansk politik. Men hvad sker der\, n
+ år den identitære bevægelses idéer møder liberalismens grundprincippe
+ r?\n\nDet skal vi diskutere i LAU Roskilde!\n\nVi får nemlig besøg af Ge
+ neration Identitær Danmark\, en bevægelse\, der arbejder for at bevare d
+ ansk og europæisk etnokulturel identitet og er kritisk over for indvandri
+ ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
+ ps://www.facebook.com/events/1139112898775576/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1139112898775576/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -758,7 +826,8 @@ SUMMARY:Bestyrelsesmøde December
 DESCRIPTION:LAU Roskilde\n\nDagsorden og lokale kommer snarest\n\nhttps://w
  ww.facebook.com/events/2282793162534325/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/2282793162534325/
 STATUS:CONFIRMED

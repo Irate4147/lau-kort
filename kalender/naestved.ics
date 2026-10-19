@@ -527,9 +527,15 @@ UID:1437806824847860@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261031T093000Z
 DTEND:20261031T113000Z
-SUMMARY:Liberalt Seminar
-DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
- ://www.facebook.com/events/1437806824847860/
+SUMMARY:Liberalt Seminar: Den liberale danmarkshistorie
+DESCRIPTION:Landsforeningen\n\nEmnet er “Den liberale danmarkshistorie”
+ . Det er den liberale ideologi\, der binder os sammen. Derfor er det altaf
+ gørende\, at vi forstår\, hvordan den liberale danmarkshistorie har form
+ et Danmark. \n\nSeminaret er den 31. oktober. Det kommer til at foregå ho
+ s CEPOS (Landgreven 3\, 1301 København).\n\nHer vil tre oplægsholdere st
+ å for lærerige oplæg med et højt fagligt niveau. \n\nLink til tilmeldi
+ ng: https://liberalallianceungdom.membersite.dk/Events/ComingEvents\n\n\nh
+ ttps://www.facebook.com/events/1437806824847860/
 CATEGORIES:Landsforeningen
 LOCATION:Landgreven 3\, 1301 København K\, Danmark
 GEO:55.68288;12.58555
@@ -566,7 +572,7 @@ DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
+LOCATION:stars.dk
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
 STATUS:CONFIRMED
@@ -605,6 +611,20 @@ CATEGORIES:LAU Næstved
 LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
 GEO:55.22962;11.76326
 URL:https://www.facebook.com/events/2029863341034375/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2071150373568941@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261211T180000Z
+DTEND:20261211T200000Z
+SUMMARY:Julehygge hos Lau Næstved🎅🌲
+DESCRIPTION:LAU Næstved\n\nflere detaljer følger...\n\nhttps://www.facebo
+ ok.com/events/2071150373568941/
+CATEGORIES:LAU Næstved
+LOCATION:Slagelsevej 11F 1.th 4700 Næstved
+GEO:55.22962;11.75296
+URL:https://www.facebook.com/events/2071150373568941/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

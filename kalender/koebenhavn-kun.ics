@@ -671,9 +671,10 @@ END:VEVENT
 BEGIN:VEVENT
 UID:1774854557174285@lau-kort
 DTSTAMP:20260928T092659Z
-DTSTART:20261013T150000Z
-DTEND:20261013T170000Z
-SUMMARY:Keynote/oplæg om økonomi og erhverv med Victor Galland
+DTSTART:20261013T160000Z
+DTEND:20261013T180000Z
+SUMMARY:!Gratis Pizza! Keynote/oplæg om økonomi og erhverv med Victor Gal
+ land
 DESCRIPTION:LAU København\n\nHvordan skaber vi mere vækst\, økonomisk fr
  ihed og bedre vilkår for danske virksomheder? 📈💙\n\nLAU København 
  inviterer til keynote med Victor Galland\, Økonomi- og Erhvervsordfører 
@@ -693,8 +694,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:1115705314128956@lau-kort
 DTSTAMP:20261007T191101Z
-DTSTART:20261023T160000Z
-DTEND:20261023T180000Z
+DTSTART:20261023T163000Z
+DTEND:20261023T183000Z
 SUMMARY:Efterårsfest med LAU & LA-KBH
 DESCRIPTION:LAU København\n\n🍂 EFTERÅRSFEST MED LA KØBENHAVN & LAU K
  ØBENHAVN 🎉\n \nEfter en stærk valgkamp ved både kommunalvalget og fo
@@ -739,7 +740,8 @@ UID:1100375459252123@lau-kort
 DTSTAMP:20261007T191101Z
 DTSTART:20261103T170000Z
 DTEND:20261103T190000Z
-SUMMARY:Hvor liberal er du egentlig? | Retspolitik med Nicolai Melholt
+SUMMARY:!Gratis Pizza! Hvor liberal er du egentlig? | Retspolitik med Nicol
+ ai Melholt
 DESCRIPTION:LAU København\n\nHvor liberal er du egentlig\, når det bliver
   svært?\n\nDet er nemt nok at være enig om skat\, bureaukrati og mere pe
  rsonlig frihed. Men hvad sker der\, når de liberale principper bliver pre
@@ -754,6 +756,41 @@ CATEGORIES:LAU København
 LOCATION:Borgergade 28\, 4. sal\, 1300 København K
 GEO:55.68515;12.58663
 URL:https://www.facebook.com/events/1100375459252123/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1071150909256051@lau-kort
+DTSTAMP:20261012T144528Z
+DTSTART:20261111T170000Z
+DTEND:20261111T190000Z
+SUMMARY:!Gratis Pizza! Oplæg om Ukraine v. Anders Peter Hansen
+DESCRIPTION:LAU København\n\nKom og hør tidligere formand for Ungdommens 
+ Nordiske Råd\, Ukraine-frivillig og folketingskandidat for Liberal Allian
+ ce\, Anders Peter Hansen\, fortælle om sine personlige oplevelser og hist
+ orier fra Ukraine\, samt en opdatering på\, hvad der rører sig i Ukraine
+  lige nu.\n\nhttps://www.facebook.com/events/1071150909256051/
+CATEGORIES:LAU København
+LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
+ sen\, Borgergade 28\, 1300 København K\, Danmark
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1071150909256051/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1403957741809461@lau-kort
+DTSTAMP:20261012T144528Z
+DTSTART:20261117T170000Z
+DTEND:20261117T190000Z
+SUMMARY:!Gratis Pizza! LAU's politik\, demokrati og ideologi
+DESCRIPTION:LAU København\n\nKom og hør LAU’s demokrati- og ideologiord
+ fører Andreas fortælle om friheden til information\, og hvordan demokrat
+ iet kan blive påvirket\, hvis denne frihed ikke bliver opretholdt.\n\nhtt
+ ps://www.facebook.com/events/1403957741809461/
+CATEGORIES:LAU København
+LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
+ sen
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1403957741809461/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
