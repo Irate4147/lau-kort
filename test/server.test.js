@@ -9,7 +9,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {konfiguration, start} from '../server/server.js';
-import {forfalden} from '../server/jobs.js';
+import {forfalden, Jobs} from '../server/jobs.js';
 import {maaGemme} from '../server/adgang.js';
 
 const ROD = new URL('../', import.meta.url).pathname;
@@ -131,6 +131,18 @@ test('kørsler: planlagte tidspunkter i dansk tid', () => {
   assert.equal(forfalden(plan, new Date('2026-10-27T06:00:00Z')), null, 'tirsdag');
   assert.equal(forfalden(plan, new Date('2026-10-26T12:30:00Z')), null, 'over 6 timer for sent');
   assert.equal(forfalden({dag: 1, tid: '04:17'}, new Date('2026-11-01T03:20:00Z')), '2026-11-01 04:17');
+});
+
+test('kørsler: med LAU_JOBS=cron lægges de i databasens kø, som "lau.js cron" tager', () => {
+  const j = new Jobs(S.db, {rod: ROD, data: '', kalender: '', backup: '', cron: true});
+  j.planlaeg('beregn', {forsinkelse: 60000});
+  j.planlaeg('historik', {arg: '2026-01'});
+  assert.deepEqual(j.status(), {koerer: null, koe: ['historik', 'beregn']});
+  assert.deepEqual(S.db.tagOensker().map(o => ({...o})), [{job: 'historik', arg: '2026-01'}], 'beregn venter et minut');
+  j.planlaeg('beregn');
+  assert.deepEqual(S.db.tagOensker().map(o => o.job), ['beregn'], 'et nyt ønske erstatter det gamle');
+  assert.deepEqual(j.status().koe, []);
+  assert.equal(j.koerer, null, 'webprocessen kører intet selv');
 });
 
 // Python-delen: scripts/admin.py med LAU_DB læser og skriver de samme dokumenter, og til-db flytter de krypterede filer.

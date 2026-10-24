@@ -53,7 +53,45 @@ Rollerne står i `server/adgang.js` og håndhæves af serveren; brugerfladen skj
 
 Én kørsel ad gangen. Var serveren nede, indhentes en planlagt kørsel, hvis den er under 6 timer forsinket. Status, log og "Kør nu" står under **Konto → Kørsler** (admin), eller `sudo lau koer <kørsel>`.
 
-## Installation (når der er SSH-adgang)
+## Installation på cPanel-hosting (liberaleunge.dk hos nordicway)
+
+liberaleunge.dk ligger på delt cPanel/CloudLinux-hosting (LiteSpeed): ingen sudo, systemd eller port 80/443. Derfor kører
+serveren som en cPanel-**Node.js-app** (LiteSpeed tager sig af HTTPS med AutoSSL), kørslerne som **cron-job**, og alt
+ligger under `$HOME`:
+
+| | |
+|---|---|
+| `~/lau-kort` | koden (git-checkout) – appens rod; startfil `server/app.cjs` |
+| `~/lau/` (chmod 700) | data: `lau.db`, `data/`, `kalender/`, `backup/` |
+| `~/lau/lau.env` (chmod 600) | indstillinger og `APIFY_TOKEN` – læses af `server/app.cjs` og `lau` |
+| `~/bin/lau` | link til `server/deploy/lau-cpanel` (kommandolinjen) |
+
+`~/lau/lau.env`:
+
+```sh
+LAU_ADRESSE=https://kort.liberaleunge.dk/
+LAU_VAR=/home/liberale/lau
+LAU_JOBS=cron
+LAU_PYTHON=/opt/alt/python313/bin/python3
+PATH=/opt/alt/alt-nodejs22/root/usr/bin:/usr/local/bin:/usr/bin:/bin
+APIFY_TOKEN=…
+```
+
+- **Node 22** fra CloudLinux (`/usr/bin/node` er 16). **Python 3.13** fra `/opt/alt` med
+  `pip install --user cryptography` (kun til flytningen).
+- **Kørslerne** (`LAU_JOBS=cron`): webprocessen kan blive lukket, når den er ledig, så den kører ingen kørsler selv. "Kør nu" og
+  beregn efter ændringer lægges i databasens kø (`koe`), og cron kører `lau cron` hvert andet minut – den tager køen og de
+  planlagte kørsler (samme tider og indhentning som ovenfor):
+  ```
+  */2 * * * * flock -n $HOME/lau/cron.lock $HOME/lau-kort/server/deploy/lau-cpanel cron
+  ```
+- **Subdomænet** `kort.liberaleunge.dk` oprettes i cPanel (DNS ligger hos nordicway, så A-posten og certifikatet kommer
+  af sig selv); appen oprettes under "Setup Node.js App" (eller `cloudlinux-selector create --interpreter nodejs`).
+- **Opdatér koden:** `git -C ~/lau-kort pull --ff-only && cloudlinux-selector restart --json --interpreter nodejs --app-root lau-kort`.
+- **Kommandolinjen:** `lau opret-bruger …`, `lau flyt-data`, `lau koer beregn` osv. (som herunder, uden `sudo`).
+- **Log:** kørslerne under Konto → Kørsler; fejl i cron sendes som mail til cPanel-kontoen; appens log i `~/lau-kort/stderr.log`.
+
+## Installation på egen maskine (med root)
 
 1. **Tjek maskinen:** `sh server/deploy/tjek.sh` – viser styresystem, Node/Python, hvad der allerede kører på port 80/443 (fx WordPress på liberaleunge.dk), og om DNS peger rigtigt. Ændrer intet.
 2. **DNS:** en A-post (og evt. AAAA) for `kort.liberaleunge.dk` → serverens IP. (Et andet navn kan bruges – ret `LAU_ADRESSE` og Caddy/nginx.)

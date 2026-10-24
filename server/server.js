@@ -47,7 +47,7 @@ export function konfiguration(env = process.env) {
     var: varMappe, db: env.LAU_DB || join(varMappe, 'lau.db'), data: env.LAU_DATA || join(varMappe, 'data'),
     kalender: env.LAU_KALENDER || join(varMappe, 'kalender'), backup: env.LAU_BACKUP || join(varMappe, 'backup'),
     sikkerCookie: env.LAU_SIKKER_COOKIE ? env.LAU_SIKKER_COOKIE === '1' : adresse.startsWith('https://'),
-    bagProxy: env.LAU_BAG_PROXY !== '0', jobs: env.LAU_JOBS !== '0', python: env.LAU_PYTHON || 'python3',
+    bagProxy: env.LAU_BAG_PROXY !== '0', jobs: env.LAU_JOBS === 'cron' ? 'cron' : env.LAU_JOBS !== '0', python: env.LAU_PYTHON || 'python3',
     jobEnv: env.APIFY_TOKEN ? {APIFY_TOKEN: env.APIFY_TOKEN} : {},
   };
 }
@@ -67,8 +67,9 @@ function cookies(req) {
 export function start(k = konfiguration()) {
   for (const m of [k.var, k.data, k.kalender]) mkdirSync(m, {recursive: true});
   const db = new Db(k.db);
-  const jobs = new Jobs(db, {rod: ROD, data: k.data, kalender: k.kalender, backup: k.backup, adresse: k.adresse, python: k.python, env: k.jobEnv});
-  if (k.jobs) jobs.start();
+  const jobs = new Jobs(db, {rod: ROD, data: k.data, kalender: k.kalender, backup: k.backup, adresse: k.adresse, python: k.python, env: k.jobEnv,
+    cron: k.jobs === 'cron'});
+  if (k.jobs === true) jobs.start();
   const forsoeg = new Map(); // ip → tidspunkter for mislykkede login
 
   const ip = req => (k.bagProxy && String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()) || req.socket.remoteAddress || '';

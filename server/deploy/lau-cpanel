@@ -1,0 +1,6 @@
+#!/bin/sh
+# LAU-serverens kommandolinje på cPanel-hosting (uden sudo): lau <kommando> … (fx et link fra ~/bin/lau hertil).
+# Læser indstillingerne fra ~/lau/lau.env (eller LAU_ENV) – også PATH, så det er Node 22 og ikke systemets. Se server/README.md.
+set -a; . "${LAU_ENV:-$HOME/lau/lau.env}"; set +a
+cd "$(dirname "$(readlink -f "$0")")/../.." || exit 1
+exec node --disable-warning=ExperimentalWarning server/lau.js "$@"
