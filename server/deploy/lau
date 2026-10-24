@@ -1,0 +1,6 @@
+#!/bin/sh
+# LAU-serverens kommandolinje på maskinen (installer.sh lægger den i /usr/local/bin): sudo lau <kommando> …
+# Kører server/lau.js som brugeren lau med indstillingerne fra /etc/lau/lau.env. Se server/README.md.
+set -a; . /etc/lau/lau.env; set +a
+cd /opt/lau-kort
+exec runuser -u lau -- node --disable-warning=ExperimentalWarning server/lau.js "$@"

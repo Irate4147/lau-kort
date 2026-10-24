@@ -32,6 +32,7 @@ planlagt, indtil det er slut. Filen bruger de oprindelige navne alle_plus_naeste
 plus_naeste og ikke. Et andet ÅR end det indeværende regnes som afsluttet.
 """
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,7 +42,8 @@ import admin
 import kerne
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
+# LAU_DATA: datamappen på serveren (server/README.md); ellers data/ i repoet.
+DATA = Path(os.environ.get("LAU_DATA") or ROOT / "data")
 TZ = ZoneInfo("Europe/Copenhagen")
 # Prognosens navne i filen (kernens navne: plus_naeste og ikke, se HB_STATUS i kerne/lau.js).
 FIL_NAVN = {"plus_naeste": "alle_plus_naeste", "ikke": "ikke_godkendt"}
@@ -112,7 +114,6 @@ def main():
         print("HB-prognosen er fortrolig og beregnes kun med ADMIN_KODE (se README: Adminlogin) – springes over.")
         return
     res = vurder(aar)
-    ud = admin.sti(f"hb_{aar + 1}")
     # "beregnet" ændres hver gang; skriv kun, når selve vurderingen er ændret, så der ikke kommer tomme commits.
     gammel = admin.laes(f"hb_{aar + 1}", {})
     if {**gammel, "beregnet": None} != {**res, "beregnet": None}:
@@ -124,7 +125,7 @@ def main():
     for navn, r in sorted(res["foreninger"].items(), key=lambda x: (x[1]["prognose"], x[0])):
         kv = "  ".join(tegn[r["kvartaler"][f"Q{q}"]["status"]] for q in range(1, 5))
         print(f"{navn:16} {r[f'hb{aar}'].get('status', '–'):14} {res['data_fra'][navn] or '–':11} {kv}   {r['prognose']}")
-    print(f"Skrevet til {ud.relative_to(ROOT)} (krypteret)")
+    print(f"Skrevet til {admin.hvor(f'hb_{aar + 1}')}")
 
 
 if __name__ == "__main__":

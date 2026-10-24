@@ -6,7 +6,7 @@ on:
   pull_request:
   push:
     branches: [main]
-    paths: ['kerne/**', 'test/**', 'app.js', 'scripts/**', 'data/**', 'package.json', 'package-lock.json', '.github/workflows/kerne.yml']
+    paths: ['kerne/**', 'test/**', 'app.js', 'scripts/**', 'server/**', 'kalender-server/**', 'udvidelser/**', 'data/**', 'package.json', 'package-lock.json', '.github/workflows/kerne.yml']
 
 permissions:
   contents: read
@@ -20,5 +20,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # test/server.test.js kører scripts/admin.py (flytning af de krypterede filer til serverens database).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install cryptography
       - run: npm ci
       - run: npm run tjek

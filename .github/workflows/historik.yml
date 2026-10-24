@@ -20,6 +20,8 @@ concurrency:
 
 jobs:
   historik:
+    # Når LAU-serveren har overtaget (repository variable LAU_SERVER = 1), kører serveren dette – se server/README.md.
+    if: vars.LAU_SERVER != '1'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

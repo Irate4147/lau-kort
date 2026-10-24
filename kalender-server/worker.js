@@ -30,7 +30,7 @@ function fold(linje) {
   return ud.join('\r\n ');
 }
 
-function flettIcs(tekster, navn, beskrivelse) {
+export function flettIcs(tekster, navn, beskrivelse) {
   const set = new Set(), ev = [];
   for (const t of tekster) for (const b of t.match(/BEGIN:VEVENT\r?\n[\s\S]*?END:VEVENT/g) || []) {
     const ufoldet = b.replace(/\r?\n[ \t]/g, '');
@@ -48,6 +48,33 @@ function flettIcs(tekster, navn, beskrivelse) {
 async function hent(fil) {
   const r = await fetch(KILDE + fil, {cf: {cacheTtl: 900, cacheEverything: true}});
   return r.ok ? r.text() : null;
+}
+
+/**
+ * Svaret på /<slugs>.ics: landsforeningen + de valgte foreningers egne kalendere, flettet til én. Bruges også af
+ * LAU-serveren (server/server.js), der henter filerne lokalt. hent(fil) → tekst eller null; side: sidens adresse.
+ * @param {string} sti @param {(fil: string) => Promise<string|null>} hent @param {string} side
+ */
+export async function flettetKalender(sti, hent, side) {
+  sti = decodeURIComponent(sti).replace(/^\/+/, '').replace(/\.ics$/, '');
+  const slugs = [...new Set(sti.split(/[+, ]/).filter(s => /^[a-z0-9-]+$/.test(s) && s !== 'landsforeningen'))].sort();
+  if (!slugs.length || slugs.length > MAKS) {
+    return new Response('Angiv foreningerne i stien, fx /aalborg+fyn.ics\n', {status: 400, headers: {'Content-Type': 'text/plain; charset=utf-8'}});
+  }
+  const [nat, ...lokale] = await Promise.all(['landsforeningen.ics', ...slugs.map(s => `${s}-kun.ics`)].map(hent));
+  if (!nat || lokale.some(t => !t)) {
+    const ukendte = slugs.filter((_, i) => !lokale[i]);
+    return new Response(`Kunne ikke hente ${ukendte.length ? ukendte.join(', ') : 'landsforeningen'}\n`, {status: 404, headers: {'Content-Type': 'text/plain; charset=utf-8'}});
+  }
+  const navne = lokale.map(t => ((t.replace(/\r?\n[ \t]/g, '').match(/^X-WR-CALNAME:LAU (.*?) \(kun lokalt\)\s*$/m) || [])[1] || '').replace(/\\(.)/g, '$1'));
+  const navn = `LAU ${navne.filter(Boolean).join(', ')} + Landsforeningen`;
+  const ics = flettIcs([nat, ...lokale], navn, `${navn}. ${side}`);
+  return new Response(ics, {headers: {
+    'Content-Type': 'text/calendar; charset=utf-8',
+    'Content-Disposition': `inline; filename="lau-${slugs.join('+')}.ics"`,
+    'Cache-Control': 'public, max-age=900',
+    'Access-Control-Allow-Origin': '*',
+  }});
 }
 
 // ---- Gem for alle
@@ -113,24 +140,6 @@ export default {
     if (admSti) {
       try { return await admin(req, env, admSti[1]); } catch (err) { return svar({fejl: err.message}, 502); }
     }
-    const sti = decodeURIComponent(new URL(req.url).pathname).replace(/^\/+/, '').replace(/\.ics$/, '');
-    const slugs = [...new Set(sti.split(/[+, ]/).filter(s => /^[a-z0-9-]+$/.test(s) && s !== 'landsforeningen'))].sort();
-    if (!slugs.length || slugs.length > MAKS) {
-      return new Response('Angiv foreningerne i stien, fx /aalborg+fyn.ics\n', {status: 400, headers: {'Content-Type': 'text/plain; charset=utf-8'}});
-    }
-    const [nat, ...lokale] = await Promise.all(['landsforeningen.ics', ...slugs.map(s => `${s}-kun.ics`)].map(hent));
-    if (!nat || lokale.some(t => !t)) {
-      const ukendte = slugs.filter((_, i) => !lokale[i]);
-      return new Response(`Kunne ikke hente ${ukendte.length ? ukendte.join(', ') : 'landsforeningen'}\n`, {status: 404, headers: {'Content-Type': 'text/plain; charset=utf-8'}});
-    }
-    const navne = lokale.map(t => ((t.replace(/\r?\n[ \t]/g, '').match(/^X-WR-CALNAME:LAU (.*?) \(kun lokalt\)\s*$/m) || [])[1] || '').replace(/\\(.)/g, '$1'));
-    const navn = `LAU ${navne.filter(Boolean).join(', ')} + Landsforeningen`;
-    const ics = flettIcs([nat, ...lokale], navn, `${navn}. https://irate4147.github.io/lau-kort/`);
-    return new Response(ics, {headers: {
-      'Content-Type': 'text/calendar; charset=utf-8',
-      'Content-Disposition': `inline; filename="lau-${slugs.join('+')}.ics"`,
-      'Cache-Control': 'public, max-age=900',
-      'Access-Control-Allow-Origin': '*',
-    }});
+    return flettetKalender(new URL(req.url).pathname, hent, 'https://irate4147.github.io/lau-kort/');
   },
 };

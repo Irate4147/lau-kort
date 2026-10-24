@@ -1,6 +1,6 @@
 // Objektlageret: objekter og links i hukommelsen, med beregnede egenskaber (beregnes én gang pr. objekt).
 // Lageret er et øjebliksbillede: ændres data (fx en rettelse), bygges et nyt. Det er hurtigt ved jeres datamængde.
-// Fase 2: en adapter fylder lageret fra Supabase i stedet for JSON-filerne – resten af kernen er uændret.
+// Fase 2: en adapter fylder lageret fra serverens database i stedet for JSON-filerne – resten af kernen er uændret.
 
 import {tilladt} from './ontologi.js';
 

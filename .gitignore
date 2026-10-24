@@ -2,3 +2,5 @@ __pycache__/
 # Lokale klartekstkopier af de fortrolige data (scripts/admin.py dekrypter)
 privat/
 node_modules/
+# LAU-serverens data ved lokal udvikling (server/README.md)
+/var/

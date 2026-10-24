@@ -30,7 +30,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
+# LAU_DATA: datamappen på serveren (server/README.md); ellers data/ i repoet.
+DATA = Path(os.environ.get("LAU_DATA") or ROOT / "data")
 EVENTS = DATA / "events.json"
 META = DATA / "meta.json"
 FORENINGER = DATA / "foreninger.json"

@@ -1,6 +1,6 @@
 # Arkitektur: fra kort til foreningens operativsystem
 
-Status: **besluttet** – byg selv på Supabase. Fase 1 er færdig; næste er fase 2 (se sidst).
+Status: **besluttet** – byg selv, på **egen server (liberaleunge.dk)** i stedet for Supabase (oktober 2026, se [Revideret: egen server](#revideret-egen-server-oktober-2026)). Fase 1 er færdig; fase 2 er klar til at blive flyttet over (se [server/README.md](../server/README.md)).
 
 ## Kort fortalt
 
@@ -161,7 +161,7 @@ Fase 1 er den vigtigste og kan laves uden at vælge backend. Den giver den grund
 
 1. **Personer (medlemmer, frivillige, bestyrelser) skal ind i systemet.** ✅ Besluttet. En rigtig backend med personlige logins er derfor et krav.
 2. **Lokale bestyrelser skal være brugere med adgang til deres egen forening.** ✅ Besluttet. Det kræver **adgang pr. række**: en bestyrelse ser kun sine egne medlemmer. Det bliver det afgørende kriterium i valget nedenfor.
-3. **Bygge selv på Supabase.** ✅ Besluttet. Se sammenligningen nedenfor.
+3. **Bygge selv på Supabase.** ✅ Besluttet – **revideret i oktober 2026: egen server** (se nedenfor). Sammenligningen står her som baggrund.
 
 ### Bygge selv eller købe? (sammenligning, september 2026)
 
@@ -209,4 +209,19 @@ Regnestykket bygger på ca. 23 foreninger × 5 bestyrelsesmedlemmer ≈ 100–12
 
 - **Udviklingsudvalget** (oktober 2026) er bygget på ontologien: objekttyperne Udvalgsmedlem og Kontakt, links fra foreningen (`ansvarlig`, `kontakter`) og kvartalets kontakt som egenskaber på Forening (`kontaktStatus()` i kernen). Data ligger indtil videre krypteret i `data/admin/udvikling.krypt.json` med stabile id'er, så de kan flyttes direkte til tabeller i fase 2. Noterne handler om foreningerne, ikke om enkeltpersoner – personer hører først hjemme i systemet med fase 2 (se [Persondata](#persondata-vigtigt)). Fordelingen af foreningerne er det første sted, der har brug for **roller** (udviklingsformand vs. medlem); i dag kan alle med adminkoden ændre den.
 
-**Fase 1 er færdig.** Alle regler står ét sted (kernen), og kortet, panelet, analyserne, analysebyggeren og Python-scriptene bygger på ontologien og objektsæt. Næste skridt er fase 2: Supabase som objektlager (en adapter med samme resultat som `kerne/kilder/json.js`), rettelser som handlingslog, personlige logins og roller.
+**Fase 1 er færdig.** Alle regler står ét sted (kernen), og kortet, panelet, analyserne, analysebyggeren og Python-scriptene bygger på ontologien og objektsæt.
+
+## Revideret: egen server (oktober 2026)
+
+Foreningen har sin egen server og domæne (liberaleunge.dk). Derfor bygges fase 2 dér i stedet for på Supabase: **én Node-proces med SQLite** (`server/`), uden npm-pakker, database-server eller Docker. Det giver det, Supabase skulle give – personlige logins, roller, data ude af git og en handlingslog – med færre dele og ingen ekstern udbyder (ingen databehandleraftale med en cloud-leverandør, hvis maskinen er jeres egen).
+
+Første skridt er bevidst lille og sikkert: serveren gemmer de **samme dokumenter** som de krypterede filer (samme navne og former), så `app.js`, udvidelserne og Python-scripts kører uændret – kun lageret og login er skiftet. Siden virker både på GitHub Pages og på serveren (`CONFIG.backend`), så skiftet kan tages og fortrydes uden kodeændringer.
+
+| | Fase 2 som planlagt (Supabase) | Fase 2 nu (egen server) |
+|---|---|---|
+| Lager | Postgres, generiske tabeller | SQLite: dokumenter (JSON) + handlingslog med alle udgaver |
+| Login og roller | Supabase Auth + Row Level Security | Egne logins (scrypt, sessioner) og roller i `server/adgang.js` |
+| Kørsler | GitHub Actions | Serveren selv (sync, beregn, rapport, backup) |
+| Afhængigheder | Supabase-konto, SDK | Node 22.13+ og Python 3 |
+
+**Næste skridt efter flytningen:** objekter i stedet for dokumenter (kontakter, rettelser og udvalgsmedlemmer som rækker, så handlingsloggen bliver pr. objekt), en rolle for lokale bestyrelser med adgang pr. række (kun egen forening, håndhævet i serveren) og derefter personer. Ontologien og objektlageret (`kerne/`) er uændrede – en adapter fra databasen skal give samme `Lager` som `kerne/kilder/json.js`.

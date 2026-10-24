@@ -4,6 +4,8 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 
 **Side:** https://irate4147.github.io/lau-kort/ – link direkte til en forening med `#Navn`, fx `#Næstved`.
 
+**Egen server:** hele kortet kan køre på liberaleunge.dk med personlige logins, roller, database og handlingslog i stedet for GitHub Pages, krypterede filer og GitHub Actions – samme kode, se [server/README.md](server/README.md) for installation og skiftet.
+
 ## Sådan hænger det sammen
 
 1. GitHub Action (`.github/workflows/sync.yml`) kører mandag, onsdag og fredag morgen (ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py --start` starter Apifys Facebook Events Scraper på hovedsidernes `upcoming_hosted_events` fra `data/foreninger.json` (én kørsel, højst 60 begivenheder) og venter på den. Er der allerede startet en kørsel på kommende begivenheder inden for 1 dag (fx manuelt), bruges den i stedet, så der ikke scrapes to gange.
@@ -64,7 +66,7 @@ Kun for admins. Udviklingsudvalget hjælper lokalforeningerne nationalt: **hver 
 4. **+ Registrér kontakt**: dato, form (telefon, møde, videomøde, besked – eller *intern note*, der ikke tæller som kontakt), hvem der talte med hvem, hvordan det går (godt / nogenlunde / svært), hvad de har brug for hjælp til (arrangementer, medlemshvervning, bestyrelse og frivillige, økonomi, kommunikation, HB-godkendelse, samarbejde, andet), noter og evt. en opfølgning med frist. **Kontakthistorik** viser alle tidligere kontakter (kan rettes og slettes), så en ny ansvarlig kan se hele forløbet.
 5. Overskredne opfølgninger og – de sidste 21 dage af kvartalet – lokalforeninger uden kontakt står i **Kræver handling nu**.
 
-**Udviklingsformanden** tilføjer udvalgets medlemmer og fordeler lokalforeningerne under **Udvalg og fordeling** nederst i fanen (eller skifter ansvarlig direkte i foreningspanelet). Medlemmer slettes ikke, men gøres inaktive, så historikken bevares; en inaktivs foreninger står under *Uden ansvarlig*, til de er fordelt igen. Alle med adminkoden kan i dag ændre fordelingen – rigtige roller kræver personlige logins (fase 2, se [docs/arkitektur.md](docs/arkitektur.md)).
+**Udviklingsformanden** tilføjer udvalgets medlemmer og fordeler lokalforeningerne under **Udvalg og fordeling** nederst i fanen (eller skifter ansvarlig direkte i foreningspanelet). Medlemmer slettes ikke, men gøres inaktive, så historikken bevares; en inaktivs foreninger står under *Uden ansvarlig*, til de er fordelt igen. Med den fælles adminkode kan alle ændre fordelingen; på [LAU-serveren](server/README.md) har hvert udvalgsmedlem sit eget login, og kun udviklingsformanden og admins kan ændre udvalget og fordelingen ("Jeg er" vælges automatisk ud fra navnet).
 
 **Kontaktoplysninger og andre oplysninger** (formand, telefon, mail, hvem der har foreningens logins …) rettes direkte i foreningspanelet under **Stamdata og kontaktoplysninger** → *Ret kontaktoplysninger* og gemmes krypteret i `data/admin/stamdata.krypt.json`. Felterne er frie, så der kan komme nye til med tiden. Skriv ikke adgangskoder der – alle med adminkoden kan læse dem.
 
@@ -79,7 +81,7 @@ Kun for admins. Udviklingsudvalget hjælper lokalforeningerne nationalt: **hver 
    "stemning": "ok", "behov": ["medlemmer"], "tekst": "…", "opfoelgning": "…", "frist": "2026-11-15", "klaret": null}]}
 ```
 
-Brugerfladen er `udvidelser/udvikling.js`. **Persondata:** noterne handler om foreningen – skriv roller ("formanden") frem for navne og intet følsomt om enkeltpersoner. Når personer for alvor skal ind i systemet, skal data ud af git (fase 2, Supabase med personlige logins – se "Persondata" i [docs/arkitektur.md](docs/arkitektur.md)); filens format er lavet, så den kan flyttes direkte til tabeller.
+Brugerfladen er `udvidelser/udvikling.js`. **Persondata:** noterne handler om foreningen – skriv roller ("formanden") frem for navne og intet følsomt om enkeltpersoner. Når personer for alvor skal ind i systemet, skal data ud af git – det sker med [LAU-serveren](server/README.md) (se også "Persondata" i [docs/arkitektur.md](docs/arkitektur.md)), der gemmer det samme dokument i sin database.
 
 ## Momentum
 

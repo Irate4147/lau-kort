@@ -29,7 +29,14 @@
   const udvalg = () => data().udvalg || [];
   const medlem = id => udvalg().find(u => u.id === id) || null;
   const ansvarligFor = navn => medlem((data().ansvar || {})[navn]);
-  const mig = () => { try { return localStorage.getItem(MIG) || ''; } catch (_) { return ''; } };
+  /** Udvalgsmedlemmet, brugeren er: valgt under "Jeg er" – på serveren ellers medlemmet med brugerens navn. */
+  const mig = () => {
+    try { const v = localStorage.getItem(MIG); if (v) return v; } catch (_) { /* fx privat vindue */ }
+    const b = LAU.admin.bruger, u = b && udvalg().find(x => x.navn.trim().toLowerCase() === b.navn.trim().toLowerCase());
+    return u ? u.id : '';
+  };
+  // Udvalgets medlemmer og fordelingen: på serveren kun admins og udviklingsformanden (server/adgang.js).
+  const maaFordele = () => kanGemme() && (!LAU.admin.rettigheder || LAU.admin.rettigheder.fordeling);
   const idag = () => K.tid.dagNoegle(NOW);
   const dato = d => (d ? fmtDate.format(new Date(d + 'T12:00:00Z')) : '');
   const nytId = p => `${p}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -136,7 +143,7 @@
       <details class="udv-admin"${UDV.udvalgAaben ?? !udvalg().length ? ' open' : ''}><summary><h2>Udvalg og fordeling</h2></summary>
         <p class="note">Udviklingsformanden fordeler lokalforeningerne. Medlemmer slettes ikke, men gøres inaktive, så historikken
           bevares – en inaktivs foreninger står under "Uden ansvarlig", til de er fordelt igen.</p>
-        ${udvalgHtml()}${fordelingHtml()}
+        ${maaFordele() ? udvalgHtml() + fordelingHtml() : `<p class="note">Kun udviklingsformanden og admins kan ændre udvalget og fordelingen.</p>${udvalgListe()}`}
       </details>`;
     bindForeningLinks(el);
     bindOpfoelgninger(el);
@@ -155,6 +162,13 @@
     el.querySelectorAll('[data-udv-filter]').forEach(b => b.addEventListener('click', () => { UDV.filter = b.dataset.udvFilter; renderFane(el); }));
     bindUdvalg(el);
     bindFordeling(el);
+  }
+
+  /** Udvalget og deres foreninger (til dem, der ikke må ændre fordelingen). */
+  function udvalgListe() {
+    const af = id => DATA.lokale.filter(f => (data().ansvar || {})[f.navn] === id).map(f => f.navn);
+    return `<ul class="udv-fakta">${udvalg().filter(u => u.aktiv !== false).map(u => `<li><b>${esc(u.navn)}</b>${u.rolle === 'formand' ? ' (formand)' : ''}: ${
+      esc(af(u.id).join(', ') || 'ingen foreninger')}</li>`).join('')}</ul>`;
   }
 
   // Udvalgets medlemmer: navn, rolle og aktiv kan rettes; nye tilføjes nederst. Gemmes samlet.
@@ -317,7 +331,7 @@
       const formAaben = UDV.aaben === f.navn;
       return `${ikkeOpsat()}
         <div class="udv-top">
-          <label class="sort">Ansvarlig <select data-udv-ansvarlig${kanGemme() && aktive.length ? '' : ' disabled'}>
+          <label class="sort">Ansvarlig <select data-udv-ansvarlig${maaFordele() && aktive.length ? '' : ' disabled'}>
             <option value="">${aktive.length ? '– ingen –' : 'Tilføj udvalget under fanen Udvikling'}</option>
             ${a && a.aktiv === false ? `<option value="${esc(a.id)}" selected>${esc(a.navn)} (inaktiv)</option>` : ''}
             ${aktive.map(u => `<option value="${esc(u.id)}"${a && a.id === u.id ? ' selected' : ''}>${esc(u.navn)}</option>`).join('')}</select></label>

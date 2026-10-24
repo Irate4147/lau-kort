@@ -2,9 +2,11 @@
   "name": "lau-kort",
   "private": true,
   "type": "module",
-  "description": "Kun udviklingsværktøjer. Siden har intet build-trin: kerne/ er almindelige ES-moduler, der typetjekkes via JSDoc.",
+  "engines": {"node": ">=22.13"},
+  "description": "Kun udviklingsværktøjer – siden og server/ bruger ingen npm-pakker. Intet build-trin: kerne/ er almindelige ES-moduler, der typetjekkes via JSDoc.",
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\"",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/**/*.test.js\"",
+    "start": "node --disable-warning=ExperimentalWarning server/lau.js start",
     "typetjek": "tsc -p kerne/jsconfig.json",
     "tjek": "npm run typetjek && npm test"
   },
