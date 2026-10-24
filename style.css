@@ -44,19 +44,49 @@ button { font-family: inherit; }
 
 /* ---- layout: smalt sidepanel til venstre, kortet fylder resten ---- */
 .app {
-  display: grid; grid-template-columns: 360px minmax(0, 1fr); height: 100vh;
+  --side-w: 440px; position: relative;
+  display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); height: 100vh;
   background: var(--page); color: var(--text-primary); font-family: var(--font);
 }
 .sidebar {
   background: var(--surface-1); border-right: 1px solid var(--border);
   overflow-y: auto; padding: 16px 16px 40px; min-height: 0;
 }
+.app.side-lukket { grid-template-columns: 0 minmax(0, 1fr); }
+.app.side-lukket .sidebar { visibility: hidden; padding: 0; border: 0; }
+/* Kanten, der trækkes i, og knappen, der klapper panelet ind/ud (Google Maps-agtigt). */
+.side-handle {
+  position: absolute; top: 0; bottom: 0; left: calc(var(--side-w) - 4px); width: 8px; z-index: 6; cursor: col-resize;
+}
+.side-handle::after { content: ''; position: absolute; top: 0; bottom: 0; left: 3px; width: 2px; background: transparent; transition: background .15s; }
+.side-handle:hover::after, .side-handle:focus-visible::after, body.traekker .side-handle::after { background: var(--link); }
+.side-handle:focus-visible { outline: none; }
+.app.side-lukket .side-handle { display: none; }
+body.traekker { cursor: col-resize; user-select: none; }
+.side-toggle {
+  position: absolute; top: 56px; left: var(--side-w); z-index: 7; width: 22px; height: 44px; padding: 0;
+  border: 1px solid var(--border); border-left: 0; border-radius: 0 8px 8px 0; background: var(--surface-1);
+  color: var(--text-secondary); font-size: 16px; cursor: pointer; box-shadow: 2px 1px 4px rgba(0, 0, 0, .08);
+}
+.side-toggle:hover { color: var(--text-primary); }
+.app.side-lukket .side-toggle { left: 0; }
 .map-wrap { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .map { flex: 1; min-height: 0; position: relative; }
 
 h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .sidebar h2, .sidebar h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin: 22px 0 8px; }
-.updated, .note, .method { color: var(--muted); font-size: 12px; margin: 2px 0 8px; }
+.updated, .note, .method { color: var(--muted); font-size: 12.5px; margin: 2px 0 8px; }
+/* "?" – forklaringen vises ved hover/fokus/tryk (initForklaringer i app.js) i stedet for at stå som tekst. */
+.info {
+  display: inline-grid; place-items: center; width: 15px; height: 15px; margin-left: 4px; vertical-align: 1px;
+  border: 1px solid var(--axis); border-radius: 50%; font-size: 10px; font-weight: 600; line-height: 1;
+  color: var(--muted); cursor: help; text-transform: none; letter-spacing: 0; user-select: none;
+}
+.info:hover, .info:focus-visible { color: var(--text-primary); border-color: var(--text-secondary); outline: none; }
+h1 .info { vertical-align: 3px; }
+.method-boks { margin-top: 20px; }
+.method-boks summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+.method-boks .method { margin-top: 6px; }
 .method { margin-top: 20px; line-height: 1.5; }
 
 /* ---- værktøjslinje over kortet ---- */
@@ -337,6 +367,7 @@ ul.arrlist { list-style: none; margin: 0; padding: 0; }
 
 /* ---- mobil: kortet øverst, panelet nedenunder ---- */
 @media (max-width: 760px) {
+  .side-handle, .side-toggle { display: none; }
   .app { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
   .map-wrap { order: 1; height: 58vh; position: sticky; top: 0; z-index: 3; }
   .sidebar { order: 2; border-right: 0; overflow: visible; }
