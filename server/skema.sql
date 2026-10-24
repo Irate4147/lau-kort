@@ -65,3 +65,11 @@ CREATE TABLE IF NOT EXISTS koersler (
   log    TEXT
 );
 CREATE INDEX IF NOT EXISTS koersler_job ON koersler (job, noegle);
+
+-- Kørsler, serveren har bedt om, når cron kører dem (LAU_JOBS=cron, fx på cPanel-hosting, hvor webprocessen kan blive
+-- lukket midt i en kørsel): "Kør nu" og beregn efter ændringer. tid: tidligst. "lau.js cron" tager dem.
+CREATE TABLE IF NOT EXISTS koe (
+  job TEXT PRIMARY KEY,
+  arg TEXT NOT NULL DEFAULT '',
+  tid TEXT NOT NULL
+);

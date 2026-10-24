@@ -4,3 +4,4 @@ privat/
 node_modules/
 # LAU-serverens data ved lokal udvikling (server/README.md)
 /var/
+.env

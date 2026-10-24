@@ -41,7 +41,8 @@ export function forfalden(plan, d) {
 export class Jobs {
   /**
    * @param {import('./db.js').Db} db
-   * @param {{rod: string, data: string, kalender: string, backup: string, adresse?: string, python?: string, env?: object}} k
+   * @param {{rod: string, data: string, kalender: string, backup: string, adresse?: string, python?: string, env?: object, cron?: boolean}} k
+   *   cron: kør ikke selv – læg kørslerne i databasens kø, som "lau.js cron" tager (LAU_JOBS=cron).
    */
   constructor(db, k) {
     this.db = db;
@@ -54,6 +55,7 @@ export class Jobs {
   /** Sætter et job i kø (samme job kun én gang). forsinkelse: vent så mange ms (nye kald udskyder det – fx efter rettelser). */
   planlaeg(job, {noegle = null, arg = '', forsinkelse = 0} = {}) {
     if (!JOBS[job]) throw new Error(`Ukendt kørsel: ${job}`);
+    if (this.k.cron) return this.db.oensk(job, arg, new Date(Date.now() + forsinkelse).toISOString().replace(/\.\d+Z$/, 'Z'));
     if (forsinkelse) {
       clearTimeout(this.timere.get(job));
       this.timere.set(job, setTimeout(() => { this.timere.delete(job); this.planlaeg(job, {noegle, arg}); }, forsinkelse));
@@ -64,7 +66,10 @@ export class Jobs {
     this.naeste();
   }
 
-  status() { return {koerer: this.koerer, koe: this.koe.map(x => x.job)}; }
+  status() {
+    if (this.k.cron) return {koerer: this.db.koererNu(), koe: this.db.oensker()};
+    return {koerer: this.koerer, koe: this.koe.map(x => x.job)};
+  }
 
   async naeste() {
     if (this.koerer || !this.koe.length) return;
@@ -110,20 +115,22 @@ export class Jobs {
     return `Sikkerhedskopi i ${mappe}${gamle.length ? ` (slettede ${gamle.join(', ')})` : ''}`;
   }
 
+  /** Sætter de planlagte kørsler, der er forfaldne og ikke kørt, i kø. */
+  forfaldne() {
+    for (const [job, def] of Object.entries(JOBS)) {
+      const noegle = def.plan && forfalden(def.plan, new Date());
+      if (noegle && !this.db.harKoersel(job, noegle) && !this.koe.some(x => x.job === job) && !(this.koerer && this.koerer.noegle === noegle)) {
+        this.planlaeg(job, {noegle});
+      }
+    }
+    this.db.ryd();
+  }
+
   /** Tjekker hvert halve minut, om en planlagt kørsel er forfalden. */
   start() {
     if (!existsSync(this.k.backup)) mkdirSync(this.k.backup, {recursive: true});
-    const tjek = () => {
-      for (const [job, def] of Object.entries(JOBS)) {
-        const noegle = def.plan && forfalden(def.plan, new Date());
-        if (noegle && !this.db.harKoersel(job, noegle) && !this.koe.some(x => x.job === job) && !(this.koerer && this.koerer.noegle === noegle)) {
-          this.planlaeg(job, {noegle});
-        }
-      }
-      this.db.ryd();
-    };
-    tjek();
-    this.interval = setInterval(tjek, 30000);
+    this.forfaldne();
+    this.interval = setInterval(() => this.forfaldne(), 30000);
     this.interval.unref();
   }
   stop() { clearInterval(this.interval); for (const t of this.timere.values()) clearTimeout(t); }

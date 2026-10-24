@@ -161,6 +161,25 @@ export class Db {
   slutKoersel(id, ok, log) {
     this.db.prepare('UPDATE koersler SET slut = ?, ok = ?, log = ? WHERE id = ?').run(nu(), ok ? 1 : 0, String(log).slice(-20000), id);
   }
+  /** Lægger en kørsel i kø til cron (samme job kun én gang; et nyt ønske udskyder det). */
+  oensk(job, arg = '', tid = nu()) {
+    this.db.prepare('INSERT INTO koe (job, arg, tid) VALUES (?, ?, ?) ON CONFLICT (job) DO UPDATE SET arg = excluded.arg, tid = excluded.tid')
+      .run(job, arg, tid);
+  }
+  /** Tager kørslerne i køen, der skal køres nu. */
+  tagOensker() {
+    return this.transaktion(() => {
+      const t = nu(), r = this.db.prepare('SELECT job, arg FROM koe WHERE tid <= ? ORDER BY tid').all(t);
+      this.db.prepare('DELETE FROM koe WHERE tid <= ?').run(t);
+      return r;
+    });
+  }
+  oensker() { return this.db.prepare('SELECT job FROM koe ORDER BY tid').all().map(r => r.job); }
+  /** Den kørsel, der er i gang (i en anden proces). ponytail: en kørsel, der blev afbrudt, ses som i gang i 6 timer. */
+  koererNu() {
+    const fra = new Date(Date.now() - 6 * 3600e3).toISOString();
+    return this.db.prepare('SELECT job, noegle FROM koersler WHERE slut IS NULL AND start > ? ORDER BY id DESC LIMIT 1').get(fra) || null;
+  }
   harKoersel(job, noegle) { return !!this.db.prepare('SELECT 1 FROM koersler WHERE job = ? AND noegle = ?').get(job, noegle); }
   koersler(graense = 30) {
     return this.db.prepare('SELECT id, job, noegle, start, slut, ok, substr(log, -2000) AS log FROM koersler ORDER BY id DESC LIMIT ?').all(graense);
