@@ -6,7 +6,7 @@ Kort over Liberal Alliances Ungdoms lokalforeninger og landsforeningen med komme
 
 ## Sådan hænger det sammen
 
-1. GitHub Action (`.github/workflows/sync.yml`) kører mandag morgen (én gang om ugen, ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py --start` starter Apifys Facebook Events Scraper på hovedsidernes `upcoming_hosted_events` fra `data/foreninger.json` (én kørsel, højst 150 begivenheder) og venter på den. Er der allerede startet en kørsel på kommende begivenheder inden for 3 dage (fx manuelt), bruges den i stedet, så der ikke scrapes to gange.
+1. GitHub Action (`.github/workflows/sync.yml`) kører mandag, onsdag og fredag morgen (ikke ved kodeændringer – ellers manuelt via Actions): `scripts/sync.py --start` starter Apifys Facebook Events Scraper på hovedsidernes `upcoming_hosted_events` fra `data/foreninger.json` (én kørsel, højst 60 begivenheder) og venter på den. Er der allerede startet en kørsel på kommende begivenheder inden for 1 dag (fx manuelt), bruges den i stedet, så der ikke scrapes to gange.
 2. Derefter henter `scripts/sync.py` resultaterne af alle nye kørsler, fletter dem ind i `data/events.json` og committer dem.
 3. Siden (`index.html`, `app.js` og kernen i `kerne/` – ontologien og alle regler; ret `?v=` i `index.html`, når `app.js`/`style.css` ændres, så browsere ikke blander gammel og ny kode) er et fuldskærmskort (MapLibre GL med OpenFreeMap/OpenStreetMap-grundkort, ingen API-nøgle) med et sidepanel til venstre. Den læser `data/` (direkte fra repoet via raw.githubusercontent.com, så data er friske) og beregner status og analyser i browseren.
 
