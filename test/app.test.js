@@ -57,7 +57,7 @@ test('en ny kategorisk egenskab får standardfarver og ontologiens adgang', asyn
 // Foreningspanelet er en objektvisning: sektionerne læser fra objektlageret. Panelets objektsæt over arrangementer-linket
 // (filtreret på arrangementets status) skal være præcis kernens aktivitet, alle sektioner skal kunne tegnes for alle
 // foreninger – offentligt og for admins – i den faste rækkefølge, og de generiske sektioner følger ontologien og rollen.
-const PANEL_ORDEN = ['kommende', 'momentum', 'hb', 'tidligere', 'aar', 'noegletal', 'typer', 'tilkendegivelser', 'geografi',
+const PANEL_ORDEN = ['overblik', 'aar', 'kommende', 'tidligere', 'momentum', 'noegletal', 'typer', 'tilkendegivelser', 'geografi',
   'ugedage', 'stamdata', 'egenskaber', 'links', 'noter'];
 for (const tid of DATOER) {
   test(`foreningspanelet bygger på objektlageret og ontologien (${tid})`, async () => {
@@ -80,7 +80,7 @@ for (const tid of DATOER) {
       for (const [s, [saet, akt]] of Object.entries(p.saet)) assert.deepEqual(saet, akt, `${hvor}: objektsættet ${s}`);
       assert.deepEqual(p.sek, PANEL_ORDEN.filter(id => p.sek.includes(id)), `${hvor}: rækkefølgen`);
       for (const [id, html] of Object.entries(p.html)) assert.equal(typeof html, 'string', `${hvor}: ${id}`);
-      if (!p.admin) assert.ok(p.sek.every(id => ['kommende', 'tidligere', 'stamdata', 'egenskaber', 'links'].includes(id)), hvor);
+      if (!p.admin) assert.ok(p.sek.every(id => ['overblik', 'kommende', 'tidligere', 'stamdata', 'egenskaber', 'links'].includes(id)), hvor);
       for (const id of p.egenskaber) {
         const e = LAU.egenskab('Forening', id);
         assert.ok(p.admin || e.adgang === 'offentlig', `${hvor}: ${id} er kun for admins`);

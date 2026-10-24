@@ -114,7 +114,7 @@ const HB_KV = {
   ukendt:   {label: 'ingen data', farve: HB_FILL.ukendt},
 };
 // Momentum: en tidlig sundhedsindikator (mindst ét arrangement om måneden). Reglen er momentum() i kerne/regler.js.
-const {VINDUE: MOM_VINDUE, MAAL: MOM_MAAL, MAANED: MOM_MAANED, HJAELP: MOM_HJAELP, FREMAD: MOM_FREMAD} = K.regler.MOMENTUM;
+const {VINDUE: MOM_VINDUE, MAAL: MOM_MAAL, MAANED: MOM_MAANED, HJAELP: MOM_HJAELP} = K.regler.MOMENTUM;
 const MOM_FILL = {godt: '#0ca30c', stabil: '#86cf86', fremad: '#2a9fd6', faldende: '#fab219', hjaelp: '#d03b3b', ukendt: '#b8b6ae', ingenfb: '#d9d7d0'};
 const HB_RISIKO_FILL = {kritisk: '#d03b3b', advarsel: '#fab219', opmaerksom: '#f2dc6b', sikret: '#0ca30c', tabt: '#8c1452', ukendt: '#b8b6ae'};
 const MOM_STATUS = K.regler.MOMENTUM_NIVEAUER; // {ikon, label, hint} pr. niveau
@@ -122,7 +122,6 @@ const MOM_ORDEN = Object.fromEntries(Object.keys(MOM_STATUS).map((k, i) => [k, i
 const dageMellem = (a, b) => Math.floor((b - a) / DAY);
 /** "2 af 3 de seneste 3 måneder" – eller hvorfor det ikke kan måles. */
 const momMaalTekst = m => (m.daekket ? `${m.afholdt} af ${MOM_MAAL} de seneste 3 måneder` : 'Data dækker ikke de seneste 3 måneder');
-const momTal = v => v.toLocaleString('da-DK', {maximumFractionDigits: 1});
 /** Foreningens Facebook-sider: hovedsiden og evt. ekstra/tidligere sider. */
 const fbSider = K.regler.fbSider;
 const visningsnavn = f => f.national ? 'Landsforeningen' : `LAU ${f.navn}`;
@@ -250,8 +249,9 @@ const VISNINGER = [
 const erMobil = matchMedia('(max-width: 760px)').matches;
 for (const v of VISNINGER) if (!(v.id in layerState)) layerState[v.id] = v.id === 'kalender' ? !erMobil : v.standard !== false;
 /**
- * Sektion i foreningspanelet: {id, titel, admin?, viser?, synlig?(f, o), render(f, o) -> html, efter?(el, f, o)}.
- * f er foreningen (DATA.byName), o dens objekt i objektlageret (DATA.lager). admin: true = kun for admins. viser: de
+ * Sektion i foreningspanelet: {id, titel, admin?, foldet?, viser?, synlig?(f, o), render(f, o) -> html, efter?(el, f, o)}.
+ * f er foreningen (DATA.byName), o dens objekt i objektlageret (DATA.lager). admin: true = kun for admins. titel kan være
+ * en funktion (f, o). foldet: true = sammenklappet, så panelet ikke bliver langt. viser: de
  * egenskaber og links (fra ontologien), sektionen viser – de udelades i de generiske sektioner "Egenskaber" og
  * "Forbundne objekter".
  */
@@ -1309,56 +1309,27 @@ function monthsLastYear() {
   return out;
 }
 
+/** Boks med en aktivitet (dato, afstand i dage og navn) – eller tom-teksten. */
+function aktTile(label, e, rel, tom) {
+  if (!e) return `<div class="tile"><div class="label">${esc(label)}</div><div class="value">–</div><div class="delta">${esc(tom)}</div></div>`;
+  const navn = e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.navn)}</a>` : esc(e.navn);
+  return `<div class="tile"><div class="label">${esc(label)}</div><div class="value">${esc(fmtDate.format(e.startD))}</div>
+    <div class="delta">${esc(rel)}</div><div class="akt-navn">${navn}</div></div>`;
+}
+const dageTekst = (n, foer) => n === 0 ? 'i dag' : n === 1 ? (foer ? 'i går' : 'i morgen') : foer ? `for ${n} dage siden` : `om ${n} dage`;
+
 registerSection({
-  id: 'kommende', titel: 'Kommende aktiviteter', viser: ['naesteArrangement', 'planlagte'],
-  render: (f, o) => evList(aktivitetAf(o).kommende, false),
+  // Det vigtigste først: hvornår foreningen sidst holdt noget, og hvad der er det næste.
+  id: 'overblik', titel: 'Seneste og næste', viser: ['sidsteArrangement', 'naesteArrangement', 'dageSidenSidste'],
+  render(f, o) {
+    const a = aktivitetAf(o), sidste = a.afholdt[a.afholdt.length - 1], naeste = a.naeste;
+    return `<div class="tiles akt-tiles">
+      ${aktTile('Seneste aktivitet', sidste, sidste && dageTekst(Math.floor((+NOW - +sidste.startD) / DAY), true),
+        `Ingen afholdt siden ${fmtDate.format(DATA.dataFra)}`)}
+      ${aktTile('Næste aktivitet', naeste, naeste && dageTekst(Math.max(0, Math.ceil((+naeste.startD - +NOW) / DAY)), false), 'Intet i kalenderen')}
+    </div>`;
+  },
 });
-registerSection({
-  // Afholdte aktiviteter det seneste år (offentligt), nyeste først. De 5 seneste vises, resten kan foldes ud.
-  id: 'tidligere', titel: 'Tidligere aktiviteter (seneste år)', viser: ['sidsteArrangement'],
-  render(f, o) {
-    const list = aktivitetAf(o).afholdt.filter(e => e.slutD >= ET_AAR_SIDEN).reverse();
-    if (list.length <= 5) return evList(list, false, 'Ingen afholdte aktiviteter det seneste år.');
-    return evList(list.slice(0, 5), false)
-      + `<details class="flere"><summary>Vis alle ${list.length}</summary>${evList(list.slice(5), false)}</details>`;
-  },
-}, {efter: 'kommende'});
-registerSection({
-  id: 'hb', titel: `HB-godkendelse ${HB_AAR}`, admin: true, viser: ['hb'], synlig: (f, o) => vaerdi(o, 'niveau') === 'lokal',
-  render(f, o) {
-    const hb = vaerdi(o, 'hbDetaljer');
-    const kv = HB_KVARTALER.map(k => {
-      const s = HB_KV[hb.kvartaler[k.id]];
-      return `<span class="status"><span class="dot" style="background:${s.farve}"></span>${esc(k.kort)}: ${esc(s.label)}</span>`;
-    }).join('');
-    const nu = f.hbNu;
-    const nuTekst = !nu ? '' : `<p class="note"><b>HB ${HB_AAR - 1}:</b> ${esc({godkendt: 'Godkendt', ikke_godkendt: 'Ikke godkendt', uafklaret: 'Uafklaret'}[nu.status] || nu.status)}${
-      nu.mangler && nu.mangler.length ? ` – mangler: ${esc(nu.mangler.join('; '))}` : ''}${nu.note ? `. ${esc(nu.note)}` : ''}</p>`;
-    return `<div class="hb-prognose"><span class="dot" style="background:${HB_FILL[hb.status]}"></span>${esc(HB_STATUS[hb.status].label)}</div>
-      <div class="kvartaler">${kv}</div>
-      <p class="note">Krav: mindst ét afholdt arrangement i hvert kvartal ${HB_AAR - 1}.</p>${nuTekst}`;
-  },
-}, {efter: 'kommende'});
-registerSection({
-  // Momentum: tidlig advarsel om, at foreningen mister fart (se momentum() i kerne/regler.js).
-  id: 'momentum', titel: 'Momentum', admin: true, viser: ['momentum', 'dageSidenSidste', 'naesteArrangement'],
-  synlig: (f, o) => !!vaerdi(o, 'momentumDetaljer'),
-  render(f, o) {
-    const m = vaerdi(o, 'momentumDetaljer'), st = MOM_STATUS[m.niveau];
-    const trend = m.trend == null ? 'Normalt niveau kræver mere historik'
-      : `${{op: '↑ flere end', ned: '↓ færre end', som: 'Som'}[m.trend]} normalt (${momTal(m.normalt)})`;
-    return `<div class="hb-prognose"><span class="dot" style="background:${MOM_FILL[m.niveau]}"></span><b>${esc(st.ikon)} ${esc(st.label)}</b></div>
-      <p class="note">${esc(m.grund)}.<br>Mål: mindst ét arrangement om måneden.</p>
-      ${momTidslinje([f], {aksetekst: false})}
-      <div class="tiles">
-        ${tile('Dage siden sidste', m.sidsteDage == null ? '–' : String(m.sidsteDage), `Mål: højst ${MOM_MAANED}`)}
-        ${tile('Næste arrangement', m.naesteDage == null ? '–' : `om ${m.naesteDage} d`, m.naesteDage == null ? 'Intet i kalenderen' : fmtDate.format(vaerdi(o, 'naesteArrangement')))}
-        ${tile('Afholdt, seneste 3 måneder', m.daekket ? `${m.afholdt} af ${MOM_MAAL}` : String(m.afholdt), m.daekket ? trend : 'Data dækker ikke hele perioden')}
-        ${tile(`I kalenderen, næste ${MOM_FREMAD} dage`, String(m.fremad), null)}
-      </div>${m.signaler.length ? `<ul class="signaler">${m.signaler.map(([t, tekst]) =>
-        `<li class="${{'+': 'plus', '-': 'minus', i: 'info'}[t]}"><span aria-hidden="true">${{'+': '✓', '-': '!', i: 'i'}[t]}</span>${esc(tekst)}</li>`).join('')}</ul>` : ''}`;
-  },
-}, {efter: 'kommende'});
 registerSection({
   id: 'aar', titel: 'Aktiviteter det seneste år', admin: true,
   render(f, o) {
@@ -1377,7 +1348,32 @@ registerSection({
   },
 });
 registerSection({
-  id: 'noegletal', titel: 'Nøgletal', admin: true, viser: ['afholdt90', 'dageSidenSidste', 'sidsteArrangement', 'tilkendegivelser', 'varsel'],
+  id: 'kommende', titel: (f, o) => `Kommende aktiviteter (${aktivitetAf(o).kommende.length})`, foldet: true, viser: ['planlagte'],
+  synlig: (f, o) => aktivitetAf(o).kommende.length > 0, // ellers står "Intet i kalenderen" allerede øverst
+  render: (f, o) => evList(aktivitetAf(o).kommende, false),
+});
+registerSection({
+  // Afholdte aktiviteter det seneste år (offentligt), nyeste først.
+  id: 'tidligere', titel: (f, o) => `Tidligere aktiviteter, seneste år (${aktivitetAf(o).afholdt.filter(e => e.slutD >= ET_AAR_SIDEN).length})`, foldet: true,
+  render(f, o) {
+    const list = aktivitetAf(o).afholdt.filter(e => e.slutD >= ET_AAR_SIDEN).reverse();
+    return evList(list, false, 'Ingen afholdte aktiviteter det seneste år.');
+  },
+});
+registerSection({
+  // Momentum: tidlig advarsel om, at foreningen mister fart (se momentum() i kerne/regler.js). Niveauet står i titlen
+  // og på kortet; detaljerne er foldet sammen. Seneste/næste står allerede øverst.
+  id: 'momentum', admin: true, foldet: true, viser: ['momentum'], synlig: (f, o) => !!vaerdi(o, 'momentumDetaljer'),
+  titel: (f, o) => { const st = MOM_STATUS[vaerdi(o, 'momentumDetaljer').niveau]; return `Momentum: ${st.ikon} ${st.label}`; },
+  render(f, o) {
+    const m = vaerdi(o, 'momentumDetaljer');
+    return `<p class="note">${esc(m.grund)}. Mål: mindst ét arrangement om måneden.</p>
+      ${momTidslinje([f], {aksetekst: false})}${m.signaler.length ? `<ul class="signaler">${m.signaler.map(([t, tekst]) =>
+        `<li class="${{'+': 'plus', '-': 'minus', i: 'info'}[t]}"><span aria-hidden="true">${{'+': '✓', '-': '!', i: 'i'}[t]}</span>${esc(tekst)}</li>`).join('')}</ul>` : ''}`;
+  },
+});
+registerSection({
+  id: 'noegletal', foldet: true, titel: 'Nøgletal', admin: true, viser: ['afholdt90', 'dageSidenSidste', 'sidsteArrangement', 'tilkendegivelser', 'varsel'],
   render(f, o) {
     // Gennemsnittet for lokalforeninger med Facebook-side: et objektsæt med et mål.
     const gns = egenskab => K.koer(DATA.lager, {type: 'Forening', filtre: [{egenskab: 'niveau', er: ['lokal']},
@@ -1395,7 +1391,7 @@ registerSection({
   },
 });
 registerSection({
-  id: 'typer', titel: 'Typer af aktiviteter', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
+  id: 'typer', foldet: true, titel: 'Typer af aktiviteter', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
   render(f, o) {
     const pr = {egenskab: 'kategori'}, afholdt = antalPr(arrSaet(o, 'afholdt', pr)), planlagt = antalPr(arrSaet(o, 'planlagt', pr));
     const rows = arrVaerdier('kategori').map(k => {
@@ -1406,7 +1402,7 @@ registerSection({
   },
 });
 registerSection({
-  id: 'tilkendegivelser', titel: 'Tilkendegivelser pr. aktivitet', admin: true, synlig: (f, o) => aktivitetAf(o).gyldige.some(e => e.svar != null),
+  id: 'tilkendegivelser', foldet: true, titel: 'Tilkendegivelser pr. aktivitet', admin: true, synlig: (f, o) => aktivitetAf(o).gyldige.some(e => e.svar != null),
   render(f, o) {
     const rows = aktivitetAf(o).gyldige.filter(e => e.svar != null).slice(-10).map(e => ({
       label: `${fmtDay.format(e.startD).replace(/^\S+ /, '')} ${e.navn}`,
@@ -1417,7 +1413,7 @@ registerSection({
   },
 });
 registerSection({
-  id: 'geografi', titel: 'Geografisk spredning', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
+  id: 'geografi', foldet: true, titel: 'Geografisk spredning', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
   render(f, o) {
     // Links: foreningens kommuner og hvert arrangements kommune (afholdtI).
     const L = DATA.lager, lands = vaerdi(o, 'niveau') === 'lands', kommuner = L.linkede(o, 'kommuner').map(k => L.titel(k));
@@ -1437,7 +1433,7 @@ registerSection({
   },
 });
 registerSection({
-  id: 'ugedage', titel: 'Ugedage', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
+  id: 'ugedage', foldet: true, titel: 'Ugedage', admin: true, synlig: (f, o) => arrSaet(o, 'gyldige').objekter.length > 0,
   render(f, o) {
     const n = antalPr(arrSaet(o, 'gyldige', {egenskab: 'ugedag'})), dage = arrVaerdier('ugedag'); // man … soen
     return columns(UGEDAGE.map((d, i) => ({label: d, values: [n.get(dage[i]) || 0, 0]})), {height: 110, aria: 'Aktiviteter pr. ugedag'});
@@ -1455,7 +1451,8 @@ registerSection({
   },
 });
 // Panelets top (renderForening) viser navn, niveau, aktivitet nu, Facebook-siden og kommunerne.
-const TOP_VISER = ['navn', 'niveau', 'status', 'facebook', 'antalKommuner'];
+// HB-prognosen har sin egen fane (HB-godkendelse) og vises ikke i panelet.
+const TOP_VISER = ['navn', 'niveau', 'status', 'facebook', 'antalKommuner', 'hb'];
 /** Det, panelet allerede viser for foreningen (toppen og de synlige sektioners viser). */
 function vistIPanelet(f, o) {
   const vist = new Set(TOP_VISER);
@@ -1466,13 +1463,13 @@ function vistIPanelet(f, o) {
 const objektVisning = (f, o) => K.objektVisning(DATA.lager, o, {rolle: erAdmin() ? 'admin' : 'offentlig', udelad: vistIPanelet(f, o)});
 registerSection({
   // Ontologiens øvrige egenskaber (admin-egenskaber kun for admins), fx analysernes HB-risiko og hvide pletter.
-  id: 'egenskaber', titel: 'Egenskaber', synlig: (f, o) => objektVisning(f, o).egenskaber.length > 0,
+  id: 'egenskaber', foldet: true, titel: 'Egenskaber', synlig: (f, o) => objektVisning(f, o).egenskaber.length > 0,
   render: (f, o) => `<dl class="stamdata egenskaber">${objektVisning(f, o).egenskaber.map(({egenskab: e, tekst}) =>
     `<dt${e.hint ? ` title="${esc(e.hint)}"` : ''}>${esc(e.label)}</dt><dd>${esc(tekst)}</dd>`).join('')}</dl>`,
 });
 registerSection({
   // Linkene: antal forbundne objekter og deres fordeling, fx arrangementernes status og kommunernes hvide pletter.
-  id: 'links', titel: 'Forbundne objekter', synlig: (f, o) => objektVisning(f, o).links.length > 0,
+  id: 'links', foldet: true, titel: 'Forbundne objekter', synlig: (f, o) => objektVisning(f, o).links.length > 0,
   render: (f, o) => `<dl class="stamdata egenskaber">${objektVisning(f, o).links.map(({link, objekter, fordeling}) =>
     `<dt>${esc(link.label)}</dt><dd>${objekter.length}</dd>${!fordeling ? '' : `<dd class="fordeling">${esc(fordeling.egenskab.label)}: ${
       esc(fordeling.grupper.map(g => `${g.label} ${g.antal}`).join(' · '))}</dd>`}`).join('')}</dl>`,
@@ -1521,8 +1518,6 @@ function renderForening(f) {
   body.innerHTML = `
     <h2 class="fname">${esc(visningsnavn(f))}</h2>
     ${statusPill(vaerdi(o, 'status'))}
-    ${erAdmin() && (vaerdi(o, 'facebook') || KVARTALER.some(k => f.kv[k.id])) ? `<div class="kvartaler" title="Afholdte aktiviteter pr. kvartal">${KVARTALER.map(k =>
-      `<span class="status"><span class="dot" style="background:${KVARTAL_FILL[kvStatus(f, k)]}"></span>${esc(k.kort)}: ${f.kv[k.id]} afholdt</span>`).join('')}</div>` : ''}
     <div class="kommuner">${vaerdi(o, 'niveau') === 'lands' ? 'Arrangementer i hele landet' : `Dækker ${esc(L.linkede(o, 'kommuner').map(k => L.titel(k)).join(', '))}`}</div>
     ${vaerdi(o, 'facebook') ? `<a class="fb" href="${esc(f.facebook)}" target="_blank" rel="noopener">Facebook-side ↗</a>${fbSider(f).slice(1).map(u =>
       ` · <a class="fb" href="${esc(u)}" target="_blank" rel="noopener">Tidligere side ↗</a>`).join('')}`
@@ -1535,14 +1530,15 @@ function renderForening(f) {
   });
   for (const sec of PANEL_SECTIONS) {
     if (!tilladt(sec) || (sec.synlig && !sec.synlig(f, o))) continue;
-    const el = document.createElement('section');
+    // foldet: true = sammenklappet (details), så panelet viser det vigtigste og resten ligger et klik væk.
+    const el = document.createElement(sec.foldet ? 'details' : 'section');
     el.className = 'panel-sec';
     el.dataset.sec = sec.id;
-    el.innerHTML = `<h3>${esc(sec.titel)}</h3>${sec.render(f, o)}`;
+    const titel = esc(typeof sec.titel === 'function' ? sec.titel(f, o) : sec.titel);
+    el.innerHTML = `${sec.foldet ? `<summary><h3>${titel}</h3></summary>` : `<h3>${titel}</h3>`}${sec.render(f, o)}`;
     body.appendChild(el);
     if (sec.efter) sec.efter(el, f, o);
   }
-  // Tidskritiske advarsler for foreningen står øverst, før alle sektionerne.
   // Tidskritiske advarsler (rød) og det, der er gået godt (grøn), står øverst, før alle sektionerne.
   const adv = advarsler(f.navn), foerste = body.querySelector('.panel-sec');
   for (const [cls, titel, list] of [['adv-sec', 'Kræver handling nu', adv.filter(x => x.niveau !== 'positiv')],

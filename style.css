@@ -343,6 +343,15 @@ ul.arrlist { list-style: none; margin: 0; padding: 0; }
   .side-tabs { position: static; }
   .kal { width: min(300px, calc(100% - 20px)); }
 }
+details.panel-sec > summary { cursor: pointer; list-style: none; }
+details.panel-sec > summary::-webkit-details-marker { display: none; }
+details.panel-sec > summary h3 { display: inline; }
+details.panel-sec > summary::after { content: ' ▸'; color: var(--muted); font-size: 12px; }
+details.panel-sec[open] > summary::after { content: ' ▾'; }
+details.panel-sec { margin-top: 14px; }
+details.panel-sec[open] > summary { margin-bottom: 8px; }
+.akt-tiles .value { font-size: 17px; }
+.akt-navn { font-size: 12.5px; margin-top: 2px; overflow-wrap: anywhere; }
 details.flere summary { cursor: pointer; color: var(--link); font-size: 13px; padding: 6px 0; }
 
 /* Momentum */
