@@ -489,3 +489,53 @@ export function tilstandVed(e, tid) {
 export function varsel(e, forsteKoersel) {
   return !e.historisk && !e.manuel && +e.firstD - +forsteKoersel > DAG ? (+e.startD - +e.firstD) / DAG : null;
 }
+
+// ---------------------------------------------------------------- udviklingsudvalget: kontakt med lokalforeningerne
+
+// Hver lokalforening kontaktes mindst én gang i kvartalet af sin ansvarlige i udviklingsudvalget. SNART: så mange dage
+// før kvartalets sidste dag bliver en manglende kontakt presserende. Se README: Udviklingsudvalget.
+export const KONTAKT = {SNART: 21};
+export const KONTAKT_STATUS = {
+  snart: 'Ikke kontaktet – kvartalet slutter snart',
+  mangler: 'Ikke kontaktet i kvartalet',
+  kontaktet: 'Kontaktet i kvartalet',
+};
+// Kontaktformer: 'note' er en intern note uden kontakt og tæller ikke som kontakt.
+export const KONTAKT_FORMER = {telefon: 'Telefon', moede: 'Møde', video: 'Videomøde', besked: 'Besked/mail', note: 'Intern note (ingen kontakt)'};
+export const STEMNINGER = {godt: 'Det går godt', ok: 'Det går nogenlunde', svaert: 'Det er svært'};
+export const BEHOV = {
+  aktiviteter: 'Arrangementer og ideer', medlemmer: 'Medlemshvervning', bestyrelse: 'Bestyrelse og frivillige',
+  oekonomi: 'Økonomi', kommunikation: 'Kommunikation og SoMe', hb: 'HB-godkendelse', samarbejde: 'Samarbejde og konflikter',
+  andet: 'Andet',
+};
+
+/** Kontakter efter dato, nyeste først (samme dag: senest oprettet først). @param {any} a @param {any} b */
+const nyesteFoerst = (a, b) => String(b.dato).localeCompare(String(a.dato)) || String(b.oprettet || '').localeCompare(String(a.oprettet || ''));
+/**
+ * Foreningens kontakter i udviklingsudvalgets data (data/admin/udvikling.krypt.json), nyeste først.
+ * @param {{kontakter?: any[]}|null} u @param {string} forening
+ */
+export const kontakterFor = (u, forening) => ((u && u.kontakter) || []).filter(k => k.forening === forening).sort(nyesteFoerst);
+
+/**
+ * Kvartalets kontakt med en lokalforening: hvornår den sidst blev kontaktet (interne noter tæller ikke), om det er sket i
+ * det indeværende kvartal, stemningen og behovene ved seneste kontakt og de åbne opfølgninger (overskredne: fristen er
+ * passeret).
+ * @param {any[]} kontakter foreningens kontakter @param {Date} nu
+ */
+export function kontaktStatus(kontakter, nu) {
+  kontakter = [...kontakter].sort(nyesteFoerst);
+  const idag = dagNoegle(nu), ks = kvartaler(+idag.slice(0, 4)), k = ks.find(x => idag >= x.fra && idag < x.til) || ks[3];
+  const sidsteDag = dagPlus(k.til, -1), dage = kalenderdage(idag, sidsteDag);
+  const rigtige = kontakter.filter(x => x.form !== 'note' && x.dato <= idag);
+  const sidste = rigtige[0] || null;
+  const iKvartal = rigtige.filter(x => x.dato >= k.fra);
+  const status = iKvartal.length ? 'kontaktet' : dage <= KONTAKT.SNART ? 'snart' : 'mangler';
+  const aabne = kontakter.filter(x => x.opfoelgning && !x.klaret);
+  return {
+    status, kvartal: k.id, sidsteDag, dage, sidste, iKvartal: iKvartal.length,
+    dageSiden: sidste ? kalenderdage(sidste.dato, idag) : null,
+    stemning: sidste ? sidste.stemning || null : null,
+    aabne, overskredne: aabne.filter(x => x.frist && x.frist < idag),
+  };
+}

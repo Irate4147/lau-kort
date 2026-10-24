@@ -7,6 +7,7 @@
  *  - MAP_LAYERS:      lag på kortet (med eller uden til/fra-knap). Nye lag tilføjes med LAU.registerLayer().
  *  - ANALYSER:        analyser i vinduet Analyser (fanen Analyser, kun admins). Nye tilføjes med LAU.registerAnalyse().
  *  - ADVARSLER:       tidskritiske advarsler øverst i sidepanelet (kun admins). Nye tilføjes med LAU.registerAdvarsel().
+ *  - FANER:           egne faner i sidepanelet (fx Udvikling). Nye tilføjes med LAU.registerFane().
  *  - K (kerne/):      ontologien, reglerne (momentum, HB, status …) og objektsæt. Indlæses som ES-modul i index.html
  *                     før app.js (window.LAU_KERNE). app.js har ingen egen kopi af reglerne – se kerne/README.md.
  *  - udvidelser/*.js: udvidelser, der bruger registrene ovenfor. Indlæses efter app.js (se index.html); main() venter
@@ -160,6 +161,10 @@ const FARVER = {
   hbRisikoSpand: {farver: {handle: HB_RISIKO_FILL.kritisk, planlagt: HB_RISIKO_FILL.advarsel, hold: HB_RISIKO_FILL.opmaerksom,
     sikret: HB_RISIKO_FILL.sikret, tabt: HB_RISIKO_FILL.tabt, ukendt: HB_RISIKO_FILL.ukendt}, opacitet: {ukendt: 0.35},
     uden: {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'}},
+  // Udviklingsudvalget (udvidelser/udvikling.js): rød = kvartalet slutter snart uden kontakt, gul = ikke kontaktet, grøn = kontaktet.
+  kontakt: {farver: {snart: '#d03b3b', mangler: '#fab219', kontaktet: '#0ca30c'}, opacitet: {mangler: 0.5},
+    uden: {farve: MAP_FILL.ingenfb, label: 'Landsforeningen'}},
+  stemning: {farver: {godt: '#0ca30c', ok: '#f2dc6b', svaert: '#d03b3b'}, uden: {farve: MAP_FILL.ingenfb, label: 'Ikke kontaktet endnu'}},
   // Landsforeningen har intet område på kortet, så alle flader ville få samme farve.
   niveau: {skjul: true},
 };
@@ -286,6 +291,13 @@ function registerAnalyse(a) { ANALYSER.push({admin: true, ...a}); }
  */
 const ADVARSLER = [];
 function registerAdvarsel(a) { ADVARSLER.push({admin: true, ...a}); }
+/**
+ * Egen fane i sidepanelet: {id, label, titel?, admin?, render(el)}. Knappen står før login-fanen; render tegner fanens
+ * indhold i el, hver gang fanen vises (og når data ændres). admin: true = kun for admins. Åbnes en forening fra fanen,
+ * fører "←" tilbage til fanen.
+ */
+const FANER = [];
+function registerFane(fane) { FANER.push(fane); }
 // Må elementet (sektion, lag, analyse) vises? Admin-elementer kun efter login.
 const tilladt = x => !x.admin || erAdmin();
 
@@ -300,11 +312,11 @@ const tilladt = x => !x.admin || erAdmin();
  * kun tager imod skrivenøglen HMAC(nøgle, "lau-skriv"), hvis SHA-256 står som "skriv" i noegle.json.
  * Filerne: hb (årets HB-status), rettelser (alle rettelser inkl. noter og fremmøde), noter (noter pr. forening)
  * og valgfrit stamdata ({forening: {felt: værdi}}) og medlemmer ([{forening, by, lat, lng, antal}]). rapporter er
- * månedsrapporterne fra scripts/rapport.py.
+ * månedsrapporterne fra scripts/rapport.py, udvikling udviklingsudvalgets fordeling og kontakter (udvidelser/udvikling.js).
  * Nye fortrolige data: læg dem i data/admin/<navn>.krypt.json (scripts/admin.py) og hent dem med LAU.admin.hent().
  */
 const ADMIN = {noegle: null, skriv: null, info: null, data: {}};
-const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer', 'rapporter'];
+const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer', 'rapporter', 'udvikling'];
 const ADMIN_TJEK = 'LAU-admin', ADMIN_LAGER = 'lau-admin';
 const erAdmin = () => !!ADMIN.noegle;
 const tekstBytes = t => new TextEncoder().encode(t);
@@ -457,7 +469,9 @@ async function load() {
  */
 function beregn() {
   const {meta, topo, hb, firstRun} = RAW;
-  const L = K.bygFraJson({foreninger: RAW.foreninger, events: RAW.events, meta, rettelser: RET.data, topo, nu: NOW, rolle: 'admin'});
+  // Udviklingsudvalgets data kun for admins; findes filen ikke endnu, er ingen lokalforeninger kontaktet.
+  const udvikling = erAdmin() ? ADMIN.data.udvikling || {} : null;
+  const L = K.bygFraJson({foreninger: RAW.foreninger, events: RAW.events, meta, rettelser: RET.data, topo, udvikling, nu: NOW, rolle: 'admin'});
   DAEKNING = L.kontekst.daekning;
   const foreninger = RAW.foreninger.map(f => ({...f}));
   const alle = L.kontekst.alleArrangementer; // med rettelser, også skjulte (til fanen Arrangementer)
@@ -1477,15 +1491,72 @@ registerSection({
 });
 registerSection({
   // Stamdata (formand, kontakt osv.): offentlige felter fra foreninger.json, for admins også de fortrolige
-  // fra data/admin/stamdata.krypt.json.
-  id: 'stamdata', titel: 'Stamdata',
-  synlig: f => !!(f.stamdata || (ADMIN.data.stamdata && ADMIN.data.stamdata[f.navn])),
+  // fra data/admin/stamdata.krypt.json – dem kan admins rette her (gemt for alle via adminserveren).
+  id: 'stamdata', titel: () => (erAdmin() ? 'Stamdata og kontaktoplysninger' : 'Stamdata'),
+  synlig: f => erAdmin() || !!f.stamdata,
   render(f) {
-    const d = Object.assign({}, f.stamdata || {}, (ADMIN.data.stamdata && ADMIN.data.stamdata[f.navn]) || {});
-    return `<dl class="stamdata">${Object.entries(d).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${
-      /^\+?[\d ]{8,}$/.test(String(v)) ? `<a href="tel:${esc(String(v).replace(/ /g, ''))}">${esc(v)}</a>` : esc(v)}</dd>`).join('')}</dl>`;
+    const dl = d => `<dl class="stamdata">${Object.entries(d).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${
+      /^\+?[\d ]{8,}$/.test(String(v)) ? `<a href="tel:${esc(String(v).replace(/ /g, ''))}">${esc(v)}</a>`
+      : /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(v)) ? `<a href="mailto:${esc(v)}">${esc(v)}</a>` : esc(v)}</dd>`).join('')}</dl>`;
+    const offentlig = f.stamdata || {}, fortrolig = fortroligeStamdata(f);
+    if (!erAdmin()) return dl(offentlig);
+    return `${Object.keys(offentlig).length ? `<p class="note">Offentligt (data/foreninger.json):</p>${dl(offentlig)}` : ''}
+      <div data-stamdata-vis>${Object.keys(fortrolig).length ? dl(fortrolig) : '<p class="empty">Ingen fortrolige oplysninger endnu.</p>'}
+        ${kanGemme() ? '<button type="button" class="linkbtn" data-stamdata-ret>Ret kontaktoplysninger</button>' : ''}</div>
+      <form class="stamdata-form" data-stamdata-form hidden>
+        <p class="note">Fx Formand, Telefon, Mail, Bestyrelse, Hvor ligger foreningens logins. Kun admins kan se felterne.
+          <b>Skriv ikke adgangskoder her</b> – alle med adminkoden kan læse dem; skriv i stedet, hvem der har dem.</p>
+        <div data-stamdata-raekker></div>
+        <button type="button" class="linkbtn" data-stamdata-ny>+ Tilføj felt</button>
+        <div class="form-actions"><button class="chip small primary" type="submit">Gem</button>
+          <button class="chip small" type="button" data-stamdata-annuller>Annuller</button><span class="note-status" aria-live="polite"></span></div>
+      </form>`;
+  },
+  efter(el, f) {
+    const form = el.querySelector('[data-stamdata-form]'), ret = el.querySelector('[data-stamdata-ret]');
+    if (!form || !ret) return;
+    const raekker = form.querySelector('[data-stamdata-raekker]');
+    const raekke = (k = '', v = '') => {
+      const div = document.createElement('div');
+      div.className = 'stamdata-raekke';
+      div.innerHTML = `<input type="text" placeholder="Felt" maxlength="40" value="${esc(k)}" aria-label="Felt">
+        <input type="text" placeholder="Værdi" maxlength="300" value="${esc(v)}" aria-label="Værdi">
+        <button type="button" class="linkbtn" aria-label="Fjern feltet" title="Fjern">×</button>`;
+      div.querySelector('button').addEventListener('click', () => div.remove());
+      raekker.appendChild(div);
+    };
+    ret.addEventListener('click', () => {
+      raekker.innerHTML = '';
+      const d = fortroligeStamdata(f);
+      for (const [k, v] of Object.entries(d)) raekke(k, v);
+      if (!Object.keys(d).length) for (const k of ['Formand', 'Telefon', 'Mail']) raekke(k);
+      el.querySelector('[data-stamdata-vis]').hidden = true;
+      form.hidden = false;
+    });
+    form.querySelector('[data-stamdata-ny]').addEventListener('click', () => raekke());
+    form.querySelector('[data-stamdata-annuller]').addEventListener('click', () => renderForening(f));
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const status = form.querySelector('.note-status');
+      const ny = {};
+      for (const r of raekker.querySelectorAll('.stamdata-raekke')) {
+        const [k, v] = [...r.querySelectorAll('input')].map(i => i.value.trim());
+        if (k && v) ny[k] = v;
+      }
+      status.textContent = 'Gemmer …';
+      try {
+        await gemAdmin('stamdata', d => {
+          const alle = {...(d || {})};
+          if (Object.keys(ny).length) alle[f.navn] = ny; else delete alle[f.navn];
+          return sorter(alle);
+        }, `Stamdata: ${f.navn}`);
+        renderForening(f);
+      } catch (err) { status.textContent = err.message; }
+    });
   },
 });
+/** Foreningens fortrolige stamdata (data/admin/stamdata.krypt.json), kun for admins. */
+const fortroligeStamdata = f => ((ADMIN.data.stamdata || {})[f.navn]) || {};
 // Panelets top (renderForening) viser navn, niveau, aktivitet nu, Facebook-siden og kommunerne.
 // HB-prognosen har sin egen fane (HB-godkendelse) og vises ikke i panelet.
 const TOP_VISER = ['navn', 'niveau', 'status', 'facebook', 'antalKommuner', 'hb'];
@@ -1535,11 +1606,13 @@ registerSection({
 function openForening(navn, {animate = true} = {}) {
   const f = DATA.byName.get(navn);
   if (!f) return;
+  if (egenFane(FANE)) TILBAGE = FANE; else if (FANE !== 'oversigt') TILBAGE = null;
   selected = navn;
   hideTip();
   closePopover();
   renderForening(f);
   visFane('oversigt');
+  $('back').textContent = TILBAGE ? `← ${egenFane(TILBAGE).label}` : '← Alle foreninger';
   $('sidebar').scrollTop = 0;
   document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.f === navn)));
   $('zoom-reset').hidden = false;
@@ -1593,7 +1666,8 @@ function renderForening(f) {
 function closeForening() {
   selected = null;
   closePopover();
-  visFane(FANE === 'oversigt' ? 'oversigt' : FANE);
+  visFane(FANE === 'oversigt' && TILBAGE ? TILBAGE : FANE);
+  TILBAGE = null;
   document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', 'false'));
   $('zoom-reset').hidden = true;
   history.replaceState(null, '', location.pathname + location.search);
@@ -1606,8 +1680,11 @@ function closeForening() {
 let FANE = 'oversigt';
 // Faner, der kun er for admins (knapperne har data-admin i index.html). Fanen Admin er login'et for andre.
 const ADMIN_FANER = ['hb', 'arrangementer', 'analyser'];
+// Fanen, en forening blev åbnet fra (registerFane), så "←" fører tilbage dertil.
+let TILBAGE = null;
+const egenFane = id => FANER.find(x => x.id === id) || null;
 function visFane(fane) {
-  if (ADMIN_FANER.includes(fane) && !erAdmin()) fane = 'admin';
+  if ((ADMIN_FANER.includes(fane) || (egenFane(fane) && !tilladt(egenFane(fane)))) && !erAdmin()) fane = 'admin';
   FANE = fane;
   document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.fane === fane)));
   $('side-overview').hidden = fane !== 'oversigt' || !!selected;
@@ -1617,10 +1694,33 @@ function visFane(fane) {
   $('side-arrangementer').hidden = fane !== 'arrangementer';
   $('side-admin').hidden = fane !== 'admin';
   $('side-analyser').hidden = fane !== 'analyser';
+  for (const x of FANER) { const el = $('side-' + x.id); if (el) el.hidden = fane !== x.id; }
+  if (egenFane(fane)) renderEgenFane(egenFane(fane));
   if (fane === 'arrangementer') renderArrangementer();
   if (fane === 'analyser') { renderAnalyseListe(); if (!ANA.aaben) aabnAnalyse(ANA.aktiv || (ANALYSER.find(tilladt) || {}).id); }
   if (fane === 'admin') renderAdmin();
   $('sidebar').scrollTop = 0;
+}
+
+/** Tegner en registreret fane (registerFane). */
+function renderEgenFane(x) {
+  const el = $('side-' + x.id);
+  if (!el || !DATA || !tilladt(x)) return;
+  try { x.render(el); } catch (err) { console.error(`Fane ${x.id}:`, err); el.innerHTML = `<p class="warn">Fejl: ${esc(err.message)}</p>`; }
+}
+/** Knapper og sektioner til de registrerede faner (før login-fanen). */
+function initFaner() {
+  for (const x of FANER) {
+    const b = document.createElement('button');
+    Object.assign(b, {type: 'button', textContent: x.label, hidden: !tilladt(x)});
+    b.dataset.fane = x.id;
+    b.setAttribute('aria-selected', 'false');
+    if (x.titel) b.title = x.titel;
+    $('fane-admin').before(b);
+    const sec = document.createElement('section');
+    Object.assign(sec, {className: 'side-view', id: 'side-' + x.id, hidden: true});
+    $('sidebar').appendChild(sec);
+  }
 }
 
 // ------------------------------------------------------------------ fane: visninger
@@ -1788,6 +1888,7 @@ function opdater() {
   if (FANE === 'arrangementer') renderArrangementer();
   if (FANE === 'admin') renderAdmin();
   if (FANE === 'analyser') renderAnalyseListe();
+  if (egenFane(FANE)) renderEgenFane(egenFane(FANE));
   if (ANA.aaben) renderAnalyser();
 }
 
@@ -2443,12 +2544,13 @@ function initSidepanel() {
 
 // ------------------------------------------------------------------ start
 
-window.LAU = {registerSection, registerLayer, registerAnalyse, registerAdvarsel, aabnAnalyse, openForening, closeForening, visFane, CONFIG,
+window.LAU = {registerSection, registerLayer, registerAnalyse, registerAdvarsel, registerFane, aabnAnalyse, openForening, closeForening, visFane, CONFIG,
   admin: {erAdmin, hent: hentAdmin, gem: gemAdmin, get data() { return ADMIN.data; }},
   get data() { return DATA; }, get map() { return MAP.map; }};
 
 async function main() {
   // Fanerne bindes før data hentes, så de virker, selvom indlæsningen fejler.
+  initFaner();
   document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.addEventListener('click', () => visFane(b.dataset.fane)));
   initSidepanel();
   initForklaringer();
@@ -2460,6 +2562,7 @@ async function main() {
   }
   // Admin: fanerne vises, og login-fanen bliver til "Admin". Andre ser kun de offentlige farvninger.
   document.querySelectorAll('.side-tabs [data-admin]').forEach(b => { b.hidden = !erAdmin(); });
+  for (const x of FANER) document.querySelector(`.side-tabs [data-fane="${x.id}"]`).hidden = !tilladt(x);
   $('fane-admin').textContent = erAdmin() ? 'Admin' : '🔒 Log ind';
   if (!FARVNINGER().some(v => v.id === farvning)) farvning = 'status';
   renderLegend();

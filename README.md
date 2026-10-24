@@ -49,7 +49,37 @@ Sidepanelet har disse faner:
 - **HB** (kun admins) – alle HB-visninger (se nedenfor).
 - **Arrangementer** (kun admins) – alle arrangementer med filtre og redigering (se "Rettelser").
 - **Analyser** (kun admins) – listen over analyser; den valgte vises i et vindue over højre del af kortet (se [Analyser og advarsler](#analyser-og-advarsler)).
+- **Udvikling** (kun admins) – udviklingsudvalgets arbejdsliste: hvem der skal kontaktes i kvartalet, åbne opfølgninger og fordelingen af lokalforeningerne (se [Udviklingsudvalget](#udviklingsudvalget)).
 - **🔒 Log ind / Admin** – adminlogin; efter login: "Gem for alle" (se "Adminlogin").
+
+## Udviklingsudvalget
+
+Kun for admins. Udviklingsudvalget hjælper lokalforeningerne nationalt: **hver lokalforening har en ansvarlig i udvalget, der kontakter den mindst én gang i kvartalet** – hører, hvordan det går, hvad der kan blive bedre, og hvad de har brug for hjælp til – og skriver det ned, så det er nemt at følge op og at tage over.
+
+**Sådan bruges det:**
+
+1. Log ind og åbn fanen **Udvikling**. Vælg dig selv under **Jeg er** (huskes i browseren), så ser du dine egne lokalforeninger (*Mine*). *Alle* og *Uden ansvarlig* viser resten.
+2. Listen står i den rækkefølge, de skal kontaktes: først dem, der ikke er kontaktet i kvartalet (rød, når kvartalet slutter inden for 21 dage), længst tid siden først. Hver linje viser den ansvarlige, hvornår foreningen sidst blev kontaktet, stemningen (grøn/gul/rød prik), åbne opfølgninger og momentum. Bjælken øverst viser, hvor mange der er kontaktet i kvartalet.
+3. Klik på en forening. Sektionen **Udviklingsudvalget** øverst i panelet viser den ansvarlige (kan skiftes), kvartalets kontakt og de åbne opfølgninger (sæt flueben, når de er klaret). **Forbered samtalen** samler det, man skal vide før opkaldet – momentum, seneste og næste arrangement, HB-kvartalet, kommuner uden aktivitet, sidste kontakt og kontaktoplysninger – og foreslår spørgsmål, også opfølgningerne fra sidst.
+4. **+ Registrér kontakt**: dato, form (telefon, møde, videomøde, besked – eller *intern note*, der ikke tæller som kontakt), hvem der talte med hvem, hvordan det går (godt / nogenlunde / svært), hvad de har brug for hjælp til (arrangementer, medlemshvervning, bestyrelse og frivillige, økonomi, kommunikation, HB-godkendelse, samarbejde, andet), noter og evt. en opfølgning med frist. **Kontakthistorik** viser alle tidligere kontakter (kan rettes og slettes), så en ny ansvarlig kan se hele forløbet.
+5. Overskredne opfølgninger og – de sidste 21 dage af kvartalet – lokalforeninger uden kontakt står i **Kræver handling nu**.
+
+**Udviklingsformanden** tilføjer udvalgets medlemmer og fordeler lokalforeningerne under **Udvalg og fordeling** nederst i fanen (eller skifter ansvarlig direkte i foreningspanelet). Medlemmer slettes ikke, men gøres inaktive, så historikken bevares; en inaktivs foreninger står under *Uden ansvarlig*, til de er fordelt igen. Alle med adminkoden kan i dag ændre fordelingen – rigtige roller kræver personlige logins (fase 2, se [docs/arkitektur.md](docs/arkitektur.md)).
+
+**Kontaktoplysninger og andre oplysninger** (formand, telefon, mail, hvem der har foreningens logins …) rettes direkte i foreningspanelet under **Stamdata og kontaktoplysninger** → *Ret kontaktoplysninger* og gemmes krypteret i `data/admin/stamdata.krypt.json`. Felterne er frie, så der kan komme nye til med tiden. Skriv ikke adgangskoder der – alle med adminkoden kan læse dem.
+
+**Kortet og analyser:** Reglen står i kernen (`kontaktStatus()` og `KONTAKT` i `kerne/regler.js`) og er egenskaber på Forening i ontologien: `kontakt` (kontaktet / ikke kontaktet / kvartalet slutter snart), `sidsteKontakt`, `dageSidenKontakt`, `stemning` og `aabneOpfoelgninger`, plus objekttyperne **Udvalgsmedlem** og **Kontakt** med links (`ansvarlig`, `kontakter`). Derfor kan kortet farves efter "Kontakt i kvartalet" og "Stemning ved seneste kontakt" (Visninger), og **Egen analyse** kan fx vise lokalforeninger, der ikke er kontaktet, delt op efter ansvarlig, eller kontakter pr. behov.
+
+**Data:** `data/admin/udvikling.krypt.json` (krypteret, gemt for alle via LAU-serveren som de andre admindata):
+
+```json
+{"udvalg": [{"id": "u-…", "navn": "…", "rolle": "formand", "aktiv": true}],
+ "ansvar": {"Næstved": "u-…"},
+ "kontakter": [{"id": "k-…", "forening": "Næstved", "dato": "2026-10-24", "af": "u-…", "form": "telefon", "med": "formanden",
+   "stemning": "ok", "behov": ["medlemmer"], "tekst": "…", "opfoelgning": "…", "frist": "2026-11-15", "klaret": null}]}
+```
+
+Brugerfladen er `udvidelser/udvikling.js`. **Persondata:** noterne handler om foreningen – skriv roller ("formanden") frem for navne og intet følsomt om enkeltpersoner. Når personer for alvor skal ind i systemet, skal data ud af git (fase 2, Supabase med personlige logins – se "Persondata" i [docs/arkitektur.md](docs/arkitektur.md)); filens format er lavet, så den kan flyttes direkte til tabeller.
 
 ## Momentum
 
@@ -201,19 +231,20 @@ Forretningsreglerne findes kun ét sted: i kernen (`kerne/regler.js` og månedsr
 - **Kortlag** – `LAU.registerLayer({id, label, toggle, standard, gruppe, hint, tilgaengelig(), synlig(ctx), tegn(api, ctx)})`, hvor `api.source(navn, geojson)` og `api.layer(maplibre-lagspec)` tilføjer lag, der fjernes og tegnes igen automatisk, og `ctx = {selected, zoomed, map}`.
   Lag med `toggle: true` får automatisk en til/fra-knap under fanen Visninger (`gruppe: 'aktiviteter'` eller `'kort'`) eller HB (`gruppe: 'hb'`). Indbyggede: `kommunenavne`, `afholdte`, `hb` (admin), `medlemmer` (admin); `hvide-pletter` og `egen-analyse` (admin) kommer fra `udvidelser/`.
 - **Analyser** (fanen **Analyser**, kun admins) – `LAU.registerAnalyse({id, titel, beskrivelse, render() → html, efter(el)})`. Fanen viser listen over analyser i sidepanelet; den valgte analyse vises i et stort vindue over højre del af kortet, og klik på en anden i listen skifter indholdet. Krydset i hjørnet (eller Esc) lukker vinduet. Vinduet og kalenderen deler pladsen: åbnes vinduet, lukkes kalenderen (og kommer igen, når vinduet lukkes). Tegn igen med `renderAnalyser()`; åbn en analyse med `LAU.aabnAnalyse(id)`. Indbygget: `foreninger` (sorterbar tabel med aktivitet, tilkendegivelser og fremmøde pr. forening); resten kommer fra `udvidelser/` (se [Analyser og advarsler](#analyser-og-advarsler)).
+- **Faner** – `LAU.registerFane({id, label, titel?, admin?, render(el)})` tilføjer en fane i sidepanelet (før login-fanen); `render` tegner fanens indhold, hver gang den vises og når data ændres. Åbnes en forening fra fanen, fører "←" tilbage til den. Bruges af `udvidelser/udvikling.js`.
 - **Advarsler** (kun admins) – `LAU.registerAdvarsel({id, hent() → [{niveau: 'kritisk' | 'advarsel' | 'positiv', titel, tekst?, forening?, frist?: Date, analyse?: id}]})`. Tidskritiske ting, der skal reageres på, før det er for sent, vises øverst i oversigten i den røde boks "Kræver handling nu" (over Momentum) og øverst i foreningspanelet for den forening, de gælder; `'positiv'` vises i den grønne boks "Godt gået" lige under. Boksene er skjult, når de er tomme.
 - **Udvidelsesfiler** – `udvidelser/*.js` indlæses efter `app.js` (se `index.html`, husk `?v=`) og bruger registrene ovenfor. `app.js` starter først ved `DOMContentLoaded`, så alt er registreret, før der tegnes. Filerne kan bruge `app.js`' hjælpere (`esc`, `tile`, `hbars`, `DATA` …) direkte.
 - **Fortrolige data** – `LAU.admin.erAdmin()`, `await LAU.admin.hent('navn')` (dekrypterer `data/admin/navn.krypt.json`) og `await LAU.admin.gem('navn', gammel => ny, 'commit-besked')` (krypterer og committer via LAU-serveren). I Python: `admin.laes('navn')` / `admin.skriv('navn', data)` fra `scripts/admin.py`.
 
 **Stamdata** (formand, telefon osv.) er offentlige og kan lægges i `data/foreninger.json` som `"stamdata": {"Formand": "…", "Telefon": "…"}`.
-Fortrolige stamdata (kun for admins) lægges i `data/admin/stamdata.krypt.json` som `{"Næstved": {"Telefon": "…"}}`, og medlemstal pr. by (kortlaget "Medlemmer pr. by") i `data/admin/medlemmer.krypt.json` som `[{"forening": "Fyn", "by": "Odense", "lat": 55.40, "lng": 10.39, "antal": 42}]`.
+Fortrolige stamdata (kun for admins) lægges i `data/admin/stamdata.krypt.json` som `{"Næstved": {"Telefon": "…"}}` – admins kan rette dem i foreningspanelet ("Ret kontaktoplysninger") –, og medlemstal pr. by (kortlaget "Medlemmer pr. by") i `data/admin/medlemmer.krypt.json` som `[{"forening": "Fyn", "by": "Odense", "lat": 55.40, "lng": 10.39, "antal": 42}]`.
 
 ## Adminlogin
 
 Alt i repoet er offentligt (også via GitHub Pages), så fortrolige data ligger **krypteret** i `data/admin/<navn>.krypt.json` (AES-256-GCM). Nøglen udledes af adminkoden (PBKDF2-SHA256, 600.000 runder, saltet i `data/admin/noegle.json`). Koden ligger aldrig i repoet – kun som GitHub-secret og hos admins. Uden login kan ingen læse filerne, heller ikke ved at hente dem direkte.
 
 **Offentligt:** aktiviteterne, farvningen "Aktivitet nu", aktiviteter på kortet, kortet, kalenderen og stamdata.
-**Kun admins:** HB-godkendelse, arrangementer og rettelser (inkl. noter og fremmøde), noter om foreningerne, nøgletal, statistik og analyser.
+**Kun admins:** HB-godkendelse, arrangementer og rettelser (inkl. noter og fremmøde), noter om foreningerne, udviklingsudvalgets fordeling og kontakter, nøgletal, statistik og analyser.
 
 | Fil i `data/admin/` | Indhold |
 |---|---|
@@ -224,7 +255,8 @@ Alt i repoet er offentligt (også via GitHub Pages), så fortrolige data ligger 
 | `noter.krypt.json` | noter pr. forening |
 | `rapporter.krypt.json` | månedsrapporter og snapshots fra `scripts/rapport.py` |
 | `analyser.krypt.json` | egne analyser gemt for alle admins (`udvidelser/egne-analyser.js`) |
-| `stamdata.krypt.json`, `medlemmer.krypt.json` | valgfrie (se ovenfor) |
+| `udvikling.krypt.json` | udviklingsudvalgets medlemmer, fordeling og kontakter (se [Udviklingsudvalget](#udviklingsudvalget)) |
+| `stamdata.krypt.json`, `medlemmer.krypt.json` | valgfrie (se ovenfor); stamdata kan rettes i foreningspanelet |
 
 **Opsætning (én gang):**
 1. Vælg en lang adminkode (fx 5–6 tilfældige ord). Styrken af koden er hele beskyttelsen.

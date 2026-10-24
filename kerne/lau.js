@@ -2,13 +2,14 @@
 // derefter kan den straks bruges i filtre, grupperinger, mål, kortet og CSV-eksport.
 //
 // Beregnede egenskaber (beregn) bruger reglerne i regler.js. De får objektet og lageret og kan følge links.
+// Udviklingsudvalget og dets kontakter kommer fra data/admin/udvikling.krypt.json (kun admins).
 // Personer og roller er defineret, men har endnu ingen data: de kommer i fase 2 (Supabase med personlige logins og
 // adgang pr. række, så en lokal bestyrelse kun ser sin egen forening). Se docs/arkitektur.md.
 
 import {Ontologi} from './ontologi.js';
-import {afholdteMed, aktivitet, aktivitetsStatus, arrStatus, DELTAGER_MAAL, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose,
-  hbRisikoDetaljer, kategori, kommuneAktivitet, median, momentum, MOMENTUM_NIVEAUER, normalniveau, rekord, starttid, STARTTID, varsel,
-  varselDage, varselGruppe, VARSEL_GRUPPER} from './regler.js';
+import {afholdteMed, aktivitet, aktivitetsStatus, arrStatus, BEHOV, DELTAGER_MAAL, HB_RISIKO_NIVEAUER, HB_RISIKO_SPANDE, hbPrognose,
+  hbRisikoDetaljer, kategori, kommuneAktivitet, KONTAKT_FORMER, KONTAKT_STATUS, kontaktStatus, median, momentum, MOMENTUM_NIVEAUER,
+  normalniveau, rekord, starttid, STARTTID, STEMNINGER, varsel, varselDage, varselGruppe, VARSEL_GRUPPER} from './regler.js';
 import {DAG, time, ugedag} from './tid.js';
 
 /** @typedef {import('./ontologi.js').Objekt} Objekt @typedef {import('./lager.js').Lager} Lager */
@@ -44,6 +45,10 @@ const lokal = f => !f.v.national;
 const lokaleNavne = L => new Set(L.alle('Forening').filter(lokal).map(f => f.id));
 /** "Hvad virker?": foreningens afholdte med et tal for målet. @param {Objekt} f @param {Lager} L @param {string} maal */
 const medMaal = (f, L, maal) => afholdteMed(akt(f, L), f.v.navn, !!f.v.national, maal, lokaleNavne(L));
+/** Udviklingsudvalgets kontakt med en lokalforening (null uden udvalgets data, dvs. ikke admin). @param {Objekt} f @param {Lager} L */
+const kontakt = (f, L) => L.vaerdi(f, 'kontaktDetaljer');
+/** YYYY-MM-DD som dato (midt på dagen, så den er samme dag i dansk tid). @param {string} [d] */
+const dagDato = d => (d ? new Date(d + 'T12:00:00Z') : null);
 
 export const LAU = new Ontologi({
   typer: {
@@ -109,6 +114,17 @@ export const LAU = new Ontologi({
         rekord: {label: 'Markant flere deltagere end normalt', type: 'bool', adgang: 'admin',
           hint: 'Et arrangement de seneste 30 dage (eller planlagt de næste 14) med markant flere deltagere end normalt. Se README: Hvad virker?',
           beregn: (f, L) => (lokal(f) ? !!L.vaerdi(f, 'rekordDetaljer') : null)},
+        // Udviklingsudvalget (data/admin/udvikling.krypt.json): kvartalets kontakt med lokalforeningen. Se README: Udviklingsudvalget.
+        kontaktDetaljer: {label: 'Kontakt (detaljer)', type: 'objekt', adgang: 'admin', intern: true,
+          beregn: (f, L) => (lokal(f) && L.kontekst.udvikling ? kontaktStatus(L.linkede(f, 'kontakter').map(k => k.v.raw), L.nu) : null)},
+        kontakt: {label: 'Kontakt i kvartalet (udviklingsudvalget)', type: 'kat', adgang: 'admin', vaerdier: KONTAKT_STATUS,
+          hint: 'Er lokalforeningen kontaktet af udviklingsudvalget i det indeværende kvartal? Interne noter tæller ikke',
+          beregn: (f, L) => kontakt(f, L)?.status ?? null},
+        sidsteKontakt: {label: 'Sidst kontaktet', type: 'dato', adgang: 'admin', beregn: (f, L) => dagDato(kontakt(f, L)?.sidste?.dato)},
+        dageSidenKontakt: {label: 'Dage siden sidste kontakt', type: 'tal', adgang: 'admin', beregn: (f, L) => kontakt(f, L)?.dageSiden ?? null},
+        stemning: {label: 'Stemning ved seneste kontakt', type: 'kat', adgang: 'admin', vaerdier: STEMNINGER,
+          beregn: (f, L) => kontakt(f, L)?.stemning ?? null},
+        aabneOpfoelgninger: {label: 'Åbne opfølgninger', type: 'tal', adgang: 'admin', beregn: (f, L) => kontakt(f, L)?.aabne.length ?? null},
       },
     },
 
@@ -173,6 +189,37 @@ export const LAU = new Ontologi({
       },
     },
 
+    // Udviklingsudvalget: medlemmerne og deres kontakter med lokalforeningerne (data/admin/udvikling.krypt.json).
+    Udvalgsmedlem: {
+      label: 'Udvalgsmedlem', flertal: 'Udviklingsudvalget', titel: 'navn', adgang: 'admin', kilde: 'data/admin/udvikling.krypt.json',
+      egenskaber: {
+        navn: {label: 'Navn', type: 'tekst'},
+        rolle: {label: 'Rolle', type: 'kat', vaerdier: {formand: 'Udviklingsformand', medlem: 'Medlem'}},
+        aktiv: {label: 'Aktiv', type: 'bool'},
+        antalForeninger: {label: 'Ansvarlig for (antal foreninger)', type: 'tal', beregn: (u, L) => L.linkede(u, 'ansvarFor').length},
+        kontaktetIKvartal: {label: 'Kontaktet i kvartalet (antal foreninger)', type: 'tal',
+          beregn: (u, L) => L.linkede(u, 'ansvarFor').filter(f => L.vaerdi(f, 'kontakt') === 'kontaktet').length},
+      },
+    },
+
+    Kontakt: {
+      label: 'Kontakt', flertal: 'Kontakter', titel: 'titel', adgang: 'admin', kilde: 'data/admin/udvikling.krypt.json',
+      egenskaber: {
+        titel: {label: 'Kontakt', type: 'tekst', intern: true,
+          beregn: (k, L) => `${k.v.raw.dato} ${L.linkede(k, 'kontaktMed').map(f => L.titel(f)).join(', ')}`},
+        dato: {label: 'Dato', type: 'dato'},
+        form: {label: 'Form', type: 'kat', vaerdier: KONTAKT_FORMER},
+        med: {label: 'Talte med', type: 'tekst'},
+        stemning: {label: 'Stemning', type: 'kat', vaerdier: STEMNINGER},
+        behov: {label: 'Brug for hjælp til', type: 'tekst', beregn: k => (k.v.raw.behov || []).map(b => BEHOV[b] || b).join(', ') || null},
+        tekst: {label: 'Noter', type: 'tekst'},
+        opfoelgning: {label: 'Opfølgning', type: 'tekst'},
+        frist: {label: 'Frist for opfølgning', type: 'dato'},
+        aabenOpfoelgning: {label: 'Åben opfølgning', type: 'bool', beregn: k => !!(k.v.raw.opfoelgning && !k.v.raw.klaret)},
+        raw: {label: 'Kildedata', type: 'objekt', intern: true},
+      },
+    },
+
     Person: {
       label: 'Person', flertal: 'Personer', titel: 'navn', adgang: 'forening', kilde: 'Supabase (fase 2)',
       egenskaber: {
@@ -203,5 +250,8 @@ export const LAU = new Ontologi({
     medlemAf: {fra: 'Person', til: 'Forening', label: 'Medlem af', omvendt: {id: 'medlemmer', label: 'Medlemmer', mange: true}},
     rolleHos: {fra: 'Rolle', til: 'Person', label: 'Person', omvendt: {id: 'roller', label: 'Roller', mange: true}},
     rolleI: {fra: 'Rolle', til: 'Forening', label: 'Forening', omvendt: {id: 'bestyrelse', label: 'Bestyrelse og roller', mange: true}},
+    ansvarFor: {fra: 'Udvalgsmedlem', til: 'Forening', mange: true, label: 'Ansvarlig for', omvendt: {id: 'ansvarlig', label: 'Ansvarlig i udviklingsudvalget'}},
+    kontaktMed: {fra: 'Kontakt', til: 'Forening', label: 'Forening', omvendt: {id: 'kontakter', label: 'Kontakter (udviklingsudvalget)', mange: true}},
+    kontaktetAf: {fra: 'Kontakt', til: 'Udvalgsmedlem', label: 'Udvalgsmedlem', omvendt: {id: 'kontakter', label: 'Kontakter', mange: true}},
   },
 });
