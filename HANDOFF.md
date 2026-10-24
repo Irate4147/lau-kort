@@ -1,7 +1,7 @@
 # Overdragelse – udviklingsudvalget og LAU-serveren
 
-Status pr. 24. oktober 2026. Alt herunder ligger på grenen `claude/awesome-hamilton-ks5fay` i draft-PR
-[Irate4147/lau-kort#44](https://github.com/Irate4147/lau-kort/pull/44) (CI grøn, ikke merget). Detaljerne står i
+Status pr. 24. oktober 2026. PR [#44](https://github.com/Irate4147/lau-kort/pull/44) er merget; cPanel-tilpasningen
+ligger på grenen `claude/awesome-hamilton-ks5fay` i en ny draft-PR. Detaljerne står i
 [README.md](README.md#udviklingsudvalget), [server/README.md](server/README.md) og [docs/arkitektur.md](docs/arkitektur.md).
 
 ## Mål
@@ -34,7 +34,7 @@ Status pr. 24. oktober 2026. Alt herunder ligger på grenen `claude/awesome-hami
 - **Data**: dokumentet `udvikling` = `{udvalg: [{id, navn, rolle, aktiv}], ansvar: {forening: id}, kontakter: [...]}`
   (i Pages-tilstand krypteret i `data/admin/udvikling.krypt.json`, på serveren i databasen).
 
-### 2. LAU-serveren (commit `04ab0a3`) – klar, men ikke installeret
+### 2. LAU-serveren (commit `04ab0a3`, cPanel: `ca98cf3`) – installeret, ikke taget i brug
 
 - `server/`: én Node 22.13+-proces med SQLite (`node:sqlite`), ingen npm-pakker, ingen Docker.
   - `server.js` – siden, offentlige data, `/kal/…ics` (flettede kalendere) og API'et (login, invitation, dokumenter,
@@ -67,26 +67,26 @@ Status pr. 24. oktober 2026. Alt herunder ligger på grenen `claude/awesome-hami
 
 ## Hvad mangler
 
-### Før SSH (Emil)
+### Installeret (24. oktober 2026)
 
-1. Gennemse og merge PR #44 (den er draft; CI er grøn).
-2. DNS: A-post (og evt. AAAA) for **`kort.liberaleunge.dk`** → serverens IP. (Andet navn: ret `LAU_ADRESSE`, `Caddyfile`/`nginx.conf`.)
-3. Find **APIFY_TOKEN** (samme som GitHub-secret) og hav **adminkoden** klar (til `flyt-data` – skrives ind på serveren, ikke til Claude).
+Serveren kører på **https://kort.liberaleunge.dk/** – delt cPanel/CloudLinux-hosting hos nordicway (LiteSpeed, ingen
+sudo/systemd), så planen er tilpasset (se [server/README.md](server/README.md#installation-på-cpanel-hosting-liberaleungedk-hos-nordicway)):
+cPanel-Node-app (Node 22, `server/app.cjs`), kørsler via cron (`LAU_JOBS=cron`, `lau cron` hvert andet minut), kode i
+`~/lau-kort` (grenen `claude/awesome-hamilton-ks5fay` – skift til `main` efter merge), data i `~/lau`, indstillinger i
+`~/lau/lau.env` (chmod 600). SSH: `ssh -p 33 liberale@cp13.nordicway.dk`.
 
-### Med SSH (rækkefølge – se server/README.md "Installation" og "Skiftet")
+- ✅ Subdomænet + AutoSSL, Node-appen, `flyt-data` (hb, hb_2027, rapporter, rettelser), `lau koer beregn` (48 kalendere),
+  cron, admin-bruger til Emil (invitationslink givet). Private filer (`data/admin`, `.git`, `lau.db`, `server/`) giver 403/404.
+- ⏳ Emil: log ind via linket, opret resten under Konto → Brugere, test (registrér en kontakt, Konto → Kørsler → "Kør nu").
 
-1. `sh server/deploy/tjek.sh` – se OS, Node/Python, hvad der kører på 80/443 (fx WordPress på liberaleunge.dk), DNS.
-   Ret planen efter det (fx Node 22.13+ fra NodeSource, nginx i stedet for Caddy).
-2. `sudo sh server/deploy/installer.sh`; udfyld `/etc/lau/lau.env` (`APIFY_TOKEN`); `sudo systemctl restart lau`.
-3. HTTPS: Caddy (`deploy/Caddyfile`) eller eksisterende nginx (`deploy/nginx.conf` + `certbot --nginx`).
-4. `sudo lau flyt-data` (spørger efter adminkoden) → `sudo lau koer beregn`.
-5. `sudo lau opret-bruger <email> "<navn>" admin` → åbn linket, vælg kode; opret resten under Konto → Brugere.
-6. Test på `https://kort.liberaleunge.dk/`.
-7. **Skiftet**: sæt repository variable `LAU_SERVER = 1` (stopper workflows – ellers scrapes der to gange), kør
-   `sudo lau koer sync`, sæt `flyttetTil: 'https://kort.liberaleunge.dk/'` i `CONFIG` i `app.js` og merge.
-8. Efter skiftet: kopiér `/var/lib/lau/backup` et andet sted hen jævnligt; slet `data/admin/*.krypt.json` og
-   `ADMIN_KODE`-secret'en; overvej at gøre repoet privat (historikken har de krypterede og gamle klartekstfiler);
-   del nye kalenderlinks (gamle abonnementer opdateres ikke); slet Cloudflare-workeren, når ingen bruger den.
+### Tilbage – kræver Emils ja (kan ikke fortrydes uden videre)
+
+1. **Skiftet**: repository variable `LAU_SERVER = 1` (stopper workflows – ellers scrapes der to gange), kør `lau koer sync`
+   på serveren, sæt `flyttetTil: 'https://kort.liberaleunge.dk/'` i `CONFIG` i `app.js` og merge. Indtil da kører
+   GitHub videre, og serverens data bliver ikke opdateret af GitHub (data skal evt. flyttes igen lige før skiftet).
+2. Efter skiftet: backup et andet sted end `~/lau/backup` (samme disk); slet `data/admin/*.krypt.json` og
+   `ADMIN_KODE`-secret'en; overvej at gøre repoet privat; del nye kalenderlinks; slet Cloudflare-workeren.
+3. Ny SSH-nøgle (den nuværende har været i en Claude-session) og slet den gamle i cPanel → SSH Access.
 
 ### Senere (ikke påbegyndt)
 
@@ -102,7 +102,7 @@ Status pr. 24. oktober 2026. Alt herunder ligger på grenen `claude/awesome-hami
 
 - "Logins" i det oprindelige ønske: foreningernes egne logins (dækket som frie felter i kontaktoplysninger – men skriv
   ikke adgangskoder der) eller personlige logins til værktøjet (dækket af serveren)?
-- Hvad kører der allerede på maskinen, og hvem hoster den (databehandleraftale, EU)?
+- Hosting: nordicway (delt cPanel). Databehandleraftale med nordicway, og står maskinen i EU?
 
 ## Regler
 
