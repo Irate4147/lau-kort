@@ -5,7 +5,7 @@ Læser resultaterne af Apify-kørslerne (kun kørsler på foreningernes "upcomin
 og fletter dem ind i en voksende database, så afholdte begivenheder bevares til analyserne.
 
     APIFY_TOKEN=... python3 scripts/sync.py            # kun hent færdige kørsler
-    APIFY_TOKEN=... python3 scripts/sync.py --start    # start først ugens kørsel og vent på den
+    APIFY_TOKEN=... python3 scripts/sync.py --start    # start først dagens kørsel og vent på den
 
 --start starter én kørsel på alle foreningers hovedsider (data/foreninger.json), medmindre der
 allerede er startet en inden for UGE_DAGE (fx manuelt) – så scrapes der ikke to gange.
@@ -42,8 +42,8 @@ DEFAULT_DURATION_MIN = 120
 MAX_BESKRIVELSE = 600
 HISTORIK_MAX_PR_SIDE = 20   # loft pr. side: siden viser nyeste først, og 20 dækker 2026 for de fleste (ellers fordobles det)
 HISTORIK_SAMTIDIGE = 2
-UGE_MAX = 150    # loft for ugens kørsel (alle sider tilsammen); normalt er der 20-40 kommende
-UGE_DAGE = 3     # en kørsel nyere end dette tæller som ugens
+UGE_MAX = 60     # loft pr. kørsel (alle sider tilsammen, ca. $0,60); normalt er der ca. 50 kommende
+UGE_DAGE = 1     # en kørsel nyere end dette tæller som den nuværende
 UGE_VENT_MIN = 45
 
 

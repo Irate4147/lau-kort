@@ -1,11 +1,11 @@
 name: Hent begivenheder
 
-# Starter ugens Apify-kørsel på foreningernes kommende begivenheder (medmindre en
+# Starter dagens Apify-kørsel på foreningernes kommende begivenheder (medmindre en
 # allerede er kørt de sidste dage), venter på den og gemmer resultatet i data/.
 # Siden læser data/ direkte fra repoet, så en commit her er nok til at opdatere den.
 on:
   schedule:
-    - cron: '0 6 * * 1'   # mandag morgen (GitHub kan forsinke planlagte kørsler)
+    - cron: '0 6 * * 1,3,5'   # mandag, onsdag og fredag morgen (GitHub kan forsinke planlagte kørsler)
   workflow_dispatch:
 
 permissions:
