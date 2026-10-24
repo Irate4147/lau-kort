@@ -7,6 +7,7 @@
  *  - MAP_LAYERS:      lag på kortet (med eller uden til/fra-knap). Nye lag tilføjes med LAU.registerLayer().
  *  - ANALYSER:        analyser i vinduet Analyser (fanen Analyser, kun admins). Nye tilføjes med LAU.registerAnalyse().
  *  - ADVARSLER:       tidskritiske advarsler øverst i sidepanelet (kun admins). Nye tilføjes med LAU.registerAdvarsel().
+ *  - FANER:           egne faner i sidepanelet (fx Udvikling). Nye tilføjes med LAU.registerFane().
  *  - K (kerne/):      ontologien, reglerne (momentum, HB, status …) og objektsæt. Indlæses som ES-modul i index.html
  *                     før app.js (window.LAU_KERNE). app.js har ingen egen kopi af reglerne – se kerne/README.md.
  *  - udvidelser/*.js: udvidelser, der bruger registrene ovenfor. Indlæses efter app.js (se index.html); main() venter
@@ -20,6 +21,11 @@
 
 const CONFIG = Object.assign({
   mode: 'public',
+  // 'pages': GitHub Pages med krypterede filer i repoet og fælles adminkode. 'server': LAU-serveren (server/) med personlige
+  // logins – sættes af serveren i index.html (window.LAU_CONFIG), så samme kode kører begge steder.
+  backend: 'pages',
+  // Når LAU-serveren har overtaget: adressen dertil. GitHub Pages-udgaven sender så videre (med #forening).
+  flyttetTil: '',
   // Data læses fra GitHub-repoet, så de er friske, selv før Pages er genudgivet.
   dataBase: location.hostname.endsWith('github.io') ? 'https://raw.githubusercontent.com/Irate4147/lau-kort/main/' : '',
   assetBase: '',
@@ -160,6 +166,10 @@ const FARVER = {
   hbRisikoSpand: {farver: {handle: HB_RISIKO_FILL.kritisk, planlagt: HB_RISIKO_FILL.advarsel, hold: HB_RISIKO_FILL.opmaerksom,
     sikret: HB_RISIKO_FILL.sikret, tabt: HB_RISIKO_FILL.tabt, ukendt: HB_RISIKO_FILL.ukendt}, opacitet: {ukendt: 0.35},
     uden: {farve: MAP_FILL.ingenfb, label: 'Ikke omfattet af HB-kravet'}},
+  // Udviklingsudvalget (udvidelser/udvikling.js): rød = kvartalet slutter snart uden kontakt, gul = ikke kontaktet, grøn = kontaktet.
+  kontakt: {farver: {snart: '#d03b3b', mangler: '#fab219', kontaktet: '#0ca30c'}, opacitet: {mangler: 0.5},
+    uden: {farve: MAP_FILL.ingenfb, label: 'Landsforeningen'}},
+  stemning: {farver: {godt: '#0ca30c', ok: '#f2dc6b', svaert: '#d03b3b'}, uden: {farve: MAP_FILL.ingenfb, label: 'Ikke kontaktet endnu'}},
   // Landsforeningen har intet område på kortet, så alle flader ville få samme farve.
   niveau: {skjul: true},
 };
@@ -286,6 +296,13 @@ function registerAnalyse(a) { ANALYSER.push({admin: true, ...a}); }
  */
 const ADVARSLER = [];
 function registerAdvarsel(a) { ADVARSLER.push({admin: true, ...a}); }
+/**
+ * Egen fane i sidepanelet: {id, label, titel?, admin?, render(el)}. Knappen står før login-fanen; render tegner fanens
+ * indhold i el, hver gang fanen vises (og når data ændres). admin: true = kun for admins. Åbnes en forening fra fanen,
+ * fører "←" tilbage til fanen.
+ */
+const FANER = [];
+function registerFane(fane) { FANER.push(fane); }
 // Må elementet (sektion, lag, analyse) vises? Admin-elementer kun efter login.
 const tilladt = x => !x.admin || erAdmin();
 
@@ -300,13 +317,16 @@ const tilladt = x => !x.admin || erAdmin();
  * kun tager imod skrivenøglen HMAC(nøgle, "lau-skriv"), hvis SHA-256 står som "skriv" i noegle.json.
  * Filerne: hb (årets HB-status), rettelser (alle rettelser inkl. noter og fremmøde), noter (noter pr. forening)
  * og valgfrit stamdata ({forening: {felt: værdi}}) og medlemmer ([{forening, by, lat, lng, antal}]). rapporter er
- * månedsrapporterne fra scripts/rapport.py.
+ * månedsrapporterne fra scripts/rapport.py, udvikling udviklingsudvalgets fordeling og kontakter (udvidelser/udvikling.js).
  * Nye fortrolige data: læg dem i data/admin/<navn>.krypt.json (scripts/admin.py) og hent dem med LAU.admin.hent().
  */
-const ADMIN = {noegle: null, skriv: null, info: null, data: {}};
-const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer', 'rapporter'];
+const ADMIN = {noegle: null, skriv: null, info: null, data: {}, bruger: null, ret: null, roller: {}};
+// På LAU-serveren (CONFIG.backend 'server') er login personligt (e-mail og adgangskode), og de fortrolige data hentes og
+// gemmes gennem /api/data/<navn> – samme navne og former som de krypterede filer. Serveren håndhæver rollerne.
+const PAA_SERVER = CONFIG.backend === 'server';
+const ADMIN_FILER = ['hb', 'rettelser', 'noter', 'stamdata', 'medlemmer', 'rapporter', 'udvikling'];
 const ADMIN_TJEK = 'LAU-admin', ADMIN_LAGER = 'lau-admin';
-const erAdmin = () => !!ADMIN.noegle;
+const erAdmin = () => (PAA_SERVER ? !!ADMIN.bruger : !!ADMIN.noegle);
 const tekstBytes = t => new TextEncoder().encode(t);
 const bytesB64 = buf => { let s = ''; for (const b of new Uint8Array(buf)) s += String.fromCharCode(b); return btoa(s); };
 const b64Bytes = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
@@ -336,6 +356,23 @@ async function tjekNoegle(noegle, info) {
 }
 const glemLogin = () => { for (const l of [sessionStorage, localStorage]) try { l.removeItem(ADMIN_LAGER); } catch (_) { /* ignorer */ } };
 
+/** Kald til LAU-serverens API (JSON). Fejl bliver til Error med serverens besked. */
+async function api(sti, {metode = 'GET', krop} = {}) {
+  const r = await fetch(`/api/${sti}`, {method: metode, cache: 'no-store', credentials: 'same-origin',
+    headers: krop !== undefined ? {'Content-Type': 'application/json', 'X-LAU': '1'} : metode !== 'GET' ? {'X-LAU': '1'} : {},
+    body: krop !== undefined ? JSON.stringify(krop) : undefined});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.fejl || `Serveren svarede ${r.status}`), {status: r.status});
+  return j;
+}
+/** Personligt login på serveren; siden indlæses igen. */
+async function logIndServer(email, kode, husk) {
+  await api('login', {metode: 'POST', krop: {email, kode, husk}});
+  location.reload();
+}
+/** Brugeren bag invitationslinket (#invitation=…), før adgangskoden vælges. */
+const invitationToken = () => (location.hash.match(/^#invitation=([\w-]+)$/) || [])[1] || null;
+
 /** Logger ind med adminkoden; siden indlæses igen, så alt hentes og tegnes med de fortrolige data. */
 async function logInd(kode, husk) {
   const info = ADMIN.info || await getData('data/admin/noegle.json').catch(() => null);
@@ -348,7 +385,8 @@ async function logInd(kode, husk) {
   catch (_) { throw new Error('Browseren tillader ikke, at login gemmes (privat vindue?)'); }
   location.reload();
 }
-function logUd() {
+async function logUd() {
+  if (PAA_SERVER) await api('logud', {metode: 'POST'}).catch(() => null);
   glemLogin();
   location.reload();
 }
@@ -365,8 +403,13 @@ async function gendanLogin(info) {
 }
 const adminSti = navn => `data/admin/${navn}.krypt.json`;
 /** Kan der gemmes for alle? Kræver adminserveren og skrivenøglens hash i noegle.json (scripts/admin.py klargoer). */
-const kanGemme = () => !!(CONFIG.adminServer && ADMIN.skriv && ADMIN.info && ADMIN.info.skriv);
-const mitNavn = () => { try { return localStorage.getItem('lau-navn') || ''; } catch (_) { return ''; } };
+const kanGemme = () => (PAA_SERVER ? erAdmin() : !!(CONFIG.adminServer && ADMIN.skriv && ADMIN.info && ADMIN.info.skriv));
+const mitNavn = () => {
+  if (PAA_SERVER) return ADMIN.bruger ? ADMIN.bruger.navn : '';
+  try { return localStorage.getItem('lau-navn') || ''; } catch (_) { return ''; }
+};
+/** Må brugeren ændre dokumentet? På serveren efter rollen (server/adgang.js); med adminkoden altid. */
+const maaRette = navn => !PAA_SERVER || !!(ADMIN.ret && (ADMIN.ret.skriv === '*' || ADMIN.ret.skriv.includes(navn)));
 function adminServer(navn, init = {}) {
   return fetch(`${CONFIG.adminServer.replace(/\/+$/, '')}/admin/${navn}`, {...init, cache: 'no-store', headers: {
     Authorization: `Bearer ${ADMIN.skriv}`, ...(init.body ? {'Content-Type': 'application/json'} : {})}});
@@ -385,6 +428,7 @@ async function serverFil(navn) {
 /** Henter og dekrypterer data/admin/<navn>.krypt.json (null, hvis filen ikke findes). Frisk via serveren, hvis muligt. */
 async function hentAdmin(navn) {
   if (!erAdmin()) return null;
+  if (PAA_SERVER) return (await api(`data/${navn}`)).indhold;
   let blob;
   if (kanGemme()) { try { ({blob} = await serverFil(navn)); } catch (_) { /* prøv data/ */ } }
   if (blob === undefined) blob = await getData(adminSti(navn)).catch(() => null);
@@ -397,6 +441,18 @@ async function hentAdmin(navn) {
 async function gemAdmin(navn, aendr, besked) {
   if (!erAdmin()) throw new Error('Kræver adminlogin');
   if (!kanGemme()) throw new Error('Gem for alle er ikke sat op (se README: Rettelser)');
+  if (PAA_SERVER) {
+    for (let forsoeg = 0; forsoeg < 3; forsoeg++) {
+      const {indhold, version} = await api(`data/${navn}`);
+      const ny = aendr(indhold);
+      try {
+        await api(`data/${navn}`, {metode: 'PUT', krop: {indhold: ny, version, besked}});
+        ADMIN.data[navn] = ny;
+        return ny;
+      } catch (err) { if (err.status !== 409) throw err; }
+    }
+    throw new Error('Data blev ændret samtidig – prøv igen');
+  }
   const af = mitNavn();
   for (let forsoeg = 0; forsoeg < 3; forsoeg++) {
     const {blob, sha} = await serverFil(navn);
@@ -433,8 +489,13 @@ const get = (base, p) => fetch(base + p, {cache: 'no-cache'}).then(r => { if (!r
 const getData = p => get(CONFIG.dataBase, p).catch(() => get(CONFIG.assetBase, p));
 
 async function load() {
-  ADMIN.info = await getData('data/admin/noegle.json').catch(() => null);
-  await gendanLogin(ADMIN.info);
+  if (PAA_SERVER) {
+    const mig = await api('mig').catch(() => ({}));
+    Object.assign(ADMIN, {bruger: mig.bruger || null, ret: mig.rettigheder || null, roller: mig.roller || {}});
+  } else {
+    ADMIN.info = await getData('data/admin/noegle.json').catch(() => null);
+    await gendanLogin(ADMIN.info);
+  }
   if (erAdmin()) {
     const filer = await Promise.all(ADMIN_FILER.map(n => hentAdmin(n).catch(() => null)));
     ADMIN_FILER.forEach((n, i) => { ADMIN.data[n] = filer[i]; });
@@ -457,7 +518,9 @@ async function load() {
  */
 function beregn() {
   const {meta, topo, hb, firstRun} = RAW;
-  const L = K.bygFraJson({foreninger: RAW.foreninger, events: RAW.events, meta, rettelser: RET.data, topo, nu: NOW, rolle: 'admin'});
+  // Udviklingsudvalgets data kun for admins; findes filen ikke endnu, er ingen lokalforeninger kontaktet.
+  const udvikling = erAdmin() ? ADMIN.data.udvikling || {} : null;
+  const L = K.bygFraJson({foreninger: RAW.foreninger, events: RAW.events, meta, rettelser: RET.data, topo, udvikling, nu: NOW, rolle: 'admin'});
   DAEKNING = L.kontekst.daekning;
   const foreninger = RAW.foreninger.map(f => ({...f}));
   const alle = L.kontekst.alleArrangementer; // med rettelser, også skjulte (til fanen Arrangementer)
@@ -1477,15 +1540,72 @@ registerSection({
 });
 registerSection({
   // Stamdata (formand, kontakt osv.): offentlige felter fra foreninger.json, for admins også de fortrolige
-  // fra data/admin/stamdata.krypt.json.
-  id: 'stamdata', titel: 'Stamdata',
-  synlig: f => !!(f.stamdata || (ADMIN.data.stamdata && ADMIN.data.stamdata[f.navn])),
+  // fra data/admin/stamdata.krypt.json – dem kan admins rette her (gemt for alle via adminserveren).
+  id: 'stamdata', titel: () => (erAdmin() ? 'Stamdata og kontaktoplysninger' : 'Stamdata'),
+  synlig: f => erAdmin() || !!f.stamdata,
   render(f) {
-    const d = Object.assign({}, f.stamdata || {}, (ADMIN.data.stamdata && ADMIN.data.stamdata[f.navn]) || {});
-    return `<dl class="stamdata">${Object.entries(d).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${
-      /^\+?[\d ]{8,}$/.test(String(v)) ? `<a href="tel:${esc(String(v).replace(/ /g, ''))}">${esc(v)}</a>` : esc(v)}</dd>`).join('')}</dl>`;
+    const dl = d => `<dl class="stamdata">${Object.entries(d).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${
+      /^\+?[\d ]{8,}$/.test(String(v)) ? `<a href="tel:${esc(String(v).replace(/ /g, ''))}">${esc(v)}</a>`
+      : /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(v)) ? `<a href="mailto:${esc(v)}">${esc(v)}</a>` : esc(v)}</dd>`).join('')}</dl>`;
+    const offentlig = f.stamdata || {}, fortrolig = fortroligeStamdata(f);
+    if (!erAdmin()) return dl(offentlig);
+    return `${Object.keys(offentlig).length ? `<p class="note">Offentligt (data/foreninger.json):</p>${dl(offentlig)}` : ''}
+      <div data-stamdata-vis>${Object.keys(fortrolig).length ? dl(fortrolig) : '<p class="empty">Ingen fortrolige oplysninger endnu.</p>'}
+        ${kanGemme() ? '<button type="button" class="linkbtn" data-stamdata-ret>Ret kontaktoplysninger</button>' : ''}</div>
+      <form class="stamdata-form" data-stamdata-form hidden>
+        <p class="note">Fx Formand, Telefon, Mail, Bestyrelse, Hvor ligger foreningens logins. Kun admins kan se felterne.
+          <b>Skriv ikke adgangskoder her</b> – alle med adminkoden kan læse dem; skriv i stedet, hvem der har dem.</p>
+        <div data-stamdata-raekker></div>
+        <button type="button" class="linkbtn" data-stamdata-ny>+ Tilføj felt</button>
+        <div class="form-actions"><button class="chip small primary" type="submit">Gem</button>
+          <button class="chip small" type="button" data-stamdata-annuller>Annuller</button><span class="note-status" aria-live="polite"></span></div>
+      </form>`;
+  },
+  efter(el, f) {
+    const form = el.querySelector('[data-stamdata-form]'), ret = el.querySelector('[data-stamdata-ret]');
+    if (!form || !ret) return;
+    const raekker = form.querySelector('[data-stamdata-raekker]');
+    const raekke = (k = '', v = '') => {
+      const div = document.createElement('div');
+      div.className = 'stamdata-raekke';
+      div.innerHTML = `<input type="text" placeholder="Felt" maxlength="40" value="${esc(k)}" aria-label="Felt">
+        <input type="text" placeholder="Værdi" maxlength="300" value="${esc(v)}" aria-label="Værdi">
+        <button type="button" class="linkbtn" aria-label="Fjern feltet" title="Fjern">×</button>`;
+      div.querySelector('button').addEventListener('click', () => div.remove());
+      raekker.appendChild(div);
+    };
+    ret.addEventListener('click', () => {
+      raekker.innerHTML = '';
+      const d = fortroligeStamdata(f);
+      for (const [k, v] of Object.entries(d)) raekke(k, v);
+      if (!Object.keys(d).length) for (const k of ['Formand', 'Telefon', 'Mail']) raekke(k);
+      el.querySelector('[data-stamdata-vis]').hidden = true;
+      form.hidden = false;
+    });
+    form.querySelector('[data-stamdata-ny]').addEventListener('click', () => raekke());
+    form.querySelector('[data-stamdata-annuller]').addEventListener('click', () => renderForening(f));
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const status = form.querySelector('.note-status');
+      const ny = {};
+      for (const r of raekker.querySelectorAll('.stamdata-raekke')) {
+        const [k, v] = [...r.querySelectorAll('input')].map(i => i.value.trim());
+        if (k && v) ny[k] = v;
+      }
+      status.textContent = 'Gemmer …';
+      try {
+        await gemAdmin('stamdata', d => {
+          const alle = {...(d || {})};
+          if (Object.keys(ny).length) alle[f.navn] = ny; else delete alle[f.navn];
+          return sorter(alle);
+        }, `Stamdata: ${f.navn}`);
+        renderForening(f);
+      } catch (err) { status.textContent = err.message; }
+    });
   },
 });
+/** Foreningens fortrolige stamdata (data/admin/stamdata.krypt.json), kun for admins. */
+const fortroligeStamdata = f => ((ADMIN.data.stamdata || {})[f.navn]) || {};
 // Panelets top (renderForening) viser navn, niveau, aktivitet nu, Facebook-siden og kommunerne.
 // HB-prognosen har sin egen fane (HB-godkendelse) og vises ikke i panelet.
 const TOP_VISER = ['navn', 'niveau', 'status', 'facebook', 'antalKommuner', 'hb'];
@@ -1535,11 +1655,13 @@ registerSection({
 function openForening(navn, {animate = true} = {}) {
   const f = DATA.byName.get(navn);
   if (!f) return;
+  if (egenFane(FANE)) TILBAGE = FANE; else if (FANE !== 'oversigt') TILBAGE = null;
   selected = navn;
   hideTip();
   closePopover();
   renderForening(f);
   visFane('oversigt');
+  $('back').textContent = TILBAGE ? `← ${egenFane(TILBAGE).label}` : '← Alle foreninger';
   $('sidebar').scrollTop = 0;
   document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.f === navn)));
   $('zoom-reset').hidden = false;
@@ -1593,7 +1715,8 @@ function renderForening(f) {
 function closeForening() {
   selected = null;
   closePopover();
-  visFane(FANE === 'oversigt' ? 'oversigt' : FANE);
+  visFane(FANE === 'oversigt' && TILBAGE ? TILBAGE : FANE);
+  TILBAGE = null;
   document.querySelectorAll('.chip[data-f]').forEach(c => c.setAttribute('aria-pressed', 'false'));
   $('zoom-reset').hidden = true;
   history.replaceState(null, '', location.pathname + location.search);
@@ -1606,8 +1729,11 @@ function closeForening() {
 let FANE = 'oversigt';
 // Faner, der kun er for admins (knapperne har data-admin i index.html). Fanen Admin er login'et for andre.
 const ADMIN_FANER = ['hb', 'arrangementer', 'analyser'];
+// Fanen, en forening blev åbnet fra (registerFane), så "←" fører tilbage dertil.
+let TILBAGE = null;
+const egenFane = id => FANER.find(x => x.id === id) || null;
 function visFane(fane) {
-  if (ADMIN_FANER.includes(fane) && !erAdmin()) fane = 'admin';
+  if ((ADMIN_FANER.includes(fane) || (egenFane(fane) && !tilladt(egenFane(fane)))) && !erAdmin()) fane = 'admin';
   FANE = fane;
   document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.fane === fane)));
   $('side-overview').hidden = fane !== 'oversigt' || !!selected;
@@ -1617,10 +1743,33 @@ function visFane(fane) {
   $('side-arrangementer').hidden = fane !== 'arrangementer';
   $('side-admin').hidden = fane !== 'admin';
   $('side-analyser').hidden = fane !== 'analyser';
+  for (const x of FANER) { const el = $('side-' + x.id); if (el) el.hidden = fane !== x.id; }
+  if (egenFane(fane)) renderEgenFane(egenFane(fane));
   if (fane === 'arrangementer') renderArrangementer();
   if (fane === 'analyser') { renderAnalyseListe(); if (!ANA.aaben) aabnAnalyse(ANA.aktiv || (ANALYSER.find(tilladt) || {}).id); }
   if (fane === 'admin') renderAdmin();
   $('sidebar').scrollTop = 0;
+}
+
+/** Tegner en registreret fane (registerFane). */
+function renderEgenFane(x) {
+  const el = $('side-' + x.id);
+  if (!el || !DATA || !tilladt(x)) return;
+  try { x.render(el); } catch (err) { console.error(`Fane ${x.id}:`, err); el.innerHTML = `<p class="warn">Fejl: ${esc(err.message)}</p>`; }
+}
+/** Knapper og sektioner til de registrerede faner (før login-fanen). */
+function initFaner() {
+  for (const x of FANER) {
+    const b = document.createElement('button');
+    Object.assign(b, {type: 'button', textContent: x.label, hidden: !tilladt(x)});
+    b.dataset.fane = x.id;
+    b.setAttribute('aria-selected', 'false');
+    if (x.titel) b.title = x.titel;
+    $('fane-admin').before(b);
+    const sec = document.createElement('section');
+    Object.assign(sec, {className: 'side-view', id: 'side-' + x.id, hidden: true});
+    $('sidebar').appendChild(sec);
+  }
 }
 
 // ------------------------------------------------------------------ fane: visninger
@@ -1788,6 +1937,7 @@ function opdater() {
   if (FANE === 'arrangementer') renderArrangementer();
   if (FANE === 'admin') renderAdmin();
   if (FANE === 'analyser') renderAnalyseListe();
+  if (egenFane(FANE)) renderEgenFane(egenFane(FANE));
   if (ANA.aaben) renderAnalyser();
 }
 
@@ -1858,7 +2008,10 @@ function renderLager(el = $('lager')) {
   const type = lagerType(), nLokal = Object.keys(RET.lokal).length;
   const lokalTekst = nLokal ? `<p class="warn">${nLokal} ${nLokal === 1 ? 'rettelse' : 'rettelser'} ligger kun i denne browser.${
     type !== 'lokal' ? ' <button class="linkbtn" data-upload>Gem for alle nu</button>' : ''}</p>` : '';
-  if (type === 'server') {
+  if (PAA_SERVER) {
+    el.innerHTML = `<p class="note">Gemmes for alle på LAU-serveren og logges med dit navn (${esc(mitNavn())}).
+      Titel, dato, sted, forening og status bliver offentlige på kortet; noter og fremmøde kan kun de, der er logget ind, se.</p>` + lokalTekst;
+  } else if (type === 'server') {
     el.innerHTML = `<p class="note">Gemmes for alle – krypteret – i repoet (<code>${adminSti('rettelser')}</code>).
       Titel, dato, sted, forening og status bliver offentlige på kortet inden for få minutter; noter og fremmøde kan kun admins se.</p>
       <label class="note">Dit navn (står ved dine noter og ændringer):
@@ -2027,6 +2180,7 @@ function arrForm(e) {
 function renderAdmin() {
   const el = $('side-admin');
   if (!el || !DATA) return;
+  if (PAA_SERVER) return renderKonto(el);
   if (!erAdmin()) {
     el.innerHTML = `<header class="side-head"><h1>Adminlogin${forklar('HB-godkendelse, arrangementer og rettelser, noter og statistik er fortrolige. Aktiviteterne, kortet, kalenderen og stamdata er åbne for alle.')}</h1></header>
       ${!ADMIN.info ? '<p class="warn">Adminlogin er ikke sat op endnu (se README: Adminlogin).</p>' : `<form class="admin-login" data-login>
@@ -2053,6 +2207,169 @@ function renderAdmin() {
   el.querySelector('[data-logud]').addEventListener('click', logUd);
   el.querySelector('[data-til-analyser]').addEventListener('click', () => visFane('analyser'));
   renderLager(el.querySelector('[data-admin-lager]'));
+}
+
+// ------------------------------------------------------------------ konto, brugere og kørsler (LAU-serveren)
+
+const KONTO = {brugere: null, koersler: null, historik: null, link: null};
+const rolleNavn = r => (ADMIN.roller[r] || {}).label || r;
+/** Fanen Log ind / Konto på serveren: login, invitation, egen konto, brugere (admin/udviklingsformand) og kørsler (admin). */
+function renderKonto(el) {
+  const token = invitationToken();
+  if (token && !erAdmin()) return renderInvitation(el, token);
+  if (!erAdmin()) {
+    el.innerHTML = `<header class="side-head"><h1>Log ind${forklar('HB-godkendelse, arrangementer og rettelser, noter, udviklingsudvalget og statistik er fortrolige. Aktiviteterne, kortet, kalenderen og stamdata er åbne for alle.')}</h1></header>
+      <form class="admin-login" data-login>
+        <label>E-mail<input type="email" name="email" autocomplete="username" required></label>
+        <label>Adgangskode<input type="password" name="kode" autocomplete="current-password" required></label>
+        <label class="opt"><input type="checkbox" name="husk"><span>Husk mig på denne enhed<span class="hint">Ellers logges du ud, når browseren lukkes</span></span></label>
+        <div class="form-actions"><button class="chip primary" type="submit">Log ind</button></div>
+        <div class="form-status" aria-live="polite"></div>
+        <p class="note">Glemt adgangskoden eller ingen bruger? Bed en admin eller udviklingsformanden om et nyt login-link.</p></form>`;
+    const form = el.querySelector('[data-login]');
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const status = form.querySelector('.form-status'), knap = form.querySelector('button');
+      knap.disabled = true;
+      status.textContent = 'Logger ind …';
+      try { await logIndServer(form.email.value, form.kode.value, form.husk.checked); }
+      catch (err) { knap.disabled = false; status.textContent = err.message; form.kode.select(); }
+    });
+    return;
+  }
+  const b = ADMIN.bruger, ret = ADMIN.ret || {};
+  el.innerHTML = `<header class="side-head"><h1>${esc(b.navn)}</h1>
+      <p class="updated">${esc(rolleNavn(b.rolle))} · ${esc(b.email)} · <button class="linkbtn" data-logud>Log ud</button></p></header>
+    <details class="konto-boks"><summary><h2>Skift adgangskode</h2></summary><form class="admin-login" data-kode>
+      <label>Nuværende<input type="password" name="gammel" autocomplete="current-password" required></label>
+      <label>Ny (mindst 10 tegn)<input type="password" name="ny" autocomplete="new-password" minlength="10" required></label>
+      <div class="form-actions"><button class="chip small primary" type="submit">Skift</button><span class="note-status" aria-live="polite"></span></div></form></details>
+    <h2>Gem for alle</h2><div class="lager" data-admin-lager></div>
+    ${ret.brugere ? '<h2>Brugere</h2><div data-brugere><p class="note">Henter …</p></div>' : ''}
+    ${ret.koersler ? '<h2>Kørsler</h2><div data-koersler><p class="note">Henter …</p></div>' : ''}
+    <details class="konto-boks" data-historik-boks><summary><h2>Seneste ændringer</h2></summary><div data-historik></div></details>
+    <p class="note">Analyser og månedsrapporter ligger under fanen <button class="linkbtn" data-til-analyser>Analyser</button>.</p>`;
+  el.querySelector('[data-logud]').addEventListener('click', logUd);
+  el.querySelector('[data-til-analyser]').addEventListener('click', () => visFane('analyser'));
+  renderLager(el.querySelector('[data-admin-lager]'));
+  const kode = el.querySelector('[data-kode]');
+  kode.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const status = kode.querySelector('.note-status');
+    try { await api('kode', {metode: 'POST', krop: {gammel: kode.gammel.value, ny: kode.ny.value}}); status.textContent = 'Adgangskoden er skiftet'; kode.reset(); }
+    catch (err) { status.textContent = err.message; }
+  });
+  if (ret.brugere) renderBrugere(el.querySelector('[data-brugere]'));
+  if (ret.koersler) renderKoersler(el.querySelector('[data-koersler]'));
+  const hist = el.querySelector('[data-historik-boks]');
+  hist.addEventListener('toggle', () => { if (hist.open) renderHistorik(el.querySelector('[data-historik]')); });
+}
+
+/** Vælg adgangskode fra et invitationslink (ny bruger eller glemt kode). */
+async function renderInvitation(el, token) {
+  el.innerHTML = '<p class="note">Henter invitationen …</p>';
+  let inv;
+  try { inv = await api(`invitation?token=${encodeURIComponent(token)}`); }
+  catch (err) {
+    el.innerHTML = `<p class="warn">${esc(err.message)}</p><button class="linkbtn" data-videre>Til login</button>`;
+    el.querySelector('[data-videre]').addEventListener('click', () => { history.replaceState(null, '', location.pathname); renderKonto(el); });
+    return;
+  }
+  el.innerHTML = `<header class="side-head"><h1>Velkommen, ${esc(inv.navn)}</h1><p class="updated">Vælg en adgangskode til ${esc(inv.email)}.</p></header>
+    <form class="admin-login" data-inv>
+      <input type="email" name="email" value="${esc(inv.email)}" autocomplete="username" hidden>
+      <label>Adgangskode (mindst 10 tegn)<input type="password" name="kode" autocomplete="new-password" minlength="10" required></label>
+      <label>Gentag<input type="password" name="kode2" autocomplete="new-password" minlength="10" required></label>
+      <label class="opt"><input type="checkbox" name="husk"><span>Husk mig på denne enhed</span></label>
+      <div class="form-actions"><button class="chip primary" type="submit">Gem og log ind</button></div>
+      <div class="form-status" aria-live="polite"></div></form>`;
+  const form = el.querySelector('[data-inv]');
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const status = form.querySelector('.form-status');
+    if (form.kode.value !== form.kode2.value) { status.textContent = 'De to adgangskoder er ikke ens'; return; }
+    try {
+      await api('invitation', {metode: 'POST', krop: {token, kode: form.kode.value, husk: form.husk.checked}});
+      history.replaceState(null, '', location.pathname);
+      location.reload();
+    } catch (err) { status.textContent = err.message; }
+  });
+}
+
+async function renderBrugere(el) {
+  try { KONTO.brugere = await api('brugere'); } catch (err) { el.innerHTML = `<p class="warn">${esc(err.message)}</p>`; return; }
+  const admin = ADMIN.bruger.rolle === 'admin';
+  const roller = Object.keys(ADMIN.roller).filter(r => admin || r === 'udvalg');
+  const valg = (v, laast) => `<select name="rolle"${laast ? ' disabled' : ''}>${Object.keys(ADMIN.roller).filter(r => roller.includes(r) || r === v)
+    .map(r => `<option value="${esc(r)}"${r === v ? ' selected' : ''}>${esc(rolleNavn(r))}</option>`).join('')}</select>`;
+  el.innerHTML = `<p class="note">Nye brugere får et link, der gælder i 14 dage, hvor de selv vælger adgangskode. Send det selv (mail, Messenger).
+      Glemt kode: giv et nyt link. Deaktivér dem, der stopper – historikken bevares.</p>
+    ${KONTO.link ? `<p class="konto-link">Link til ${esc(KONTO.link.navn)}: <input type="text" readonly value="${esc(KONTO.link.url)}" data-link>
+      <button type="button" class="chip small" data-kopier>Kopiér</button></p>` : ''}
+    <ul class="brugere">${KONTO.brugere.map(u => {
+      const kan = roller.includes(u.rolle) && u.id !== ADMIN.bruger.id;
+      return `<li data-id="${u.id}" class="${u.aktiv ? '' : 'inaktiv'}"><div><b>${esc(u.navn)}</b> <span class="udv-meta">${esc(u.email)}${
+        u.harKode ? '' : ' · har ikke valgt kode endnu'}${u.sidst_inde ? ` · sidst inde ${esc(fmtDate.format(new Date(u.sidst_inde)))}` : ''}</span></div>
+        <div class="brugere-knapper">${valg(u.rolle, !kan)}${kan ? `<button type="button" class="linkbtn" data-nylink>Nyt login-link</button>
+          <button type="button" class="linkbtn" data-aktiv>${u.aktiv ? 'Deaktivér' : 'Aktivér'}</button>` : ''}</div></li>`;
+    }).join('')}</ul>
+    <form class="brugere-ny" data-ny-bruger><input type="text" name="navn" placeholder="Navn" required maxlength="60">
+      <input type="email" name="email" placeholder="E-mail" required>${valg('udvalg', false)}
+      <button class="chip small primary" type="submit">Opret og lav link</button><span class="note-status" aria-live="polite"></span></form>`;
+  const igen = () => renderBrugere(el);
+  const fejl = err => alert(err.message);
+  const kopier = el.querySelector('[data-kopier]');
+  if (kopier) kopier.addEventListener('click', () => { const i = el.querySelector('[data-link]'); i.select(); navigator.clipboard?.writeText(i.value); kopier.textContent = 'Kopieret'; });
+  el.querySelectorAll('li[data-id]').forEach(li => {
+    const id = li.dataset.id, u = KONTO.brugere.find(x => String(x.id) === id);
+    li.querySelector('[name=rolle]').addEventListener('change', ev => api(`brugere/${id}`, {metode: 'PUT', krop: {rolle: ev.target.value}}).then(igen, fejl));
+    li.querySelector('[data-aktiv]')?.addEventListener('click', () => api(`brugere/${id}`, {metode: 'PUT', krop: {aktiv: !u.aktiv}}).then(igen, fejl));
+    li.querySelector('[data-nylink]')?.addEventListener('click', () => api(`brugere/${id}/invitation`, {metode: 'POST'})
+      .then(r => { KONTO.link = {navn: u.navn, url: r.invitation}; igen(); }, fejl));
+  });
+  const ny = el.querySelector('[data-ny-bruger]');
+  ny.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    try {
+      const r = await api('brugere', {metode: 'POST', krop: {navn: ny.navn.value.trim(), email: ny.email.value.trim(), rolle: ny.rolle.value}});
+      KONTO.link = {navn: ny.navn.value.trim(), url: r.invitation};
+      igen();
+    } catch (err) { ny.querySelector('.note-status').textContent = err.message; }
+  });
+}
+
+async function renderKoersler(el) {
+  let k;
+  try { k = await api('koersler'); } catch (err) { el.innerHTML = `<p class="warn">${esc(err.message)}</p>`; return; }
+  const plan = p => (!p ? 'manuelt' : `${p.ugedage ? p.ugedage.map(d => UGEDAGE[d - 1]).join(', ') : p.dag ? `den ${p.dag}.` : 'dagligt'} kl. ${p.tid}`);
+  el.innerHTML = `<p class="note">${k.status.koerer ? `Kører nu: <b>${esc(k.jobs[k.status.koerer.job].label)}</b>. ` : ''}${
+      k.status.koe.length ? `I kø: ${esc(k.status.koe.join(', '))}.` : ''}</p>
+    <ul class="koersler">${Object.entries(k.jobs).map(([id, j]) => {
+      const s = k.seneste.find(x => x.job === id);
+      return `<li><div><b>${esc(j.label)}</b> <span class="udv-meta">${esc(plan(j.plan))}${s ? ` · sidst ${esc(fmtStamp.format(new Date(s.start)))} ${
+        s.ok == null ? '(kører)' : s.ok ? '✓' : '<span class="udv-overskredet">fejlede</span>'}` : ''}</span></div>
+        <div>${id === 'historik' ? '<input type="text" data-arg placeholder="fra ÅÅÅÅ-MM-DD" size="12">' : ''}
+          <button type="button" class="linkbtn" data-koer="${esc(id)}">Kør nu</button>${s && s.log ? ` <button type="button" class="linkbtn" data-log="${s.id}">Log</button>` : ''}</div></li>`;
+    }).join('')}</ul><pre class="koersel-log" hidden></pre>`;
+  el.querySelectorAll('[data-koer]').forEach(b => b.addEventListener('click', async () => {
+    const arg = b.parentElement.querySelector('[data-arg]');
+    try { await api(`koersler/${b.dataset.koer}`, {metode: 'POST', krop: {arg: arg ? arg.value : ''}}); setTimeout(() => renderKoersler(el), 500); }
+    catch (err) { alert(err.message); }
+  }));
+  el.querySelectorAll('[data-log]').forEach(b => b.addEventListener('click', () => {
+    const pre = el.querySelector('.koersel-log');
+    pre.textContent = k.seneste.find(x => String(x.id) === b.dataset.log).log;
+    pre.hidden = false;
+  }));
+}
+
+async function renderHistorik(el) {
+  el.innerHTML = '<p class="note">Henter …</p>';
+  try {
+    const h = await api('historik?graense=60');
+    el.innerHTML = `<ul class="historik">${h.map(x => `<li><span class="udv-meta">${esc(fmtStamp.format(new Date(x.tid)))}</span>
+      <b>${esc(x.af || 'system')}</b> ${esc(x.handling)}${x.navn ? ` ${esc(x.navn)}` : ''}${x.besked ? ` – ${esc(x.besked)}` : ''}</li>`).join('')}</ul>`;
+  } catch (err) { el.innerHTML = `<p class="warn">${esc(err.message)}</p>`; }
 }
 
 // ------------------------------------------------------------------ analyser (vindue til højre på kortet)
@@ -2443,12 +2760,15 @@ function initSidepanel() {
 
 // ------------------------------------------------------------------ start
 
-window.LAU = {registerSection, registerLayer, registerAnalyse, registerAdvarsel, aabnAnalyse, openForening, closeForening, visFane, CONFIG,
-  admin: {erAdmin, hent: hentAdmin, gem: gemAdmin, get data() { return ADMIN.data; }},
+window.LAU = {registerSection, registerLayer, registerAnalyse, registerAdvarsel, registerFane, aabnAnalyse, openForening, closeForening, visFane, CONFIG,
+  admin: {erAdmin, hent: hentAdmin, gem: gemAdmin, maaRette, get data() { return ADMIN.data; },
+    get bruger() { return ADMIN.bruger; }, get rettigheder() { return ADMIN.ret; }},
   get data() { return DATA; }, get map() { return MAP.map; }};
 
 async function main() {
+  if (CONFIG.flyttetTil && !PAA_SERVER) { location.replace(CONFIG.flyttetTil.replace(/\/*$/, '/') + location.hash); return; }
   // Fanerne bindes før data hentes, så de virker, selvom indlæsningen fejler.
+  initFaner();
   document.querySelectorAll('.side-tabs [data-fane]').forEach(b => b.addEventListener('click', () => visFane(b.dataset.fane)));
   initSidepanel();
   initForklaringer();
@@ -2460,7 +2780,9 @@ async function main() {
   }
   // Admin: fanerne vises, og login-fanen bliver til "Admin". Andre ser kun de offentlige farvninger.
   document.querySelectorAll('.side-tabs [data-admin]').forEach(b => { b.hidden = !erAdmin(); });
-  $('fane-admin').textContent = erAdmin() ? 'Admin' : '🔒 Log ind';
+  for (const x of FANER) document.querySelector(`.side-tabs [data-fane="${x.id}"]`).hidden = !tilladt(x);
+  $('fane-admin').textContent = PAA_SERVER && erAdmin() ? 'Konto' : erAdmin() ? 'Admin' : '🔒 Log ind';
+  if (PAA_SERVER && invitationToken()) visFane('admin');
   if (!FARVNINGER().some(v => v.id === farvning)) farvning = 'status';
   renderLegend();
   const nat = DATA.byName.get(NATIONAL);

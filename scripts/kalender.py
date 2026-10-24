@@ -15,6 +15,7 @@ arrangementer fjernet fra Facebook og arrangementer mere end et år tilbage udel
 samme regel som kalenderSlug() i app.js.
 """
 import json
+import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -22,10 +23,12 @@ from pathlib import Path
 import kerne
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
-UD = ROOT / "kalender"
+# LAU_DATA og LAU_KALENDER: mapperne på serveren (server/README.md); ellers data/ og kalender/ i repoet.
+DATA = Path(os.environ.get("LAU_DATA") or ROOT / "data")
+UD = Path(os.environ.get("LAU_KALENDER") or ROOT / "kalender")
 NATIONAL = "Landsforeningen"
-SIDE = "https://irate4147.github.io/lau-kort/"
+# LAU_ADRESSE: sidens adresse på serveren (fx https://kort.liberaleunge.dk/).
+SIDE = os.environ.get("LAU_ADRESSE") or "https://irate4147.github.io/lau-kort/"
 
 
 def slug(navn):
@@ -154,7 +157,7 @@ def main():
         sti = UD / navn
         if not sti.exists() or sti.read_bytes() != indhold.encode("utf-8"):
             sti.write_bytes(indhold.encode("utf-8"))
-    print(f"Skrev {len(filer)} kalendere til {UD.relative_to(ROOT)}/")
+    print(f"Skrev {len(filer)} kalendere til {UD}/")
 
 
 if __name__ == "__main__":

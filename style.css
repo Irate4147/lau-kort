@@ -732,3 +732,105 @@ ul.mr-kommende, ul.mr-uden { list-style: none; margin: 0; padding: 0; font-size:
 .chart .ea-punkt:hover { fill-opacity: 1; stroke: var(--text-primary); }
 .chart .ea-punktnavn { pointer-events: none; }
 .ea-diagram .ea-tabel { margin-top: 10px; }
+
+/* ---- udviklingsudvalget (udvidelser/udvikling.js) ---- */
+.udv-intro { padding: 8px 10px; border: 1px dashed var(--axis); border-radius: 8px; }
+.udv-fremdrift { margin: 10px 0 8px; }
+.udv-bar { height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
+.udv-bar span { display: block; height: 100%; background: #0ca30c; }
+.udv-fremdrift .note { margin: 4px 0 0; }
+.udv-filtre { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 8px; }
+.udv-liste, .udv-opf, .udv-historik, .udv-fakta { list-style: none; margin: 0; padding: 0; }
+.udv-raekke + .udv-raekke { border-top: 1px solid var(--grid); }
+.udv-aabn {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; width: 100%; text-align: left; border: 0; background: none;
+  padding: 7px 4px; cursor: pointer; color: inherit; font-size: 13px; border-radius: 4px;
+}
+.udv-aabn:hover, .udv-aabn:focus-visible { background: var(--page); outline: none; }
+.udv-navn { font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.udv-meta { grid-column: 1 / -1; color: var(--text-secondary); font-size: 12px; }
+.udv-pill { font-size: 11px; border-radius: 10px; padding: 1px 8px; white-space: nowrap; align-self: center; }
+.udv-pill.kontaktet { background: #e3f4e5; color: #17672a; }
+.udv-pill.mangler { background: #fdf3d8; color: #7a5800; }
+.udv-pill.snart { background: #fbe3e1; color: #9e2a1f; }
+.udv-prik { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: none; margin-right: 4px; vertical-align: 0; }
+.udv-prik.godt { background: #0ca30c; }
+.udv-prik.ok { background: #e3c22b; }
+.udv-prik.svaert { background: #d03b3b; }
+.udv-overskredet { color: var(--critical); font-weight: 600; }
+.udv-opf li { padding: 5px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.udv-opf li:first-child { border-top: 0; }
+.udv-opf label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.udv-opf input { margin-top: 3px; }
+.udv-opf .udv-meta { display: block; margin-left: 22px; }
+.udv-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.udv-top .sort { margin: 0; }
+.udv-status { margin: 8px 0 4px; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+.udv-status.kontaktet { background: #e3f4e5; color: #17672a; }
+.udv-status.mangler { background: #fdf3d8; color: #6b4d00; }
+.udv-status.snart { background: #fbe3e1; color: #9e2a1f; }
+.udv-status .udv-meta { display: block; font-weight: 400; }
+.udv-seneste { margin: 4px 0; font-size: 13px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.udv-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.udv-tag { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: var(--grid); color: var(--text-primary); }
+.udv-form { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--page); }
+.udv-form label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-secondary); }
+.udv-form label.opt { flex-direction: row; align-items: center; color: var(--text-primary); padding: 2px; }
+.udv-form input[type="text"], .udv-form input[type="date"], .udv-form select, .udv-form textarea, .udv-medlem input[type="text"], .udv-medlem select,
+.udv-fordeling select, .stamdata-raekke input {
+  font: inherit; font-size: 13px; padding: 4px 6px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface-1); color: var(--text-primary);
+  min-width: 0;
+}
+.udv-form textarea { resize: vertical; }
+.udv-felter { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+.udv-felter .udv-bred { grid-column: span 2; }
+.udv-valg { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 10px; }
+.udv-valg legend { font-size: 12px; color: var(--text-secondary); padding: 0; margin-bottom: 2px; }
+.udv-forbered, .udv-hist { margin-top: 8px; }
+.udv-forbered summary, .udv-hist summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+.udv-fakta li { font-size: 13px; padding: 2px 0; }
+.udv-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 10px 0 2px; }
+.udv-kontakt { font-size: 13px; margin: 6px 0; }
+.udv-spm { margin: 0 0 4px; padding-left: 20px; font-size: 13px; }
+.udv-historik li { padding: 8px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.udv-hist-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; }
+.udv-knapper { margin-left: auto; display: inline-flex; gap: 8px; }
+.udv-knapper .linkbtn { font-size: 12px; }
+.udv-tekst { margin: 4px 0; white-space: pre-wrap; }
+.udv-historik .udv-meta { display: block; margin: 2px 0 0; }
+.udv-admin { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 4px; }
+.udv-admin > summary { cursor: pointer; }
+.udv-admin > summary h2 { display: inline; }
+.udv-admin h3 { font-size: 13px; margin: 12px 0 6px; }
+.udv-udvalg { display: flex; flex-direction: column; gap: 6px; }
+.udv-medlem { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; }
+.udv-medlem.udv-ny { grid-template-columns: 1fr; }
+.udv-medlem .opt { padding: 0; }
+.udv-medlem .udv-meta { grid-column: auto; white-space: nowrap; }
+.udv-fordeling { display: grid; grid-template-columns: 1fr; gap: 4px; margin-bottom: 6px; }
+.udv-fordeling label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px; align-items: center; font-size: 13px; }
+.stamdata-form { display: flex; flex-direction: column; gap: 6px; }
+.stamdata-raekke { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto; gap: 6px; align-items: center; }
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) :is(.udv-pill, .udv-status).kontaktet { background: #17371e; color: #a6e3b3; }
+  :root:where(:not([data-theme="light"])) :is(.udv-pill, .udv-status).mangler { background: #3a3218; color: #f2dc6b; }
+  :root:where(:not([data-theme="light"])) :is(.udv-pill, .udv-status).snart { background: #3e1a17; color: #f4aaa3; }
+}
+
+/* ---- konto, brugere og kørsler (LAU-serveren) ---- */
+.konto-boks { margin-top: 12px; }
+.konto-boks > summary { cursor: pointer; }
+.konto-boks > summary h2 { display: inline; }
+.brugere, .koersler, .historik { list-style: none; margin: 0 0 8px; padding: 0; }
+.brugere li, .koersler li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; padding: 6px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.brugere li.inaktiv { opacity: .55; }
+.brugere-knapper { display: flex; gap: 8px; align-items: center; }
+.brugere select, .brugere-ny input, .brugere-ny select, .konto-link input, .koersler input {
+  font: inherit; font-size: 13px; padding: 3px 6px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface-1); color: var(--text-primary); min-width: 0;
+}
+.brugere-ny { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: center; }
+.brugere-ny .chip, .brugere-ny .note-status { grid-column: 1 / -1; justify-self: start; }
+.konto-link { display: flex; gap: 6px; align-items: center; font-size: 13px; flex-wrap: wrap; }
+.konto-link input { flex: 1; min-width: 200px; }
+.historik li { font-size: 12px; padding: 3px 0; border-top: 1px solid var(--grid); }
+.koersel-log { max-height: 260px; overflow: auto; font-size: 11px; background: var(--page); border: 1px solid var(--border); border-radius: 6px; padding: 8px; white-space: pre-wrap; }

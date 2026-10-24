@@ -7,12 +7,12 @@ TypeScript via JSDoc (`npm run typetjek`).
 | Fil | Indhold |
 |---|---|
 | `ontologi.js` | Frameworket: objekttyper, egenskaber, links, stier gennem links og adgang. Ved intet om LAU. |
-| `lau.js` | **LAU's ontologi**: Forening, Arrangement, Kommune, Person, Rolle og deres links. Her tilføjes nye egenskaber og typer. |
+| `lau.js` | **LAU's ontologi**: Forening, Arrangement, Kommune, Udvalgsmedlem, Kontakt, Person, Rolle og deres links. Her tilføjes nye egenskaber og typer. |
 | `regler.js` | Forretningsreglerne: kategorier, status, rettelser, dækning, HB-godkendelse, HB-risiko, momentum og "hvad vidste vi dengang" (månedsrapportens snapshots) – og analysernes regler (hvide pletter og "Hvad virker?"). Den eneste kopi – siden, udvidelserne og Python-scripts bruger den. |
 | `rapport.js` | **Månedsrapporten** – den eneste kopi: snapshots (`tilstand`, `snapshot`), Bagud (`maanedsrapport`; for den indeværende måned `maanedIndtilNu`), Fremad (`fremad`), de gemte rapporter (`opdater`) og udskriften i loggen (`udskrift`). Siden viser "Denne måned indtil nu" med den; `scripts/rapport.py` laver de gemte rapporter. |
 | `lager.js` | Objektlageret: objekter, links og beregnede egenskaber. Håndhæver adgang. |
 | `objektsaet.js` | Forespørgselssproget: filtrér, følg links (search around), gruppér, mål, bor ned. Og objektvisningen (`objektVisning`): et objekts egenskaber og links, som en rolle må se – foreningspanelets "Egenskaber" og "Forbundne objekter". |
-| `kilder/json.js` | Adapter fra de nuværende JSON-filer. Fase 2: en Supabase-adapter med samme resultat. |
+| `kilder/json.js` | Adapter fra de nuværende JSON-filer. Fase 2: en adapter fra serverens database (server/) med samme resultat. |
 | `tid.js` | Dansk tid, kalenderdage, kvartaler og HB-året. |
 
 ## Sådan bruges den

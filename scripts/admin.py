@@ -11,7 +11,13 @@ Koden læses fra miljøvariablen ADMIN_KODE (GitHub-secret af samme navn) og lig
     python3 scripts/admin.py krypter hb           # privat/hb.json -> data/admin/hb.krypt.json
     python3 scripts/admin.py skift-kode           # kryptér alt igen med ADMIN_KODE_NY (ny salt)
 
-Andre scripts bruger laes(navn) og skriv(navn, data).
+På LAU-serveren (server/README.md) ligger de fortrolige data i stedet i en database: er miljøvariablen LAU_DB sat
+(stien til SQLite-filen), læser og skriver laes() og skriv() dokumenterne der – ukrypteret, uden ADMIN_KODE, og hver
+ændring logges i handlingsloggen. Flytning fra repoet til serveren (én gang):
+
+    ADMIN_KODE=... LAU_DB=/var/lib/lau/lau.db LAU_DATA=/var/lib/lau/data python3 scripts/admin.py til-db
+
+Andre scripts bruger laes(navn), skriv(navn, data) og hvor(navn).
 """
 import base64
 import hashlib
@@ -19,12 +25,16 @@ import hmac
 import json
 import os
 import secrets
+import shutil
+import sqlite3
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
-ADMIN = DATA / "admin"
+# LAU_DATA: datamappen på serveren; ellers data/ i repoet. De krypterede filer ligger altid i repoets data/admin/.
+DATA = Path(os.environ.get("LAU_DATA") or ROOT / "data")
+ADMIN = ROOT / "data" / "admin"
 NOEGLE = ADMIN / "noegle.json"
 PRIVAT = ROOT / "privat"  # lokale klartekstkopier (i .gitignore)
 ITERATIONER = 600_000
@@ -107,7 +117,86 @@ def noegle(kode=None):
     return k
 
 
+# ---------------------------------------------------------------- serverens database (LAU_DB)
+
+SKEMA = ROOT / "server" / "skema.sql"
+_DB = None
+
+
+def db_sti():
+    return os.environ.get("LAU_DB", "")
+
+
+def _db():
+    """Forbindelsen til serverens SQLite-database (samme skema som server/db.js)."""
+    global _DB
+    if _DB is None:
+        _DB = sqlite3.connect(db_sti(), timeout=30, isolation_level=None)
+        _DB.execute("PRAGMA journal_mode = WAL")
+        _DB.execute("PRAGMA busy_timeout = 30000")
+        _DB.executescript(SKEMA.read_text(encoding="utf-8"))
+    return _DB
+
+
+def _nu():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _db_laes(navn, standard=None):
+    r = _db().execute("SELECT indhold FROM dokumenter WHERE navn = ?", (navn,)).fetchone()
+    return json.loads(r[0]) if r else standard
+
+
+def _db_skriv(navn, data, af=None):
+    """Gemmer dokumentet (kun hvis det er ændret) og logger ændringen. af: hvem (standard: scriptets navn)."""
+    af = af or f"system:{Path(sys.argv[0]).stem}"
+    tekst = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+    c = _db()
+    c.execute("BEGIN IMMEDIATE")
+    try:
+        r = c.execute("SELECT indhold, version FROM dokumenter WHERE navn = ?", (navn,)).fetchone()
+        if r and json.loads(r[0]) == data:
+            c.execute("ROLLBACK")
+            return False
+        version, nu = (r[1] + 1 if r else 1), _nu()
+        c.execute("INSERT INTO dokumenter (navn, indhold, version, rettet, af) VALUES (?, ?, ?, ?, ?) "
+                  "ON CONFLICT(navn) DO UPDATE SET indhold = excluded.indhold, version = excluded.version, "
+                  "rettet = excluded.rettet, af = excluded.af", (navn, tekst, version, nu, af))
+        c.execute("INSERT INTO handlinger (tid, af, handling, navn, version, indhold) VALUES (?, ?, 'gem', ?, ?, ?)",
+                  (nu, af, navn, version, tekst))
+        c.execute("COMMIT")
+    except BaseException:
+        c.execute("ROLLBACK")
+        raise
+    return True
+
+
+def til_db():
+    """Flytter alle krypterede filer i data/admin/ til serverens database (kræver ADMIN_KODE og LAU_DB) og kopierer de
+    offentlige data (data/*.json) til LAU_DATA, hvis den er sat og filerne ikke findes der endnu."""
+    if not db_sti():
+        sys.exit("LAU_DB er ikke sat")
+    n = 0
+    for p in sorted(ADMIN.glob("*.krypt.json")):
+        navn = p.name[:-len(".krypt.json")]
+        data = _dekrypter(noegle(), navn, json.loads(p.read_text(encoding="utf-8")))
+        print(f"{navn}: {'flyttet' if _db_skriv(navn, data, af='migrering') else 'uændret'}")
+        n += 1
+    print(f"{n} dokumenter i {db_sti()}")
+    kilde = ROOT / "data"
+    if DATA.resolve() != kilde.resolve():
+        DATA.mkdir(parents=True, exist_ok=True)
+        for p in sorted(kilde.glob("*.json")):
+            if not (DATA / p.name).exists():
+                shutil.copy2(p, DATA / p.name)
+                print(f"Kopierede {p.name} til {DATA}")
+
+
+# ---------------------------------------------------------------- fælles
+
 def har_noegle():
+    if db_sti():
+        return True
     try:
         noegle()
         return True
@@ -119,8 +208,20 @@ def sti(navn):
     return ADMIN / f"{navn}.krypt.json"
 
 
+def hvor(navn):
+    """Hvor dokumentet gemmes (til udskrifter)."""
+    if db_sti():
+        return f"{navn} i {db_sti()}"
+    try:
+        return f"{sti(navn).relative_to(ROOT)} (krypteret)"
+    except ValueError:
+        return f"{sti(navn)} (krypteret)"
+
+
 def laes(navn, standard=None):
-    """Dekrypterer data/admin/<navn>.krypt.json (standard, hvis filen ikke findes)."""
+    """Dekrypterer data/admin/<navn>.krypt.json (standard, hvis filen ikke findes). På serveren: fra databasen."""
+    if db_sti():
+        return _db_laes(navn, standard)
     p = sti(navn)
     if not p.exists():
         return standard
@@ -128,7 +229,10 @@ def laes(navn, standard=None):
 
 
 def skriv(navn, data):
-    """Krypterer data til data/admin/<navn>.krypt.json – kun hvis indholdet er ændret (ny iv giver ellers en ny commit)."""
+    """Krypterer data til data/admin/<navn>.krypt.json – kun hvis indholdet er ændret (ny iv giver ellers en ny commit).
+    På serveren: i databasen."""
+    if db_sti():
+        return _db_skriv(navn, data)
     p = sti(navn)
     if p.exists():
         try:
@@ -153,13 +257,27 @@ def offentlige_rettelser(rettelser):
 
 def rettelser():
     """Alle rettelser: de fortrolige, hvis nøglen findes, ellers de offentlige."""
-    if har_noegle() and sti("rettelser").exists():
+    if db_sti() and _db_laes("rettelser") is not None:
+        return _db_laes("rettelser")
+    if not db_sti() and har_noegle() and sti("rettelser").exists():
         return laes("rettelser", {})
     fil = DATA / "rettelser.json"
     return json.loads(fil.read_text(encoding="utf-8")).get("rettelser", {}) if fil.exists() else {}
 
 
+def skriv_offentlige_rettelser():
+    """data/rettelser.json: den offentlige del af rettelserne (uden noter og fremmøde)."""
+    offentlig = DATA / "rettelser.json"
+    tekst = json.dumps({"rettelser": offentlige_rettelser(laes("rettelser", {}))}, ensure_ascii=False, indent=1) + "\n"
+    if not offentlig.exists() or offentlig.read_text(encoding="utf-8") != tekst:
+        offentlig.write_text(tekst, encoding="utf-8")
+        print(f"Skrev {offentlig} (uden {', '.join(FORTROLIGE_FELTER)})")
+
+
 def klargoer():
+    if db_sti():  # serveren: ingen nøgle eller krypterede filer – kun den offentlige del af rettelserne
+        skriv_offentlige_rettelser()
+        return
     kode = os.environ.get("ADMIN_KODE", "")
     if not kode:
         print("ADMIN_KODE er ikke sat – fortrolige data springes over (se README: Adminlogin).")
@@ -190,10 +308,7 @@ def klargoer():
         gamle = json.loads(offentlig.read_text(encoding="utf-8")).get("rettelser", {}) if offentlig.exists() else {}
         skriv("rettelser", gamle)
         print(f"Oprettede {sti('rettelser').relative_to(ROOT)}")
-    tekst = json.dumps({"rettelser": offentlige_rettelser(laes("rettelser", {}))}, ensure_ascii=False, indent=1) + "\n"
-    if not offentlig.exists() or offentlig.read_text(encoding="utf-8") != tekst:
-        offentlig.write_text(tekst, encoding="utf-8")
-        print(f"Skrev {offentlig.relative_to(ROOT)} (uden {', '.join(FORTROLIGE_FELTER)})")
+    skriv_offentlige_rettelser()
 
 
 def skift_kode():
@@ -211,7 +326,7 @@ def skift_kode():
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in ("klargoer", "vis", "dekrypter", "krypter", "skift-kode"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("klargoer", "vis", "dekrypter", "krypter", "skift-kode", "til-db"):
         sys.exit(__doc__)
     handling, navn = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else "")
     try:
@@ -219,6 +334,8 @@ def main():
             klargoer()
         elif handling == "skift-kode":
             skift_kode()
+        elif handling == "til-db":
+            til_db()
         elif not navn:
             sys.exit(f"Angiv et navn, fx: scripts/admin.py {handling} hb")
         elif handling == "vis":

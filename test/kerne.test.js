@@ -432,3 +432,45 @@ test('månedsrapport: lange titler afkortes efter tegn – en emoji deles ikke',
   assert.equal(fr.risici[0].tekst, `Q3 hænger på ét planlagt arrangement: "${[...navn].slice(0, 49).join('').trimEnd()}…" 25. sep. – 10 dage tilbage.`);
   assert.ok(!/[\ud800-\udbff](?![\udc00-\udfff])/.test(fr.risici[0].tekst), 'ingen halve emoji');
 });
+
+test('udviklingsudvalget: kvartalets kontakt, ansvar og opfølgninger', () => {
+  const k = (id, forening, dato, ekstra = {}) => ({id, forening, dato, af: 'u1', form: 'telefon', ...ekstra});
+  const udvikling = {
+    udvalg: [{id: 'u1', navn: 'Anna', rolle: 'formand'}, {id: 'u2', navn: 'Bo', aktiv: false}],
+    ansvar: {Fyn: 'u1', Aarhus: 'u2', Findesikke: 'u1'},
+    kontakter: [
+      k('k1', 'Fyn', '2026-06-10', {stemning: 'svaert'}),
+      k('k2', 'Fyn', '2026-07-02', {stemning: 'godt', behov: ['medlemmer'], opfoelgning: 'Send liste', frist: '2026-09-01'}),
+      k('k3', 'Fyn', '2026-09-20', {form: 'note', stemning: 'ok'}), // intern note: tæller ikke som kontakt
+      k('k4', 'Aarhus', '2026-05-01', {opfoelgning: 'Klaret', klaret: '2026-05-10'}),
+    ],
+  };
+  const LU = bygFraJson({...DATA, udvikling});
+  const fyn = LU.hent('Forening', 'Fyn'), aarhus = LU.hent('Forening', 'Aarhus');
+  assert.equal(LU.vaerdi(fyn, 'kontakt'), 'kontaktet', 'kontakt 2. juli er i Q3');
+  assert.equal(+LU.vaerdi(fyn, 'sidsteKontakt'), +new Date('2026-07-02T12:00:00Z'), 'noten 20. sep. tæller ikke');
+  assert.equal(LU.vaerdi(fyn, 'dageSidenKontakt'), 89);
+  assert.equal(LU.vaerdi(fyn, 'stemning'), 'godt');
+  assert.equal(LU.vaerdi(fyn, 'aabneOpfoelgninger'), 1);
+  assert.deepEqual(LU.vaerdi(fyn, 'kontaktDetaljer').overskredne.map(x => x.id), ['k2']);
+  // 29. sep.: Q3 slutter i morgen, så en manglende kontakt er presserende.
+  assert.equal(LU.vaerdi(aarhus, 'kontakt'), 'snart');
+  assert.equal(LU.vaerdi(aarhus, 'aabneOpfoelgninger'), 0, 'klarede opfølgninger er lukket');
+  assert.equal(LU.vaerdi(LU.hent('Forening', 'Landsforeningen'), 'kontakt'), null, 'kun lokalforeninger');
+  assert.equal(LU.linkede(fyn, 'ansvarlig')[0].id, 'u1');
+  assert.equal(LU.vaerdi(LU.hent('Udvalgsmedlem', 'u2'), 'aktiv'), false);
+  assert.equal(LU.vaerdi(LU.hent('Udvalgsmedlem', 'u1'), 'kontaktetIKvartal'), 1);
+  assert.equal(LU.linkede(LU.hent('Udvalgsmedlem', 'u1'), 'kontakter').length, 4);
+  assert.equal(LU.vaerdi(LU.hent('Kontakt', 'k2'), 'behov'), 'Medlemshvervning');
+  for (const t of ['Udvalgsmedlem', 'Kontakt']) for (const o of LU.alle(t)) for (const e of LAU.type(t).egenskabsliste) LU.vaerdi(o, e.id);
+  // Analysebyggeren: lokalforeninger, der ikke er kontaktet i kvartalet, pr. ansvarlig.
+  const r = koer(LU, {type: 'Forening', filtre: [{egenskab: 'kontakt', er: ['mangler', 'snart']}], gruppering: {egenskab: 'ansvarlig.navn'}});
+  assert.deepEqual(r.grupper.map(g => [g.label, g.vaerdi]), [['Bo', 1], ['(ingen)', 1]], 'Aarhus (Bo) og Bornholm (ingen ansvarlig)');
+  // Uden udvalgets data (offentligt) er egenskaberne tomme, og der er ingen udvalgsobjekter.
+  assert.equal(L.vaerdi(L.hent('Forening', 'Fyn'), 'kontakt'), null);
+  assert.equal(LU.rolle, 'admin');
+  assert.equal(bygFraJson({...DATA, udvikling, rolle: 'offentlig'}).alle('Kontakt').length, 0, 'kun admins');
+  // Midt i kvartalet er en manglende kontakt ikke presserende endnu.
+  assert.equal(R.kontaktStatus([], new Date('2026-10-24T10:00:00Z')).status, 'mangler');
+  assert.equal(R.kontaktStatus([], new Date('2026-12-10T10:00:00Z')).status, 'snart');
+});

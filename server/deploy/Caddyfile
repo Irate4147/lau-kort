@@ -1,0 +1,5 @@
+# Caddy foran LAU-serveren (henter og fornyer selv HTTPS-certifikatet). Læg blokken i /etc/caddy/Caddyfile.
+kort.liberaleunge.dk {
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+}

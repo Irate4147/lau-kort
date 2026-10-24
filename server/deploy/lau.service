@@ -1,0 +1,23 @@
+# systemd-tjenesten for LAU-serveren: /etc/systemd/system/lau.service (installer.sh lægger den der).
+[Unit]
+Description=LAU-kortet (server)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=lau
+Group=lau
+WorkingDirectory=/opt/lau-kort
+EnvironmentFile=/etc/lau/lau.env
+ExecStart=/usr/bin/env node --disable-warning=ExperimentalWarning server/lau.js start
+Restart=always
+RestartSec=5
+# Hærdning: kun datamappen kan skrives.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/lau
+
+[Install]
+WantedBy=multi-user.target

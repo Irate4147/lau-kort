@@ -23,6 +23,8 @@ concurrency:
 
 jobs:
   rapport:
+    # Når LAU-serveren har overtaget (repository variable LAU_SERVER = 1), kører serveren dette – se server/README.md.
+    if: vars.LAU_SERVER != '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -63,7 +63,7 @@ def main():
     print(svar["udskrift"], end="")
     if arg == "alle":
         print(f"\nGenberegnede {len(svar['maaneder'])} måneder: {', '.join(svar['maaneder'])}")
-    print(f"\n{'Skrevet til' if skrevet else 'Uændret:'} {admin.sti('rapporter').relative_to(hb.ROOT)} (krypteret)")
+    print(f"\n{'Skrevet til' if skrevet else 'Uændret:'} {admin.hvor('rapporter')}")
 
 
 if __name__ == "__main__":
