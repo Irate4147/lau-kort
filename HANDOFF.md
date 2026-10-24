@@ -1,7 +1,7 @@
 # Overdragelse – udviklingsudvalget og LAU-serveren
 
-Status pr. 24. oktober 2026. PR [#44](https://github.com/Irate4147/lau-kort/pull/44) er merget; cPanel-tilpasningen
-ligger på grenen `claude/awesome-hamilton-ks5fay` i en ny draft-PR. Detaljerne står i
+Status pr. 24. oktober 2026. PR [#44](https://github.com/Irate4147/lau-kort/pull/44) og cPanel-tilpasningen
+([#45](https://github.com/Irate4147/lau-kort/pull/45)) er merget. Detaljerne står i
 [README.md](README.md#udviklingsudvalget), [server/README.md](server/README.md) og [docs/arkitektur.md](docs/arkitektur.md).
 
 ## Mål
@@ -72,7 +72,7 @@ ligger på grenen `claude/awesome-hamilton-ks5fay` i en ny draft-PR. Detaljerne 
 Serveren kører på **https://kort.liberaleunge.dk/** – delt cPanel/CloudLinux-hosting hos nordicway (LiteSpeed, ingen
 sudo/systemd), så planen er tilpasset (se [server/README.md](server/README.md#installation-på-cpanel-hosting-liberaleungedk-hos-nordicway)):
 cPanel-Node-app (Node 22, `server/app.cjs`), kørsler via cron (`LAU_JOBS=cron`, `lau cron` hvert andet minut), kode i
-`~/lau-kort` (grenen `claude/awesome-hamilton-ks5fay` – skift til `main` efter merge), data i `~/lau`, indstillinger i
+`~/lau-kort` (`main`; opdatér: `git -C ~/lau-kort pull --ff-only` + `cloudlinux-selector restart --json --interpreter nodejs --app-root lau-kort`), data i `~/lau`, indstillinger i
 `~/lau/lau.env` (chmod 600). SSH: `ssh -p 33 liberale@cp13.nordicway.dk`.
 
 - ✅ Subdomænet + AutoSSL, Node-appen, `flyt-data` (hb, hb_2027, rapporter, rettelser), `lau koer beregn` (48 kalendere),
