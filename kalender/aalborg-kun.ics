@@ -432,4 +432,26 @@ GEO:57.05635;9.90299
 URL:https://www.facebook.com/events/1900294934714656/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1104365782518461@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261117T160000Z
+DTEND:20261117T180000Z
+SUMMARY:🎤 Tværpolitisk debataften 🎤
+DESCRIPTION:LAU Aalborg\n\n🎤 Tværpolitisk debataften 🎤\n\nKan du arg
+ umentere dig ud af (næsten) alt? Eller vil du gerne blive bedre til det? 
+ Så kom med\, når vi sammen inviterer til tværpolitisk debataften!\n\nFo
+ rmatet er inspireret af DM i Debat: Deltagerne debatterer mod hinanden\, o
+ g et panel af dygtige debattører er dommere. De bedømmer debatterne og g
+ iver feedback og gode tips\, så alle går hjem lidt skarpere end de kom 
+ 💪\n\nUanset om du selv vil på banen eller bare vil heppe og se på\, e
+ r du velkommen. Det handler om god debat\, gode argumenter og en hyggelig 
+ aften på tværs af partierne.\n\n📅 Tirsdag d. 17. november\n🕖 Kl. 1
+ 7.0\n\nhttps://www.facebook.com/events/1104365782518461/
+CATEGORIES:LAU Aalborg
+LOCATION:Kastetvej 24\, 9000 Aalborg\, Danmark
+GEO:57.05305;9.90749
+URL:https://www.facebook.com/events/1104365782518461/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR

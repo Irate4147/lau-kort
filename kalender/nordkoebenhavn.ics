@@ -658,17 +658,44 @@ URL:https://www.facebook.com/events/2958852254476565/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1137869942055556@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261111T180000Z
+DTEND:20261111T200000Z
+SUMMARY:LAU NordKBH på udebane med sexarbejder
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af en sexarbejder\, der vi
+ l holde et oplæg. Der bliver rig mulighed for spørgsmål og gode snakke\
+ n\nhttps://www.facebook.com/events/1137869942055556/
+CATEGORIES:LAU Nordkøbenhavn
+URL:https://www.facebook.com/events/1137869942055556/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:3036042386787504@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
 DTEND:20261122T180000Z
-SUMMARY:Organisatorisk kursus
+SUMMARY:Julekursus / Organisatorisk kursus
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/3036042386787504/
 CATEGORIES:Landsforeningen
 LOCATION:Højsetvej 25\, 6534 Agerskov\, Danmark
 GEO:55.10601;9.17503
 URL:https://www.facebook.com/events/3036042386787504/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1130640989452628@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261126T170000Z
+DTEND:20261126T190000Z
+SUMMARY:CEO-Peter i NordKBH
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af CEO-Peter. Der vil ogs
+ å være pizza!\n\nhttps://www.facebook.com/events/1130640989452628/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Hellerupvej 24\, Hellerup
+GEO:55.73221;12.57035
+URL:https://www.facebook.com/events/1130640989452628/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

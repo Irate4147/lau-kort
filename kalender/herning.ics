@@ -431,11 +431,33 @@ URL:https://www.facebook.com/events/1437806824847860/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:973594175344791@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261111T170000Z
+DTEND:20261111T190000Z
+SUMMARY:Tour del byråd - Herning
+DESCRIPTION:LAU Herning\n\nKom med til en spændende eftermiddag i Herning\
+ , hvor vi får mulighed for at møde Kenneth Storm og høre om hans arbejd
+ e.\nKenneth vil tage os med rundt og give et indblik i hans hverdag\, erfa
+ ringer og de opgaver\, han arbejder med. Undervejs bliver der mulighed for
+  at stille spørgsmål og få en nærmere forståelse af både hans faglig
+ e arbejde og de udfordringer og muligheder\, der følger med.\n\nArrangeme
+ ntet er en oplagt chance for at få ny viden\, spændende perspektiver og 
+ en god oplevelse sammen med andre deltagere.\n\nVi glæder os til at se je
+ r!\n\nØvrige praktiske informationer vil følge.\n\nhttps://www.facebook.
+ com/events/973594175344791/
+CATEGORIES:LAU Herning
+LOCATION:Torvet 5\, 7400 Herning\, Danmark
+GEO:56.13661;8.97494
+URL:https://www.facebook.com/events/973594175344791/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:3036042386787504@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
 DTEND:20261122T180000Z
-SUMMARY:Organisatorisk kursus
+SUMMARY:Julekursus / Organisatorisk kursus
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/3036042386787504/
 CATEGORIES:Landsforeningen

@@ -441,12 +441,12 @@ DESCRIPTION:LAU Fyn\n\n📚💙 LAU Fyn tager til Alex Vanopslaghs bogturn
  é!\n\nDen 28. oktober går turen til Svendborg\, hvor Alex Vanopslagh læ
  gger vejen forbi Svendborg Teater på sin bogturné – og selvfølgelig t
  ager LAU Fyn med!\n\nOplægget foregår fra kl. 18.30–20.00\, og planen 
- er\, at vi tager samlet afsted fra Odense. Nærmere information om transpo
- rt og mødested kommer\, når vi nærmer os. 🚆\n\n🎟️ GRATIS BILLET
-  TIL DE 10 FØRSTE!\n\nLAU Fyn giver en billet til de første 10 personer\
- , der trykker “Deltager” på arrangementet. Er du blandt de 10 første
- \, sender vi dig en besked med en bekræftelse på\, at du har fået en bi
- llet.\n\nSå hvi\n\nhttps://www.facebook.com/events/1466109438672457/
+ er\, at vi tager samlet afsted fra Odense. Vi tager afsted fra Odense Bane
+ gård klokken 16:45. Billetten vil blive givet ved indgangen. \n. 🚆\n\n
+ 🎟️ GRATIS BILLET TIL DE 10 FØRSTE!\n\nLAU Fyn giver en billet til de
+  første 10 personer\, der trykker “Deltager” på arrangementet. Er du
+  blandt de 10 første\, sender vi dig en besked med en bekræftelse på\, 
+ at du har\n\nhttps://www.facebook.com/events/1466109438672457/
 CATEGORIES:LAU Fyn
 LOCATION:Odense\, Denmark
 URL:https://www.facebook.com/events/1466109438672457/
@@ -473,17 +473,61 @@ URL:https://www.facebook.com/events/1437806824847860/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1022845084167988@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261111T180000Z
+DTEND:20261111T200000Z
+SUMMARY:Oplæg med ordfører Victor Galland
+DESCRIPTION:LAU Fyn\n\n💸 MINDRE BØVL\, MERE BUSINESS! 📈\n\nHvordan s
+ kaber vi bedre vilkår for danske virksomheder? Og hvordan sikrer vi\, at 
+ det bliver lettere at drive virksomhed i Danmark uden at drukne i regler\,
+  bureaukrati og papirarbejde? 🤯\n\nDen 11. november inviterer LAU Fyn t
+ il en spændende aften med vores ordfører Victor Galland\, hvor vi sætte
+ r fokus på danske virksomheders fremtid og de udfordringer\, de står ove
+ rfor.\n\n🇩🇰 Skal det være lettere at være virksomhedsejer i Danmar
+ k?\n\nDanmark er fyldt med gode idéer\, iværksættere og virksomheder\, 
+ der hver dag skaber arbejdspladser\, vækst og velstand. Men hvordan giver
+ \n\nhttps://www.facebook.com/events/1022845084167988/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42\, 5000 Odense C\, Danmark
+GEO:55.39395;10.38392
+URL:https://www.facebook.com/events/1022845084167988/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:3036042386787504@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
 DTEND:20261122T180000Z
-SUMMARY:Organisatorisk kursus
+SUMMARY:Julekursus / Organisatorisk kursus
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/3036042386787504/
 CATEGORIES:Landsforeningen
 LOCATION:Højsetvej 25\, 6534 Agerskov\, Danmark
 GEO:55.10601;9.17503
 URL:https://www.facebook.com/events/3036042386787504/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1096403176347527@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261201T173000Z
+DTEND:20261201T193000Z
+SUMMARY:Oplæg med ordfører David Klausen
+DESCRIPTION:LAU Fyn\n\n🦠 FRA PANDEMIER TIL FREMTIDENS LØSNINGER – MED
+  ÆBLESKIVEHYGGE! 🥞🎄\n\nHvordan har sygdomme og pandemier formet vor
+ es samfund? Og kan innovation\, teknologi og økonomisk vækst være med t
+ il at sikre en sundere fremtid for os alle? 💡\n\nDen 1. december invite
+ rer LAU Fyn til en spændende aften med vores ordfører David Klausen\, so
+ m tager os med på en rejse gennem sygdomshistorien og den sundhedsteknolo
+ giske udvikling.\n\nVi dykker ned i nogle af historiens største pandemier
+  og ser nærmere på\, hvordan fremtidens teknologi og nye løsninger kan 
+ hjælpe os med at håndtere sundhedsudfordringer.\n\nMed et liberalt \n\nh
+ ttps://www.facebook.com/events/1096403176347527/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42\, 5000 Odense C\, Danmark
+GEO:55.39395;10.38392
+URL:https://www.facebook.com/events/1096403176347527/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

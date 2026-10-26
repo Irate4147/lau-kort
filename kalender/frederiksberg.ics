@@ -491,8 +491,7 @@ DESCRIPTION:LAU Frederiksberg\n\nHvordan fører man valgkamp i en rød by\,
  er traditionelt har vajet højt? Hvordan trænger man igennem med libera\n
  \nhttps://www.facebook.com/events/1114259494448058/
 CATEGORIES:LAU Frederiksberg
-LOCATION:Bülowshallen\, Bülowsvej 34\, 1879 Frederiksberg\, 1870 Frederik
- sberg\, Denmark
+LOCATION:Bülowshallen
 GEO:55.68212;12.54502
 URL:https://www.facebook.com/events/1114259494448058/
 STATUS:CONFIRMED
@@ -502,13 +501,35 @@ UID:3036042386787504@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
 DTEND:20261122T180000Z
-SUMMARY:Organisatorisk kursus
+SUMMARY:Julekursus / Organisatorisk kursus
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/3036042386787504/
 CATEGORIES:Landsforeningen
 LOCATION:Højsetvej 25\, 6534 Agerskov\, Danmark
 GEO:55.10601;9.17503
 URL:https://www.facebook.com/events/3036042386787504/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3474248869414855@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261126T173000Z
+DTEND:20261126T193000Z
+SUMMARY:Vinsmagning med LAU Frederiksberg 🍇
+DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til Vinsmagnin
+ g!\n\nKom med på en aften gennem Spanien\, Frankrig og Italien – tre la
+ nde\, der tilsammen står for næsten halvdelen af verdens vin. Vi smager 
+ ni vine\, tre hvide og seks røde\, og bevæger os fra friske hvidvine ove
+ r spansk Tempranillo og solvarme vine fra Sydfrankrig til Italiens store k
+ lassikere.\n\nAftenen ledes af Jens fra Vino Vino\, som har en WSET-uddann
+ else. Han fortæller om områderne\, druerne og historien bag vinene\, og 
+ om hvorfor samme drue kan smage vidt forskelligt alt efter klima og lagrin
+ g. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2\,\n\nhttps:
+ //www.facebook.com/events/3474248869414855/
+CATEGORIES:LAU Frederiksberg
+LOCATION:Finsensvej 10a 2000 Frederiksberg
+GEO:55.68126;12.52005
+URL:https://www.facebook.com/events/3474248869414855/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

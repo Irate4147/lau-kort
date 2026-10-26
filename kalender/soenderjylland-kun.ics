@@ -136,4 +136,20 @@ GEO:55.045598906535;9.4164447665095
 URL:https://www.facebook.com/events/2139656093648694/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:2696804894106805@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261101T153000Z
+DTEND:20261101T173000Z
+SUMMARY:Kickstart af TikTok og Hyggeaften i LAU Sønderjylland!
+DESCRIPTION:LAU Sønderjylland\n\nVi laver et hyggearrangement i det sønde
+ rjyske for at lære hinanden bedre at kende!\n\nMad og drikkevarer vil væ
+ re tilstede under aftenen :)\n\nMere info kommer snart\n\nhttps://www.face
+ book.com/events/2696804894106805/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/2696804894106805/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
