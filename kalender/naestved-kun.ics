@@ -299,9 +299,28 @@ DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
+LOCATION:stars.dk
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1843965643270661@lau-kort
+DTSTAMP:20261028T060003Z
+DTSTART:20261120T180000Z
+DTEND:20261120T200000Z
+SUMMARY:oplæg med udlændinge- og integrationsordfører Asta Sophie Georgs
+ en
+DESCRIPTION:LAU Næstved\n\nFredag den 20 november får vi besøg af Lau's 
+ udlændinge og integrationsordfører Asta Sophie Georgsen\, som vil holde 
+ et oplæg omkring hendes spændende ordførerskab\, og hvordan vi har udvi
+ klet os i forhold til udlændinge fra de første kom her til og så til nu
+ . \n\nvi håber på at se en masse af jer🙌💙\n\nhttps://www.facebook.
+ com/events/1843965643270661/
+CATEGORIES:LAU Næstved
+LOCATION:Jernbanegade 4A\, 4700 Næstved
+GEO:55.23009;11.76183
+URL:https://www.facebook.com/events/1843965643270661/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
