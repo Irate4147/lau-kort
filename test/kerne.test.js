@@ -86,6 +86,16 @@ test('to mål pr. gruppe (punktdiagram): antal arrangementer og deltagere pr. fo
   assert.equal(koer(L, {type: 'Arrangement', gruppering: {egenskab: 'kategori'}}).grupper[0].vaerdi2, undefined);
 });
 
+test('foreningens tal for det seneste år (til punktdiagrammet)', () => {
+  for (const f of L.alle('Forening')) {
+    const aar = L.linkede(f, 'arrangementer').filter(a => !a.v.aflyst && !a.v.forsvundet && a.v.slut < NU && +NU - +a.v.start <= 365 * 864e5);
+    assert.equal(L.vaerdi(f, 'afholdtAar'), aar.length, f.id);
+    const d = aar.map(a => a.v.deltager).filter(x => x != null);
+    assert.equal(L.vaerdi(f, 'deltagereAar'), d.length ? d.reduce((x, y) => x + y, 0) : null, f.id);
+    assert.equal(L.vaerdi(f, 'deltagereGns'), d.length ? d.reduce((x, y) => x + y, 0) / d.length : null, f.id);
+  }
+});
+
 test('mål pr. forening (til kortet)', () => {
   const r = koer(L, {type: 'Arrangement', filtre: [{egenskab: 'status', er: ['afholdt']}]});
   const pr = prObjekt(L, r, {funktion: 'antal'}, 'Forening');
