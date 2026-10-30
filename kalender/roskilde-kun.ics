@@ -811,9 +811,32 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
  ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
  ps://www.facebook.com/events/1139112898775576/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1139112898775576/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1610222356939838@lau-kort
+DTSTAMP:20261030T060004Z
+DTSTART:20261130T180000Z
+DTEND:20261130T200000Z
+SUMMARY:LAU ROSKILDE FÅR BESØG AF RASMUS MALVER!
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF RASMUS MALVER!\n\nH
+ vor meget magt skal staten egentlig have over dig? Og hvem beskytter dine 
+ rettigheder\, når staten selv går over grænsen?\n\nRetssikkerhed\, menn
+ eskerettigheder og personlig frihed er nogle af de vigtigste grundsten i e
+ t liberalt demokrati. Men hvad sker der\, når staten ikke selv overholder
+  de regler\, den kræver\, at borgerne følger?\n\nDet skal vi blive meget
+  klogere på!\n\nDerfor får LAU Roskilde besøg af Rasmus Malver\, jurist
+  med speciale i menneskerettigheder og en markant stemme i debatten om sta
+ tens magt\, borgernes rettigheder og myndighedernes ansvar.\n\n\n\nhttps:/
+ /www.facebook.com/events/1610222356939838/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1610222356939838/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
