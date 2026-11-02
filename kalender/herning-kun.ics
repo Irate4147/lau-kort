@@ -157,4 +157,21 @@ GEO:56.492053499423;8.5940712915872
 URL:https://www.facebook.com/events/4136695753289874/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:2533035123863949@lau-kort
+DTSTAMP:20261102T060003Z
+DTSTART:20261106T112000Z
+DTEND:20261106T132000Z
+SUMMARY:Uddeling på Herningsholm gymnasium HHX
+DESCRIPTION:LAU Herning\n\nHej LAU Herning\nFredag d. 6/11 kommer Lucas og 
+ Nicolai forbi fra UU udvalget og laver en uddeling på Herningsholm gymnas
+ ium HHX i frokostpausen (12:25-12:55)\nSå kom forbi hvis du har tid og ly
+ st til at hjælpe os med det.\n\nhttps://www.facebook.com/events/253303512
+ 3863949/
+CATEGORIES:LAU Herning
+LOCATION:Herningsholm HHX og HTX
+GEO:56.14758;8.99189
+URL:https://www.facebook.com/events/2533035123863949/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
