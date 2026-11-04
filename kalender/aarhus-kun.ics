@@ -311,4 +311,23 @@ GEO:56.1506;10.2047
 URL:https://www.facebook.com/events/3490883764418561/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1082490794825957@lau-kort
+DTSTAMP:20261104T060003Z
+DTSTART:20261127T170000Z
+DTEND:20261127T190000Z
+SUMMARY:Fredagsbar og quizaften
+DESCRIPTION:LAU Aarhus\n\nLAU Århus er i gang igen! 🎉\n\nOg hvad er en 
+ bedre måde at starte på end med en god gammeldags fredagsbar?\n\nVi mød
+ es på Harmonien fredag d. 27 november kl. 18:00 til en hyggelig aften med
+  quiz\, øl og snak.\n\n📍 Harmonien\, Mejlgade 109\, 8000 Århus C\n
+ 📅 Fredag d. 27. november\n🕖 Kl. 18:00\n\nOBS: Det er et brunt værts
+ hus\, så arrangementet er for 18+.\n\nVi ses! 🍻\n\nhttps://www.faceboo
+ k.com/events/1082490794825957/
+CATEGORIES:LAU Aarhus
+LOCATION:Mejlgade 109\, 8000 Aarhus C\, Danmark
+GEO:56.16312;10.21574
+URL:https://www.facebook.com/events/1082490794825957/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR

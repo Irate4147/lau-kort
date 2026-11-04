@@ -815,4 +815,26 @@ GEO:55.66678;12.52878
 URL:https://www.facebook.com/events/1647538973659918/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1101595465912804@lau-kort
+DTSTAMP:20261104T060003Z
+DTSTART:20261212T173000Z
+DTEND:20261212T193000Z
+SUMMARY:LAU Københavns legendariske julefrokost 2026
+DESCRIPTION:LAU København\n\nNu er det endelig tid til LAU Københavns leg
+ endariske julefrokost 🎄🍻\n\nDen 12. december inviterer vi til en af 
+ årets helt store aftener på La Boucherie. Der bliver god mad\, fri bar\,
+  masser af hygge og selvfølgelig rig mulighed for at lære både nye og g
+ amle LAU’ere endnu bedre at kende.\n\nOm du er helt ny eller har været 
+ med længe\, så er julefrokosten en af de aftener\, hvor man bare skal me
+ d. Det er her\, man får snakket med folk\, man normalt ikke når at snakk
+ e med til oplæg og møder\, og hvor aftenen hurtigt udvikler sig fra jule
+ hygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍
+  La B\n\nhttps://www.facebook.com/events/1101595465912804/
+CATEGORIES:LAU København
+LOCATION:La Boucherie
+GEO:55.67792;12.57058
+URL:https://www.facebook.com/events/1101595465912804/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
