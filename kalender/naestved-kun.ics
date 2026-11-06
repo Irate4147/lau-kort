@@ -299,7 +299,7 @@ DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk
+LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
 STATUS:CONFIRMED
@@ -321,6 +321,28 @@ CATEGORIES:LAU Næstved
 LOCATION:Jernbanegade 4A\, 4700 Næstved
 GEO:55.23009;11.76183
 URL:https://www.facebook.com/events/1843965643270661/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1113082408140914@lau-kort
+DTSTAMP:20261106T060003Z
+DTSTART:20261127T194500Z
+DTEND:20261127T214500Z
+SUMMARY:Bowling med LAU Næstved
+DESCRIPTION:LAU Næstved\n\n🎳 BOWLING MED LAU NÆSTVED 🎳\n\n\nNyd en 
+ hyggelig aften i selskab med LAU Næstved når vi tager forbi Bowl' n fun 
+ Næstved.\n\nVi har booket et par baner i Næstved bowlinghal og håber p
+ å du vil bruge et par hyggelige timer sammen med os. Der er egenbetaling 
+ på en sølle 50'er\, til gengæld er Lau Næstved værter for første dri
+ kkevare og garantere en masse hygge 🥃\n\nVi har banerne fra klokken 21:
+ 00\, så vi mødes klokken 20:40 så vi kan nå at få skiftet sko og komm
+ e på plads. Senere hen på aftenen tænker vi at vi kan drage ind mod Næ
+ stved by og fortsætte det gode humør.\n\n\nNB: Stærk begrænset antal b
+ illetter.\n\nhttps://www.facebook.com/events/1113082408140914/
+CATEGORIES:LAU Næstved
+LOCATION:Erantisvej 38\, 4700 Næstved\, Danmark
+GEO:55.23656;11.7774
+URL:https://www.facebook.com/events/1113082408140914/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

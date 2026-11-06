@@ -662,11 +662,11 @@ UID:1137869942055556@lau-kort
 DTSTAMP:20261026T060003Z
 DTSTART:20261111T180000Z
 DTEND:20261111T200000Z
-SUMMARY:LAU NordKBH på udebane med sexarbejder
+SUMMARY:LAU NordKBH på udebane med sexarbejder og GRATIS PIZZA
 DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af en sexarbejder\, der vi
  l holde et oplæg. Der bliver rig mulighed for spørgsmål og gode snakke.
-  Der er desuden øl og sodavand.\n\nhttps://www.facebook.com/events/113786
- 9942055556/
+  Der er desuden GRATIS PIZZA\, øl og sodavand.\n\nhttps://www.facebook.co
+ m/events/1137869942055556/
 CATEGORIES:LAU Nordkøbenhavn
 LOCATION:Frederiksdalsvej 107
 GEO:55.79459;12.46795
@@ -699,6 +699,32 @@ CATEGORIES:LAU Nordkøbenhavn
 LOCATION:Hellerupvej 24\, Hellerup
 GEO:55.73221;12.57035
 URL:https://www.facebook.com/events/1130640989452628/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1664590761713616@lau-kort
+DTSTAMP:20261106T060003Z
+DTSTART:20261202T180000Z
+DTEND:20261202T200000Z
+SUMMARY:Ordføreroplæg: Asta Georgsen
+DESCRIPTION:LAU Nordkøbenhavn\n\nKom og hør et spændende oplæg med LAU
+ ’s udlændinge- og integrationsordfører.\n\nhttps://www.facebook.com/ev
+ ents/1664590761713616/
+CATEGORIES:LAU Nordkøbenhavn
+URL:https://www.facebook.com/events/1664590761713616/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:4768254920081901@lau-kort
+DTSTAMP:20261106T060003Z
+DTSTART:20261217T180000Z
+DTEND:20261217T200000Z
+SUMMARY:Juleafslutning med social- og sundhedsordfører: David Klausen
+DESCRIPTION:LAU Nordkøbenhavn\n\nJuleafslutning med et oplæg fra vores so
+ cial- og sundhedsordfører og æbleskiver og gløgg\n\nhttps://www.faceboo
+ k.com/events/4768254920081901/
+CATEGORIES:LAU Nordkøbenhavn
+URL:https://www.facebook.com/events/4768254920081901/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
