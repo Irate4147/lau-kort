@@ -2476,9 +2476,9 @@ function bindAdvarsler(el) {
   bindForeningLinks(el);
   el.querySelectorAll('[data-adv-analyse]').forEach(b => b.addEventListener('click', () => { visFane('analyser'); aabnAnalyse(b.dataset.advAnalyse); }));
 }
-/** Boksen "Kræver handling nu" og den grønne "Godt gået" øverst i oversigten (over Momentum). Skjult, når de er tomme. */
+/** Boksen "Kræver handling nu" og den grønne "Den kommende uge" øverst i oversigten (over Momentum). Skjult, når de er tomme. */
 function renderAdvarsler() {
-  const alle = advarsler(), list = alle.filter(x => x.niveau !== 'positiv'), gode = alle.filter(x => x.niveau === 'positiv');
+  const list = advarsler().filter(x => x.niveau !== 'positiv');
   const el = $('advarsler'), godt = $('fremhaevet');
   if (el) {
     el.hidden = !list.length;
@@ -2486,10 +2486,14 @@ function renderAdvarsler() {
     el.innerHTML = !list.length ? '' : `<h2>Kræver handling nu <span class="adv-antal${kritiske ? ' kritisk' : ''}">${list.length}</span></h2>${advarselHtml(list)}`;
     bindAdvarsler(el);
   }
-  if (godt) {
-    godt.hidden = !gode.length;
-    godt.innerHTML = !gode.length ? '' : `<h2>Godt gået <span class="adv-antal positiv">${gode.length}</span></h2>${advarselHtml(gode)}`;
-    bindAdvarsler(godt);
+  if (godt) { // Den kommende uges arrangementer (højst 5) i stedet for "Godt gået"; de positive står stadig i foreningspanelet.
+    const uge = DATA.events.filter(e => !e.forsvundet && !e.aflyst && e.slutD >= NOW && e.startD - NOW <= 7 * DAY
+      && DATA.byName.has(e.forening)).sort((a, b) => a.startD - b.startD);
+    godt.hidden = false;
+    godt.innerHTML = `<h2>Den kommende uge <span class="adv-antal positiv">${uge.length}</span></h2>${
+      evList(uge.slice(0, 5), true, 'Ingen arrangementer de næste 7 dage.')}${
+      uge.length > 5 ? `<p class="meta">+ ${uge.length - 5} flere</p>` : ''}`;
+    bindForeningLinks(godt);
   }
 }
 
