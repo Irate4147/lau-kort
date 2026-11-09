@@ -5121,6 +5121,8 @@ DESCRIPTION:LAU Nordsjælland\n\n🕌 Kig ind på Islamisering\, sammen med
  blive klogere på et vigtigt og relevant samfundsemne.\n\n🗓️ Dato: 10
  . nov\n\nhttps://www.facebook.com/events/1126974533253577/
 CATEGORIES:LAU Nordsjælland
+LOCATION:Hørsholm Bibliotek
+GEO:55.880762563166;12.496766131869
 URL:https://www.facebook.com/events/1126974533253577/
 STATUS:CONFIRMED
 END:VEVENT
@@ -5135,9 +5137,26 @@ DESCRIPTION:LAU Næstved\n\nAlex Vanopslagh har skrevet en ny bog\, og komm
  åber derfor at se mange af jer i Vordingborg !\n\ndu kan købe en billet 
  via linket nedenfor\n\n\nhttps://www.facebook.com/events/1408115147328233/
 CATEGORIES:LAU Næstved
-LOCATION:stars.dk\, Algade 84F\, 4760 Vordingborg\, Danmark
+LOCATION:stars.dk
 GEO:55.00804;11.90929
 URL:https://www.facebook.com/events/1408115147328233/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2919084528460974@lau-kort
+DTSTAMP:20261109T060003Z
+DTSTART:20261111T160000Z
+DTEND:20261111T180000Z
+SUMMARY:SoMe og Hyggeaften i LAU Sønderjylland!
+DESCRIPTION:LAU Sønderjylland\n\nVi laver et hyggearrangement i det sønde
+ rjyske for at lære hinanden bedre at kende! Udover starter vi op for vore
+ s Sociale medier\, med nye midler foreningen har anskaffet.\n\nGratis Pizz
+ a og drikkevarer vil være tilstede under aftenen 🙂\n\n\nhttps://www.fa
+ cebook.com/events/2919084528460974/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset\, Nygade 23 A\, 6200 Aabenraa\, Denmark
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/2919084528460974/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5153,7 +5172,7 @@ DESCRIPTION:LAU København\n\nKom og hør tidligere formand for Ungdommens
   lige nu.\n\nhttps://www.facebook.com/events/1071150909256051/
 CATEGORIES:LAU København
 LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
- sen\, Borgergade 28\, 1300 København K\, Danmark
+ sen
 GEO:55.68515;12.58663
 URL:https://www.facebook.com/events/1071150909256051/
 STATUS:CONFIRMED
@@ -5274,7 +5293,8 @@ DESCRIPTION:LAU Frederiksberg\n\nHvordan fører man valgkamp i en rød by\,
  er traditionelt har vajet højt? Hvordan trænger man igennem med libera\n
  \nhttps://www.facebook.com/events/1114259494448058/
 CATEGORIES:LAU Frederiksberg
-LOCATION:Bülowshallen
+LOCATION:Bülowshallen\, Bülowsvej 34\, 1879 Frederiksberg\, 1870 Frederik
+ sberg\, Denmark
 GEO:55.68212;12.54502
 URL:https://www.facebook.com/events/1114259494448058/
 STATUS:CONFIRMED
@@ -5480,7 +5500,8 @@ SUMMARY:Bestyrelsesmøde December
 DESCRIPTION:LAU Roskilde\n\nDagsorden og lokale kommer snarest\n\nhttps://w
  ww.facebook.com/events/2282793162534325/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/2282793162534325/
 STATUS:CONFIRMED
@@ -5543,6 +5564,27 @@ URL:https://www.facebook.com/events/2029863341034375/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1586084473322283@lau-kort
+DTSTAMP:20261109T060003Z
+DTSTART:20261211T170000Z
+DTEND:20261213T170000Z
+SUMMARY:Hyttetur med LAU NordKBH
+DESCRIPTION:LAU Nordkøbenhavn\n\nTilmelding foregår her: https://docs.goo
+ gle.com/forms/d/e/1FAIpQLSfNVgYpkNgmCJQExOg4FrfslME95N1p4WwbXMiYN2SmIXI1pA
+ /viewform?usp=publish-editor\nVI GLÆDER OS SÅ MEGET!\nVi har fået mulig
+ hed for at leje en hytte den 11. til 13. december og vi vil gerne have dig
+  med.\n\nDer er begrænsede pladser så skynd dig at melde dig til!!\n\nPa
+ rkering foregår på grunden for op til 6 biler.\nMan kan ligeledes parker
+ e på græsset syd for grusvejen\, lige før hytten.\nHele turen inkl. fæ
+ lles transport er gratis\, da vi har fået penge af DUF\, dog ikke til alk
+ ohol😉\n\nhttps://www.facebook.com/events/1586084473322283/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Herslevvej 47\, 4000 Roskilde\, Danmark
+GEO:55.67573;11.96887
+URL:https://www.facebook.com/events/1586084473322283/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2071150373568941@lau-kort
 DTSTAMP:20261019T123034Z
 DTSTART:20261211T180000Z
@@ -5573,7 +5615,7 @@ DESCRIPTION:LAU København\n\nNu er det endelig tid til LAU Københavns leg
  hygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍
   La B\n\nhttps://www.facebook.com/events/1101595465912804/
 CATEGORIES:LAU København
-LOCATION:La Boucherie
+LOCATION:La Boucherie\, Vestergade 10\, 1456 København K\, Danmark
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1101595465912804/
 STATUS:CONFIRMED

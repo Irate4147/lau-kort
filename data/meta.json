@@ -353,6 +353,37 @@
     "Viborg"
    ],
    "begivenheder": 31
+  },
+  {
+   "id": "HdSCbJ1VNN7qMRCWv",
+   "tid": "2026-11-09T06:00:03Z",
+   "foreninger": [
+    "Aalborg",
+    "Aarhus",
+    "Bornholm",
+    "Egedal-Furesø",
+    "Frederiksberg",
+    "Fyn",
+    "Herning",
+    "Horsens",
+    "Kolding",
+    "Kronjylland",
+    "København",
+    "Køge Bugt",
+    "Landsforeningen",
+    "Nordkøbenhavn",
+    "Nordsjælland",
+    "Næstved",
+    "Roskilde",
+    "Silkeborg",
+    "Sydvestjylland",
+    "Sønderjylland",
+    "Vejle",
+    "Vestegnen",
+    "Vestsjælland",
+    "Viborg"
+   ],
+   "begivenheder": 31
   }
  ],
  "behandlet": [
@@ -381,6 +412,7 @@
   "G4UGzTVRaaX9VjLcU",
   "GLbhwQgYPhiJChb8v",
   "GpotLrLXcmMiu2L7n",
+  "HdSCbJ1VNN7qMRCWv",
   "IlwnA2PIR6tbEk8OZ",
   "L3KatGGv1Jku96nWQ",
   "LXRjQ3bSZm1F3ecuA",
@@ -444,7 +476,7 @@
   "zV457MIVjJYnjCYU1",
   "zz2FSQsbvQfUwolup"
  ],
- "opdateret": "2026-11-06T13:47:05Z",
+ "opdateret": "2026-11-09T15:17:23Z",
  "historik": {
   "koersler": [
    {

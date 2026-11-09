@@ -152,4 +152,21 @@ GEO:55.045598906535;9.4164447665095
 URL:https://www.facebook.com/events/2696804894106805/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:2919084528460974@lau-kort
+DTSTAMP:20261109T060003Z
+DTSTART:20261111T160000Z
+DTEND:20261111T180000Z
+SUMMARY:SoMe og Hyggeaften i LAU Sønderjylland!
+DESCRIPTION:LAU Sønderjylland\n\nVi laver et hyggearrangement i det sønde
+ rjyske for at lære hinanden bedre at kende! Udover starter vi op for vore
+ s Sociale medier\, med nye midler foreningen har anskaffet.\n\nGratis Pizz
+ a og drikkevarer vil være tilstede under aftenen 🙂\n\n\nhttps://www.fa
+ cebook.com/events/2919084528460974/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset\, Nygade 23 A\, 6200 Aabenraa\, Denmark
+GEO:55.045598906535;9.4164447665095
+URL:https://www.facebook.com/events/2919084528460974/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
