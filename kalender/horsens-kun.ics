@@ -271,4 +271,21 @@ GEO:55.86257;9.84509
 URL:https://www.facebook.com/events/1732151117902019/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:2085631105453693@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261115T150000Z
+DTEND:20261115T170000Z
+SUMMARY:Brætspilsdag i LAU Horsens
+DESCRIPTION:LAU Horsens\n\nPå søndag har vi sat en rigitg hyggelig aften 
+ op til jer!\nForeningen har skaffet nye brætspil\, og de skal selvfølgel
+ ig testes!\n\nDer vil være gratis drikkevarer.\nHorsens Bibliotek klokken
+  16-senest 19.\n\nhttps://www.facebook.com/events/2085631105453693/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker\, Tobaksgården 12\, 8700 Horsens\, D
+ enmark
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/2085631105453693/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR

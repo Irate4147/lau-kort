@@ -5172,9 +5172,31 @@ DESCRIPTION:LAU København\n\nKom og hør tidligere formand for Ungdommens
   lige nu.\n\nhttps://www.facebook.com/events/1071150909256051/
 CATEGORIES:LAU København
 LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
- sen
+ sen\, Borgergade 28\, 1300 København K\, Danmark
 GEO:55.68515;12.58663
 URL:https://www.facebook.com/events/1071150909256051/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1140729072179087@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261111T173000Z
+DTEND:20261111T193000Z
+SUMMARY:Hvervningsoplæg v/ Ezekiel Rohde
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE INVITERER TIL HVERVNINGSAFTEN!\n\n
+ Hvad kan du vinde ved at hverve nye medlemmer\, og hvordan kommer du egent
+ lig i gang? \n\nLAU Roskilde inviterer til en hyggelig og lærerig hvervni
+ ngsaften\, hvor vi dykker ned i alt\, hvad du skal vide om medlemshvervnin
+ g!\n\nVi starter aftenen med et oplæg om de nuværende og kommende hvervn
+ ingspræmier\, hvorfor medlemshvervning spiller en vigtig rolle i forening
+ ens udvikling\, og hvordan du kan deltage i de forskellige hvervningskonku
+ rrencer.\n\nDerefter tager vi en snak om\, hvordan man bedst griber hvervn
+ ingen an\, og hvordan man kan invitere interesserede t\n\nhttps://www.face
+ book.com/events/1140729072179087/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1140729072179087/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5235,6 +5257,43 @@ CATEGORIES:LAU Kronjylland
 LOCATION:Vestergade 15\, 8900 Randers C\, Danmark
 GEO:56.46094;10.0299
 URL:https://www.facebook.com/events/1762636368140971/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2085631105453693@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261115T150000Z
+DTEND:20261115T170000Z
+SUMMARY:Brætspilsdag i LAU Horsens
+DESCRIPTION:LAU Horsens\n\nPå søndag har vi sat en rigitg hyggelig aften 
+ op til jer!\nForeningen har skaffet nye brætspil\, og de skal selvfølgel
+ ig testes!\n\nDer vil være gratis drikkevarer.\nHorsens Bibliotek klokken
+  16-senest 19.\n\nhttps://www.facebook.com/events/2085631105453693/
+CATEGORIES:LAU Horsens
+LOCATION:Horsens Kommunes Biblioteker\, Tobaksgården 12\, 8700 Horsens\, D
+ enmark
+GEO:55.86512;9.84654
+URL:https://www.facebook.com/events/2085631105453693/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1101638619413102@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261116T160000Z
+DTEND:20261116T180000Z
+SUMMARY:Oplæg med Victor Galland
+DESCRIPTION:LAU Bornholm\n\nHvad står i vejen for et stærkere erhvervsliv
+ ? Hvordan gør vi det lettere at drive virksomhed\, skabe arbejdspladser o
+ g udvikle nye idéer?\n\nKom med til et spændende oplæg med Økonomi- og
+  Erhvervsordfører i LAU\, Victor Galland\, hvor vi sætter fokus på erhv
+ ervslivets udfordringer og\, hvordan vi finder løsningerne på dem.\n\nVi
+  tager selvfølgelig udgangspunkt i masser af liberal politik\, med fokus 
+ på frihed\, mindre bureaukrati og bedre vilkår for virksomhederne.🩵\n
+ \n\nhttps://www.facebook.com/events/1101638619413102/
+CATEGORIES:LAU Bornholm
+LOCATION:Rønne Bibliotek - Pingels Alle 1\, 3700 Rønne
+GEO:55.10176;14.70731
+URL:https://www.facebook.com/events/1101638619413102/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5348,6 +5407,22 @@ URL:https://www.facebook.com/events/3490883764418561/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1824396495371859@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261123T170000Z
+DTEND:20261123T190000Z
+SUMMARY:!Gratis pizza! Hvervningsaften med Ezekiel Rohde
+DESCRIPTION:LAU København\n\nKom og få noget at spise og drikke. Efterfø
+ lgende sætter vi os sammen\, hygger og hverver nye medlemmer.\n\nhttps://
+ www.facebook.com/events/1824396495371859/
+CATEGORIES:LAU København
+LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
+ sen
+GEO:55.68515;12.58663
+URL:https://www.facebook.com/events/1824396495371859/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1130640989452628@lau-kort
 DTSTAMP:20261026T060003Z
 DTSTART:20261126T170000Z
@@ -5378,8 +5453,7 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
  ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
  ps://www.facebook.com/events/1139112898775576/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
- k
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1139112898775576/
 STATUS:CONFIRMED
@@ -5401,7 +5475,8 @@ DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til Vinsmagnin
  g. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2\,\n\nhttps:
  //www.facebook.com/events/3474248869414855/
 CATEGORIES:LAU Frederiksberg
-LOCATION:Finsensvej 10a 2000 Frederiksberg
+LOCATION:Finsensvej 10a 2000 Frederiksberg\, Finsensvej 10A\, 2000 Frederik
+ sberg\, Danmark
 GEO:55.68126;12.52005
 URL:https://www.facebook.com/events/3474248869414855/
 STATUS:CONFIRMED
@@ -5615,7 +5690,7 @@ DESCRIPTION:LAU København\n\nNu er det endelig tid til LAU Københavns leg
  hygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍
   La B\n\nhttps://www.facebook.com/events/1101595465912804/
 CATEGORIES:LAU København
-LOCATION:La Boucherie\, Vestergade 10\, 1456 København K\, Danmark
+LOCATION:La Boucherie
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1101595465912804/
 STATUS:CONFIRMED

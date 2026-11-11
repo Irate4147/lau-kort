@@ -6415,12 +6415,12 @@
   "kommune": "Aabenraa",
   "online": false,
   "aflyst": false,
-  "deltager": 3,
-  "interesserede": 1,
-  "svar": 4,
+  "deltager": 4,
+  "interesserede": 2,
+  "svar": 6,
   "beskrivelse": "Vi laver et hyggearrangement i det sønderjyske for at lære hinanden bedre at kende! Udover starter vi op for vores Sociale medier, med nye midler foreningen har anskaffet.\n\nGratis Pizza og drikkevarer vil være tilstede under aftenen 🙂\n",
   "foerst_set": "2026-11-09T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6433,18 +6433,18 @@
   "url": "https://www.facebook.com/events/1071150909256051/",
   "start": "2026-11-11T17:00:00Z",
   "slut": "2026-11-11T19:00:00Z",
-  "sted": "Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Callesen",
+  "sted": "Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Callesen, Borgergade 28, 1300 København K, Danmark",
   "lat": 55.68515,
   "lng": 12.58663,
   "kommune": "København",
   "online": false,
   "aflyst": false,
-  "deltager": 10,
-  "interesserede": 24,
+  "deltager": 11,
+  "interesserede": 23,
   "svar": 34,
   "beskrivelse": "Kom og hør tidligere formand for Ungdommens Nordiske Råd, Ukraine-frivillig og folketingskandidat for Liberal Alliance, Anders Peter Hansen, fortælle om sine personlige oplevelser og historier fra Ukraine, samt en opdatering på, hvad der rører sig i Ukraine lige nu.",
   "foerst_set": "2026-10-12T14:45:28Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6472,6 +6472,30 @@
   "forsvundet": true
  },
  {
+  "id": "1140729072179087",
+  "forening": "Roskilde",
+  "foreninger": [
+   "Roskilde"
+  ],
+  "navn": "Hvervningsoplæg v/ Ezekiel Rohde",
+  "url": "https://www.facebook.com/events/1140729072179087/",
+  "start": "2026-11-11T17:30:00Z",
+  "slut": "2026-11-11T19:30:00Z",
+  "sted": "Byens hus - Roskilde",
+  "lat": 55.641591306591,
+  "lng": 12.08017500438,
+  "kommune": "Roskilde",
+  "online": false,
+  "aflyst": false,
+  "deltager": 3,
+  "interesserede": 2,
+  "svar": 5,
+  "beskrivelse": "LAU ROSKILDE INVITERER TIL HVERVNINGSAFTEN!\n\nHvad kan du vinde ved at hverve nye medlemmer, og hvordan kommer du egentlig i gang? \n\nLAU Roskilde inviterer til en hyggelig og lærerig hvervningsaften, hvor vi dykker ned i alt, hvad du skal vide om medlemshvervning!\n\nVi starter aftenen med et oplæg om de nuværende og kommende hvervningspræmier, hvorfor medlemshvervning spiller en vigtig rolle i foreningens udvikling, og hvordan du kan deltage i de forskellige hvervningskonkurrencer.\n\nDerefter tager vi en snak om, hvordan man bedst griber hvervningen an, og hvordan man kan invitere interesserede t",
+  "foerst_set": "2026-11-11T06:00:04Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
+  "forsvundet": false
+ },
+ {
   "id": "1137869942055556",
   "forening": "Nordkøbenhavn",
   "foreninger": [
@@ -6488,11 +6512,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 4,
-  "interesserede": 18,
-  "svar": 22,
+  "interesserede": 17,
+  "svar": 21,
   "beskrivelse": "Vi får besøg af en sexarbejder, der vil holde et oplæg. Der bliver rig mulighed for spørgsmål og gode snakke. Der er desuden GRATIS PIZZA, øl og sodavand.",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6511,12 +6535,12 @@
   "kommune": "Odense",
   "online": false,
   "aflyst": false,
-  "deltager": 5,
-  "interesserede": 4,
+  "deltager": 6,
+  "interesserede": 3,
   "svar": 9,
   "beskrivelse": "💸 MINDRE BØVL, MERE BUSINESS! 📈\n\nHvordan skaber vi bedre vilkår for danske virksomheder? Og hvordan sikrer vi, at det bliver lettere at drive virksomhed i Danmark uden at drukne i regler, bureaukrati og papirarbejde? 🤯\n\nDen 11. november inviterer LAU Fyn til en spændende aften med vores ordfører Victor Galland, hvor vi sætter fokus på danske virksomheders fremtid og de udfordringer, de står overfor.\n\n🇩🇰 Skal det være lettere at være virksomhedsejer i Danmark?\n\nDanmark er fyldt med gode idéer, iværksættere og virksomheder, der hver dag skaber arbejdspladser, vækst og velstand. Men hvordan giver",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6540,7 +6564,55 @@
   "svar": 12,
   "beskrivelse": "Retssikkerhed på skatteområdet\n\nHvad sker der, når Skattestyrelsen begår fejl? Har borgerne reelt en fair chance i mødet med skattemyndighederne? Og hvordan sikrer vi, at staten ikke bliver både anklager, dommer og bøddel?\n\nDet er nogle af de spørgsmål, vi tager op, når vi inviterer til en spændende aften om retssikkerhed på skatteområdet!\n\nVi får besøg af Victor Galland, erhvervs- og økonomiordfører, og Nicolai Melholt, retsordfører for Liberal Alliances Ungdom, som vil sætte fokus på borgernes rettigheder, myndighedernes magt og de retssikkerhedsmæssige udfordringer i det danske skattesystem",
   "foerst_set": "2026-10-30T06:00:04Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
+  "forsvundet": false
+ },
+ {
+  "id": "2085631105453693",
+  "forening": "Horsens",
+  "foreninger": [
+   "Horsens"
+  ],
+  "navn": "Brætspilsdag i LAU Horsens",
+  "url": "https://www.facebook.com/events/2085631105453693/",
+  "start": "2026-11-15T15:00:00Z",
+  "slut": "2026-11-15T17:00:00Z",
+  "sted": "Horsens Kommunes Biblioteker, Tobaksgården 12, 8700 Horsens, Denmark",
+  "lat": 55.86512,
+  "lng": 9.84654,
+  "kommune": "Horsens",
+  "online": false,
+  "aflyst": false,
+  "deltager": 4,
+  "interesserede": 3,
+  "svar": 7,
+  "beskrivelse": "På søndag har vi sat en rigitg hyggelig aften op til jer!\nForeningen har skaffet nye brætspil, og de skal selvfølgelig testes!\n\nDer vil være gratis drikkevarer.\nHorsens Bibliotek klokken 16-senest 19.",
+  "foerst_set": "2026-11-11T06:00:04Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
+  "forsvundet": false
+ },
+ {
+  "id": "1101638619413102",
+  "forening": "Bornholm",
+  "foreninger": [
+   "Bornholm"
+  ],
+  "navn": "Oplæg med Victor Galland",
+  "url": "https://www.facebook.com/events/1101638619413102/",
+  "start": "2026-11-16T16:00:00Z",
+  "slut": "2026-11-16T18:00:00Z",
+  "sted": "Rønne Bibliotek - Pingels Alle 1, 3700 Rønne",
+  "lat": 55.10176,
+  "lng": 14.70731,
+  "kommune": "Bornholm",
+  "online": false,
+  "aflyst": false,
+  "deltager": 3,
+  "interesserede": 0,
+  "svar": 3,
+  "beskrivelse": "Hvad står i vejen for et stærkere erhvervsliv? Hvordan gør vi det lettere at drive virksomhed, skabe arbejdspladser og udvikle nye idéer?\n\nKom med til et spændende oplæg med Økonomi- og Erhvervsordfører i LAU, Victor Galland, hvor vi sætter fokus på erhvervslivets udfordringer og, hvordan vi finder løsningerne på dem.\n\nVi tager selvfølgelig udgangspunkt i masser af liberal politik, med fokus på frihed, mindre bureaukrati og bedre vilkår for virksomhederne.🩵\n",
+  "foerst_set": "2026-11-11T06:00:04Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6560,11 +6632,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 30,
-  "interesserede": 49,
-  "svar": 79,
+  "interesserede": 50,
+  "svar": 80,
   "beskrivelse": "🎤 Tværpolitisk debataften 🎤\n\nKan du argumentere dig ud af (næsten) alt? Eller vil du gerne blive bedre til det? Så kom med, når vi sammen inviterer til tværpolitisk debataften!\n\nFormatet er inspireret af DM i Debat: Deltagerne debatterer mod hinanden, og et panel af dygtige debattører er dommere. De bedømmer debatterne og giver feedback og gode tips, så alle går hjem lidt skarpere end de kom 💪\n\nUanset om du selv vil på banen eller bare vil heppe og se på, er du velkommen. Det handler om god debat, gode argumenter og en hyggelig aften på tværs af partierne.\n\n📅 Tirsdag d. 17. november\n🕖 Kl. 17.0",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6588,7 +6660,7 @@
   "svar": 16,
   "beskrivelse": "Kom og hør LAU’s demokrati- og ideologiordfører Andreas fortælle om friheden til information, og hvordan demokratiet kan blive påvirket, hvis denne frihed ikke bliver opretholdt.",
   "foerst_set": "2026-10-12T14:45:28Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6608,11 +6680,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 10,
-  "interesserede": 34,
-  "svar": 44,
+  "interesserede": 35,
+  "svar": 45,
   "beskrivelse": "Hvordan fører man valgkamp i en rød by, når man er ægte liberal?\n\nDet bliver temaet, når Jan E. Jørgensen gæster Liberal Alliances Ungdom Frederiksberg!\n\nJan E. Jørgensen behøver næsten ingen introduktion. Han sad i Folketinget for Venstre fra 2011 til det seneste folketingsvalg, og han sidder i byrådet lige her på vores dejlige Frederiksberg. Derudover står han bag bogen En ægte liberal – Venstremanden, der ikke vil tie stille.\n\nMen hvordan er det egentlig at føre valgkamp som liberal i en by som København, hvor de røde faner traditionelt har vajet højt? Hvordan trænger man igennem med libera",
   "foerst_set": "2026-10-12T14:45:28Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6636,7 +6708,7 @@
   "svar": 29,
   "beskrivelse": "Mere information følger snarest...",
   "foerst_set": "2026-09-28T12:17:18Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6660,7 +6732,7 @@
   "svar": 7,
   "beskrivelse": "Fredag den 20 november får vi besøg af Lau's udlændinge og integrationsordfører Asta Sophie Georgsen, som vil holde et oplæg omkring hendes spændende ordførerskab, og hvordan vi har udviklet os i forhold til udlændinge fra de første kom her til og så til nu. \n\nvi håber på at se en masse af jer🙌💙",
   "foerst_set": "2026-10-28T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6679,12 +6751,36 @@
   "kommune": "Aarhus",
   "online": false,
   "aflyst": false,
-  "deltager": 89,
-  "interesserede": 107,
-  "svar": 196,
+  "deltager": 91,
+  "interesserede": 111,
+  "svar": 202,
   "beskrivelse": "SÆT KRYDS I KALENDEREN ❌ \nDET ER BLEVET TID TIL UNGDOMSPARTIERNES TOUR DE CHAMBRE😍\n\nMere info følger!",
   "foerst_set": "2026-10-07T19:11:01Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
+  "forsvundet": false
+ },
+ {
+  "id": "1824396495371859",
+  "forening": "København",
+  "foreninger": [
+   "København"
+  ],
+  "navn": "!Gratis pizza! Hvervningsaften med Ezekiel Rohde",
+  "url": "https://www.facebook.com/events/1824396495371859/",
+  "start": "2026-11-23T17:00:00Z",
+  "slut": "2026-11-23T19:00:00Z",
+  "sted": "Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Callesen",
+  "lat": 55.68515,
+  "lng": 12.58663,
+  "kommune": "København",
+  "online": false,
+  "aflyst": false,
+  "deltager": 3,
+  "interesserede": 5,
+  "svar": 8,
+  "beskrivelse": "Kom og få noget at spise og drikke. Efterfølgende sætter vi os sammen, hygger og hverver nye medlemmer.",
+  "foerst_set": "2026-11-11T06:00:04Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6697,7 +6793,7 @@
   "url": "https://www.facebook.com/events/1139112898775576/",
   "start": "2026-11-26T17:00:00Z",
   "slut": "2026-11-26T19:00:00Z",
-  "sted": "Byens hus - Roskilde, Stændertorvet 1 D, 4000 Roskilde, Denmark",
+  "sted": "Byens hus - Roskilde",
   "lat": 55.641591306591,
   "lng": 12.08017500438,
   "kommune": "Roskilde",
@@ -6708,7 +6804,7 @@
   "svar": 14,
   "beskrivelse": "LAU ROSKILDE FÅR BESØG AF GENERATION IDENTITÆR DANMARK!\n\nHvor går grænsen mellem national identitet og individuel frihed?\nIndvandring, kultur, national identitet og ytringsfrihed er nogle af de mest omdiskuterede emner i dansk politik. Men hvad sker der, når den identitære bevægelses idéer møder liberalismens grundprincipper?\n\nDet skal vi diskutere i LAU Roskilde!\n\nVi får nemlig besøg af Generation Identitær Danmark, en bevægelse, der arbejder for at bevare dansk og europæisk etnokulturel identitet og er kritisk over for indvandring og multikulturalisme.\n\nVi skal høre om deres politiske synspu",
   "foerst_set": "2026-10-19T12:30:34Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6728,11 +6824,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 4,
-  "interesserede": 10,
-  "svar": 14,
+  "interesserede": 12,
+  "svar": 16,
   "beskrivelse": "Vi får besøg af CEO-Peter. Der vil også være pizza!",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6745,18 +6841,18 @@
   "url": "https://www.facebook.com/events/3474248869414855/",
   "start": "2026-11-26T17:30:00Z",
   "slut": "2026-11-26T19:30:00Z",
-  "sted": "Finsensvej 10a 2000 Frederiksberg",
+  "sted": "Finsensvej 10a 2000 Frederiksberg, Finsensvej 10A, 2000 Frederiksberg, Danmark",
   "lat": 55.68126,
   "lng": 12.52005,
   "kommune": "Frederiksberg",
   "online": false,
   "aflyst": false,
   "deltager": 14,
-  "interesserede": 17,
-  "svar": 31,
+  "interesserede": 16,
+  "svar": 30,
   "beskrivelse": "LAU Frederiksberg inviterer til Vinsmagning!\n\nKom med på en aften gennem Spanien, Frankrig og Italien – tre lande, der tilsammen står for næsten halvdelen af verdens vin. Vi smager ni vine, tre hvide og seks røde, og bevæger os fra friske hvidvine over spansk Tempranillo og solvarme vine fra Sydfrankrig til Italiens store klassikere.\n\nAftenen ledes af Jens fra Vino Vino, som har en WSET-uddannelse. Han fortæller om områderne, druerne og historien bag vinene, og om hvorfor samme drue kan smage vidt forskelligt alt efter klima og lagring. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2,",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6780,7 +6876,7 @@
   "svar": 14,
   "beskrivelse": "LAU Århus er i gang igen! 🎉\n\nOg hvad er en bedre måde at starte på end med en god gammeldags fredagsbar?\n\nVi mødes på Harmonien fredag d. 27 november kl. 18:00 til en hyggelig aften med quiz, øl og snak.\n\n📍 Harmonien, Mejlgade 109, 8000 Århus C\n📅 Fredag d. 27. november\n🕖 Kl. 18:00\n\nOBS: Det er et brunt værtshus, så arrangementet er for 18+.\n\nVi ses! 🍻",
   "foerst_set": "2026-11-04T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6799,12 +6895,12 @@
   "kommune": "Næstved",
   "online": false,
   "aflyst": false,
-  "deltager": 3,
+  "deltager": 4,
   "interesserede": 2,
-  "svar": 5,
+  "svar": 6,
   "beskrivelse": "🎳 BOWLING MED LAU NÆSTVED 🎳\n\n\nNyd en hyggelig aften i selskab med LAU Næstved når vi tager forbi Bowl' n fun Næstved.\n\nVi har booket et par baner i Næstved bowlinghal og håber på du vil bruge et par hyggelige timer sammen med os. Der er egenbetaling på en sølle 50'er, til gengæld er Lau Næstved værter for første drikkevare og garantere en masse hygge 🥃\n\nVi har banerne fra klokken 21:00, så vi mødes klokken 20:40 så vi kan nå at få skiftet sko og komme på plads. Senere hen på aftenen tænker vi at vi kan drage ind mod Næstved by og fortsætte det gode humør.\n\n\nNB: Stærk begrænset antal billetter.",
   "foerst_set": "2026-11-06T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6828,7 +6924,7 @@
   "svar": 17,
   "beskrivelse": "LAU ROSKILDE FÅR BESØG AF RASMUS MALVER!\n\nHvor meget magt skal staten egentlig have over dig? Og hvem beskytter dine rettigheder, når staten selv går over grænsen?\n\nRetssikkerhed, menneskerettigheder og personlig frihed er nogle af de vigtigste grundsten i et liberalt demokrati. Men hvad sker der, når staten ikke selv overholder de regler, den kræver, at borgerne følger?\n\nDet skal vi blive meget klogere på!\n\nDerfor får LAU Roskilde besøg af Rasmus Malver, jurist med speciale i menneskerettigheder og en markant stemme i debatten om statens magt, borgernes rettigheder og myndighedernes ansvar.\n\n",
   "foerst_set": "2026-10-30T06:00:04Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6852,7 +6948,7 @@
   "svar": 10,
   "beskrivelse": "🦠 FRA PANDEMIER TIL FREMTIDENS LØSNINGER – MED ÆBLESKIVEHYGGE! 🥞🎄\n\nHvordan har sygdomme og pandemier formet vores samfund? Og kan innovation, teknologi og økonomisk vækst være med til at sikre en sundere fremtid for os alle? 💡\n\nDen 1. december inviterer LAU Fyn til en spændende aften med vores ordfører David Klausen, som tager os med på en rejse gennem sygdomshistorien og den sundhedsteknologiske udvikling.\n\nVi dykker ned i nogle af historiens største pandemier og ser nærmere på, hvordan fremtidens teknologi og nye løsninger kan hjælpe os med at håndtere sundhedsudfordringer.\n\nMed et liberalt ",
   "foerst_set": "2026-10-26T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6876,7 +6972,7 @@
   "svar": 4,
   "beskrivelse": "Dagsorden og lokale kommer snarest",
   "foerst_set": "2026-09-28T09:26:59Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6900,7 +6996,7 @@
   "svar": 2,
   "beskrivelse": "Kom og hør et spændende oplæg med LAU’s udlændinge- og integrationsordfører.",
   "foerst_set": "2026-11-06T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6920,11 +7016,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 10,
-  "interesserede": 36,
-  "svar": 46,
+  "interesserede": 35,
+  "svar": 45,
   "beskrivelse": "Hvordan navigerer en global virksomhed mellem forretning, politik og samfund på tværs af lande og kulturer?\n\nKom med, når LAU København besøger Carlsberg og får et indblik i arbejdet med Public Affairs fra Frederik Skouboe Hauge.\n\nCarlsberg er meget mere end øl. Som global virksomhed med øl, sodavand og energidrikke skal de forholde sig til forskellige politiske dagsordener, markeder og kulturer. Frederik fortæller om, hvordan de arbejder med de udfordringer, og hvad det kræver at varetage virksomhedens interesser på tværs af landegrænser.\n\nVi kommer indenfor hos Carlsberg og hører, hvordan sa",
   "foerst_set": "2026-09-28T09:26:59Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6944,11 +7040,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 7,
-  "interesserede": 9,
-  "svar": 16,
+  "interesserede": 7,
+  "svar": 14,
   "beskrivelse": "🏛️ Har du nogensinde tænkt over, hvad der egentlig sker bag dørene på Næstved Rådhus?\n\nNu har du chancen for at komme med indenfor! \n\nLAU Næstved inviterer til en hyggelig og spændende aften på rådhuset, hvor byrådsmedlem Kasper Schneider tager os med på rundvisning og giver os et indblik i både rådhuset og det lokale politiske arbejde.\n\n\nKom med hvis du vil se rådhuset indefra, høre lidt om livet i byrådet og selvfølgelig have en hyggelig aften sammen med resten af LAU Næstved. Og hvis der er stemning for det så kender vi en god torsdagsbar til at nyde en øl på efter arrangementet🍻\n\n 3. decem",
   "foerst_set": "2026-10-07T19:11:01Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6968,11 +7064,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 2,
-  "interesserede": 4,
-  "svar": 6,
+  "interesserede": 8,
+  "svar": 10,
   "beskrivelse": "Tilmelding foregår her: https://docs.google.com/forms/d/e/1FAIpQLSfNVgYpkNgmCJQExOg4FrfslME95N1p4WwbXMiYN2SmIXI1pA/viewform?usp=publish-editor\nVI GLÆDER OS SÅ MEGET!\nVi har fået mulighed for at leje en hytte den 11. til 13. december og vi vil gerne have dig med.\n\nDer er begrænsede pladser så skynd dig at melde dig til!!\n\nParkering foregår på grunden for op til 6 biler.\nMan kan ligeledes parkere på græsset syd for grusvejen, lige før hytten.\nHele turen inkl. fælles transport er gratis, da vi har fået penge af DUF, dog ikke til alkohol😉",
   "foerst_set": "2026-11-09T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -6992,11 +7088,11 @@
   "online": false,
   "aflyst": false,
   "deltager": 6,
-  "interesserede": 10,
-  "svar": 16,
+  "interesserede": 9,
+  "svar": 15,
   "beskrivelse": "flere detaljer følger...",
   "foerst_set": "2026-10-19T12:30:34Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -7009,18 +7105,18 @@
   "url": "https://www.facebook.com/events/1101595465912804/",
   "start": "2026-12-12T17:30:00Z",
   "slut": "2026-12-12T19:30:00Z",
-  "sted": "La Boucherie, Vestergade 10, 1456 København K, Danmark",
+  "sted": "La Boucherie",
   "lat": 55.67792,
   "lng": 12.57058,
   "kommune": "København",
   "online": false,
   "aflyst": false,
-  "deltager": 11,
-  "interesserede": 22,
+  "deltager": 10,
+  "interesserede": 23,
   "svar": 33,
   "beskrivelse": "Nu er det endelig tid til LAU Københavns legendariske julefrokost 🎄🍻\n\nDen 12. december inviterer vi til en af årets helt store aftener på La Boucherie. Der bliver god mad, fri bar, masser af hygge og selvfølgelig rig mulighed for at lære både nye og gamle LAU’ere endnu bedre at kende.\n\nOm du er helt ny eller har været med længe, så er julefrokosten en af de aftener, hvor man bare skal med. Det er her, man får snakket med folk, man normalt ikke når at snakke med til oplæg og møder, og hvor aftenen hurtigt udvikler sig fra julehygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍 La B",
   "foerst_set": "2026-11-04T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -7044,7 +7140,7 @@
   "svar": 2,
   "beskrivelse": "Juleafslutning med et oplæg fra vores social- og sundhedsordfører og æbleskiver og gløgg",
   "foerst_set": "2026-11-06T06:00:03Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -7068,7 +7164,7 @@
   "svar": 16,
   "beskrivelse": "Mere information følger snarest...",
   "foerst_set": "2026-09-28T12:17:18Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -7092,7 +7188,7 @@
   "svar": 25,
   "beskrivelse": "Mere information følger snarest...",
   "foerst_set": "2026-09-28T12:17:18Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  },
  {
@@ -7116,7 +7212,7 @@
   "svar": 19,
   "beskrivelse": "Mere information følger snarest...",
   "foerst_set": "2026-09-28T12:17:18Z",
-  "sidst_set": "2026-11-09T06:00:03Z",
+  "sidst_set": "2026-11-11T06:00:04Z",
   "forsvundet": false
  }
 ]

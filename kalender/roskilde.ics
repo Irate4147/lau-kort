@@ -1067,6 +1067,28 @@ URL:https://www.facebook.com/events/1433679275365251/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1140729072179087@lau-kort
+DTSTAMP:20261111T060004Z
+DTSTART:20261111T173000Z
+DTEND:20261111T193000Z
+SUMMARY:Hvervningsoplæg v/ Ezekiel Rohde
+DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE INVITERER TIL HVERVNINGSAFTEN!\n\n
+ Hvad kan du vinde ved at hverve nye medlemmer\, og hvordan kommer du egent
+ lig i gang? \n\nLAU Roskilde inviterer til en hyggelig og lærerig hvervni
+ ngsaften\, hvor vi dykker ned i alt\, hvad du skal vide om medlemshvervnin
+ g!\n\nVi starter aftenen med et oplæg om de nuværende og kommende hvervn
+ ingspræmier\, hvorfor medlemshvervning spiller en vigtig rolle i forening
+ ens udvikling\, og hvordan du kan deltage i de forskellige hvervningskonku
+ rrencer.\n\nDerefter tager vi en snak om\, hvordan man bedst griber hvervn
+ ingen an\, og hvordan man kan invitere interesserede t\n\nhttps://www.face
+ book.com/events/1140729072179087/
+CATEGORIES:LAU Roskilde
+LOCATION:Byens hus - Roskilde
+GEO:55.641591306591;12.08017500438
+URL:https://www.facebook.com/events/1140729072179087/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:3036042386787504@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
@@ -1097,8 +1119,7 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
  ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
  ps://www.facebook.com/events/1139112898775576/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
- k
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1139112898775576/
 STATUS:CONFIRMED
