@@ -39,9 +39,9 @@
   const EKSEMPLER = [
     {navn: 'Gennemsnitligt antal deltagere pr. forening',
       spec: {type: 'Arrangement', filtre: AFHOLDT_AAR, gruppering: {egenskab: 'arrangeretAf.navn'}, maal: {funktion: 'gns', egenskab: 'deltager'}}},
-    {navn: 'Arrangementer mod deltagere pr. forening',
-      spec: {type: 'Arrangement', filtre: AFHOLDT_AAR, gruppering: {egenskab: 'arrangeretAf.navn'}, visning: 'punkter',
-        maal: {funktion: 'antal'}, maal2: {funktion: 'sum', egenskab: 'deltager'}}},
+    {navn: 'Lokalforeninger: deltagere pr. arrangement mod antal arrangementer',
+      spec: {type: 'Forening', filtre: [{egenskab: 'niveau', er: ['lokal']}], visning: 'punkter',
+        maal: {funktion: 'sum', egenskab: 'deltagereGns'}, maal2: {funktion: 'sum', egenskab: 'afholdtAar'}}},
     {navn: 'Arrangementer pr. måned', spec: {type: 'Arrangement', filtre: [{egenskab: 'start', periode: 'seneste365'}], gruppering: {egenskab: 'start', pr: 'maaned'}, maal: {funktion: 'antal'}}},
     {navn: 'Hvilken ugedag giver flest deltagere?',
       spec: {type: 'Arrangement', filtre: AFHOLDT_AAR, gruppering: {egenskab: 'ugedag'}, maal: {funktion: 'gns', egenskab: 'deltager'}}},
@@ -317,6 +317,20 @@
       }).join('')}</optgroup>`).join('')}</select>`;
   }
 
+  /** Punktdiagram uden gruppering: hvert objekt er et punkt, og akserne er objektets egne tal (fx en forenings antal arrangementer). */
+  const egneTal = type => ont().stier(type, {rolle: 'admin'}).filter(x => x.egenskab.type === 'tal' && !x.viaLink);
+  function egenskabMenu(type, m, attr) {
+    return `<select ${attr}>${egneTal(type).map(x => opt(`sum|${x.sti}`, x.label, m && m.egenskab === x.sti)).join('')}</select>`;
+  }
+  /** Sørger for, at akserne er objektets egne tal – helst deltagere pr. arrangement og antal arrangementer. */
+  function objektAkser(s) {
+    const tal = egneTal(slutType(s)).map(x => x.sti), ok = m => m && m.funktion !== 'antal' && tal.includes(m.egenskab);
+    const valg = [...['deltagereGns', 'afholdtAar'].filter(x => tal.includes(x)), ...tal];
+    if (!ok(s.maal)) s.maal = {funktion: 'sum', egenskab: valg.find(x => !s.maal2 || x !== s.maal2.egenskab)};
+    if (!ok(s.maal2)) s.maal2 = {funktion: 'sum', egenskab: valg.find(x => x !== s.maal.egenskab) || valg[0]};
+    for (const m of [s.maal, s.maal2]) m.funktion = 'sum';
+  }
+
   /** Pæne akse-inddelinger fra 0: 0, 5, 10 … eller 0, 20, 40 … */
   function inddeling(max) {
     const raa = Math.max(max, 1e-9) / 5, p = 10 ** Math.floor(Math.log10(raa));
@@ -325,7 +339,7 @@
     return {top, ticks: Array.from({length: Math.round(top / trin) + 1}, (_, i) => i * trin)};
   }
   /** Punktdiagram: ét punkt pr. gruppe, maal ud ad x og maal2 op ad y. hældning: den stiplede gennemsnitslinje (y = hældning · x). */
-  function punktdiagram(grupper, {x, y, hældning, enhed}) {
+  function punktdiagram(grupper, {x, y, hældning, enhed, kryds, klik = 'Klik for kun at se denne', navn = 'grupper'}) {
     const W = 740, H = 400, ml = 60, mr = 20, mt = 14, mb = 46, pw = W - ml - mr, ph = H - mt - mb;
     const pts = grupper.map((g, i) => ({g, i})).filter(d => d.g.vaerdi != null && d.g.vaerdi2 != null);
     const ax = inddeling(Math.max(0, ...pts.map(d => d.g.vaerdi))), ay = inddeling(Math.max(0, ...pts.map(d => d.g.vaerdi2)));
@@ -340,6 +354,11 @@
       const x2 = Math.min(ax.top, ay.top / hældning);
       svg += `<line class="ea-snit" x1="${X(0)}" y1="${Y(0)}" x2="${X(x2)}" y2="${Y(x2 * hældning)}"/>`;
     }
+    if (kryds) { // gennemsnittet for hver akse deler diagrammet i fire felter (fx få arrangementer, men mange deltagere)
+      const mx = pts.reduce((a, d) => a + d.g.vaerdi, 0) / (pts.length || 1), my = pts.reduce((a, d) => a + d.g.vaerdi2, 0) / (pts.length || 1);
+      svg += `<line class="ea-snit" x1="${X(mx)}" x2="${X(mx)}" y1="${mt}" y2="${mt + ph}"/><line class="ea-snit" x1="${ml}" x2="${W - mr}" y1="${Y(my)}" y2="${Y(my)}"/>`;
+      svg += `<text class="tick" x="${X(mx) + 4}" y="${mt + 10}">gns. ${esc(num1(mx))}</text><text class="tick" x="${W - mr - 4}" y="${Y(my) - 4}" text-anchor="end">gns. ${esc(num1(my))}</text>`;
+    }
     // Navne ved punkterne – de højeste først, og et navn, der ville overlappe et andet navn eller punkt, udelades (se det ved at holde musen over).
     const optaget = pts.map(d => ({x1: X(d.g.vaerdi) - 6, x2: X(d.g.vaerdi) + 6, y1: Y(d.g.vaerdi2) - 6, y2: Y(d.g.vaerdi2) + 6}));
     const navne = new Map();
@@ -352,10 +371,10 @@
     for (const {g, i} of pts) {
       const cx = X(g.vaerdi), cy = Y(g.vaerdi2);
       if (navne.has(i)) svg += `<text class="tick ea-punktnavn" x="${cx + 7}" y="${cy + 3}">${esc(navne.get(i))}</text>`;
-      svg += `<circle class="ea-punkt" cx="${cx}" cy="${cy}" r="5.5" fill="${FARVE}" data-ea-punkt="${i}"
-        data-tip="${esc(`${g.label}|${x}: ${num1(g.vaerdi)}|${y}: ${num1(g.vaerdi2)}${hældning != null && g.vaerdi ? `|${num1(g.vaerdi2 / g.vaerdi)} ${enhed}` : ''}|Klik for kun at se denne`)}"/>`;
+      svg += `<circle class="ea-punkt" cx="${cx}" cy="${cy}" r="5.5" fill="${FARVE}" data-ea-punkt="${i}" data-ea-noegle="${esc(String(g.noegle))}"
+        data-tip="${esc(`${g.label}|${x}: ${num1(g.vaerdi)}|${y}: ${num1(g.vaerdi2)}${hældning != null && g.vaerdi ? `|${num1(g.vaerdi2 / g.vaerdi)} ${enhed}` : ''}${klik ? `|${klik}` : ''}`)}"/>`;
     }
-    return svg + '</svg>' + (pts.length < grupper.length ? `<p class="note">${grupper.length - pts.length} grupper uden begge tal er udeladt.</p>` : '');
+    return svg + '</svg>' + (pts.length < grupper.length ? `<p class="note">${grupper.length - pts.length} ${esc(navn)} uden begge tal er udeladt.</p>` : '');
   }
 
   /** Analysen læst op i én sætning, så man kan se, hvad tallene betyder. */
@@ -375,7 +394,8 @@
       const ge = ont().sti(T, g.egenskab).egenskab;
       dele.push(`– delt op efter <b>${esc(ge.type === 'dato' ? `${stiNavn(T, g.egenskab).toLowerCase()} pr. ${K().DATO_GRUPPER[g.pr || 'maaned'].label.toLowerCase()}` : stiNavn(T, g.egenskab).toLowerCase())}</b>`);
     }
-    if (s.visning === 'punkter' && g) dele.push(`– ét punkt pr. gruppe: <b>${esc(maalTekst(s).toLowerCase())}</b> (vandret) mod <b>${esc(maalTekst(s, s.maal2 || {funktion: 'antal'}).toLowerCase())}</b> (lodret)`);
+    if (s.visning === 'punkter' && !g) dele.push(`– ét punkt pr. ${esc(ont().type(T).label.toLowerCase())}: <b>${esc(stiNavn(T, s.maal.egenskab).toLowerCase())}</b> (vandret) mod <b>${esc(stiNavn(T, s.maal2.egenskab).toLowerCase())}</b> (lodret)`);
+    else if (s.visning === 'punkter' && g) dele.push(`– ét punkt pr. gruppe: <b>${esc(maalTekst(s).toLowerCase())}</b> (vandret) mod <b>${esc(maalTekst(s, s.maal2 || {funktion: 'antal'}).toLowerCase())}</b> (lodret)`);
     else if ((s.maal || {}).funktion && s.maal.funktion !== 'antal') dele.push(`– viser <b>${esc(maalTekst(s).toLowerCase())}</b>`);
     return `<p class="ea-opsummering">Du ser ${dele.join(' ')}.</p>`;
   }
@@ -396,8 +416,19 @@
     const tæller = m => m.funktion === 'antal' || m.funktion === 'sum';
     const hældning = punkter && tæller(maal) && tæller(maal2) && r.total ? (r.total2 ?? 0) / r.total : null;
     const enhed = `${maal2.funktion === 'antal' ? flertal(T).toLowerCase() : stiNavn(T, maal2.egenskab).toLowerCase()} pr. ${maal.funktion === 'antal' ? ont().type(T).label.toLowerCase() : stiNavn(T, maal.egenskab).toLowerCase()}`;
+    // Punktdiagram uden gruppering: hvert objekt er sit eget punkt, og akserne er dets egne tal.
+    const hvertObjekt = punkter && !g;
+    const akse = m => (hvertObjekt ? stiNavn(T, m.egenskab) : maalTekst(s, m));
+    const pgrupper = !punkter ? null : hvertObjekt
+      ? r.objekter.map(o => ({noegle: o.id, label: L.titel(o), objekter: [o], vaerdi: K().maal(L, maal, [o]), vaerdi2: K().maal(L, maal2, [o])}))
+        .sort((a, b) => (b.vaerdi2 ?? -Infinity) - (a.vaerdi2 ?? -Infinity))
+      : r.grupper;
     const vis = r.grupper ? r.grupper.slice(0, MAKS_LISTE) : [];
-    const diagram = !r.grupper ? '' : !r.grupper.length ? '<p class="empty">Ingen objekter i sættet.</p>'
+    const diagram = !pgrupper && !r.grupper ? '' : !(pgrupper || r.grupper).length ? '<p class="empty">Ingen objekter i sættet.</p>'
+      : hvertObjekt ? punktdiagram(pgrupper, {x: akse(maal), y: akse(maal2), kryds: true, navn: flertal(T).toLowerCase(), klik: T === 'Forening' ? 'Klik for at åbne foreningen' : ''})
+        + `<p class="note">De stiplede linjer er gennemsnittet for hver akse. De deler diagrammet i fire felter – fx øverst til venstre: ${esc(akse(maal2).toLowerCase())} over gennemsnittet, men ${esc(akse(maal).toLowerCase())} under.</p>`
+        + `<table class="hb-tabel analyse-tabel ea-tabel"><thead><tr><th>${esc(ont().type(T).label)}</th><th>${esc(akse(maal))}</th><th>${esc(akse(maal2))}</th></tr></thead>
+          <tbody>${pgrupper.slice(0, MAKS_RAEKKER).map(x => `<tr${T === 'Forening' ? ` tabindex="0" data-f="${esc(x.noegle)}"` : ''}><td>${esc(x.label)}</td><td>${esc(num1(x.vaerdi))}</td><td>${esc(num1(x.vaerdi2))}</td></tr>`).join('')}</tbody></table>`
       : punkter ? punktdiagram(r.grupper, {x: maalTekst(s), y: maalTekst(s, maal2), hældning, enhed})
         + (hældning != null ? `<p class="note">Den stiplede linje er gennemsnittet for alle: <b>${esc(num1(hældning))} ${esc(enhed)}</b>. Punkter over linjen ligger over gennemsnittet.</p>` : '')
         + `<table class="hb-tabel analyse-tabel ea-tabel"><thead><tr><th>${esc(gruppeTekst.charAt(0).toUpperCase() + gruppeTekst.slice(1))}</th><th>${esc(maalTekst(s))}</th><th>${esc(maalTekst(s, maal2))}</th>${hældning != null ? `<th>${esc(enhed.charAt(0).toUpperCase() + enhed.slice(1))}</th>` : ''}</tr></thead>
@@ -437,22 +468,25 @@
           <button type="button" class="chip small${punkter ? '' : ' on'}" data-ea-visning="soejler" aria-pressed="${!punkter}">Søjler – ét tal pr. gruppe</button>
           <button type="button" class="chip small${punkter ? ' on' : ''}" data-ea-visning="punkter" aria-pressed="${punkter}">Punktdiagram – sammenlign to tal</button>
         </div>
-        <p class="ea-hjaelp">${punkter ? 'Hvert punkt er en gruppe (fx en forening). Brug det til at se forholdet mellem to tal – fx antal arrangementer og deltagere.'
+        <p class="ea-hjaelp">${hvertObjekt ? `Hver ${esc(ont().type(T).label.toLowerCase())} er et punkt. Vælg de to tal, der skal stilles op mod hinanden.`
+          : punkter ? 'Hvert punkt er en gruppe – fx alle arrangementer fra én forening. Vælg "Hver … for sig" for at bruge hvert objekts egne tal.'
           : 'Del resultatet op i grupper (fx pr. forening eller pr. måned), og vælg hvad søjlerne skal vise.'}</p>
         <div class="ea-raekke">
-          <label>${punkter ? 'Ét punkt pr.' : 'Én søjle pr.'}<select data-ea-gruppe>${punkter ? '' : opt('', 'Ingen opdeling – kun det samlede tal', !g)}${stiMenu(T, stier.filter(x => x.egenskab.type !== 'tal'), g && g.egenskab)}</select></label>
+          <label>${punkter ? 'Ét punkt pr.' : 'Én søjle pr.'}<select data-ea-gruppe>${opt('', punkter ? `Hver ${ont().type(T).label.toLowerCase()} for sig` : 'Ingen opdeling – kun det samlede tal', !g)}${stiMenu(T, stier.filter(x => x.egenskab.type !== 'tal'), g && g.egenskab)}</select></label>
           ${ge && ge.type === 'dato' ? `<label>pr.<select data-ea-pr>${Object.entries(K().DATO_GRUPPER).map(([k, d]) => opt(k, d.label, (g.pr || 'maaned') === k)).join('')}</select></label>` : ''}
-          <label>${punkter ? 'Vandret akse (→)' : 'Søjlerne viser'}${maalMenu(T, stier, maal, 'data-ea-maal')}</label>
-          ${punkter ? `<label>Lodret akse (↑)${maalMenu(T, stier, maal2, 'data-ea-maal2')}</label>` : ''}
+          <label>${punkter ? 'Vandret akse (→)' : 'Søjlerne viser'}${hvertObjekt ? egenskabMenu(T, maal, 'data-ea-maal') : maalMenu(T, stier, maal, 'data-ea-maal')}</label>
+          ${punkter ? `<label>Lodret akse (↑)${hvertObjekt ? egenskabMenu(T, maal2, 'data-ea-maal2') : maalMenu(T, stier, maal2, 'data-ea-maal2')}</label>` : ''}
         </div></div></div>
 
       <h3 class="ea-resultat">Resultat</h3>
       ${opsummering(s, r, T)}
       <div class="tiles">
         ${tile(`${flertal(T)} i resultatet`, String(r.objekter.length), `af ${L.alle(T).length} i alt`)}
-        ${maal.funktion !== 'antal' ? tile(maalTekst(s), num1(r.total), 'for hele sættet', true) : ''}
+        ${maal.funktion !== 'antal' && !punkter ? tile(maalTekst(s), num1(r.total), 'for hele sættet', true) : ''}
         ${r.grupper ? tile('Grupper', String(r.grupper.length), `én pr. ${gruppeTekst}`) : ''}
       </div>
+      ${hvertObjekt ? `<h3>${esc(akse(maal2))} mod ${esc(akse(maal).toLowerCase())}</h3>
+        <div class="ea-diagram">${diagram}</div>` : ''}
       ${r.grupper ? `<h3>${punkter ? `${esc(maalTekst(s, maal2))} mod ${esc(maalTekst(s).toLowerCase())}` : esc(maalTekst(s))} pr. ${esc(gruppeTekst)}</h3>
         <p class="note">Klik på ${punkter ? 'et punkt' : 'en søjle'} for kun at se den gruppe (den bliver et filter).</p><div class="ea-diagram">${diagram}</div>` : ''}
 
@@ -542,7 +576,11 @@
       nulstilVisning(); t.aaben = null; igen();
     });
     on('[data-ea-around-fjern]', 'click', () => { s.searchAround.pop(); nulstilVisning(); t.aaben = null; igen(); });
-    on('[data-ea-gruppe]', 'change', x => { if (x.value) s.gruppering = {egenskab: x.value}; else delete s.gruppering; igen(); });
+    on('[data-ea-gruppe]', 'change', x => {
+      if (x.value) s.gruppering = {egenskab: x.value}; else delete s.gruppering;
+      if (s.visning === 'punkter' && !s.gruppering) objektAkser(s);
+      igen();
+    });
     on('[data-ea-pr]', 'change', x => { s.gruppering.pr = x.value; igen(); });
     on('[data-ea-maal]', 'change', x => { s.maal = tilMaal(x.value); igen(); });
     on('[data-ea-maal2]', 'change', x => { s.maal2 = tilMaal(x.value); igen(); });
@@ -550,9 +588,11 @@
       if (b.dataset.eaVisning === 'soejler') { delete s.visning; delete s.maal2; igen(); return; }
       const T = slutType(s), stier = ont().stier(T, {rolle: 'admin'});
       s.visning = 'punkter';
-      if (!s.gruppering) { // et punkt pr. forening, hvis det kan lade sig gøre – ellers den første kategori
+      // Har typen selv mindst to tal (fx foreninger), er hvert objekt et punkt. Ellers ét punkt pr. forening (eller den første kategori).
+      if (!s.gruppering && egneTal(T).length >= 2) { objektAkser(s); igen(); return; }
+      if (!s.gruppering) {
         const l = ont().links(T).find(y => y.til === 'Forening');
-        const sti = T === 'Forening' ? 'navn' : l ? `${l.navn}.navn` : (stier.find(y => y.egenskab.type === 'kat') || stier.find(y => y.egenskab.type !== 'tal')).sti;
+        const sti = l ? `${l.navn}.navn` : (stier.find(y => y.egenskab.type === 'kat') || stier.find(y => y.egenskab.type !== 'tal')).sti;
         s.gruppering = {egenskab: sti};
       }
       if (!s.maal2) { const tal = stier.find(y => y.egenskab.type === 'tal' && !y.viaLink); s.maal2 = tal ? {funktion: 'sum', egenskab: tal.sti} : {funktion: 'antal'}; }
@@ -561,7 +601,9 @@
 
     // Bor ned: klik på en søjle gør gruppen til et filter (søjlerne står i samme rækkefølge som grupperne).
     const r = K().koer(lager(), s);
-    if (r.grupper) {
+    if (s.visning === 'punkter' && !s.gruppering) {
+      if (slutType(s) === 'Forening') on('[data-ea-punkt]', 'click', c => openForening(c.dataset.eaNoegle));
+    } else if (r.grupper) {
       on('[data-ea-punkt]', 'click', c => { t.spec = K().boreNed(ont(), s, r.grupper[+c.dataset.eaPunkt]); t.aaben = null; igen(); });
       el.querySelectorAll('.ea-diagram rect.hit').forEach((rect, i) => {
         const g = r.grupper[i];
