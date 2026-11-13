@@ -5238,6 +5238,46 @@ URL:https://www.facebook.com/events/1137869942055556/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:997979296072431@lau-kort
+DTSTAMP:20261113T060003Z
+DTSTART:20261113T160000Z
+DTEND:20261113T180000Z
+SUMMARY:Hverningsturen m/ Ezekiel Rohde
+DESCRIPTION:LAU Sønderjylland\n\nKRYDS I KALENDEREN!\n\nVi får besøg af 
+ ingen mindre end Ezekiel Rohde\, LAUs Formand.\n\nAftenen vil stå på et 
+ oplæg\, om præmier foreningen kan få\, ved at henvise nye medlemmer\, h
+ vorfor det er utroligt vigtigt\, og hvordan man gør dette!\n\nVi slutter 
+ af med at spørge rundt i et relevant netværk\, for at høre interessen f
+ or et LAU Medlemsskab! 🩵\n\n\nhttps://www.facebook.com/events/997979296
+ 072431/
+CATEGORIES:LAU Sønderjylland
+LOCATION:NygadeHuset Aabenraa
+GEO:55.045484154887;9.4165327032514
+URL:https://www.facebook.com/events/997979296072431/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1153334493881371@lau-kort
+DTSTAMP:20261113T060003Z
+DTSTART:20261113T170000Z
+DTEND:20261113T190000Z
+SUMMARY:Oplæg med LAU's klima- og miljøordfører August Clarke Pontoppida
+ n
+DESCRIPTION:LAU Aalborg\n\nHvordan finder vi den rette balance mellem klima
+ \, miljø og personlig frihed?\n\nVi får besøg af vores helt egen August
+  Clarke Pontoppidan\, LAU's klima- og miljøordfører\, som kommer forbi o
+ g fortæller om LAU's politik på klima- og miljøområdet – selvfølgel
+ ig med plads til spørgsmål\, debat og et personligt twist! 💙\n\nSå k
+ om\, tag din skabs-liberale ven under armen\, og vær med til en hyggelig 
+ aften med gode diskussioner og godt selskab! 🙌\n\nhttps://www.facebook.
+ com/events/1153334493881371/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1153334493881371/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:1762636368140971@lau-kort
 DTSTAMP:20261030T060004Z
 DTSTART:20261114T180000Z
@@ -5294,6 +5334,28 @@ CATEGORIES:LAU Bornholm
 LOCATION:Rønne Bibliotek - Pingels Alle 1\, 3700 Rønne
 GEO:55.10176;14.70731
 URL:https://www.facebook.com/events/1101638619413102/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1685419399912283@lau-kort
+DTSTAMP:20261113T060003Z
+DTSTART:20261116T170000Z
+DTEND:20261116T190000Z
+SUMMARY:Hvernings aften med Ezekiel Rhode
+DESCRIPTION:LAU Egedal-Furesø\n\nLAU HYGGEKLUBBEN INVITERER TIL HVERVNINGS
+ AFTEN!\n\nHvad kan du vinde ved at hverve nye medlemmer\, og hvordan komme
+ r du egentlig i gang? \n\nLAU Roskilde inviterer til en hyggelig og lærer
+ ig hvervningsaften\, hvor vi dykker ned i alt\, hvad du skal vide om medle
+ mshvervning!\n\nVi starter aftenen med et oplæg om de nuværende og komme
+ nde hvervningspræmier\, hvorfor medlemshvervning spiller en vigtig rolle 
+ i foreningens udvikling\, og hvordan du kan deltage i de forskellige hverv
+ ningskonkurrencer.\n\nDerefter tager vi en snak om\, hvordan man bedst gri
+ ber hvervningen an\, og hvordan man kan invitere interessere\n\nhttps://ww
+ w.facebook.com/events/1685419399912283/
+CATEGORIES:LAU Egedal-Furesø
+LOCATION:Flodvej 68\, 2765 Smørumnedre
+GEO:55.73156;12.30809
+URL:https://www.facebook.com/events/1685419399912283/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5453,7 +5515,8 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
  ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
  ps://www.facebook.com/events/1139112898775576/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde
+LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
+ k
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1139112898775576/
 STATUS:CONFIRMED
@@ -5475,8 +5538,7 @@ DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til Vinsmagnin
  g. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2\,\n\nhttps:
  //www.facebook.com/events/3474248869414855/
 CATEGORIES:LAU Frederiksberg
-LOCATION:Finsensvej 10a 2000 Frederiksberg\, Finsensvej 10A\, 2000 Frederik
- sberg\, Danmark
+LOCATION:Finsensvej 10a 2000 Frederiksberg
 GEO:55.68126;12.52005
 URL:https://www.facebook.com/events/3474248869414855/
 STATUS:CONFIRMED
@@ -5575,8 +5637,7 @@ SUMMARY:Bestyrelsesmøde December
 DESCRIPTION:LAU Roskilde\n\nDagsorden og lokale kommer snarest\n\nhttps://w
  ww.facebook.com/events/2282793162534325/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
- k
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/2282793162534325/
 STATUS:CONFIRMED
