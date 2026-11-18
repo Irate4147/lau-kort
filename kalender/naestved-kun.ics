@@ -346,10 +346,32 @@ URL:https://www.facebook.com/events/1113082408140914/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:2071150373568941@lau-kort
+DTSTAMP:20261019T123034Z
+DTSTART:20261211T180000Z
+DTEND:20261211T200000Z
+SUMMARY:Julehygge hos Lau Næstved🎅🌲
+DESCRIPTION:LAU Næstved\n\nFredag den 11. December klokken 19 inviterer La
+ u Næstved til et par hyggelige timer med julehygge med brætspil\, fifa/N
+ intendo & alt hvad hjertet begærer af julesmåkager og generalt en hyggel
+ ig julestemning. det koster kun jeres gode humør at deltage\, så ingen u
+ ndskyldning vis i har tid. og hvis der er stemning for det efter kunne det
+  da godt blive til en lille en i byen i løbet af aftenen 🍻🙌\n\nadre
+ ssen hvor det bliver holdt ligger kun 12 minutters gåtur fra næstved sta
+ tion. vis i kommer via bil skal i parkere på Rema 1000 parkeringsplads p
+ å Karrebækvej 4c hvor der er 1 minut gågang til adressen\n\nhttps://www
+ .facebook.com/events/2071150373568941/
+CATEGORIES:LAU Næstved
+LOCATION:Slagelsevej 11F 1.th 4700 Næstved
+GEO:55.22962;11.75296
+URL:https://www.facebook.com/events/2071150373568941/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2029863341034375@lau-kort
 DTSTAMP:20261007T191101Z
-DTSTART:20261203T180000Z
-DTEND:20261203T200000Z
+DTSTART:20261217T180000Z
+DTEND:20261217T200000Z
 SUMMARY:Rundvisning på Næstved rådhus
 DESCRIPTION:LAU Næstved\n\n🏛️ Har du nogensinde tænkt over\, hvad de
  r egentlig sker bag dørene på Næstved Rådhus?\n\nNu har du chancen for
@@ -365,20 +387,6 @@ CATEGORIES:LAU Næstved
 LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
 GEO:55.22962;11.76326
 URL:https://www.facebook.com/events/2029863341034375/
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:2071150373568941@lau-kort
-DTSTAMP:20261019T123034Z
-DTSTART:20261211T180000Z
-DTEND:20261211T200000Z
-SUMMARY:Julehygge hos Lau Næstved🎅🌲
-DESCRIPTION:LAU Næstved\n\nflere detaljer følger...\n\nhttps://www.facebo
- ok.com/events/2071150373568941/
-CATEGORIES:LAU Næstved
-LOCATION:Slagelsevej 11F 1.th 4700 Næstved
-GEO:55.22962;11.75296
-URL:https://www.facebook.com/events/2071150373568941/
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR

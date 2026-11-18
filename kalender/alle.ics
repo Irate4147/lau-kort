@@ -5467,8 +5467,16 @@ DTSTAMP:20260928T121718Z
 DTSTART:20261120T180000Z
 DTEND:20261122T180000Z
 SUMMARY:Julekursus / Organisatorisk kursus
-DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
- ://www.facebook.com/events/3036042386787504/
+DESCRIPTION:Landsforeningen\n\nPakkeliste:\nDyne og pude / Sovepose\nSenget
+ øj\nLagen \nHåndklæde\nToiletsager (inklusiv shampoo)\nTøj\nLader til 
+ telefon\nEvt. forlængerledning\nHusk kostume med temaet noir/spion til ju
+ lefrokosten\nForældretilladelse hvis du er under 18 og vil drikke alkohol
+ !!\nPakkelegsgave til julefrokosten\n\nHvis i skal hentes skriv til mig p
+ å Messenger eller telefonnummer: 20363902\n\nProgrammet:\n\nFredag:\n\nAn
+ komst fra 19:00 (Husk at spis inden)\n\nVelkomst ca. 21:00\n\nBaren lukker
+  ca. 01\n\nLørdag:\n\n10:30 - 12:00 / Lokalforeningsledelse v/Simone Niel
+ sen\n\n12:00 - 13:00 / Frokost\n\n13:00 - 14:30 / Sociale dynamikker i en 
+ grup\n\nhttps://www.facebook.com/events/3036042386787504/
 CATEGORIES:Landsforeningen
 LOCATION:Højsetvej 25\, 6534 Agerskov\, Danmark
 GEO:55.10601;9.17503
@@ -5501,23 +5509,9 @@ DESCRIPTION:LAU København\n\nKom og få noget at spise og drikke. Efterfø
  www.facebook.com/events/1824396495371859/
 CATEGORIES:LAU København
 LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
- sen
+ sen\, Borgergade 28\, 4.\, 1300 Copenhagen\, Denmark
 GEO:55.68515;12.58663
 URL:https://www.facebook.com/events/1824396495371859/
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:1130640989452628@lau-kort
-DTSTAMP:20261026T060003Z
-DTSTART:20261126T170000Z
-DTEND:20261126T190000Z
-SUMMARY:Lock the fuck in - CEO-Peter i NordKBH
-DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af CEO-Peter. Der vil ogs
- å være pizza!\n\nhttps://www.facebook.com/events/1130640989452628/
-CATEGORIES:LAU Nordkøbenhavn
-LOCATION:Hellerupvej 24\, Hellerup
-GEO:55.73221;12.57035
-URL:https://www.facebook.com/events/1130640989452628/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5537,8 +5531,7 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF GENERATION IDENTIT
  ng og multikulturalisme.\n\nVi skal høre om deres politiske synspu\n\nhtt
  ps://www.facebook.com/events/1139112898775576/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Stændertorvet 1 D\, 4000 Roskilde\, Denmar
- k
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1139112898775576/
 STATUS:CONFIRMED
@@ -5560,10 +5553,23 @@ DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til Vinsmagnin
  g. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2\,\n\nhttps:
  //www.facebook.com/events/3474248869414855/
 CATEGORIES:LAU Frederiksberg
-LOCATION:Finsensvej 10a 2000 Frederiksberg\, Finsensvej 10A\, 2000 Frederik
- sberg\, Danmark
+LOCATION:Finsensvej 10a 2000 Frederiksberg
 GEO:55.68126;12.52005
 URL:https://www.facebook.com/events/3474248869414855/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1130640989452628@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261126T180000Z
+DTEND:20261126T200000Z
+SUMMARY:Lock the fuck in - CEO-Peter i NordKBH
+DESCRIPTION:LAU Nordkøbenhavn\n\nVi får besøg af CEO-Peter. Der vil ogs
+ å være pizza!\n\nhttps://www.facebook.com/events/1130640989452628/
+CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Lyngby Rådhus
+GEO:55.767995289624;12.50390318701
+URL:https://www.facebook.com/events/1130640989452628/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5630,6 +5636,28 @@ URL:https://www.facebook.com/events/1610222356939838/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1096403176347527@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261201T173000Z
+DTEND:20261201T193000Z
+SUMMARY:Oplæg med ordfører David Klausen
+DESCRIPTION:LAU Fyn\n\n🦠 FRA PANDEMIER TIL FREMTIDENS LØSNINGER – MED
+  ÆBLESKIVEHYGGE! 🥞🎄\n\nHvordan har sygdomme og pandemier formet vor
+ es samfund? Og kan innovation\, teknologi og økonomisk vækst være med t
+ il at sikre en sundere fremtid for os alle? 💡\n\nDen 1. december invite
+ rer LAU Fyn til en spændende aften med vores ordfører David Klausen\, so
+ m tager os med på en rejse gennem sygdomshistorien og den sundhedsteknolo
+ giske udvikling.\n\nVi dykker ned i nogle af historiens største pandemier
+  og ser nærmere på\, hvordan fremtidens teknologi og nye løsninger kan 
+ hjælpe os med at håndtere sundhedsudfordringer.\n\nMed et liberalt \n\nh
+ ttps://www.facebook.com/events/1096403176347527/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42\, 5000 Odense C\, Danmark
+GEO:55.39395;10.38392
+URL:https://www.facebook.com/events/1096403176347527/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2282793162534325@lau-kort
 DTSTAMP:20260928T092659Z
 DTSTART:20261201T180000Z
@@ -5673,32 +5701,9 @@ DESCRIPTION:LAU København\n\nHvordan navigerer en global virksomhed mellem
  nser.\n\nVi kommer indenfor hos Carlsberg og hører\, hvordan sa\n\nhttps:
  //www.facebook.com/events/1647538973659918/
 CATEGORIES:LAU København
-LOCATION:J.C. Jacobsensgade 1\, 1799 Copenhagen V\, Denmark\, J. C. Jacobse
- ns Gade 1\, 1799 København V\, Danmark
+LOCATION:J.C. Jacobsensgade 1\, 1799 Copenhagen V\, Denmark
 GEO:55.66678;12.52878
 URL:https://www.facebook.com/events/1647538973659918/
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:2029863341034375@lau-kort
-DTSTAMP:20261007T191101Z
-DTSTART:20261203T180000Z
-DTEND:20261203T200000Z
-SUMMARY:Rundvisning på Næstved rådhus
-DESCRIPTION:LAU Næstved\n\n🏛️ Har du nogensinde tænkt over\, hvad de
- r egentlig sker bag dørene på Næstved Rådhus?\n\nNu har du chancen for
-  at komme med indenfor! \n\nLAU Næstved inviterer til en hyggelig og spæ
- ndende aften på rådhuset\, hvor byrådsmedlem Kasper Schneider tager os 
- med på rundvisning og giver os et indblik i både rådhuset og det lokale
-  politiske arbejde.\n\n\nKom med hvis du vil se rådhuset indefra\, høre 
- lidt om livet i byrådet og selvfølgelig have en hyggelig aften sammen me
- d resten af LAU Næstved. Og hvis der er stemning for det så kender vi en
-  god torsdagsbar til at nyde en øl på efter arrangementet🍻\n\n 3. dec
- em\n\nhttps://www.facebook.com/events/2029863341034375/
-CATEGORIES:LAU Næstved
-LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
-GEO:55.22962;11.76326
-URL:https://www.facebook.com/events/2029863341034375/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5728,12 +5733,38 @@ DTSTAMP:20261019T123034Z
 DTSTART:20261211T180000Z
 DTEND:20261211T200000Z
 SUMMARY:Julehygge hos Lau Næstved🎅🌲
-DESCRIPTION:LAU Næstved\n\nflere detaljer følger...\n\nhttps://www.facebo
- ok.com/events/2071150373568941/
+DESCRIPTION:LAU Næstved\n\nFredag den 11. December klokken 19 inviterer La
+ u Næstved til et par hyggelige timer med julehygge med brætspil\, fifa/N
+ intendo & alt hvad hjertet begærer af julesmåkager og generalt en hyggel
+ ig julestemning. det koster kun jeres gode humør at deltage\, så ingen u
+ ndskyldning vis i har tid. og hvis der er stemning for det efter kunne det
+  da godt blive til en lille en i byen i løbet af aftenen 🍻🙌\n\nadre
+ ssen hvor det bliver holdt ligger kun 12 minutters gåtur fra næstved sta
+ tion. vis i kommer via bil skal i parkere på Rema 1000 parkeringsplads p
+ å Karrebækvej 4c hvor der er 1 minut gågang til adressen\n\nhttps://www
+ .facebook.com/events/2071150373568941/
 CATEGORIES:LAU Næstved
 LOCATION:Slagelsevej 11F 1.th 4700 Næstved
 GEO:55.22962;11.75296
 URL:https://www.facebook.com/events/2071150373568941/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:3973879779421861@lau-kort
+DTSTAMP:20261118T060003Z
+DTSTART:20261212T170000Z
+DTEND:20261212T190000Z
+SUMMARY:Julefrokost 2026 LA & LAU Århus
+DESCRIPTION:LAU Aarhus\n\nSå er det tid til årets julefrokost! Vi glæder
+  os til god mad\, godt selskab og fantastisk stemning med jer alle sammen!
+ \n\nDer er begrænset antal pladser\, 30 stk. Biletter sælges efter førs
+ t til mølle. Tilmelding foregår på link: https://liberalallianceaarhus.
+ nemtilmeld.dk/6/ \n\nLink kan også findes nedenfor.\n\nVi glæder os til 
+ julehygge med jer!\n\nhttps://www.facebook.com/events/3973879779421861/
+CATEGORIES:LAU Aarhus
+LOCATION:Zanders
+GEO:56.158156699886;10.206086933613
+URL:https://www.facebook.com/events/3973879779421861/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -5756,6 +5787,28 @@ CATEGORIES:LAU København
 LOCATION:La Boucherie
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1101595465912804/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2029863341034375@lau-kort
+DTSTAMP:20261007T191101Z
+DTSTART:20261217T180000Z
+DTEND:20261217T200000Z
+SUMMARY:Rundvisning på Næstved rådhus
+DESCRIPTION:LAU Næstved\n\n🏛️ Har du nogensinde tænkt over\, hvad de
+ r egentlig sker bag dørene på Næstved Rådhus?\n\nNu har du chancen for
+  at komme med indenfor! \n\nLAU Næstved inviterer til en hyggelig og spæ
+ ndende aften på rådhuset\, hvor byrådsmedlem Kasper Schneider tager os 
+ med på rundvisning og giver os et indblik i både rådhuset og det lokale
+  politiske arbejde.\n\n\nKom med hvis du vil se rådhuset indefra\, høre 
+ lidt om livet i byrådet og selvfølgelig have en hyggelig aften sammen me
+ d resten af LAU Næstved. Og hvis der er stemning for det så kender vi en
+  god torsdagsbar til at nyde en øl på efter arrangementet🍻\n\n 3. dec
+ em\n\nhttps://www.facebook.com/events/2029863341034375/
+CATEGORIES:LAU Næstved
+LOCATION:Teatergade 8\, 4700 Næstved\, Danmark
+GEO:55.22962;11.76326
+URL:https://www.facebook.com/events/2029863341034375/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

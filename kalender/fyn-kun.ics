@@ -241,4 +241,26 @@ GEO:55.39395;10.38392
 URL:https://www.facebook.com/events/1022845084167988/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1096403176347527@lau-kort
+DTSTAMP:20261026T060003Z
+DTSTART:20261201T173000Z
+DTEND:20261201T193000Z
+SUMMARY:Oplæg med ordfører David Klausen
+DESCRIPTION:LAU Fyn\n\n🦠 FRA PANDEMIER TIL FREMTIDENS LØSNINGER – MED
+  ÆBLESKIVEHYGGE! 🥞🎄\n\nHvordan har sygdomme og pandemier formet vor
+ es samfund? Og kan innovation\, teknologi og økonomisk vækst være med t
+ il at sikre en sundere fremtid for os alle? 💡\n\nDen 1. december invite
+ rer LAU Fyn til en spændende aften med vores ordfører David Klausen\, so
+ m tager os med på en rejse gennem sygdomshistorien og den sundhedsteknolo
+ giske udvikling.\n\nVi dykker ned i nogle af historiens største pandemier
+  og ser nærmere på\, hvordan fremtidens teknologi og nye løsninger kan 
+ hjælpe os med at håndtere sundhedsudfordringer.\n\nMed et liberalt \n\nh
+ ttps://www.facebook.com/events/1096403176347527/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42\, 5000 Odense C\, Danmark
+GEO:55.39395;10.38392
+URL:https://www.facebook.com/events/1096403176347527/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
