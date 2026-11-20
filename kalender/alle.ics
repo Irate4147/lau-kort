@@ -5728,6 +5728,29 @@ URL:https://www.facebook.com/events/1586084473322283/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1761006368332778@lau-kort
+DTSTAMP:20261120T060003Z
+DTSTART:20261211T180000Z
+DTEND:20261211T200000Z
+SUMMARY:Julefest
+DESCRIPTION:LAU Fyn\n\n🎄🎅 JULEFEST MED LAU FYN! 🍻🎁\n\nJulen næ
+ rmer sig\, og det skal selvfølgelig fejres med en ordentlig julefest hos 
+ LAU Fyn! 🥳\n\nVi inviterer derfor til en hyggelig og festlig aften i vo
+ res nye lokaler\, hvor der er lagt op til masser af julehygge\, kolde øl 
+ og godt selskab! 🍻\n\n🎁 Hvad kan du glæde dig til?\n\n* 🎟️ Tom
+ bola med fede præmier!\n* 🍺 Billige øl og god julestemning\n* 🎄 Ma
+ sser af hygge og mulighed for at møde nye mennesker!\n\n📅 Dato: Fredag
+  den 11. december\n\n🕖 Tid: Kl. 19.00\n\n📍 Sted: Filosofhaven 42\, 3
+ . sal\, Odense\n\nALLE er velkomne! 💙\n\nDu behøver hverken være medl
+ em af LAU eller kende nogen på for\n\nhttps://www.facebook.com/events/176
+ 1006368332778/
+CATEGORIES:LAU Fyn
+LOCATION:Filosofhaven 42.3\, Filosofhaven 34\, 5000 Odense C\, Danmark
+GEO:55.39343;10.38302
+URL:https://www.facebook.com/events/1761006368332778/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2071150373568941@lau-kort
 DTSTAMP:20261019T123034Z
 DTSTART:20261211T180000Z
@@ -5762,7 +5785,7 @@ DESCRIPTION:LAU Aarhus\n\nSå er det tid til årets julefrokost! Vi glæder
  nemtilmeld.dk/6/ \n\nLink kan også findes nedenfor.\n\nVi glæder os til 
  julehygge med jer!\n\nhttps://www.facebook.com/events/3973879779421861/
 CATEGORIES:LAU Aarhus
-LOCATION:Zanders
+LOCATION:Zanders\, Klostertorvet 7\, 8000 Aarhus C\, Danmark
 GEO:56.158156699886;10.206086933613
 URL:https://www.facebook.com/events/3973879779421861/
 STATUS:CONFIRMED
@@ -5784,9 +5807,30 @@ DESCRIPTION:LAU København\n\nNu er det endelig tid til LAU Københavns leg
  hygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍
   La B\n\nhttps://www.facebook.com/events/1101595465912804/
 CATEGORIES:LAU København
-LOCATION:La Boucherie
+LOCATION:La Boucherie\, Vestergade 10\, 1456 København K\, Danmark
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1101595465912804/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1459773296325222@lau-kort
+DTSTAMP:20261120T060003Z
+DTSTART:20261217T163000Z
+DTEND:20261217T183000Z
+SUMMARY:Fagligt oplæg -Peter Linde
+DESCRIPTION:LAU Viborg\n\nFra ingeniør til byrådspolitiker i Viborg!\n\nG
+ ør dig klar til et spændende oplæg med Peter Linde\, der til daglig sid
+ der i Viborg Byråd!\n\nPeter tager os med på en ærlig\, personlig og fa
+ gligt inspirerende rejse gennem sit arbejdsliv – fra karrieren som ingen
+ iør til hans vej ind i lokalpolitik og helt ind på rådhuset i Viborg! \
+ n\nVi får et unikt indblik i hans erfaringer\, de valg\, der har formet h
+ ans karriere\, og hvordan hans erhvervsmæssige baggrund spiller en rolle 
+ i hans politiske arbejde.\n\n📅 Dato: 17. december\n\n🕠 Tidspunkt: Kl
+ . 17.30\n\n📍 Sted: Viborg Bibliotek\, Vesterbrogade 15\, 8800 Viborg\n\
+ nUan\n\nhttps://www.facebook.com/events/1459773296325222/
+CATEGORIES:LAU Viborg
+LOCATION:8800 Viborg\, Denmark
+URL:https://www.facebook.com/events/1459773296325222/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

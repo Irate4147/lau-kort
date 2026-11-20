@@ -163,4 +163,25 @@ LOCATION:8800 Viborg\, Denmark
 URL:https://www.facebook.com/events/1126840473021364/
 STATUS:CONFIRMED
 END:VEVENT
+BEGIN:VEVENT
+UID:1459773296325222@lau-kort
+DTSTAMP:20261120T060003Z
+DTSTART:20261217T163000Z
+DTEND:20261217T183000Z
+SUMMARY:Fagligt oplæg -Peter Linde
+DESCRIPTION:LAU Viborg\n\nFra ingeniør til byrådspolitiker i Viborg!\n\nG
+ ør dig klar til et spændende oplæg med Peter Linde\, der til daglig sid
+ der i Viborg Byråd!\n\nPeter tager os med på en ærlig\, personlig og fa
+ gligt inspirerende rejse gennem sit arbejdsliv – fra karrieren som ingen
+ iør til hans vej ind i lokalpolitik og helt ind på rådhuset i Viborg! \
+ n\nVi får et unikt indblik i hans erfaringer\, de valg\, der har formet h
+ ans karriere\, og hvordan hans erhvervsmæssige baggrund spiller en rolle 
+ i hans politiske arbejde.\n\n📅 Dato: 17. december\n\n🕠 Tidspunkt: Kl
+ . 17.30\n\n📍 Sted: Viborg Bibliotek\, Vesterbrogade 15\, 8800 Viborg\n\
+ nUan\n\nhttps://www.facebook.com/events/1459773296325222/
+CATEGORIES:LAU Viborg
+LOCATION:8800 Viborg\, Denmark
+URL:https://www.facebook.com/events/1459773296325222/
+STATUS:CONFIRMED
+END:VEVENT
 END:VCALENDAR
