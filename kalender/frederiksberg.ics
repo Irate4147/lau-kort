@@ -524,17 +524,17 @@ UID:3474248869414855@lau-kort
 DTSTAMP:20261026T060003Z
 DTSTART:20261126T173000Z
 DTEND:20261126T193000Z
-SUMMARY:Vinsmagning med LAU Frederiksberg 🍇
-DESCRIPTION:LAU Frederiksberg\n\nLAU Frederiksberg inviterer til Vinsmagnin
- g!\n\nKom med på en aften gennem Spanien\, Frankrig og Italien – tre la
- nde\, der tilsammen står for næsten halvdelen af verdens vin. Vi smager 
- ni vine\, tre hvide og seks røde\, og bevæger os fra friske hvidvine ove
- r spansk Tempranillo og solvarme vine fra Sydfrankrig til Italiens store k
- lassikere.\n\nAftenen ledes af Jens fra Vino Vino\, som har en WSET-uddann
- else. Han fortæller om områderne\, druerne og historien bag vinene\, og 
- om hvorfor samme drue kan smage vidt forskelligt alt efter klima og lagrin
- g. \n\nHvornår: 26. november kl 18.30 (smagningen tager ca. 2\,\n\nhttps:
- //www.facebook.com/events/3474248869414855/
+SUMMARY:Vinsmagning med LAU Frederiksberg 🍇 // LUKKET FOR TILMELDING
+DESCRIPTION:LAU Frederiksberg\n\n**LUKKET FOR TILMELDING**\n\nLAU Frederiks
+ berg inviterer til Vinsmagning!\n\nKom med på en aften gennem Spanien\, F
+ rankrig og Italien – tre lande\, der tilsammen står for næsten halvdel
+ en af verdens vin. Vi smager ni vine\, tre hvide og seks røde\, og bevæg
+ er os fra friske hvidvine over spansk Tempranillo og solvarme vine fra Syd
+ frankrig til Italiens store klassikere.\n\nAftenen ledes af Jens fra Vino 
+ Vino\, som har en WSET-uddannelse. Han fortæller om områderne\, druerne 
+ og historien bag vinene\, og om hvorfor samme drue kan smage vidt forskell
+ igt alt efter klima og lagring. \n\nHvornår: 26. november kl 18.\n\nhttps
+ ://www.facebook.com/events/3474248869414855/
 CATEGORIES:LAU Frederiksberg
 LOCATION:Finsensvej 10a 2000 Frederiksberg
 GEO:55.68126;12.52005
@@ -545,11 +545,13 @@ BEGIN:VEVENT
 UID:2150385339246072@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20270110T090000Z
-DTEND:20270110T110000Z
-SUMMARY:Liberalt Seminar
+DTEND:20270110T170000Z
+SUMMARY:Nytårskur og Liberalt Seminar om Danskhed 🇩🇰
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/2150385339246072/
 CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/2150385339246072/
 STATUS:CONFIRMED
 END:VEVENT

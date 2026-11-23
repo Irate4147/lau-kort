@@ -1172,11 +1172,13 @@ BEGIN:VEVENT
 UID:2150385339246072@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20270110T090000Z
-DTEND:20270110T110000Z
-SUMMARY:Liberalt Seminar
+DTEND:20270110T170000Z
+SUMMARY:Nytårskur og Liberalt Seminar om Danskhed 🇩🇰
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/2150385339246072/
 CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/2150385339246072/
 STATUS:CONFIRMED
 END:VEVENT

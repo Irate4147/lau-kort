@@ -1099,7 +1099,7 @@ DESCRIPTION:LAU København\n\nKom og få noget at spise og drikke. Efterfø
  www.facebook.com/events/1824396495371859/
 CATEGORIES:LAU København
 LOCATION:Psykologhuset Cektos - Center for Metakognitiv Terapi v/ Pia Calle
- sen\, Borgergade 28\, 4.\, 1300 Copenhagen\, Denmark
+ sen
 GEO:55.68515;12.58663
 URL:https://www.facebook.com/events/1824396495371859/
 STATUS:CONFIRMED
@@ -1143,7 +1143,7 @@ DESCRIPTION:LAU København\n\nNu er det endelig tid til LAU Københavns leg
  hygge til en ordentlig fest.\n\n📅 12. december 2026 kl. 18.30  \n\n📍
   La B\n\nhttps://www.facebook.com/events/1101595465912804/
 CATEGORIES:LAU København
-LOCATION:La Boucherie\, Vestergade 10\, 1456 København K\, Danmark
+LOCATION:La Boucherie
 GEO:55.67792;12.57058
 URL:https://www.facebook.com/events/1101595465912804/
 STATUS:CONFIRMED
@@ -1152,11 +1152,13 @@ BEGIN:VEVENT
 UID:2150385339246072@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20270110T090000Z
-DTEND:20270110T110000Z
-SUMMARY:Liberalt Seminar
+DTEND:20270110T170000Z
+SUMMARY:Nytårskur og Liberalt Seminar om Danskhed 🇩🇰
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/2150385339246072/
 CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/2150385339246072/
 STATUS:CONFIRMED
 END:VEVENT

@@ -542,14 +542,74 @@ URL:https://www.facebook.com/events/3036042386787504/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:2193211894903029@lau-kort
+DTSTAMP:20261123T060004Z
+DTSTART:20261203T183000Z
+DTEND:20261203T203000Z
+SUMMARY:Steffen\, Gløgg og Æbleskiver
+DESCRIPTION:LAU Nordsjælland\n\nLAU & LA Nordsjælland inviterer til "Stef
+ fen\, Gløgg og Æbleskiver" den 3. december❄️\n\nTilmelding foregår 
+ på linket herunder:    (Tilmeldingsfrist: 30/11)\nhttps://la-ns.nemtilmel
+ d.dk\n \nLAU Nordsjælland hopper i år med på LA Nordsjællands stolte j
+ uletradition. Kom og nyd et glas gløgg og nogle æbleskiver\, mens Steffe
+ n Frølund\, storkredsens folketingsmedlem\, giver en orientering om riget
+ s tilstand set fra Christiansborg.🎅\n\nEfterfølgende vil der være mul
+ ighed for kommentarer og spørgsmål.\nDu er meget velkommen til at tage d
+ in gode venner og bekendte med.💙\nArrangementet finder sted på Havarth
+ igaard\n\nhttps://www.facebook.com/events/2193211894903029/
+CATEGORIES:LAU Nordsjælland
+LOCATION:Havarthigaarden\, Holte\, Havarthivej 6\, 2840 Holte\, Danmark
+GEO:55.81956;12.49694
+URL:https://www.facebook.com/events/2193211894903029/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:993044177210030@lau-kort
+DTSTAMP:20261123T060004Z
+DTSTART:20261209T173000Z
+DTEND:20261209T193000Z
+SUMMARY:Vejen til frie og gode virksomheder / Oplæg V. Victor Galland
+DESCRIPTION:LAU Nordsjælland\n\nKom med\, når Victor Galland\, LAU's Øko
+ nomi- og Erhvervsordfører\, holder oplæg om vejen til frie og gode virks
+ omheder!\n\nVi skal høre lidt om\, hvordan vi skaber mere vækst\, mere f
+ rihed og generelt bedre vilkår for virksomhederne. Hvad står i vejen for
+  det\, og hvordan får vi løst udfordringerne? Det kan vi blive klogere p
+ å den 9. december i LAU Nordsjælland.🌟\n\nhttps://www.facebook.com/ev
+ ents/993044177210030/
+CATEGORIES:LAU Nordsjælland
+LOCATION:KulturStationen\, Humlebæk
+GEO:55.96432;12.53288
+URL:https://www.facebook.com/events/993044177210030/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:2165116267430891@lau-kort
+DTSTAMP:20261123T060004Z
+DTSTART:20261214T170000Z
+DTEND:20261214T190000Z
+SUMMARY:Hvervningsaften med Ezekiel Rohde
+DESCRIPTION:LAU Nordsjælland\n\nKom til hvervningsaften i Nordsjælland\, 
+ og hør om hvervningskonkurrencerne\, præmierne man kan vinde\, og vigtig
+ heden af at hverve\, når LAU's landsformand\, Ezekiel Rohde\, kommer og h
+ older oplæg. \n\nEfterfølgende står den på hygge og hvervning af nye m
+ edlemmer.😊\n\nhttps://www.facebook.com/events/2165116267430891/
+CATEGORIES:LAU Nordsjælland
+LOCATION:KulturStationen\, Humlebæk
+GEO:55.96432;12.53288
+URL:https://www.facebook.com/events/2165116267430891/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2150385339246072@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20270110T090000Z
-DTEND:20270110T110000Z
-SUMMARY:Liberalt Seminar
+DTEND:20270110T170000Z
+SUMMARY:Nytårskur og Liberalt Seminar om Danskhed 🇩🇰
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/2150385339246072/
 CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/2150385339246072/
 STATUS:CONFIRMED
 END:VEVENT

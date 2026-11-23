@@ -793,14 +793,35 @@ URL:https://www.facebook.com/events/3036042386787504/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1914922919511718@lau-kort
+DTSTAMP:20261123T060004Z
+DTSTART:20261205T160000Z
+DTEND:20261205T180000Z
+SUMMARY:🎄LAU Aalborgs legendariske julefrokost🎄
+DESCRIPTION:LAU Aalborg\n\nDet er endelig tid igen – den 5. December er 
+ årets mest berygtede og hyggelige tradition er tilbage!\nLAU Aalborg invi
+ terer til den legendariske julefrokost\, hvor vi samler hele landet til go
+ d mad\, kolde øl og masser af julestemning.\n\nDu kan forvente:\n🍽️ 
+ Klassisk julemad\n🍻 Foreningens billigste bar\n🎶 Musik\, dans og rig
+ eligt med julesnaps\n\n‼️Tilmeld dig nu – ved at trykke deltager på
+  begivenheden\n\nhttps://www.facebook.com/events/1914922919511718/
+CATEGORIES:LAU Aalborg
+LOCATION:Skudehavnsvej 13\, Aalborg
+GEO:57.05635;9.90299
+URL:https://www.facebook.com/events/1914922919511718/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:2150385339246072@lau-kort
 DTSTAMP:20260928T121718Z
 DTSTART:20270110T090000Z
-DTEND:20270110T110000Z
-SUMMARY:Liberalt Seminar
+DTEND:20270110T170000Z
+SUMMARY:Nytårskur og Liberalt Seminar om Danskhed 🇩🇰
 DESCRIPTION:Landsforeningen\n\nMere information følger snarest...\n\nhttps
  ://www.facebook.com/events/2150385339246072/
 CATEGORIES:Landsforeningen
+LOCATION:Landgreven 3\, 1301 København K\, Danmark
+GEO:55.68288;12.58555
 URL:https://www.facebook.com/events/2150385339246072/
 STATUS:CONFIRMED
 END:VEVENT
