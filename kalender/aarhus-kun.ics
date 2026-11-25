@@ -331,6 +331,28 @@ URL:https://www.facebook.com/events/1082490794825957/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1497173025612045@lau-kort
+DTSTAMP:20261125T060004Z
+DTSTART:20261206T120000Z
+DTEND:20261206T140000Z
+SUMMARY:STORE FLYTTEDAG TIL KLOSTERTORVET
+DESCRIPTION:LAU Aarhus\n\n📦 FLYTTEDAG MED LAU ÅRHUS! 💙\n\nSå er det
+  blevet tid til at rykke ind i vores nye lokaler på Klostertorvet 4B\, 3.
+  sal!\n\nVi mødes søndag d. 6. december kl. 13.00\, hvor vi skal have fl
+ yttet vores ting\, pakket ud og gjort de nye lokaler klar til en masse god
+ e stunder fremover.\n\nVi håber virkelig\, at så mange som muligt har ly
+ st til at kigge forbi og give en hånd med. Alle hjælpende hænder er mer
+ e end velkomne\, og selvfølgelig skal der også være plads til hygge und
+ ervejs!\n\nVi glæder os til at se jer og få skabt nogle fede rammer for 
+ LAU Århus fremover. 🍻\n\nhttps://www.facebook.com/events/1497173025612
+ 045/
+CATEGORIES:LAU Aarhus
+LOCATION:Klostertorvet 4b 3sal\, 8000 Aarhus C
+GEO:56.158686514647;10.206647139849
+URL:https://www.facebook.com/events/1497173025612045/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:3973879779421861@lau-kort
 DTSTAMP:20261118T060003Z
 DTSTART:20261212T170000Z
@@ -343,7 +365,7 @@ DESCRIPTION:LAU Aarhus\n\nSå er det tid til årets julefrokost! Vi glæder
  nemtilmeld.dk/6/ \n\nLink kan også findes nedenfor.\n\nVi glæder os til 
  julehygge med jer!\n\nhttps://www.facebook.com/events/3973879779421861/
 CATEGORIES:LAU Aarhus
-LOCATION:Zanders
+LOCATION:Zanders\, Klostertorvet 7\, 8000 Aarhus C\, Danmark
 GEO:56.158156699886;10.206086933613
 URL:https://www.facebook.com/events/3973879779421861/
 STATUS:CONFIRMED
