@@ -5630,8 +5630,7 @@ DESCRIPTION:LAU Roskilde\n\nLAU ROSKILDE FÅR BESØG AF RASMUS MALVER!\n\nH
  tens magt\, borgernes rettigheder og myndighedernes ansvar.\n\n\n\nhttps:/
  /www.facebook.com/events/1610222356939838/
 CATEGORIES:LAU Roskilde
-LOCATION:Byens hus - Roskilde\, Mindesten for Danmarks Besaette\, Fondens B
- ro\, 4000 Roskilde\, Danmark
+LOCATION:Byens hus - Roskilde
 GEO:55.641591306591;12.08017500438
 URL:https://www.facebook.com/events/1610222356939838/
 STATUS:CONFIRMED
@@ -5679,9 +5678,12 @@ DTSTART:20261202T180000Z
 DTEND:20261202T200000Z
 SUMMARY:Ordføreroplæg: Asta Georgsen
 DESCRIPTION:LAU Nordkøbenhavn\n\nKom og hør et spændende oplæg med LAU
- ’s udlændinge- og integrationsordfører.\n\nhttps://www.facebook.com/ev
- ents/1664590761713616/
+ ’s udlændinge- og integrationsordfører.\nMed øl og sodavand\n\nHvorda
+ n har vi fået indvandre ind i landet og udviklet os?\n\nhttps://www.faceb
+ ook.com/events/1664590761713616/
 CATEGORIES:LAU Nordkøbenhavn
+LOCATION:Frederiksdalsvej 107\, 2830 Virum
+GEO:55.79459;12.46795
 URL:https://www.facebook.com/events/1664590761713616/
 STATUS:CONFIRMED
 END:VEVENT
@@ -5702,7 +5704,8 @@ DESCRIPTION:LAU København\n\nHvordan navigerer en global virksomhed mellem
  nser.\n\nVi kommer indenfor hos Carlsberg og hører\, hvordan sa\n\nhttps:
  //www.facebook.com/events/1647538973659918/
 CATEGORIES:LAU København
-LOCATION:J.C. Jacobsensgade 1\, 1799 Copenhagen V\, Denmark
+LOCATION:J.C. Jacobsensgade 1\, 1799 Copenhagen V\, Denmark\, J. C. Jacobse
+ ns Gade 1\, 1799 København V\, Danmark
 GEO:55.66678;12.52878
 URL:https://www.facebook.com/events/1647538973659918/
 STATUS:CONFIRMED
@@ -5771,6 +5774,28 @@ URL:https://www.facebook.com/events/1497173025612045/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:1447908064162910@lau-kort
+DTSTAMP:20261127T060003Z
+DTSTART:20261207T180000Z
+DTEND:20261207T200000Z
+SUMMARY:Nyt fra borgen m. Thorbjørn Jacobsen + Juleafslutning
+DESCRIPTION:LAU Herning\n\nInden længe går året på hæld\, og  vil vi g
+ erne invitere dig til en hyggelig juleafslutning og samtidigt en spændend
+ e opdatering fra borgen af Thorbjørn Jacobsen fra Liberal Alliance's folk
+ etingsgruppe.\n \nTid og sted\nMandag den 7. december 2026 kl. 19.00 – 2
+ 1.00 i Sølvhuset\, Højskolevej 11\, 7400 Herning. \n \nVi byder på varm
+  gløgg og æbleskiver\, kaffe\, øl og vand mv. og du vil have rig muligh
+ ed for at få en politisk opdatering\, samtidigt med at vi ønsker hinande
+ n glædelig jul.\n \n \nAf hensyn til forplejning bedes du tilmelde dig se
+ nest 05/12 på Nemtilmeld herunder:\nhttps://liberalalliancevestjyll\n\nht
+ tps://www.facebook.com/events/1447908064162910/
+CATEGORIES:LAU Herning
+LOCATION:Højskolevej 11\, 7400 Herning\, Danmark
+GEO:56.13346;9.01549
+URL:https://www.facebook.com/events/1447908064162910/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:993044177210030@lau-kort
 DTSTAMP:20261123T060004Z
 DTSTART:20261209T173000Z
@@ -5784,7 +5809,8 @@ DESCRIPTION:LAU Nordsjælland\n\nKom med\, når Victor Galland\, LAU's Øko
  å den 9. december i LAU Nordsjælland.🌟\n\nhttps://www.facebook.com/ev
  ents/993044177210030/
 CATEGORIES:LAU Nordsjælland
-LOCATION:KulturStationen\, Humlebæk
+LOCATION:KulturStationen\, Humlebæk\, Humlebæk Center 44\, 3050 Humlebæk
+ \, Danmark
 GEO:55.96432;12.53288
 URL:https://www.facebook.com/events/993044177210030/
 STATUS:CONFIRMED
@@ -5868,7 +5894,7 @@ DESCRIPTION:LAU Aarhus\n\nSå er det tid til årets julefrokost! Vi glæder
  nemtilmeld.dk/6/ \n\nLink kan også findes nedenfor.\n\nVi glæder os til 
  julehygge med jer!\n\nhttps://www.facebook.com/events/3973879779421861/
 CATEGORIES:LAU Aarhus
-LOCATION:Zanders\, Klostertorvet 7\, 8000 Aarhus C\, Danmark
+LOCATION:Zanders
 GEO:56.158156699886;10.206086933613
 URL:https://www.facebook.com/events/3973879779421861/
 STATUS:CONFIRMED
@@ -5907,8 +5933,7 @@ DESCRIPTION:LAU Nordsjælland\n\nKom til hvervningsaften i Nordsjælland\,
  older oplæg. \n\nEfterfølgende står den på hygge og hvervning af nye m
  edlemmer.😊\n\nhttps://www.facebook.com/events/2165116267430891/
 CATEGORIES:LAU Nordsjælland
-LOCATION:KulturStationen\, Humlebæk\, Humlebæk Center 44\, 3050 Humlebæk
- \, Danmark
+LOCATION:KulturStationen\, Humlebæk
 GEO:55.96432;12.53288
 URL:https://www.facebook.com/events/2165116267430891/
 STATUS:CONFIRMED
@@ -5967,6 +5992,28 @@ DESCRIPTION:LAU Nordkøbenhavn\n\nJuleafslutning med et oplæg fra vores so
  k.com/events/4768254920081901/
 CATEGORIES:LAU Nordkøbenhavn
 URL:https://www.facebook.com/events/4768254920081901/
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:1491949499099472@lau-kort
+DTSTAMP:20261127T060003Z
+DTSTART:20261219T180000Z
+DTEND:20261219T200000Z
+SUMMARY:Årets juleafslutning - Liberal Alliances Ungdom Kronjylland
+DESCRIPTION:LAU Kronjylland\n\nÅrets juleafslutning i LAU Kronjylland! 
+ 🎄\n\nJulen nærmer sig\, og endnu et år fyldt med politiske debatter\,
+  spændende arrangementer og gode oplevelser lakker mod enden. Det skal se
+ lvfølgelig fejres i godt selskab!\n\nDerfor inviterer LAU Kronjylland til
+  en hyggelig juleafslutning. \nVi starter aftenen ved Operaen\, hvor LAU K
+ ronjylland selvfølgelig giver en øl\, sodavand eller Mokai til alle delt
+ agere. Her vil der være rig mulighed for gode samtaler\, grin og en hygge
+ lig afrunding på året.\n\nUanset om du er nyt medlem eller har været en
+  del af foreningen længe\, håber vi\, at du har lyst til at komme og \n\
+ nhttps://www.facebook.com/events/1491949499099472/
+CATEGORIES:LAU Kronjylland
+LOCATION:Operaen Randers\, Vester Kirkestræde 12\, 8900 Randers\, Denmark
+GEO:56.459376682414;10.034218494033
+URL:https://www.facebook.com/events/1491949499099472/
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
